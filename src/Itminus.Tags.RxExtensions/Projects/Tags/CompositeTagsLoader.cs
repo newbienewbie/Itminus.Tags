@@ -11,7 +11,8 @@ using System.Xml.Linq;
 namespace Itminus.Tags.Projects;
 
 /// <summary>
-/// 测点集加载器
+/// 复合测点集加载器。<br/>
+/// 会按顺序逐一调用内部测点构建器集合，如果某个构建器返回为null，表示当前构建器不适用于对应的节点，需要继续尝试其它构建器。
 /// </summary>
 public class CompositeTagsLoader : ITagsLoader
 {
