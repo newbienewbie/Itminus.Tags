@@ -1,0 +1,189 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reactive.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace Itminus.Tags.Tests.TagCbnts;
+
+
+
+public class TagCbnt_Tests
+{
+    internal class MockChannel : ITagChannel
+    {
+        private byte[] _bytes = new byte[4]
+        {
+        0x03, 0x00, 0x00, 0x00,
+        };
+
+        public string ChannelName => "MockChannel";
+
+        public string Driver => "MOCKCHANNEL";
+
+        public Task DisconnectAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            return;
+        }
+
+        public Task EnsureConnectedAsync(bool force = false)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<byte[]> ReadAsync(string address, int count)
+        {
+            return Task.FromResult(this._bytes);
+        }
+
+        public Task WriteAsync(string address, byte[] bytes)
+        {
+            this._bytes = bytes;
+            return Task.CompletedTask;
+        }
+    }
+
+    [Fact]
+    public async Task Test_TagCnbtRWTriggerTagSyncsEvents()
+    {
+        var channel = new MockChannel();
+        var cbnt = new TagCbnt("mock tag cbnt", "0.0")
+        {
+            ScanInterval =20,
+            CacheSize = 4,
+            Channel = channel,
+            IsEnabled = true,
+        };
+        var tag1 = new BitTagCbntor(
+            new TagDescriptor() { Address = "0.0", TagSize = 1, TagKind = TagKinds.BIT, TagName = "测点1" },
+            cbnt,
+            0,
+            0,
+            0
+            );
+        var tag2 = new BitTagCbntor(
+            new TagDescriptor() { Address = "0.1", TagSize = 1, TagKind = TagKinds.BIT, TagName = "测点2" },
+            cbnt,
+            0,
+            0,
+            1
+            );
+
+        var x = 10;
+        var y = 20;
+
+        tag1.OnTagSync += (o, args) => { 
+            if(true.Equals(args.NewValue))
+            {
+                x++;
+            }
+        };
+        tag2.OnTagSync += (o, args) => {
+            if(true.Equals(args.NewValue))
+            {
+                y++;
+            }
+        };
+
+        cbnt.Children["tag1"] = tag1;
+        cbnt.Children["tag2"] = tag2;
+
+        await cbnt.ReadAsync();
+        Assert.Equal(11, x);
+        Assert.Equal(21, y);
+
+        await cbnt.ReadAsync();
+        Assert.Equal(12, x);
+        Assert.Equal(22, y);
+
+
+        await cbnt.WriteAsync();
+        Assert.Equal(13, x);
+        Assert.Equal(23, y);
+
+        await cbnt.WriteAsync();
+        Assert.Equal(14, x);
+        Assert.Equal(24, y);
+    }
+
+
+    [Fact]
+    public async Task Test_TagCnbtRWTriggerTagSyncsEventsObservable()
+    {
+        var channel = new MockChannel();
+        var cbnt = new TagCbnt("mock tag cbnt", "0.0")
+        {
+            ScanInterval = 20,
+            CacheSize = 4,
+            Channel = channel,
+            IsEnabled = true,
+        };
+        var tag1 = new BitTagCbntor(
+            new TagDescriptor() { Address = "0.0", TagSize = 1, TagKind = TagKinds.BIT, TagName = "测点1" },
+            cbnt,
+            0,
+            0,
+            0
+            );
+        var tag2 = new BitTagCbntor(
+            new TagDescriptor() { Address = "0.1", TagSize = 1, TagKind = TagKinds.BIT, TagName = "测点2" },
+            cbnt,
+            0,
+            0,
+            1
+            );
+
+        var x = 10;
+        var y = 20;
+
+
+        var obs1 = tag1.Watch();
+        var obs2 = tag2.Watch();
+
+        using var d1 = obs1.Subscribe(ev =>
+        {
+            Assert.Equal(tag1, ev.Sender);
+            if (true.Equals(ev.EventArgs.NewValue))
+            {
+                x++;
+            }
+        });
+
+        using var d2 = obs2.Subscribe(ev =>
+        {
+            Assert.Equal(tag2, ev.Sender);
+            if (true.Equals(ev.EventArgs.NewValue))
+            {
+                y++;
+            }
+        });
+
+        cbnt.Children["tag1"] = tag1;
+        cbnt.Children["tag2"] = tag2;
+
+        await cbnt.ReadAsync();
+        Assert.Equal(11, x);
+        Assert.Equal(21, y);
+
+        await cbnt.ReadAsync();
+        Assert.Equal(12, x);
+        Assert.Equal(22, y);
+
+
+        await cbnt.WriteAsync();
+        Assert.Equal(13, x);
+        Assert.Equal(23, y);
+
+        await cbnt.WriteAsync();
+        Assert.Equal(14, x);
+        Assert.Equal(24, y);
+    }
+}

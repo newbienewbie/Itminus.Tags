@@ -1,0 +1,124 @@
+﻿
+<MudTreeView T="TagUnion" Items="@_treeItems" AutoExpand="true" ExpandOnClick="true">
+    <ItemTemplate>
+        @{
+            var tagunion = context.Value;
+        }
+
+        @if(tagunion is not null)
+        {
+            @if (tagunion.IsTagUnit()) {
+                var tag = tagunion.AsTag();
+                <MudTreeViewItem
+                    Value="@context.Value"
+                    Icon="@context.Icon"
+                    EndTextTypo="@Typo.caption" >
+                    <BodyContent Context="X">
+                        <TagView Tag="@tag"></TagView>
+                    </BodyContent>
+                </MudTreeViewItem>
+            }
+            else{
+                <MudTreeViewItem 
+                    Items="@context.Children"
+                    Value="@context.Value"
+                    Icon="@context.Icon"
+                    Text="@context.Text"
+                    EndTextTypo="@Typo.caption" >
+                </MudTreeViewItem>
+            } 
+        }
+
+    </ItemTemplate>
+</MudTreeView>
+
+@code {
+
+
+    [Parameter]
+    public ITagGrp? RootTag { get; set; }
+
+    private IReadOnlyList<TreeItemData<TagUnion>>? _treeItems;
+
+
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        if (parameters.TryGetValue<ITagGrp>(nameof(RootTag), out var root))
+        {
+            _treeItems = root is null ? [ ] : [ConvertToTreeItems(root)];
+        }
+
+        return base.SetParametersAsync(parameters);
+    }
+
+
+
+
+
+
+
+    private TreeItemData<TagUnion> ConvertToTreeItems(ITagGrp group)
+    {
+        var root = new TreeItemData<TagUnion>()
+            {
+                Text = group.Name,
+                Value = new TagUnion.TagGrp(group),
+                Children = new List<TreeItemData<TagUnion>>(),
+                Icon = Icons.Material.Filled.Layers,
+            };
+        foreach (var kvp in group.Children)
+        {
+            var child = kvp.Value;
+            if (child.IsTagUnit())
+            {
+                var node = new TreeItemData<TagUnion>()
+                    {
+                        Text = child.AsTag().TagName(),
+                        Value = child,
+                        Icon = Icons.Material.Filled.Tag,
+                    };
+                root.Children.Add(node);
+            }
+            else if (child.IsTagCbnt())
+            {
+                var cbnt = child.AsTagCbnt();
+                var node = new TreeItemData<TagUnion>()
+                    {
+                        Text = cbnt.Name,
+                        Value = child,
+                        Children = new List<TreeItemData<TagUnion>>(),
+                        Icon = Icons.Material.Filled.GroupWork,
+                    };
+                foreach (var tag in cbnt.Children.Values)
+                {
+                    var data = new TreeItemData<TagUnion>()
+                        {
+                            Text = tag.TagName(),
+                            Value = new TagUnion.TagUnit(tag),
+                            Icon = Icons.Material.Filled.Tag,
+                        };
+                    node.Children.Add(data);
+                }
+                root.Children.Add(node);
+            }
+            else if (child.IsTagGrp())
+            {
+                var grp = child.AsTagGrp();
+                var node = ConvertToTreeItems(grp);
+                root.Children.Add(node);
+            }
+            else
+            {
+                var node = new TreeItemData<TagUnion>()
+                    {
+                        Text = group.Name,
+                        Children = new List<TreeItemData<TagUnion>>(),
+                        Icon = Icons.Material.Filled.DeviceUnknown,
+                    };
+                root.Children.Add(node);
+            }
+        }
+        return root;
+    }
+}

@@ -1,0 +1,13 @@
+﻿@using Itminus.Tags.S7
+
+
+<MudTextField Label="IpAddr" @bind-Value="Descriptor.IpAddr" Variant="Variant.Text"></MudTextField>
+
+<MudNumericField Label="Rack" @bind-Value="Descriptor.Rack" Variant="Variant.Text"></MudNumericField>
+
+<MudNumericField Label="Slot" @bind-Value="Descriptor.Slot" Variant="Variant.Text"></MudNumericField>
+
+@code {
+	[Parameter]
+	public S7TagChannelDescriptor Descriptor { get; set; } = new S7TagChannelDescriptor();
+}
