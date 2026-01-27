@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace Itminus.Tags;
 
@@ -25,15 +25,28 @@ internal class TagCbnt : ITagCbnt
     /// <inheritdoc/>
     public string StartAddress { get; set; } = "";
 
-    /// <summary>
-    /// 底层的字节数组大小
-    /// </summary>
+    /// <inheritdoc/>
     public int CacheSize { get; set; }
 
+    /// <inheritdoc/>
+    public Memory<byte> Cache { get; private set; } = Memory<byte>.Empty;
+
     /// <summary>
-    /// 底层硬件映射的字节数组
+    /// 调整缓存大小
     /// </summary>
-    public Memory<byte> Cache { get; set; } = Memory<byte>.Empty;
+    /// <param name="cacheSize"></param>
+    public void ResizeCache(int cacheSize)
+    {
+        this.CacheSize = cacheSize;
+        var cache = new byte[cacheSize];
+        
+        var len = Math.Min(cacheSize, this.Cache.Length);
+        if(len > 0)
+        {
+            this.Cache.Span.Slice(0, len).CopyTo(cache);
+        }
+        this.Cache = cache;
+    }
 
     /// <inheritdoc/>
     public virtual bool IsDirty { get; set; }
@@ -55,37 +68,39 @@ internal class TagCbnt : ITagCbnt
     public bool IsEnabled { get; set; } = true;
 
     /// <inheritdoc/>
-    public TagAccessMode AcessMode { get; set; }
+    public TagAccessMode AcessMode { get; set; } = TagAccessMode.RW;
 
     /// <inheritdoc/>
     public bool IsScaned { get; set; }
 
     /// <inheritdoc/>
-    public virtual async Task ReadAsync()
+    public virtual async Task ReadAsync(CancellationToken ct)
     {
         var channel = this.GetRequiredChannel();
-        var bytes = await channel.ReadAsync(this.StartAddress, this.CacheSize);
+        var bytes = await channel.ReadAsync(this.StartAddress, this.CacheSize, ct);
         this.Cache = bytes.AsMemory();
         foreach(var kv in this.Children)
         {
             var tag = kv.Value;
-            tag.NotifyValueUpdated();
+            tag.NotifyTagRead();
         }
     }
 
     /// <inheritdoc/>
-    public virtual async Task WriteAsync()
+    public virtual async Task WriteAsync(CancellationToken ct)
     {
         var channel = this.GetRequiredChannel();
         var bytes = this.Cache.ToArray();
-        await channel.WriteAsync(this.StartAddress, bytes);
+        await channel.WriteAsync(this.StartAddress, bytes, ct);
 
         foreach (var kv in this.Children)
         {
             var tag = kv.Value;
-            tag.NotifyValueUpdated();
+            tag.NotifyValueWritten();
             tag.IsDirty = false;
         }
         this.IsDirty = false;
     }
+
+
 }

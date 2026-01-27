@@ -27,7 +27,7 @@ namespace Itminus.Tags
         public void Initialize()
         {
             var channel = new ModbusTcpChannel(
-                "ZLan001",
+                "ZLan001", 
                 //new ModbusTcpItem() { IpAddr = "localhost", Port = 502},
                 new ModbusTcpItem() { IpAddr = "192.168.1.254", Port = 502 },
                 this._loggerFactory.CreateLogger<ModbusTcpChannel>()
@@ -35,7 +35,7 @@ namespace Itminus.Tags
             this._channels.Add(channel);
 
             this._group1 = new ZLanDICbntBuilder("Group1")
-                .WithDevice(channel)
+                .WithChannel(channel)
                 .Configure(builder =>
                 {
                     var tagFactory = builder.MakeZLanTagFactory();
@@ -53,7 +53,7 @@ namespace Itminus.Tags
                 ;
 
             this._outs = new ZLanDOCbntBuilder("Group2")
-                .WithDevice(channel)
+                .WithChannel(channel)
                 .Configure(builder =>
                 {
                     var tagFactory = builder.MakeZLanTagFactory();
@@ -89,12 +89,12 @@ namespace Itminus.Tags
                     await this._group1.Channel.EnsureConnectedAsync();
                     Console.WriteLine($"Connected");
 
-                    await InputAsync();
+                    await InputAsync(ct);
 
 
                     ProcessAsync(ref nth);
 
-                    await OutputAsync();
+                    await OutputAsync(ct);
                     //await this.OutputOneByOneAsync();
                     Console.WriteLine($"Done--------------");
                     // await group.WriteAsync();
@@ -161,10 +161,10 @@ namespace Itminus.Tags
             }
         }
 
-        private async Task InputAsync()
+        private async Task InputAsync(CancellationToken ct)
         {
             // read
-            await this._group1.ReadAsync();
+            await this._group1.ReadAsync(ct);
             var dt = DateTimeOffset.UtcNow;
             foreach (var kvp in this._group1.Children)
             {
@@ -174,24 +174,24 @@ namespace Itminus.Tags
         }
 
 
-        private async Task OutputAsync()
+        private async Task OutputAsync(CancellationToken ct)
         {
             if (this._outs.IsDirty)
             {
-                await _outs.WriteAsync();
+                await _outs.WriteAsync(ct);
                 this._outs.IsDirty = false;
             }
 
         }
 
-        private async Task OutputOneByOneAsync()
+        private async Task OutputOneByOneAsync(CancellationToken ct)
         {
             foreach (var kvp in this._outs.Children)
             {
                 var tag = kvp.Value;
                 if (tag.IsDirty)
                 {
-                    await tag.WriteAsync();
+                    await tag.WriteAsync(ct);
                     tag.IsDirty = false;
                 }
             }

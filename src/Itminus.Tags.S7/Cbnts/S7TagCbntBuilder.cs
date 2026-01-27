@@ -12,8 +12,13 @@ namespace Itminus.Tags.S7;
 /// </summary>
 public class S7TagCbntBuilder : TagCbntBuilderBase
 {
-    public S7TagCbntBuilder(string cbntName, string startAddress) : base(cbntName, startAddress)
+    public S7TagCbntBuilder()
     {
+    }
+
+    public S7TagCbntBuilder(string cbntName, string startAddress)
+    {
+        this.SetNameAndAddress(cbntName, startAddress);
     }
 
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)

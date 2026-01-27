@@ -5,12 +5,17 @@ namespace Itminus.Tags;
 
 public static class TagsProjectServiceCollection
 {
-    public static IServiceCollection AddTagsProjectServices(
-        this IServiceCollection services, 
-        Action<TagsProjectServiceBuilder> configTagsLoader)
+
+    /// <summary>
+    /// 注册测点项目服务，其中可以配置通道工厂、组合测点加载器
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="configTagsLoader"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddTagsProjectServices(this IServiceCollection services,  Action<TagsProjectServiceBuilder> configTagsLoader)
     {
         services.AddSingleton<ITagsProjectRunner, TagsProjectRunner>();
-        services.AddSingleton<ILogicetLoader,LogicetLoader>();
+        services.AddSingleton<ILogicetLoader, LogicetLoader>();
 
         var tpsb = new TagsProjectServiceBuilder(services);
         configTagsLoader?.Invoke(tpsb);
@@ -66,7 +71,7 @@ public class TagsProjectServiceBuilder
     /// 应用 通道工厂 配置
     /// </summary>
     /// <param name="sp"></param>
-    public void ApplyChannelFactoriesConfiguration(IServiceProvider sp)
+    internal void ApplyChannelFactoriesConfiguration(IServiceProvider sp)
     {
         foreach(var config in this.ChannelFactoriesConfiguration)
         {
@@ -96,7 +101,7 @@ public class TagsProjectServiceBuilder
     /// 应用 测点加载器 配置
     /// </summary>
     /// <param name="sp"></param>
-    public void ApplyTagsLoadersConfiguration(IServiceProvider sp)
+    internal void ApplyTagsLoadersConfiguration(IServiceProvider sp)
     {
         foreach (var config in this.TagsLoadersConfiguration)
         {

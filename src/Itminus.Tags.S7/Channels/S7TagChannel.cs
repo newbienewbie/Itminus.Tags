@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using StdUnit.Sharp7.Options;
 using StdUnit.Sharp7;
 using Microsoft.FSharp.Core;
@@ -30,7 +30,7 @@ public class S7TagChannel : ITagChannel
 
     public string Driver => DRIVER;
 
-    private static readonly string DRIVER = "S7";
+    private static readonly string DRIVER = S7Names.DriverName;
 
     public virtual Task DisconnectAsync()
     {
@@ -106,7 +106,7 @@ public class S7TagChannel : ITagChannel
     /// <param name="length">要读取的字节数量</param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public Task<byte[]> ReadAsync(string address, int length)
+    public Task<byte[]> ReadAsync(string address, int length, CancellationToken ct)
     {
         var addr = S7AddressParser.Parse(address);
         var buffer = new byte[length];
@@ -126,7 +126,7 @@ public class S7TagChannel : ITagChannel
     /// <param name="buffer"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public Task WriteAsync(string address, byte[] buffer)
+    public Task WriteAsync(string address, byte[] buffer, CancellationToken ct)
     {
         var addr = S7AddressParser.Parse(address);
         var code = this.Client!.DBWrite(addr.BlockNumber, addr.StartAddress, buffer.Length, buffer);

@@ -1,4 +1,4 @@
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 /// <summary>
 /// 采集通道
@@ -32,14 +32,16 @@ public interface ITagChannel : IDisposable
     /// </summary>
     /// <param name="address"></param>
     /// <param name="count></param>
+    /// <param name="ct></param>
     /// <returns></returns>
-    public Task<byte[]> ReadAsync(string address, int count);
+    public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct);
 
     /// <summary>
     /// 写入字节数组
     /// </summary>
     /// <param name="address"></param>
     /// <param name="bytes"></param>
+    /// <param name="ct></param>
     /// <returns></returns>
-    public Task WriteAsync(string address, byte[] bytes);
+    public Task WriteAsync(string address, byte[] bytes, CancellationToken ct);
 }

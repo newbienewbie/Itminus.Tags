@@ -42,7 +42,7 @@ public class ModbusTcpChannel : ITagChannel
 
 
     public string ChannelName { get; }
-    public string Driver => "ModbusTcp";
+    public string Driver => ModbusTcpNames.DriverName;
 
     public ModbusTcpChannel(string channelName, ModbusTcpItem modbusItem, ILogger<ModbusTcpChannel> logger)
     {
@@ -173,7 +173,7 @@ public class ModbusTcpChannel : ITagChannel
     /// </returns>
     /// <exception cref="Exception"></exception>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<byte[]> ReadAsync(string address, int count)
+    public async Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
     {
 
         var addr = ModBusTcpAddressParser.Parse(address);
@@ -231,7 +231,7 @@ public class ModbusTcpChannel : ITagChannel
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task WriteAsync(string address, byte[] bytes)
+    public async Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
     {
         var addr = ModBusTcpAddressParser.Parse(address);
         if (addr.Area == RegisterKinds.HoldingRegisters)

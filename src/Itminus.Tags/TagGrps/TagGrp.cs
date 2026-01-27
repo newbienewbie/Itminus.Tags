@@ -1,4 +1,4 @@
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 /// <summary>
 /// 代表一组测点群组。群组内的各个测点是松散的，可能共享通信通道，也可能不共享通信通道。<br/>
@@ -103,12 +103,12 @@ public class TagGrp : ITagGrp
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public async Task ReadAsync()
+    public async Task ReadAsync(CancellationToken ct)
     {
         foreach(var kvp in Children)
         {
             var tagunion = kvp.Value;
-            await tagunion.ReadAsync();
+            await tagunion.ReadAsync(ct);
         }
     }
 
@@ -116,12 +116,12 @@ public class TagGrp : ITagGrp
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    public async Task WriteAsync()
+    public async Task WriteAsync(CancellationToken ct)
     {
         foreach (var kvp in Children)
         {
             var tagunion = kvp.Value;
-            await tagunion.WriteAsync();
+            await tagunion.WriteAsync(ct);
         }
     }
 }

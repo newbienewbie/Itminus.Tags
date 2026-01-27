@@ -1,11 +1,11 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Itminus.Tags;
 
 public class BitTagCbntor : TagCbntor
 {
-    public BitTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagGroup, int tagOffset, int cacheOffset, byte nthBit)
-        : base(tagDescriptor, tagGroup, tagOffset, cacheOffset)
+    public BitTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset, byte nthBit)
+        : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
     {
         this.NthBit = nthBit;
     }

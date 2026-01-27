@@ -78,7 +78,7 @@ public static class ITagGrpExtensions
     }
     #endregion
 
-    #region
+    #region 冒泡式获取通道
     /// <summary>
     /// 冒泡式获取通信通道
     /// </summary>
@@ -107,5 +107,34 @@ public static class ITagGrpExtensions
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public static ITagChannel GetRequiredChannel(this ITagGrp tagGrp) => tagGrp.GetChannel() ?? throw new Exception($"Channel is not configured : TagGrp({tagGrp.Name})");
+    #endregion
+
+
+    #region
+    /// <summary>
+    /// 冒泡式获取扫描间隔
+    /// </summary>
+    /// <param name="tagGrp"></param>
+    /// <returns></returns>
+    public static int? GetScanInterval(this ITagGrp tagGrp)
+    {
+        if(tagGrp.ScanInterval != default)
+        {
+            return tagGrp.ScanInterval;
+        }
+        if(tagGrp.Parent is not null)
+        {
+            return tagGrp.Parent.GetScanInterval();
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// 冒泡式获取通信通道，如果为空则抛出异常
+    /// </summary>
+    /// <param name="tagGrp"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public static int GetRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.GetScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.Name})");
     #endregion
 }

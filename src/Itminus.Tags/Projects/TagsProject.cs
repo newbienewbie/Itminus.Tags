@@ -2,7 +2,7 @@
 
 namespace Itminus.Tags.Projects;
 
-public class TagsProject
+public class TagsProject : ITagsProject
 {
     public TagsProject(string projRoot)
     {
@@ -24,7 +24,7 @@ public class TagsProject
     /// </summary>
     /// <param name="channelFactory"></param>
     /// <returns></returns>
-    public TagsProject LoadChannels(ITagChannelFactory channelFactory)
+    protected virtual TagsProject LoadChannels(ITagChannelFactory channelFactory)
     {
         var descriptors = ChannelsParser.ReadChannels(this.ChannelsIndexPath);
         var channels = descriptors.Select(d => channelFactory.Create(d)).ToList();
@@ -37,7 +37,7 @@ public class TagsProject
     /// </summary>
     /// <param name="parser"></param>
     /// <returns></returns>
-    public TagsProject LoadTags(ITagsLoader parser)
+    protected virtual TagsProject LoadTags(ITagsLoader parser)
     {
         this.Tags = parser.LoadTagGroups(TagsIndexPath, this.Channels);
         return this;
@@ -49,7 +49,7 @@ public class TagsProject
     /// </summary>
     /// <param name="loader"></param>
     /// <returns></returns>
-    public TagsProject LoadLogicets(ILogicetLoader loader)
+    protected virtual TagsProject LoadLogicets(ILogicetLoader loader)
     {
         var logicets = loader.LoadLogicets(this.LogicetsIndexPath, this.Channels, this.Tags);
         this.AddLogicets(logicets);
@@ -83,7 +83,7 @@ public class TagsProject
     /// </summary>
     /// <param name="channels"></param>
     /// <returns></returns>
-    public virtual TagsProject AddChannels(IList<ITagChannel> channels)
+    protected virtual TagsProject AddChannels(IList<ITagChannel> channels)
     {
         this._channels.AddRange(channels);
         return this;
@@ -99,6 +99,7 @@ public class TagsProject
 
     #region logicets
     private List<ILogicet> _logicets = new List<ILogicet>();
+
     /// <summary>
     /// 逻辑小组件
     /// </summary>
@@ -109,7 +110,7 @@ public class TagsProject
     /// </summary>
     /// <param name="logicets"></param>
     /// <returns></returns>
-    public TagsProject AddLogicets(IList<ILogicet> logicets)
+    protected TagsProject AddLogicets(IList<ILogicet> logicets)
     {
         this._logicets.AddRange(logicets);
         return this;

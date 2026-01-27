@@ -17,6 +17,27 @@ public static class XElementExensions
         return isEntry;
     }
 
+    /// <summary>
+    /// 获取扫描间隔
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="tagName"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static int? GetTagUnionScanInterval(this XElement e, string tagName)
+    {
+        var interval = (string?)e.Attribute("scanInterval");
+        if(string.IsNullOrEmpty(interval))
+        {
+            return null;
+        }
+        if(!int.TryParse(interval, out var parsed))
+        {
+            throw new ArgumentException($"{tagName}的扫描周期无法解析成整数，它应该是一个毫秒数量");
+        }
+        return parsed;
+    }
+
     public static string GetTagUnionAddress(this XElement e, string tagName)
     {
         var address = (string?)e.Attribute("address") ?? throw new Exception($"Tag(Name={tagName})未配置地址");

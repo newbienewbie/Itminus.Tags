@@ -1,4 +1,5 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Itminus.Tags;
@@ -38,9 +39,14 @@ public interface ITag
     public DateTime Timestamp{ get; set; }
 
     /// <summary>
-    /// 在每次从底层读取后、或者向硬件写入后，触发变化事件
+    /// 在每次从底层读取后，触发事件
     /// </summary>
-    public event TagSyncEventHandler OnTagSync;
+    public event TagSyncEventHandler OnTagRead;
+
+    /// <summary>
+    /// 在每次向底层写入后，触发事件
+    /// </summary>
+    public event TagSyncEventHandler OnTagWritten;
 
     /// <summary>
     /// 是否被扫描过
@@ -53,16 +59,21 @@ public interface ITag
     public bool IsDirty { get; set; }
 
     /// <summary>
+    /// 测点通道
+    /// </summary>
+    public ITagChannel? Channel { get; }
+
+    /// <summary>
     /// 从底层中读取测点值
     /// </summary>
     /// <returns></returns>
-    public Task ReadAsync();
+    public Task ReadAsync(CancellationToken ct);
 
     /// <summary>
     /// 把当前测点值刷到底层
     /// </summary>
     /// <returns></returns>
-    public Task WriteAsync();
+    public Task WriteAsync(CancellationToken ct);
 }
 
 public static class ITagExtensions

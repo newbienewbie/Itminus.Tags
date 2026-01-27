@@ -1,17 +1,24 @@
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 
 public enum TagAccessMode
 {
     /// <summary>
-    /// ReadOnce and then WriteOnly
+    /// R & W
     /// </summary>
-    R1W = 0,
+    RW = 0,
+
 
     /// <summary>
     /// ReadOnly
     /// </summary>
-    RO = 1,
+    RO = 0,
+
+
+    /// <summary>
+    /// ReadOnce and then WriteOnly
+    /// </summary>
+    R1W = 1,
 }
 
 /// <summary>

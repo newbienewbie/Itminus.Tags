@@ -3,7 +3,7 @@
 public static class TagUnionExtensions
 {
     #region R/W
-    public static async Task ReadAsync(this TagUnion tagunion)
+    public static async Task ReadAsync(this TagUnion tagunion, CancellationToken ct)
     {
         await tagunion.Map(
             async tag => {
@@ -11,7 +11,7 @@ public static class TagUnionExtensions
                 {
                     return;
                 }
-                await tag.ReadAsync();
+                await tag.ReadAsync(ct);
                 tag.IsScaned = true;
             },
             async cbnt =>
@@ -20,35 +20,35 @@ public static class TagUnionExtensions
                 {
                     return;
                 }
-                await cbnt.ReadAsync();
+                await cbnt.ReadAsync(ct);
                 cbnt.IsScaned = true;
             },
             async grp =>
             {
-                await grp.ReadAsync();
+                await grp.ReadAsync(ct);
             }
          );
     }
 
-    public static async Task WriteAsync(this TagUnion tagunion)
+    public static async Task WriteAsync(this TagUnion tagunion, CancellationToken ct)
     {
         await tagunion.Map(
             async tag => {
                 if (tag.IsDirty)
                 {
-                    await tag.WriteAsync();
+                    await tag.WriteAsync(ct);
                 }
             },
             async cbnt =>
             {
                 if(cbnt.IsDirty) 
                 {
-                    await cbnt.WriteAsync();
+                    await cbnt.WriteAsync(ct);
                 }
             },
             async grp =>
             {
-                await grp.WriteAsync();
+                await grp.WriteAsync(ct);
             }
          );
     }

@@ -1,4 +1,4 @@
-
+﻿
 
 namespace Itminus.Tags;
 
@@ -31,7 +31,7 @@ public interface ITagGrp
     IDictionary<string, TagUnion> Children { get; }
 
     /// <summary>
-    /// 子测点getter。如果指定的测点名不存在，则抛出异常
+    /// 直接子测点getter。如果指定的测点名不存在，则抛出异常
     /// </summary>
     /// <param name="tagName"></param>
     /// <returns></returns>
@@ -90,13 +90,13 @@ public interface ITagGrp
     /// 从底层读取数据到缓存
     /// </summary>
     /// <returns></returns>
-    public abstract Task ReadAsync();
+    public abstract Task ReadAsync(CancellationToken ct);
 
     /// <summary>
     /// 刷写缓存数据到底层
     /// </summary>
     /// <returns></returns>
-    public abstract Task WriteAsync();
+    public abstract Task WriteAsync(CancellationToken ct);
 
     #endregion
 }

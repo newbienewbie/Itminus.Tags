@@ -14,7 +14,7 @@ namespace Itminus.Tags.ModbusPlguin.Tests
         public void Test_TagCombinationCacheSize()
         {
             var builder = new ModbusTcpTagCbntBuilder("g1", "40001")
-                .WithDevice(null!)
+                .WithChannel(null!)
                 .WithInterval(100)
                 .WithIsEnabled(true);
 

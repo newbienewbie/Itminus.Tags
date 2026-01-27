@@ -1,23 +1,23 @@
 ﻿using Microsoft.Extensions.Logging;
-using StdUnit.Sharp7.Options;
 
-namespace Itminus.Tags.S7;
+namespace Itminus.Tags.ModbusTcp;
+
 
 
 /// <summary>
-/// 构建 <see cref="S7TagChannel"/>
+/// 构建 <see cref="ModbusTcpChannel"/>
 /// </summary>
-public class S7TagChannelFactory : ITagChannelFactory
+public class ModbusTcpChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
-    public S7TagChannelFactory(ILoggerFactory loggerFactory)
+    public ModbusTcpChannelFactory(ILoggerFactory loggerFactory)
     {
 
         this._loggerFactory = loggerFactory;
     }
 
-    private static IReadOnlyList<string> _drivers = new List<string>() { S7Names.DriverName };
+    private static IReadOnlyList<string> _drivers = new List<string>() { ModbusTcpNames.DriverName };
 
     /// <summary>
     /// <inheritdoc/>
@@ -34,15 +34,14 @@ public class S7TagChannelFactory : ITagChannelFactory
     /// <exception cref="InvalidOperationException"></exception>
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
-        var s7ChannelDescriptor = S7TagChannelDescriptor.FromDescriptor(descriptor);
+        var mbDescriptor = ModbusTcpTagChannelDescriptor.FromDescriptor(descriptor);
 
-        var plcitem = new S7PlcItem() { 
-            IpAddr = s7ChannelDescriptor.IpAddr,
-            Rack = s7ChannelDescriptor.Rack,
-            Slot = s7ChannelDescriptor.Slot,
+        var plcitem = new ModbusTcpItem() { 
+            IpAddr = mbDescriptor.IpAddr,
+            Port = mbDescriptor.Port,
         };
-        var logger = _loggerFactory.CreateLogger<S7TagChannel>();
-        return new S7TagChannel(
+        var logger = _loggerFactory.CreateLogger<ModbusTcpChannel>();
+        return new ModbusTcpChannel(
             descriptor.Name,
             plcitem,
             logger

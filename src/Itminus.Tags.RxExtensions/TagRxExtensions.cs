@@ -9,8 +9,8 @@ public static class TagRxExtensions
     public static IObservable<EventPattern<ITag, TagSyncEventArgs>> Watch(this ITag tag)
     {
         var obs = Observable.FromEventPattern<TagSyncEventHandler, ITag, TagSyncEventArgs>(
-            h => tag.OnTagSync += h,
-            h => tag.OnTagSync -= h
+            h => tag.OnTagRead += h,
+            h => tag.OnTagRead -= h
             );
 
         var ev = new EventPattern<ITag,TagSyncEventArgs>(

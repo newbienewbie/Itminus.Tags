@@ -13,7 +13,7 @@ namespace Itminus.Tags
         private readonly LoggerFactory _loggerFactory;
         private ILogger<S7TagRuntime> _logger;
         private IList<ITagChannel> _channels = new List<ITagChannel>();
-        private ITagCbnt _cbnt;
+        private ITagGrp _root;
 
         public S7TagRuntime(LoggerFactory loggerFactory)
         {
@@ -31,8 +31,8 @@ namespace Itminus.Tags
             );
             this._channels.Add(channel);
 
-            this._cbnt = new S7TagCbntBuilder("Group1", "DB200.100.1")
-                .WithDevice(channel)
+            var cbnt = new S7TagCbntBuilder("Group1", "DB200.100.1")
+                .WithChannel(channel)
                 .WithInterval(0)
                 .Configure(builder =>
                 {
@@ -88,61 +88,40 @@ namespace Itminus.Tags
                 })
                 .Build()
                 ;
+            var root = new TagGrp("root", isEntry: true, channel);
+            root.AddTag(cbnt);
+            this._root = root;
         }
 
 
         public virtual async Task RunAsync(CancellationToken ct)
         {
-            while (!ct.IsCancellationRequested)
-            {
+            var runner = new TagGrpRunner();
+            runner.TurnCrashed += (grp, ch, ex) => {
+                var msg = $"{ex.Message}\r\n{ex.StackTrace}";
+                Console.WriteLine($"PLC={_root.Name}处理报错消息出错：{ex.Message}");
+                return Task.CompletedTask;
+            };
 
-                try
-                {
-                    if (!this._cbnt.IsEnabled)
-                    {
-                        await Task.Delay(500);
-                        continue;
-                    }
-                    await this._cbnt.Channel.EnsureConnectedAsync();
+            runner.TurnProcess += async (grp, ch) => {
+                await this.ProcessAsync();
+            };
 
-                    await InputAsync();
-
-                    ProcessAsync();
-
-                    await OutputAsync();
-                }
-                catch (Exception ex)
-                {
-                    var msg = $"{ex.Message}\r\n{ex.StackTrace}";
-                    this._logger.LogError("PLC={PlcName}处理报错消息出错：{ex}", this._cbnt.Channel.ChannelName, msg);
-                    try
-                    {
-                        this._cbnt.Channel?.DisconnectAsync();
-                    }
-                    catch
-                    {
-                      
-                    }
-                }
-                finally
-                {
-                    await Task.Delay(_cbnt.ScanInterval, ct);
-                }
-            }
+            await runner.StartAsync(this._root, ct);
         }
 
-        private void ProcessAsync()
+        private Task ProcessAsync()
         {
 
-            var reqTag = this._cbnt["拍照-请求-标志"];
-            var ackTag = this._cbnt["拍照-响应-标志"];
+            var reqTag = this._root.Descendant("Group1/拍照-请求-标志").AsTag();
+            var ackTag = this._root.Descendant("Group1/拍照-响应-标志").AsTag();
 
             var hasReq = reqTag.GetTagValue<bool>();
             var hasAck = ackTag.GetTagValue<bool>();
             if (hasReq && !hasAck)
             {
-                var mat = this._cbnt["拍照-请求-料号"];
-                var prog = this._cbnt["拍照-请求-程序号"];
+                var mat = this._root.Descendant("Group1/拍照-请求-料号").AsTag();
+                var prog = this._root.Descendant("Group1/拍照-请求-程序号").AsTag();
                 var matcode = mat.GetTagValue<byte>();
                 var progNo = prog.GetTagValue<short>();
                 Console.WriteLine($"拍照响应：料号={matcode}，程序号={progNo}");
@@ -154,33 +133,10 @@ namespace Itminus.Tags
                 ackTag.Value = false;
                 Console.WriteLine($"清除拍照响应信号");
             }
+
+            return Task.CompletedTask;
         }
 
-        private async Task InputAsync()
-        {
-            await this._cbnt.ReadAsync();
-        }
-
-
-        private async Task OutputAsync()
-        {
-            // write
-            var tags = this._cbnt.Children.Values.Where(t => t.IsDirty).ToList();
-            if(tags.Count > 3)
-            {
-                await this._cbnt.WriteAsync();
-            }
-            else
-            {
-                foreach (var tag in tags)
-                {
-                    Console.WriteLine($"修改{tag.TagName()}={tag.Value}");
-                    await tag.WriteAsync();
-                    await Task.Delay(0);
-                }
-            }
-
-        }
 
 
     }

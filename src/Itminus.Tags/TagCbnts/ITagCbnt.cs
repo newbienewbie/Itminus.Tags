@@ -1,4 +1,4 @@
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 /// <summary>
 /// 代表一组支持批量读或者批量写的测点组合。
@@ -66,25 +66,32 @@ public interface ITagCbnt
     /// 从底层读取数据到缓存
     /// </summary>
     /// <returns></returns>
-    abstract Task ReadAsync();
+    abstract Task ReadAsync(CancellationToken ct);
 
     /// <summary>
     /// 刷写缓存数据到底层
     /// </summary>
     /// <returns></returns>
-    abstract Task WriteAsync();
+    abstract Task WriteAsync(CancellationToken ct);
     #endregion
 
     /// <summary>
     /// 底层硬件相对应的字节数组（缓存）
     /// </summary>
-    Memory<byte> Cache { get; set; }
-
+    Memory<byte> Cache { get; }
 
     /// <summary>
     /// Cache的大小
     /// </summary>
-    int CacheSize { get; set; }
+    int CacheSize { get; }
+
+    /// <summary>
+    /// 重新调整大小
+    /// </summary>
+    /// <param name="cacheSize"></param>
+    void ResizeCache(int cacheSize);
+
+
 
     /// <summary>
     /// 表明是否有改动

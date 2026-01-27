@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -39,12 +40,12 @@ public class TagCbnt_Tests
             return Task.CompletedTask;
         }
 
-        public Task<byte[]> ReadAsync(string address, int count)
+        public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
         {
             return Task.FromResult(this._bytes);
         }
 
-        public Task WriteAsync(string address, byte[] bytes)
+        public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
         {
             this._bytes = bytes;
             return Task.CompletedTask;
@@ -58,10 +59,10 @@ public class TagCbnt_Tests
         var cbnt = new TagCbnt("mock tag cbnt", "0.0")
         {
             ScanInterval =20,
-            CacheSize = 4,
             Channel = channel,
             IsEnabled = true,
         };
+        cbnt.ResizeCache(4);
         var tag1 = new BitTagCbntor(
             new TagDescriptor() { Address = "0.0", TagSize = 1, TagKind = TagKinds.BIT, TagName = "测点1" },
             cbnt,
@@ -80,38 +81,51 @@ public class TagCbnt_Tests
         var x = 10;
         var y = 20;
 
-        tag1.OnTagSync += (o, args) => { 
+        tag1.OnTagRead += (o, args) => { 
             if(true.Equals(args.NewValue))
             {
                 x++;
             }
         };
-        tag2.OnTagSync += (o, args) => {
+        tag2.OnTagRead += (o, args) => {
             if(true.Equals(args.NewValue))
             {
                 y++;
+            }
+        };
+        tag1.OnTagWritten += (o, args) => {
+            if (true.Equals(args.NewValue))
+            {
+                x--;
+            }
+        };
+        tag2.OnTagWritten += (o, args) => {
+            if (true.Equals(args.NewValue))
+            {
+                y--;
             }
         };
 
         cbnt.Children["tag1"] = tag1;
         cbnt.Children["tag2"] = tag2;
 
-        await cbnt.ReadAsync();
+        var ct = CancellationToken.None;
+        await cbnt.ReadAsync(ct);
         Assert.Equal(11, x);
         Assert.Equal(21, y);
 
-        await cbnt.ReadAsync();
+        await cbnt.ReadAsync(ct);
         Assert.Equal(12, x);
         Assert.Equal(22, y);
 
 
-        await cbnt.WriteAsync();
-        Assert.Equal(13, x);
-        Assert.Equal(23, y);
+        await cbnt.WriteAsync(ct);
+        Assert.Equal(11, x);
+        Assert.Equal(21, y);
 
-        await cbnt.WriteAsync();
-        Assert.Equal(14, x);
-        Assert.Equal(24, y);
+        await cbnt.WriteAsync(ct);
+        Assert.Equal(10, x);
+        Assert.Equal(20, y);
     }
 
 
@@ -122,10 +136,10 @@ public class TagCbnt_Tests
         var cbnt = new TagCbnt("mock tag cbnt", "0.0")
         {
             ScanInterval = 20,
-            CacheSize = 4,
             Channel = channel,
             IsEnabled = true,
         };
+        cbnt.ResizeCache(4);
         var tag1 = new BitTagCbntor(
             new TagDescriptor() { Address = "0.0", TagSize = 1, TagKind = TagKinds.BIT, TagName = "测点1" },
             cbnt,
@@ -136,9 +150,9 @@ public class TagCbnt_Tests
         var tag2 = new BitTagCbntor(
             new TagDescriptor() { Address = "0.1", TagSize = 1, TagKind = TagKinds.BIT, TagName = "测点2" },
             cbnt,
-            0,
-            0,
-            1
+            tagOffset: 0,
+            cacheOffset: 0,
+            nthBit: 1
             );
 
         var x = 10;
@@ -168,22 +182,22 @@ public class TagCbnt_Tests
 
         cbnt.Children["tag1"] = tag1;
         cbnt.Children["tag2"] = tag2;
-
-        await cbnt.ReadAsync();
+        var ct = CancellationToken.None;
+        await cbnt.ReadAsync(ct);
         Assert.Equal(11, x);
         Assert.Equal(21, y);
 
-        await cbnt.ReadAsync();
+        await cbnt.ReadAsync(ct);
         Assert.Equal(12, x);
         Assert.Equal(22, y);
 
 
-        await cbnt.WriteAsync();
-        Assert.Equal(13, x);
-        Assert.Equal(23, y);
+        await cbnt.WriteAsync(ct);
+        Assert.Equal(12, x);
+        Assert.Equal(22, y);
 
-        await cbnt.WriteAsync();
-        Assert.Equal(14, x);
-        Assert.Equal(24, y);
+        await cbnt.WriteAsync(ct);
+        Assert.Equal(12, x);
+        Assert.Equal(22, y);
     }
 }

@@ -9,8 +9,13 @@ namespace Itminus.Tags.ModbusTcp;
 
 public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
 {
-    public ModbusTcpTagCbntBuilder(string cbntName, string startAddress) : base(cbntName, startAddress)
+    public ModbusTcpTagCbntBuilder()
     {
+    }
+
+    public ModbusTcpTagCbntBuilder(string cbntName, string startAddress) 
+    {
+        this.SetNameAndAddress(cbntName, startAddress);
     }
 
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)

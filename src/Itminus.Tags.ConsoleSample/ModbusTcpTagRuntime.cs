@@ -13,7 +13,7 @@ namespace Itminus.Tags
         private readonly LoggerFactory _loggerFactory;
         private ILogger<S7TagRuntime> _logger;
         private IList<ITagChannel> _channels = new List<ITagChannel>();
-        private ITagCbnt _group;
+        private TagGrp _root;
 
         public ModbusTcpTagRuntime(LoggerFactory loggerFactory)
         {
@@ -31,8 +31,8 @@ namespace Itminus.Tags
             );
             this._channels.Add(channel);
 
-            this._group = new ModbusTcpTagCbntBuilder("Group2", "40001")
-                .WithDevice(channel)
+            var cbnt = new ModbusTcpTagCbntBuilder("Group2", "40001")
+                .WithChannel(channel)
                 .WithInterval(200)
                 .AddTags(new List<TagDescriptor> {
 
@@ -142,73 +142,41 @@ namespace Itminus.Tags
                 //})
                 .Build()
                 ;
+
+            this._root = new TagGrp("root", isEntry: true, channel);
         }
 
 
         public virtual async Task RunAsync(CancellationToken ct)
         {
-            byte i = 0;
-            while (!ct.IsCancellationRequested)
-            {
+            byte b = 1;
+            var runner = new TagGrpRunner();
+            runner.TurnCrashed += (grp, ch, ex) => {
+                var msg = $"{ex.Message}\r\n{ex.StackTrace}";
+                Console.WriteLine($"PLC={_root.Name}处理报错消息出错：{ex.Message}");
+                return Task.CompletedTask;
+            };
 
-                try
-                {
-                    Console.WriteLine($"Begin--------------");
-                    if (!this._group.IsEnabled)
-                    {
-                        await Task.Delay(500);
-                        continue;
-                    }
-                    await this._group.Channel.EnsureConnectedAsync();
-                    Console.WriteLine($"Connected");
+            runner.TurnProcess += (grp, ch) => {
+               this.ProcessAsync(ref b);
+                return Task.CompletedTask;
+            };
 
-                    await InputAsync();
-
-                    ProcessAsync(ref i);
-
-                    await OutputAsync();
-
-                    Console.WriteLine($"Done--------------");
-                    // await group.WriteAsync();
-                }
-                catch (Exception ex)
-                {
-                    var msg = $"{ex.Message}\r\n{ex.StackTrace}";
-                    try
-                    {
-                        // await this.HandleErrAsync(LogLevel.Error, msg);
-                    }
-                    catch (Exception handleErrException)
-                    {
-                        this._logger.LogError("通道={ChannelName}处理报错消息出错：{ex}", this._group.Channel.ChannelName, handleErrException.Message);
-                    }
-                    try
-                    {
-                        this._group.Channel?.DisconnectAsync();
-                    }
-                    catch (Exception e)
-                    {
-                        this._logger.LogError("通道[{ChannelName}]断开连接失败: {eMsg}", this._group.Channel.ChannelName, e.Message);
-                    }
-                }
-                finally
-                {
-                    await Task.Delay(_group.ScanInterval, ct);
-                }
-            }
+            await runner.StartAsync(this._root, ct);
         }
 
         private void ProcessAsync(ref byte i)
         {
             // process
-            var tag = this._group["Bit1"];
+            var cbnt = this._root["Group2"];
+            var tag = cbnt["Bit1"].AsTag();
             if (tag is BitTagCbntor byteTag)
             {
                 byteTag.Value = i % 2 == 0;
                 i++;
             }
 
-            var tag2 = this._group["UInt2"];
+            var tag2 = cbnt["UInt2"].AsTag();
             if (tag2 is UInt16TagCbntor uint16Tag)
             {
                 tag2.Value = (UInt16)((UInt16)tag2.Value +2);
@@ -234,31 +202,7 @@ namespace Itminus.Tags
             //}
         }
 
-        private async Task InputAsync()
-        {
-            // read
-            await this._group.ReadAsync();
-            var dt = DateTimeOffset.UtcNow;
-            foreach (var kvp in this._group.Children)
-            {
-                var tag = kvp.Value;
-                Console.WriteLine($"{tag.TagDescriptor.TagName}-{tag.Value}");
-            }
-        }
-
-
-        private async Task OutputAsync()
-        {
-            // write
-            var tags = this._group.Children.Values.Where(t => t.IsDirty);
-            foreach (var tag in tags)
-            {
-                Console.WriteLine($"修改{tag.TagName()}={tag.Value}");
-                await tag.WriteAsync();
-                tag.IsDirty = false;
-                await Task.Delay(1);
-            }
-        }
+ 
 
 
     }

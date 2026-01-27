@@ -24,7 +24,13 @@ public interface ITagCbntor: ITag
 
 
     /// <summary>
-    /// 强行通知测点已经变化。在这通常用于由测点组合触发测点变化
+    /// 强行通知测点已经变化
     /// </summary>
-    void NotifyValueUpdated();
+    void NotifyTagRead();
+
+
+    /// <summary>
+    /// 强行通知测点已经刷入底层
+    /// </summary>
+    void NotifyValueWritten();
 }

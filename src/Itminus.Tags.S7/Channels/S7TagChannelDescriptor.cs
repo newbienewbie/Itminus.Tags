@@ -16,9 +16,9 @@ public class S7TagChannelDescriptor : TagChannelDescriptor
 
     public static S7TagChannelDescriptor FromDescriptor(TagChannelDescriptor descriptor)
     {
-        if (descriptor.Driver != "S7")
+        if (descriptor.Driver != S7Names.DriverName)
         {
-            throw new InvalidOperationException($"通道驱动错误：期望S7，而当前为{descriptor.Driver}");
+            throw new InvalidOperationException($"通道驱动错误：期望 {S7Names.DriverName}，而当前为{descriptor.Driver}");
         }
         if(descriptor is S7TagChannelDescriptor d)
         {

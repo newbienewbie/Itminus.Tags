@@ -1,4 +1,4 @@
-using Itminus.Tags;
+﻿using Itminus.Tags;
 using Itminus.Tags.ModbusTcp;
 using Itminus.Tags.Projects;
 using Itminus.Tags.S7;
@@ -20,9 +20,11 @@ builder.Services.AddRazorComponents()
 builder.Services.AddTagsProjectServices(b =>
 {
     b.Services.AddKeyedSingleton<ITagChannelFactory, S7TagChannelFactory>("S7");
+    b.Services.AddKeyedSingleton<ITagChannelFactory, ModbusTcpChannelFactory>("ModbusTcp");
 
     b.ConfigChannelsFactory((sp, factory) => {
         factory.AddFactory(sp.GetRequiredKeyedService<ITagChannelFactory>("S7"));
+        factory.AddFactory(sp.GetRequiredKeyedService<ITagChannelFactory>("ModbusTcp"));
     });
 
     b.ConfigTagsLoader((sp, loader) => {

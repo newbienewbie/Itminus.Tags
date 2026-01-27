@@ -1,11 +1,12 @@
-
+﻿
 using System.Threading.Channels;
 
 namespace Itminus.Tags;
 
 
 /// <summary>
-/// 测点组合的构建器基类，用于构建一个测点组合。
+/// 测点组合的构建器基类，用于构建一个测点组合。<br/>
+/// 子类必须提供一个无参构造函数
 /// </summary>
 public abstract class TagCbntBuilderBase
 {
@@ -14,10 +15,20 @@ public abstract class TagCbntBuilderBase
     /// </summary>
     public ITagCbnt TagCbnt { get; }
 
-    public TagCbntBuilderBase(string cbntName, string startAddress)
+    private const string unknown_name = "(unknown_tag_name)";
+    private const string unknown_address = "(unknown_start_address)";
+
+    public TagCbntBuilderBase()
     {
-        this.TagCbnt = new TagCbnt(cbntName, startAddress);
+        this.TagCbnt = new TagCbnt(unknown_name, unknown_address);
     }
+
+    public virtual void SetNameAndAddress(string name, string address)
+    {
+        this.WithName(name);
+        this.WithStartAddress(address);
+    }
+
 
     public virtual TagCbntBuilderBase WithName(string name)
     {
@@ -25,7 +36,13 @@ public abstract class TagCbntBuilderBase
         return this;
     }
 
-    public virtual TagCbntBuilderBase WithDevice(ITagChannel channel)
+    public virtual TagCbntBuilderBase WithStartAddress(string startAddress)
+    {
+        TagCbnt.StartAddress = startAddress;
+        return this;
+    }
+
+    public virtual TagCbntBuilderBase WithChannel(ITagChannel channel)
     {
         TagCbnt.Channel = channel;
         return this;
@@ -75,8 +92,7 @@ public abstract class TagCbntBuilderBase
                 cacheSize = ending;
             }
         }
-        this.TagCbnt.CacheSize = cacheSize;
-        this.TagCbnt.Cache = new byte[cacheSize];
+        this.TagCbnt.ResizeCache(cacheSize);
         return this;
     }
 
