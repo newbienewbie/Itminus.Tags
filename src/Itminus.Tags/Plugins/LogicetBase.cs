@@ -20,6 +20,11 @@ public abstract class LogicetBase : ILogicet
     /// <inheritdoc/>
     public virtual ITagGrp Tags { get; }
 
+    public abstract int Order { get; }
+
     /// <inheritdoc/>
-    public abstract IDisposable Attach();
+    public abstract bool MatchEntry(ITagGrp entry);
+
+    /// <inheritdoc/>
+    public abstract Task ProcessAsync(ITagGrp entry, ITagChannel thisChannel);
 }

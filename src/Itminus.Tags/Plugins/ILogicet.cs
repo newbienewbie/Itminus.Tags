@@ -13,6 +13,11 @@ namespace Itminus.Tags;
 public interface ILogicet
 {
     /// <summary>
+    /// 运行顺序
+    /// </summary>
+    int Order { get; }
+
+    /// <summary>
     /// 通道
     /// </summary>
     IList<ITagChannel> Channels { get; }
@@ -23,8 +28,15 @@ public interface ILogicet
     ITagGrp Tags { get; }
 
     /// <summary>
-    /// 挂载逻辑小组件。返回一个可释放对象，用于卸载逻辑小组件。
+    /// 是否能匹配入口？
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <returns></returns>
+    bool MatchEntry(ITagGrp entry);
+
+    /// <summary>
+    /// 处理
     /// </summary>
     /// <returns></returns>
-    IDisposable Attach();
+    Task ProcessAsync(ITagGrp entry, ITagChannel thisChannel);
 }

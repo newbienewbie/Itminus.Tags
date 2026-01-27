@@ -51,8 +51,8 @@ public interface ITagGrpRunner
     /// <summary>
     /// 启动对群组的监控
     /// </summary>
-    /// <param name="entry"></param>
+    /// <param name="grp"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task StartAsync(ITagGrp entry, CancellationToken ct);
+    Task StartAsync(ITagGrp grp, CancellationToken ct);
 }

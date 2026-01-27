@@ -28,33 +28,32 @@ internal class Handle1Snap : LogicetBase
         this._ackTag = _cbnt2.SelectTag("拍照-响应-标志");
     }
 
-    public override IDisposable Attach()
+    public override int Order => 1;
+
+    public override bool MatchEntry(ITagGrp entry)
     {
-        var reqObs = _reqTag.Watch();
-        var dispose = reqObs
-            .Synchronize()
-            .Subscribe(
-                ev =>
-                {
-                    var hasReq = ev.EventArgs.NewValue is null ? false : (bool)ev.EventArgs.NewValue;
-                    var hasAck = _ackTag.GetTagValue<bool>();
+        return true;
+    }
 
-                    if (hasReq && !hasAck)
-                    {
-                        var matcode = this._mat.GetTagValue<byte>();
-                        var progNo = this._prog.GetTagValue<short>();
-                        Console.WriteLine($"拍照响应：料号={matcode}，程序号={progNo}");
-                        _ackTag.Value = true;
-                    }
+    public override Task ProcessAsync(ITagGrp entry, ITagChannel channel)
+    {
+        var hasReq = this._reqTag.GetTagValue<bool>();
+        var hasAck = _ackTag.GetTagValue<bool>();
 
-                    if (!hasReq && hasAck)
-                    {
-                        _ackTag.Value = false;
-                        Console.WriteLine($"清除拍照响应信号");
-                    }
-                }
-            );
+        if (hasReq && !hasAck)
+        {
+            var matcode = this._mat.GetTagValue<byte>();
+            var progNo = this._prog.GetTagValue<short>();
+            Console.WriteLine($"拍照响应：料号={matcode}，程序号={progNo}");
+            _ackTag.Value = true;
+        }
 
-        return dispose;
+        if (!hasReq && hasAck)
+        {
+            _ackTag.Value = false;
+            Console.WriteLine($"清除拍照响应信号");
+        }
+
+        return Task.CompletedTask;
     }
 }

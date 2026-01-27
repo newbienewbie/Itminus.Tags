@@ -46,15 +46,21 @@ public class TagsProjectRunner : ITagsProjectRunner
             throw new Exception("未配置入口测点组");
         }
 
-        var disposables = new List<IDisposable>();
-        AttachLogicets(proj.Logicets, disposables.Add);
 
         var tasks = entries.Select(async entry => {
+            var logicets = proj.Logicets
+                .Where(l => l.MatchEntry(entry))
+                .OrderBy(l => l.Order)
+                .ToList();
             var monitor = new TagGrpRunner();
-            monitor.TurnCrashed += async (grp, ch, ex) => { 
-                await this.NotifyTurnErrorAsync(grp, ch, ex);
-                disposables.ForEach(d => d.Dispose());
+            monitor.TurnProcess += async (entry, ch) => {
+                foreach(var l in logicets)
+                {
+                    await l.ProcessAsync(entry, ch);
+                }
             };
+            monitor.TurnCrashed += async (grp, ch, ex) => { 
+                await this.NotifyTurnErrorAsync(grp, ch, ex);            };
             await monitor.StartAsync(entry, ct);
         });
         return Task.WhenAll(tasks);
@@ -73,24 +79,6 @@ public class TagsProjectRunner : ITagsProjectRunner
         var msg = $"{ex.Message}\r\n{ex.StackTrace}";
         this._logger.LogError("通道={channel}处理报错消息出错：{ex}", channelName, msg);
         return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// 连接处理器，会导致内部的所有 <see cref="ILogicet"/> 被挂载
-    /// </summary>
-    /// <param name="disposeAll"></param>
-    protected virtual void AttachLogicets(IList<ILogicet>? logicets, Action<IDisposable> handleDisposeLogicet)
-    {
-        if(logicets is null)
-        {
-            return;
-        }
-
-        foreach (var logicet in logicets)
-        {
-            var dispose = logicet.Attach();
-            handleDisposeLogicet(dispose);
-        }
     }
 
 }
