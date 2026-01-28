@@ -7,7 +7,7 @@ namespace Itminus.Tags.S7;
 /// <summary>
 /// 构建 <see cref="S7TagChannel"/>
 /// </summary>
-public class S7TagChannelFactory : ITagChannelFactory
+public class S7TagChannelFactory : IChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
@@ -32,7 +32,7 @@ public class S7TagChannelFactory : ITagChannelFactory
     /// <param name="descriptor"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public ITagChannel Create(TagChannelDescriptor descriptor)
+    public ITagChannel Create(ChannelDescriptor descriptor)
     {
         var s7ChannelDescriptor = S7TagChannelDescriptor.FromDescriptor(descriptor);
 

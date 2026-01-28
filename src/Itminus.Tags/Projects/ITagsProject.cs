@@ -30,5 +30,5 @@ public interface ITagsProject
     /// <param name="channelFactory"></param>
     /// <param name="tagsParser"></param>
     /// <param name="logicetLoader"></param>
-    void Initialize(ITagChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader);
+    void Initialize(IChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader);
 }

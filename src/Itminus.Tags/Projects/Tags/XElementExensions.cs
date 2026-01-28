@@ -5,13 +5,13 @@ namespace Itminus.Tags.Projects;
 public static class XElementExensions
 {
     #region helpers
-    public static string GetTagUnionName(this XElement e)
+    internal static string GetTagUnionName(this XElement e)
     {
         var tagName = (string?)e.Attribute("name") ?? throw new Exception($"Tag 未配置名称");
         return tagName;
     }
 
-    public static bool GetTagUnionIsEntry(this XElement e, string tagName)
+    internal static bool GetTagUnionIsEntry(this XElement e, string tagName)
     {
         var isEntry = (bool?)e.Attribute("isEntry") ?? false;
         return isEntry;
@@ -24,7 +24,7 @@ public static class XElementExensions
     /// <param name="tagName"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public static int? GetTagUnionScanInterval(this XElement e, string tagName)
+    internal static int? GetTagUnionScanInterval(this XElement e, string tagName)
     {
         var interval = (string?)e.Attribute("scanInterval");
         if(string.IsNullOrEmpty(interval))
@@ -38,13 +38,13 @@ public static class XElementExensions
         return parsed;
     }
 
-    public static string GetTagUnionAddress(this XElement e, string tagName)
+    internal static string GetTagUnionAddress(this XElement e, string tagName)
     {
         var address = (string?)e.Attribute("address") ?? throw new Exception($"Tag(Name={tagName})未配置地址");
         return address;
     }
 
-    public static ITagChannel? GetTagUnionChannel(this XElement e, IList<ITagChannel> channels)
+    internal static ITagChannel? GetTagUnionChannel(this XElement e, IList<ITagChannel> channels)
     {
         var channelName = (string?)e.Attribute("channel");
         var channel = string.IsNullOrEmpty(channelName) ?
@@ -53,7 +53,7 @@ public static class XElementExensions
         return channel;
     }
 
-    public static TagKinds GetTagUnionTagKind(this XElement e, string tagName)
+    internal static TagKinds GetTagUnionTagKind(this XElement e, string tagName)
     {
         var type = (string?)e.Attribute("type") ?? throw new Exception($"Tag(Name={tagName})未配置类型");
         if (!Enum.TryParse<TagKinds>(type, out var tagKind))
@@ -63,7 +63,7 @@ public static class XElementExensions
         return tagKind;
     }
 
-    public static EndianKinds GetTagUnionEndian(this XElement e, string tagName)
+    internal static EndianKinds GetTagUnionEndian(this XElement e, string tagName)
     {
         var type = (string?)e.Attribute("endian");
         if(string.IsNullOrEmpty(type))
@@ -78,7 +78,7 @@ public static class XElementExensions
     }
 
 
-    public static TagAccessMode? GetTagUnionAccess(this XElement e, string tagName)
+    internal static TagAccessMode? GetTagUnionAccess(this XElement e, string tagName)
     {
         var modestr = (string?)e.Attribute("access");
         if (string.IsNullOrEmpty(modestr))
@@ -92,20 +92,20 @@ public static class XElementExensions
         return access;
     }
 
-    public static string? GetTagUnionNote(this XElement e, string tagName)
+    internal static string? GetTagUnionNote(this XElement e, string tagName)
     {
         var note = (string?)e.Attribute("note");
         return note;
     }
 
-    public static string? GetTagUnionDriver(this XElement e, string tagName)
+    internal static string? GetTagUnionDriver(this XElement e, string tagName)
     {
         var note = (string?)e.Attribute("driver");
         return note;
     }
 
 
-    public static T MapTagUnion<T>(this XElement e, Func<XElement,T> mapTag, Func<XElement,T> mapTagCbnt, Func<XElement,T> mapTagGrp)
+    internal static T MapTagUnion<T>(this XElement e, Func<XElement,T> mapTag, Func<XElement,T> mapTagCbnt, Func<XElement,T> mapTagGrp)
     {
         if (e.Name == "Tag")
         {

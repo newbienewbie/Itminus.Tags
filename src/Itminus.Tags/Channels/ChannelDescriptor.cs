@@ -8,7 +8,7 @@ namespace Itminus.Tags;
 /// <summary>
 /// <see cref="ITagChannel"/> 描述符
 /// </summary>
-public class TagChannelDescriptor
+public class ChannelDescriptor
 {
 
     /// <summary>

@@ -7,10 +7,10 @@ namespace Itminus.Tags.Projects;
 
 public static class ChannelsParser
 {
-    public static IList<TagChannelDescriptor> ReadChannels(string indexPath)
+    public static IList<ChannelDescriptor> ReadChannels(string indexPath)
     {
         var files = ParseChannelsIndex(indexPath);
-        var list = new List<TagChannelDescriptor>();
+        var list = new List<ChannelDescriptor>();
         foreach (var line in files)
         {
             var descriptor = IncludeTagChannelFile(line);
@@ -33,14 +33,14 @@ public static class ChannelsParser
         return locations.Select(l => Path.Combine(dir, l)).ToList();
     }
 
-    private static TagChannelDescriptor IncludeTagChannelFile(string descriptorPath)
+    private static ChannelDescriptor IncludeTagChannelFile(string descriptorPath)
     {
         if (!File.Exists(descriptorPath))
         {
             throw new Exception($"指定的通道配置文件路径不存在({descriptorPath})");
         }
         var stream = new FileStream(descriptorPath, FileMode.Open);
-        var descriptor = JsonSerializer.Deserialize<TagChannelDescriptor>(stream);
+        var descriptor = JsonSerializer.Deserialize<ChannelDescriptor>(stream);
         return descriptor ?? throw new Exception($"非法的通道配置。文件路径={descriptorPath}");
     }
 }

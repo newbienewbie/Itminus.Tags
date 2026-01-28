@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace Itminus.Tags.ModbusTcp;
 
 
-public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
+public class ModbusTcpTagChannelDescriptor : ChannelDescriptor
 {
     public string IpAddr { get; set; } = "localhost";
 
     public int Port { get; set; } = 502;
 
 
-    public static ModbusTcpTagChannelDescriptor FromDescriptor(TagChannelDescriptor descriptor)
+    public static ModbusTcpTagChannelDescriptor FromDescriptor(ChannelDescriptor descriptor)
     {
         if (descriptor.Driver != ModbusTcpNames.DriverName)
         {

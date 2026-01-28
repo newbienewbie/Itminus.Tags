@@ -24,7 +24,7 @@ public class TagsProject : ITagsProject
     /// </summary>
     /// <param name="channelFactory"></param>
     /// <returns></returns>
-    protected virtual TagsProject LoadChannels(ITagChannelFactory channelFactory)
+    protected virtual TagsProject LoadChannels(IChannelFactory channelFactory)
     {
         var descriptors = ChannelsParser.ReadChannels(this.ChannelsIndexPath);
         var channels = descriptors.Select(d => channelFactory.Create(d)).ToList();
@@ -39,7 +39,7 @@ public class TagsProject : ITagsProject
     /// <returns></returns>
     protected virtual TagsProject LoadTags(ITagsLoader parser)
     {
-        this.Tags = parser.LoadTagGroups(TagsIndexPath, this.Channels);
+        this.Tags = parser.LoadTagRootFromIndex(TagsIndexPath, this.Channels);
         return this;
     }
 
@@ -57,7 +57,7 @@ public class TagsProject : ITagsProject
     }
 
 
-    public void Initialize(ITagChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader)
+    public void Initialize(IChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader)
     {
         this._channels.Clear();
         this.Tags = null!;

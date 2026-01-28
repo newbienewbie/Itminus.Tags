@@ -10,11 +10,11 @@ namespace Itminus.Tags.Projects;
 public class TagsProjectRunner : ITagsProjectRunner
 {
     protected ILogger<TagsProjectRunner> _logger;
-    private readonly ITagChannelFactory _channelFactory;
+    private readonly IChannelFactory _channelFactory;
     private readonly ITagsLoader _tagsLoader;
     private readonly ILogicetLoader _logicetLoader;
 
-    public TagsProjectRunner(ITagChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader, ILogger<TagsProjectRunner> logger)
+    public TagsProjectRunner(IChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader, ILogger<TagsProjectRunner> logger)
     {
         this._channelFactory = channelFactory;
         this._tagsLoader = tagsParser;

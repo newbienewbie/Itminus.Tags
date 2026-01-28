@@ -20,7 +20,7 @@ public static class TagsProjectServiceCollection
         var tpsb = new TagsProjectServiceBuilder(services);
         configTagsLoader?.Invoke(tpsb);
 
-        services.AddSingleton<ITagChannelFactory, CompositeChannelFactory>(sp =>
+        services.AddSingleton<IChannelFactory, CompositeChannelFactory>(sp =>
         {
             tpsb.ApplyChannelFactoriesConfiguration(sp);
             return tpsb.ChannelFactories;

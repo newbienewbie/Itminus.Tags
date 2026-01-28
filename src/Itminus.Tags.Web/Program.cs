@@ -19,12 +19,12 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddTagsProjectServices(b =>
 {
-    b.Services.AddKeyedSingleton<ITagChannelFactory, S7TagChannelFactory>("S7");
-    b.Services.AddKeyedSingleton<ITagChannelFactory, ModbusTcpChannelFactory>("ModbusTcp");
+    b.Services.AddKeyedSingleton<IChannelFactory, S7TagChannelFactory>("S7");
+    b.Services.AddKeyedSingleton<IChannelFactory, ModbusTcpChannelFactory>("ModbusTcp");
 
     b.ConfigChannelsFactory((sp, factory) => {
-        factory.AddFactory(sp.GetRequiredKeyedService<ITagChannelFactory>("S7"));
-        factory.AddFactory(sp.GetRequiredKeyedService<ITagChannelFactory>("ModbusTcp"));
+        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("S7"));
+        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("ModbusTcp"));
     });
 
     b.ConfigTagsLoader((sp, loader) => {

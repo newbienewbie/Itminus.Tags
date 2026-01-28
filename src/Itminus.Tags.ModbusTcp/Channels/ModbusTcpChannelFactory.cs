@@ -7,7 +7,7 @@ namespace Itminus.Tags.ModbusTcp;
 /// <summary>
 /// 构建 <see cref="ModbusTcpChannel"/>
 /// </summary>
-public class ModbusTcpChannelFactory : ITagChannelFactory
+public class ModbusTcpChannelFactory : IChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
@@ -32,7 +32,7 @@ public class ModbusTcpChannelFactory : ITagChannelFactory
     /// <param name="descriptor"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public ITagChannel Create(TagChannelDescriptor descriptor)
+    public ITagChannel Create(ChannelDescriptor descriptor)
     {
         var mbDescriptor = ModbusTcpTagChannelDescriptor.FromDescriptor(descriptor);
 

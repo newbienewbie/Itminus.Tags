@@ -111,24 +111,35 @@ public class CompositeTagsLoader : ITagsLoader
     #endregion
 
 
-
-
     /// <summary>
-    /// <inheritdoc/>
+    /// 构建一个空的根测点组
     /// </summary>
-    public virtual ITagGrp LoadTagGroups(string indexPath, IList<ITagChannel> channels)
+    /// <param name="isEntry"></param>
+    /// <returns></returns>
+    public virtual ITagGrp MakeEmptyRoot(bool isEntry)
     {
-        var files = this.ParseTagsIndex(indexPath);
-        var root = new TagGrp("root", false, null);
-        foreach (var file in files)
-        {
-            LoadTagGroups(root, file, channels);
-        }
+        var root = new TagGrp("root", isEntry, null);
         return root;
     }
 
 
-    private IList<string> ParseTagsIndex(string indexPath)
+    #region 从index文件中加载测点根
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public virtual ITagGrp LoadTagRootFromIndex(string indexPath, IList<ITagChannel> channels)
+    {
+        var files = this.ParseTagsIndex(indexPath);
+        var root = MakeEmptyRoot(isEntry: false);
+        foreach (var file in files)
+        {
+            LoadTagGroupFromXmlFile(root, file, channels);
+        }
+        return root;
+
+    }
+
+    protected virtual IList<string> ParseTagsIndex(string indexPath)
     {
         if (!File.Exists(indexPath))
         {
@@ -145,16 +156,19 @@ public class CompositeTagsLoader : ITagsLoader
     }
 
 
-    protected virtual ITagGrp LoadTagGroups(TagGrp rootGrp, string path, IList<ITagChannel> channels)
+    protected virtual ITagGrp LoadTagGroupFromXmlFile(ITagGrp rootGrp, string xmlFilePath, IList<ITagChannel> channels)
     {
-        var doc = XDocument.Load(path);
+        var doc = XDocument.Load(xmlFilePath);
         var thisElement = doc.Root!;
-        LoadTagGroups(rootGrp, thisElement, channels);
+        LoadTagGroup(rootGrp, thisElement, channels);
         return rootGrp;
     }
+    #endregion
 
 
-    protected virtual void LoadTagGroups(ITagGrp parent, XElement thisElement, IList<ITagChannel> availableChannels)
+    #region 从 XElement 中加载 Tag|TagCbnt|TagGrp，并作为子节点追加到指定的父节点中
+    /// <inheritdoc/>
+    public virtual void LoadTagGroup(ITagGrp parent, XElement thisElement, IList<ITagChannel> availableChannels)
     {
         var thisTagName = thisElement.GetTagUnionName();
         var thisIsEntry = thisElement.GetTagUnionIsEntry(thisTagName);
@@ -196,7 +210,7 @@ public class CompositeTagsLoader : ITagsLoader
                 parent.AddTag(thisGrp);
                 foreach (var childElement in thisElement.Elements())
                 {
-                    LoadTagGroups(thisGrp, childElement, availableChannels);
+                    LoadTagGroup(thisGrp, childElement, availableChannels);
                 }
                 return unit;
             }
@@ -239,6 +253,6 @@ public class CompositeTagsLoader : ITagsLoader
         }
         return tagdescriptor;
     }
-
+    #endregion
 
 }
