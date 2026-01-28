@@ -20,6 +20,7 @@ public abstract class LogicetBase : ILogicet
     /// <inheritdoc/>
     public virtual ITagGrp Tags { get; }
 
+    /// <inheritdoc/>
     public abstract int Order { get; }
 
     /// <inheritdoc/>

@@ -12,14 +12,14 @@ public class TagGrpRunner : ITagGrpRunner
     public event TurnCrashed? TurnCrashed;
 
     /// <inheritdoc/>
-    public virtual async Task StartAsync(ITagGrp grp, CancellationToken ct)
+    public virtual async Task StartAsync(ITagGrp entry, CancellationToken ct)
     {
         while (!ct.IsCancellationRequested)
         {
-            var channel = grp.GetRequiredChannel();
+            var channel = entry.GetRequiredChannel();
             try
             {
-                if (!grp.IsEnabled)
+                if (!entry.IsEnabled)
                 {
                     await Task.Delay(500);
                     continue;
@@ -27,20 +27,20 @@ public class TagGrpRunner : ITagGrpRunner
 
                 if (TurnStarted is not null)
                 {
-                    await TurnStarted(grp, channel);
+                    await TurnStarted(entry, channel);
                 }
 
                 // 开始轮询
                 while (!ct.IsCancellationRequested)
                 {
                     await channel.EnsureConnectedAsync();
-                    await grp.ReadAsync(ct);
+                    await entry.ReadAsync(ct);
                     if(TurnProcess is not null)
                     {
-                        await TurnProcess(grp, channel);
+                        await TurnProcess(entry, channel);
                     }
-                    await grp.WriteAsync(ct);
-                    await Task.Delay(grp.ScanInterval, ct);
+                    await entry.WriteAsync(ct);
+                    await Task.Delay(entry.ScanInterval, ct);
                 }
             }
             catch (Exception ex)
@@ -50,7 +50,7 @@ public class TagGrpRunner : ITagGrpRunner
                 {
                     if (TurnCrashed is not null)
                     {
-                        await TurnCrashed(grp, channel, ex);
+                        await TurnCrashed(entry, channel, ex);
                     }
                     try
                     {
@@ -67,7 +67,7 @@ public class TagGrpRunner : ITagGrpRunner
             }
             finally
             {
-                await Task.Delay(grp.ScanInterval, ct);
+                await Task.Delay(entry.ScanInterval, ct);
             }
         }
     }

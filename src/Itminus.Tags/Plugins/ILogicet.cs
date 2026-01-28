@@ -28,7 +28,7 @@ public interface ILogicet
     ITagGrp Tags { get; }
 
     /// <summary>
-    /// 是否能匹配入口？
+    /// 是否能匹配入口？返回true表示应该处理当前entry，否则应该跳过处理
     /// </summary>
     /// <param name="entry"></param>
     /// <returns></returns>
