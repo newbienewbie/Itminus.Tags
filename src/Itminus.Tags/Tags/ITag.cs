@@ -6,14 +6,23 @@ namespace Itminus.Tags;
 
 public class TagSyncEventArgs : EventArgs 
 {
-    public TagSyncEventArgs(object? newValue, DateTime timestamp)
+    public enum Kinds 
+    {
+        None    = 0,
+        Read    = 1,
+        Written = 2,
+    }
+    public TagSyncEventArgs(object? newValue, DateTime timestamp, Kinds kind)
     {
         this.NewValue = newValue;
         this.Timestamp = timestamp;
+        Kind = kind;
     }
 
     public object? NewValue { get; set; }
     public DateTime Timestamp { get; set; }
+
+    public Kinds Kind { get; set; }
 }
 
 public delegate void TagSyncEventHandler(ITag sender, TagSyncEventArgs e);

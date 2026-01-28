@@ -64,7 +64,7 @@ public abstract class TagCbntor : ITagCbntor
     {
         if (this.OnTagRead != null)
         {
-            var eArgs = new TagSyncEventArgs(this.Value, this.Timestamp);
+            var eArgs = new TagSyncEventArgs(this.Value, this.Timestamp, TagSyncEventArgs.Kinds.Read);
             this.OnTagRead(this, eArgs);
         }
     }
@@ -74,7 +74,7 @@ public abstract class TagCbntor : ITagCbntor
     {
         if (this.OnTagWritten != null)
         {
-            var eArgs = new TagSyncEventArgs(this.Value, this.Timestamp);
+            var eArgs = new TagSyncEventArgs(this.Value, this.Timestamp, TagSyncEventArgs.Kinds.Written);
             this.OnTagWritten(this, eArgs);
         }
     }

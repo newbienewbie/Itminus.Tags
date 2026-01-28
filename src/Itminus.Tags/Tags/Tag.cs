@@ -67,27 +67,33 @@ public abstract class Tag<T> : ITag
     #endregion
 
 
-    /// <summary>
-    /// 应该被子类调用
-    /// </summary>
-    /// <param name="newValue"></param>
-    protected virtual void NotifyTagSynced(object? newValue)
+
+    protected virtual void NotifyTagRead(object? newValue)
     {
         if (this.OnTagRead != null)
         {
-            var eArgs = new TagSyncEventArgs(newValue, this.Timestamp);
+            var eArgs = new TagSyncEventArgs(newValue, this.Timestamp, TagSyncEventArgs.Kinds.Read);
+            this.OnTagRead(this, eArgs);
+        }
+    }
+
+    protected virtual void NotifyTagWritten(object? newValue)
+    {
+        if (this.OnTagRead != null)
+        {
+            var eArgs = new TagSyncEventArgs(newValue, this.Timestamp, TagSyncEventArgs.Kinds.Written);
             this.OnTagRead(this, eArgs);
         }
     }
 
     /// <summary>
-    /// 向底层写入，子类的实现必须调用 <see cref="NotifyTagSynced"/>, 并且 设置 <see cref="IsDirty"/> = false
+    /// 向底层写入，子类的实现必须调用 <see cref="NotifyTagWritten"/>, 并且 设置 <see cref="IsDirty"/> = false
     /// </summary>
     /// <returns></returns>
     public abstract Task WriteAsync(CancellationToken ct);
 
     /// <summary>
-    /// 从底层读取，子类的实现必须调用 <see cref="NotifyTagSynced"/>
+    /// 从底层读取，子类的实现必须调用 <see cref="NotifyTagRead"/>
     /// </summary>
     /// <returns></returns>
     public abstract Task ReadAsync(CancellationToken ct);

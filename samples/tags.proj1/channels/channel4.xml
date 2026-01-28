@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <Channels>
 
     <Channel name="S7-1" driver="S7" >
         <IpAddr>192.168.1.11</IpAddr>
-        <Rack>0</IpAddr>
+        <Rack>0</Rack>
         <Slot>1</Slot>
     </Channel>
 
@@ -15,7 +15,7 @@
 
     <Channel name="S7-3" driver="S7" >
         <IpAddr>192.168.1.13</IpAddr>
-        <Rack>0</IpAddr>
+        <Rack>0</Rack>
         <Slot>3</Slot>
     </Channel>
 
