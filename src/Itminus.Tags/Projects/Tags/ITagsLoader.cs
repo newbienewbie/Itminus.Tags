@@ -15,12 +15,4 @@ public interface ITagsLoader
     /// <param name="thisElement"></param>
     /// <param name="availableChannels"></param>
     void LoadTagGroup(ITagGrp parent, XElement thisElement, IList<ITagChannel> availableChannels);
-
-    /// <summary>
-    /// 从一个index文件，加载测点树。
-    /// </summary>
-    /// <param name="indexPath"></param>
-    /// <param name="channels"></param>
-    /// <returns></returns>
-    ITagGrp LoadTagRootFromIndex(string indexPath, IList<ITagChannel> channels);
 }

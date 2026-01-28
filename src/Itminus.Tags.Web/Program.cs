@@ -2,10 +2,10 @@
 using Itminus.Tags.ModbusTcp;
 using Itminus.Tags.Projects;
 using Itminus.Tags.S7;
-using Itminus.Tags.Web;
 using Itminus.Tags.Web.Components;
 using Itminus.Tags.Web.Tags;
 using MudBlazor.Services;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +34,22 @@ builder.Services.AddTagsProjectServices(b =>
 });
 
 
-builder.Services.AddSingleton<S7TagRuntime_Rx>();
+builder.Services.AddSingleton(sp => { 
+    var logger = sp.GetRequiredService<ILogger<ITagsProject>>();
+    var factory = sp.GetRequiredService<ITagsProjectFactory>();
+    var proj = factory.Create();
+    var loc = Assembly.GetExecutingAssembly().Location;
+    var dir = Path.GetDirectoryName(loc);
+    proj.Initialize(dir!);
+    proj.TurnStarted += (grp, ch) => {
+        return Task.CompletedTask;
+    };
+    proj.TurnCrashed +=  (grp, ch, ex) => {
+        logger.LogError("{grp}: {ex}", grp.Name, ex.Message);
+        return Task.CompletedTask;
+    };
+    return proj;
+});
 builder.Services.AddHostedService<S7BackgroundService>();
 builder.Services.AddMudServices();
 

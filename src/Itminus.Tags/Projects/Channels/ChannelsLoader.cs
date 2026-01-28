@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Itminus.Tags.Projects;
 
@@ -17,11 +18,13 @@ internal class ChannelsLoader : IChannelsLoader
 
 
     /// <inheritdoc/>
-    public virtual IList<ITagChannel> LoadChannels(IList<ChannelDescriptor> descriptors)
+    public virtual IList<ITagChannel> LoadChannels(IEnumerable<ChannelDescriptor> descriptors)
     {
         var channels = descriptors
             .Select(this._channelFactory.Create)
             .ToList();
         return channels;
     }
+
+
 }

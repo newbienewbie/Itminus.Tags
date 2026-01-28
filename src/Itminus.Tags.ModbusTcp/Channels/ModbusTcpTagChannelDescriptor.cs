@@ -29,12 +29,14 @@ public class ModbusTcpTagChannelDescriptor : ChannelDescriptor
             Name = descriptor.Name,
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
-            IpAddr = descriptor.Extras.TryGetValue(nameof(IpAddr), out var ipAddr) ?
-                ipAddr.GetString() ?? throw new Exception("IpAddr未配置") :
-                "localhost",
-            Port = descriptor.Extras.TryGetValue(nameof(Port), out var port) ?
-                port.GetInt32() :
-                502,
+            IpAddr = !descriptor.Extras.TryGetValue(nameof(IpAddr), out var ipAddr) ?
+                "localhost" : 
+                ipAddr.Value,
+            Port = !descriptor.Extras.TryGetValue(nameof(Port), out var portEle) ?
+                502:
+                int.TryParse(portEle.Value, out var port) ?
+                    port:
+                    throw new ArgumentException($"配置的端口号不是整数"),
         };
         return res;
     }

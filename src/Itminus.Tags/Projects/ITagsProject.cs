@@ -1,13 +1,10 @@
 ﻿
+using System.Xml.Linq;
+
 namespace Itminus.Tags.Projects;
 
 public interface ITagsProject
 {
-    /// <summary>
-    /// 项目根目录
-    /// </summary>
-    string ProjectRoot { get; }
-
     /// <summary>
     /// 通道
     /// </summary>
@@ -23,12 +20,32 @@ public interface ITagsProject
     /// </summary>
     ITagGrp Tags { get; }
 
+    /// <summary>
+    /// 项目根目录
+    /// </summary>
+    string? ProjectRoot { get; }
 
     /// <summary>
-    /// 初始化
+    /// 轮询开始
     /// </summary>
-    /// <param name="channelFactory"></param>
-    /// <param name="tagsParser"></param>
-    /// <param name="logicetLoader"></param>
-    void Initialize(IChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader);
+    event TurnStarted? TurnStarted;
+    
+    /// <summary>
+    /// 轮询崩溃
+    /// </summary>
+    event TurnCrashed? TurnCrashed;
+
+    /// <summary>
+    /// 初始化，如果root为空，则默认取 projRoot下的index.xml文件
+    /// </summary>
+    /// <param name="projRoot"></param>
+    /// <param name="root"></param>
+    void Initialize(string projRoot, XElement? root=null);
+
+    /// <summary>
+    /// 运行
+    /// </summary>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    Task RunAsync(CancellationToken ct);
 }

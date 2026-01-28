@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace Itminus.Tags;
 
@@ -22,8 +23,25 @@ public class ChannelDescriptor
     /// </summary>
     public virtual string Driver { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 额外参数
+    /// </summary>
+    public IDictionary<string, XElement> Extras { get; set; } = new Dictionary<string, XElement>();
 
-    [JsonExtensionData]
-    public IDictionary<string, JsonElement> Extras { get; set; } = new Dictionary<string, JsonElement>();
+
+    public static ChannelDescriptor LoadFromXElement(XElement e)
+    {
+        var name = e.Attribute("name")?.Value ?? throw new Exception($"通道元素未配置元素名({e.Name.LocalName})");
+        var driver = e.Attribute("driver")?.Value ?? throw new Exception($"通道元素未配置驱动({e.Name.LocalName})"); ;
+
+        var descriptor = new ChannelDescriptor()
+        {
+            Name = name,
+            Driver = driver,
+            Extras = e.Elements()
+                .ToDictionary(child => child.Name.LocalName, child => child)
+        };
+        return descriptor;
+    }
 }
 

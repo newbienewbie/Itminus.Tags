@@ -1,10 +1,11 @@
 ﻿@using Itminus.Tags.Web.Components.Channels
 @using Itminus.Tags.Web.Components.Tags
 @using System.Collections.ObjectModel
+@using Itminus.Tags.Projects
 
 @page "/counter"
 @rendermode InteractiveServer
-@inject S7TagRuntime_Rx rx
+@inject ITagsProject proj
 
 <PageTitle>Counter</PageTitle>
 
@@ -17,7 +18,7 @@
 
     protected override Task OnInitializedAsync()
     {
-        this.RootTag = this.rx.TagsProject.Tags;
+        this.RootTag = this.proj.Tags;
         return base.OnInitializedAsync();
     }
 

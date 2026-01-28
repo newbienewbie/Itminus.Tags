@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
     <Channel name="S7-1" driver="S7" >
-        <IpAddr>192.168.1.11</IpAddr>
-        <Rack>0</IpAddr>
+        <IpAddr>localhost</IpAddr>
+        <Rack>0</Rack>
         <Slot>1</Slot>
     </Channel>
     <Channel name="ModbusTcp-2" driver="ModbusTcp">
@@ -11,7 +11,7 @@
     </Channel>
     <Channel name="S7-3" driver="S7" >
         <IpAddr>192.168.1.13</IpAddr>
-        <Rack>0</IpAddr>
+        <Rack>0</Rack>
         <Slot>3</Slot>
     </Channel>
 
@@ -30,6 +30,5 @@
     </TagGrp>
 
 
-    <Logicet>D:\\proj\\揽月\\Itminus.Tags\\src\\Samples.Plugin1\\bin\\Release\\net8.0\\publish\\Samples.Plugin1.dll</Logicet>
-    <Logicet>D:\\proj\\揽月\\Itminus.Tags\\src\\Samples.Plugin1\\bin\\Release\\net8.0\\publish\\Samples.Plugin2.dll</Logicet>
+    <Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>
 </root>

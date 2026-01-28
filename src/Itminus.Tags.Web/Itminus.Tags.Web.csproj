@@ -13,5 +13,11 @@
     <ProjectReference Include="..\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 	<Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

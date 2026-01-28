@@ -124,6 +124,24 @@ public static class XElementExensions
             throw new Exception($"未知的测点配置元素:<{e.Name}/>");
         }
     }
+
+    internal static bool IsTagUnion(this XElement e)
+    {
+        if (e.Name == "Tag")
+        {
+            return true;
+        }
+        else if (e.Name == "TagCbnt")
+        {
+            return true;
+        }
+        else if (e.Name == "TagGrp")
+        {
+            return true;
+        }
+
+        return false;
+    }
     #endregion
 }
 

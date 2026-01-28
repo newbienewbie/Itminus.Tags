@@ -29,15 +29,20 @@ public class S7TagChannelDescriptor : ChannelDescriptor
             Name = descriptor.Name,
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
-            IpAddr = descriptor.Extras.TryGetValue(nameof(IpAddr), out var ipAddr) ?
-                ipAddr.GetString() ?? throw new Exception("IpAddr未配置") :
-                "localhost",
-            Rack = descriptor.Extras.TryGetValue(nameof(Rack), out var rack) ?
-                rack.GetInt16() :
-                (short)0,
-            Slot = descriptor.Extras.TryGetValue(nameof(Slot), out var slot) ?
-                slot.GetInt16() :
-                (short)0
+
+            IpAddr = !descriptor.Extras.TryGetValue(nameof(IpAddr), out var ipAddr) ?
+                "localhost" :
+                ipAddr.Value,
+            Rack = !descriptor.Extras.TryGetValue(nameof(Rack), out var rackEle) ?
+                (short)0:
+                short.TryParse(rackEle.Value, out var rack) ?
+                    rack:
+                    throw new ArgumentException($"配置的Rack不是整数({rackEle.Value})"),
+            Slot = !descriptor.Extras.TryGetValue(nameof(Slot), out var slotEle) ?
+                (short)1 :
+                short.TryParse(slotEle.Value, out var slot) ?
+                    slot :
+                    throw new ArgumentException($"配置的Slot不是整数({slotEle.Value})"),
         };
         return res;
     }

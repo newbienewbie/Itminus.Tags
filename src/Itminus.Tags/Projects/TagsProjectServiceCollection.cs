@@ -14,7 +14,8 @@ public static class TagsProjectServiceCollection
     /// <returns></returns>
     public static IServiceCollection AddTagsProjectServices(this IServiceCollection services,  Action<TagsProjectServiceBuilder> configTagsLoader)
     {
-        services.AddSingleton<ITagsProjectRunner, TagsProjectRunner>();
+
+        services.AddSingleton<IChannelsLoader, ChannelsLoader>();
         services.AddSingleton<ILogicetLoader, LogicetLoader>();
 
         var tpsb = new TagsProjectServiceBuilder(services);
@@ -30,6 +31,9 @@ public static class TagsProjectServiceCollection
             tpsb.ApplyTagsLoadersConfiguration(sp);
             return tpsb.TagsLoaders;
         });
+
+        services.AddSingleton<ITagsProjectFactory, TagsProjectFactory>();
+
         return services;
     }
 }

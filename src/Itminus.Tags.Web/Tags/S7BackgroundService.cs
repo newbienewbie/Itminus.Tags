@@ -1,19 +1,21 @@
 ﻿
+using Itminus.Tags.Projects;
+
 namespace Itminus.Tags.Web.Tags;
 
 internal class S7BackgroundService : BackgroundService
 {
-    private readonly S7TagRuntime_Rx _rt;
     private IDisposable? _dispoable;
+    private readonly ITagsProject proj;
 
-    public S7BackgroundService(S7TagRuntime_Rx rt)
+    public S7BackgroundService(ITagsProject proj)
     {
-        this._rt = rt;
+        this.proj = proj;
     }
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        this._dispoable = this._rt.LaunchObservable().Subscribe();
+        this.proj.RunAsync(stoppingToken);
         return Task.CompletedTask;
     }
 

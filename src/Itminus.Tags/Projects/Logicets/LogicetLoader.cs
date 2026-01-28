@@ -24,11 +24,9 @@ public class LogicetLoader : ILogicetLoader
 
 
     /// <inheritdoc/>
-    public IList<ILogicet> LoadLogicets(string indexPath, IList<ITagChannel> channels, ITagGrp tags)
+    public IList<ILogicet> LoadLogicets(IEnumerable<string> dllLocations, IList<ITagChannel> channels, ITagGrp tags)
     {
-        var locations = ParseLogicetsIndex(indexPath);
-
-        var results = locations
+        var results = dllLocations
             .SelectMany(l =>
             {
                 var plugin = LoadPlugin(l);
@@ -37,20 +35,6 @@ public class LogicetLoader : ILogicetLoader
             })
             .ToList();
         return results;
-    }
-
-    private static IList<string> ParseLogicetsIndex(string indexPath)
-    {
-        if (!File.Exists(indexPath))
-        {
-            throw new Exception($"指定的逻辑组件索引文件路径不存在({indexPath})");
-        }
-
-        var dir = Path.GetDirectoryName(indexPath) ?? throw new Exception($"无法获取逻辑组件索引文件所在目录");
-        var stream = new FileStream(indexPath, FileMode.Open);
-        var locations = JsonSerializer.Deserialize<IList<string>>(stream)
-            ?? throw new Exception($"非法的逻辑组件索引。文件路径={indexPath}");
-        return locations.Select(l => Path.Combine(dir, l)).ToList();
     }
 
     protected virtual Assembly LoadPlugin(string pluginLocation)

@@ -1,33 +1,36 @@
 ﻿using Itminus.Tags.Projects;
+using System.Xml.Linq;
 
 namespace Itminus.Tags.Projects;
 
 public class TagsProject : ITagsProject
 {
-    public TagsProject(string projRoot)
+    private readonly IChannelsLoader _channelsLoader;
+    private readonly ITagsLoader _tagsLoader;
+    private readonly ILogicetLoader _logicetLoader;
+
+    public TagsProject(IChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader)
     {
-        this.ProjectRoot = projRoot;
+        this._channelsLoader = channelsLoader;
+        this._tagsLoader = tagsLoader;
+        this._logicetLoader = logicetLoader;
     }
 
     /// <summary>
     /// 项目更目录
     /// </summary>
-    public string ProjectRoot { get; }
-
-    protected virtual string ChannelsIndexPath => Path.Combine(ProjectRoot, "channels/index.json");
-    protected virtual string TagsIndexPath => Path.Combine(ProjectRoot, "tags/index.xml");
-    protected virtual string LogicetsIndexPath => Path.Combine(ProjectRoot, "logicets/index.json");
-
+    public string? ProjectRoot { get; private set; } = string.Empty;
 
     /// <summary>
-    /// 加载 Channels
+    /// 从根元素中加载通道
     /// </summary>
     /// <param name="channelFactory"></param>
     /// <returns></returns>
-    protected virtual TagsProject LoadChannels(IChannelFactory channelFactory)
+    protected virtual TagsProject LoadChannels(XElement root)
     {
-        var descriptors = ChannelsParser.ReadChannels(this.ChannelsIndexPath);
-        var channels = descriptors.Select(d => channelFactory.Create(d)).ToList();
+        var elements = root.Elements("Channel") ?? [];
+        var descriptors = elements.Select(ChannelDescriptor.LoadFromXElement);
+        var channels = this._channelsLoader.LoadChannels(descriptors);
         this.AddChannels(channels);
         return this;
     }
@@ -37,9 +40,15 @@ public class TagsProject : ITagsProject
     /// </summary>
     /// <param name="parser"></param>
     /// <returns></returns>
-    protected virtual TagsProject LoadTags(ITagsLoader parser)
+    protected virtual TagsProject LoadTags(XElement root)
     {
-        this.Tags = parser.LoadTagRootFromIndex(TagsIndexPath, this.Channels);
+        var main = new TagGrp(name: "__main__", isEntry: false, null);
+        var elements = root.Elements().Where(e => e.IsTagUnion())?? [];
+        foreach (var ele in elements) 
+        {
+            this._tagsLoader.LoadTagGroup(main, ele, this.Channels);
+        }
+        this.Tags = main;
         return this;
     }
 
@@ -49,23 +58,39 @@ public class TagsProject : ITagsProject
     /// </summary>
     /// <param name="loader"></param>
     /// <returns></returns>
-    protected virtual TagsProject LoadLogicets(ILogicetLoader loader)
+    protected virtual TagsProject LoadLogicets(XElement root)
     {
-        var logicets = loader.LoadLogicets(this.LogicetsIndexPath, this.Channels, this.Tags);
+        var elements = root.Elements("Logicet");
+        var dlls = elements
+            .Where(e => !string.IsNullOrEmpty( e.Value) )
+            .Select(e => string.IsNullOrEmpty(this.ProjectRoot) ? e.Value : Path.Combine(this.ProjectRoot, e.Value));
+        var logicets = this._logicetLoader.LoadLogicets(dlls, this.Channels, this.Tags);
         this.AddLogicets(logicets);
         return this;
     }
 
 
-    public void Initialize(IChannelFactory channelFactory, ITagsLoader tagsParser, ILogicetLoader logicetLoader)
+    public void Initialize(string projRoot, XElement? root=null)
     {
+        this.ProjectRoot = projRoot;
+
         this._channels.Clear();
         this.Tags = null!;
         this._logicets.Clear();
 
-        this.LoadChannels(channelFactory);
-        this.LoadTags(tagsParser);
-        this.LoadLogicets(logicetLoader);
+        if(root is null)
+        {
+            var rootxmlPath = Path.Combine(projRoot, "index.xml");
+            if(!File.Exists(rootxmlPath))
+            {
+                throw new FileNotFoundException(rootxmlPath);
+            }
+            root = XElement.Load(rootxmlPath);
+        }
+
+        this.LoadChannels(root);
+        this.LoadTags(root);
+        this.LoadLogicets(root);
     }
 
 
@@ -116,4 +141,51 @@ public class TagsProject : ITagsProject
         return this;
     }
     #endregion
+
+
+    public virtual Task RunAsync(CancellationToken ct)
+    {
+        if (this.Channels == null || this.Channels.Count == 0)
+        {
+            throw new Exception($"通道集为空");
+        }
+        if (this.Tags == null)
+        {
+            throw new Exception("测点集为空");
+        }
+        if (this.Logicets == null)
+        {
+            throw new Exception("逻辑组件集为空");
+        }
+
+        var entries = this.Tags.ScanEntries();
+        if (entries.Count == 0)
+        {
+            throw new Exception("未配置入口测点组");
+        }
+
+
+        var tasks = entries.Select(async entry => {
+            var logicets = this.Logicets
+                .Where(l => l.MatchEntry(entry))
+                .OrderBy(l => l.Order)
+                .ToList();
+            var monitor = new TagGrpRunner();
+            monitor.TurnStarted += TurnStarted;
+            monitor.TurnProcess += async (entry, ch) => {
+                foreach (var l in logicets)
+                {
+                    await l.ProcessAsync(entry, ch);
+                }
+            };
+            monitor.TurnCrashed += TurnCrashed;
+            await monitor.StartAsync(entry, ct);
+        });
+        return Task.WhenAll(tasks);
+    }
+
+
+    public event TurnCrashed? TurnCrashed;
+
+    public event TurnStarted? TurnStarted;
 }
