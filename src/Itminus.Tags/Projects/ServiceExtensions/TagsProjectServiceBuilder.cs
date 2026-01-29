@@ -1,4 +1,5 @@
-﻿using Itminus.Tags.Projects;
+﻿using Itminus.Tags.Plugins;
+using Itminus.Tags.Projects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags;
@@ -9,7 +10,7 @@ public class TagsProjectServiceBuilder
     {
         services.AddSingleton<ILogicetLoader, LogicetLoader>();
         services.AddSingleton<IChannelsLoader, ChannelsLoader>();
-
+        services.AddScoped<ILogicetMaker, LogicetMaker>();
         this.Services = services;
         this.ChannelFactories = new CompositeChannelFactory();
         this.ChannelFactoriesConfiguration = new List<Action<IServiceProvider, CompositeChannelFactory>>();

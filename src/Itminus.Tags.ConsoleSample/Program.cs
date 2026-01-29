@@ -1,13 +1,12 @@
 ﻿using Itminus.Tags;
 using Itminus.Tags.ConsoleSample;
 using Itminus.Tags.ModbusTcp;
+using Itminus.Tags.Plugins;
 using Itminus.Tags.Projects;
 using Itminus.Tags.S7;
 using Itminus.Tags.ZLan;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
-using System.Xml.Linq;
 
 Console.WriteLine(".");
 
@@ -28,8 +27,8 @@ services.AddTagsProjectServices(b =>
     b.ConfigTagsLoader((sp, loader) => {
         loader.AddTagsCbntBuilder<S7TagCbntBuilder>(sp, "S7");
         loader.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>(sp, "ModbusTcp");
-        loader.AddTagsCbntBuilder<ZLanDICbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.StartAddress.StartsWith("DI"));
-        loader.AddTagsCbntBuilder<ZLanDICbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.StartAddress.StartsWith("DO"));
+        loader.AddTagsCbntBuilder<ZLanDICbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.Area.StartsWith("DI"));
+        loader.AddTagsCbntBuilder<ZLanDOCbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.Area.StartsWith("DO"));
     });
 });
 var sp = services.BuildServiceProvider();
@@ -49,8 +48,10 @@ project.TurnCrashed += (grp, ch, ex) => {
 // (可选)在运行之前，可以手动调整 Logicets，
 //     比如这里移除配置文件中dll，改用代码编写的
 project.Logicets.Clear();
-project.Logicets.Add(new HandleSnap1(project.Channels, project.Tags));
-project.Logicets.Add(new HandleSnap2(project.Channels, project.Tags));
+
+var logicetMaker = sp.GetRequiredService<ILogicetMaker>();
+project.TryAddLogicet<HandleSnap11>();
+project.TryAddLogicet<HandleSnap12>();
 
 // 运行 project
 var cts = new CancellationTokenSource();

@@ -28,7 +28,7 @@ public static class TagsProjectServiceCollection
             return tpsb.TagsLoaders;
         });
 
-        services.AddSingleton<ITagsProjectFactory, TagsProjectFactory>();
+        services.AddScoped<ITagsProjectFactory, TagsProjectFactory>();
 
         return services;
     }

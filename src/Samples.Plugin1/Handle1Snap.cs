@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Itminus.Tags;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Itminus.Tags;
+namespace Samples.Plugins;
 
 internal class Handle1Snap : LogicetBase
 {

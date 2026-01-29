@@ -1,4 +1,5 @@
-﻿using Itminus.Tags.Projects;
+﻿using Itminus.Tags.Plugins;
+using Itminus.Tags.Projects;
 using System.Xml.Linq;
 
 namespace Itminus.Tags.Projects;
@@ -8,12 +9,14 @@ internal class TagsProject : ITagsProject
     private readonly IChannelsLoader _channelsLoader;
     private readonly ITagsLoader _tagsLoader;
     private readonly ILogicetLoader _logicetLoader;
+    private readonly ILogicetMaker _logicetMaker;
 
-    public TagsProject(IChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader)
+    public TagsProject(IChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader, ILogicetMaker logicetMaker)
     {
         this._channelsLoader = channelsLoader;
         this._tagsLoader = tagsLoader;
         this._logicetLoader = logicetLoader;
+        this._logicetMaker = logicetMaker;
     }
 
     /// <summary>
@@ -69,7 +72,27 @@ internal class TagsProject : ITagsProject
         return this;
     }
 
+    /// <inheritdoc/>
+    public virtual bool TryAddLogicet<TLogicet>(out TLogicet? logicet, out string? msg)
+        where TLogicet : class, ILogicet
+    {
+        logicet = this._logicetMaker.MakeLogicet<TLogicet>(this.Channels, this.Tags, out msg);
+        if(logicet is not null)
+        {
+            this.Logicets.Add(logicet);
+            return true;
+        }
+        return false;
+    }
 
+    /// <inheritdoc/>
+    public virtual bool TryAddLogicet<TLogicet>()
+        where TLogicet : class, ILogicet
+    {
+        return this.TryAddLogicet<TLogicet>(out _, out _);
+    }
+
+    /// <inheritdoc/>
     public void Initialize(string projRoot, XElement? root=null)
     {
         this.ProjectRoot = projRoot;
@@ -87,7 +110,6 @@ internal class TagsProject : ITagsProject
             }
             root = XElement.Load(rootxmlPath);
         }
-
         this.LoadChannels(root);
         this.LoadTags(root);
         this.LoadLogicets(root);
@@ -184,8 +206,8 @@ internal class TagsProject : ITagsProject
         return Task.WhenAll(tasks);
     }
 
-
+    /// <inheritdoc/>
     public event TurnCrashed? TurnCrashed;
-
+    /// <inheritdoc/>
     public event TurnStarted? TurnStarted;
 }

@@ -40,7 +40,7 @@ public static class XElementExensions
 
     internal static string GetTagUnionAddress(this XElement e, string tagName)
     {
-        var address = (string?)e.Attribute("address") ?? throw new Exception($"Tag(Name={tagName})未配置地址");
+        var address = (string?)e.Attribute("address")?? "";// throw new Exception($"Tag(Name={tagName})未配置地址");
         return address;
     }
 

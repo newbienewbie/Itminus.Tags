@@ -1,4 +1,5 @@
 ﻿
+using Itminus.Tags.Plugins;
 using System.Xml.Linq;
 
 namespace Itminus.Tags.Projects;
@@ -36,6 +37,13 @@ public interface ITagsProject
     event TurnCrashed? TurnCrashed;
 
     /// <summary>
+    /// 动态添加逻辑，成功则返回true；如果失败，则返回false
+    /// </summary>
+    /// <typeparam name="TLogicet"></typeparam>
+    /// <returns></returns>
+    bool TryAddLogicet<TLogicet>(out TLogicet? logicet, out string? msg) where TLogicet : class, ILogicet;
+
+    /// <summary>
     /// 初始化，如果root为空，则默认取 projRoot下的index.xml文件
     /// </summary>
     /// <param name="projRoot"></param>
@@ -48,4 +56,5 @@ public interface ITagsProject
     /// <param name="ct"></param>
     /// <returns></returns>
     Task RunAsync(CancellationToken ct);
+    bool TryAddLogicet<TLogicet>() where TLogicet : class, ILogicet;
 }

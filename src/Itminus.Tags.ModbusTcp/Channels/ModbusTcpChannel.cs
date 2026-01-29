@@ -42,7 +42,7 @@ public class ModbusTcpChannel : ITagChannel
 
 
     public string ChannelName { get; }
-    public string Driver => ModbusTcpNames.DriverName;
+    public virtual string Driver => ModbusTcpNames.DriverName;
 
     public ModbusTcpChannel(string channelName, ModbusTcpItem modbusItem, ILogger<ModbusTcpChannel> logger)
     {

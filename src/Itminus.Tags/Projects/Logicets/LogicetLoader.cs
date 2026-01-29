@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Itminus.Tags.Plugins;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +18,12 @@ namespace Itminus.Tags.Projects;
 public class LogicetLoader : ILogicetLoader
 {
     private readonly IServiceProvider _sp;
+    private readonly ILogger<LogicetLoader> _logger;
 
-    public LogicetLoader(IServiceProvider sp)
+    public LogicetLoader(IServiceProvider sp, ILogger<LogicetLoader> logger)
     {
         this._sp = sp;
+        this._logger = logger;
     }
 
 
@@ -47,15 +51,20 @@ public class LogicetLoader : ILogicetLoader
     {
         var types = assembly.GetTypes()
             .Where(t => !t.IsInterface && !t.IsAbstract && !t.IsGenericType);
-
+        var logicetMaker = this._sp.GetRequiredService<ILogicetMaker>();
+        
         var logicets = types
-            .Select(t =>
-            {
-                ILogicet logicet = (ActivatorUtilities.CreateInstance(this._sp, t, channels, tags) as ILogicet)!;
+            .Select(t => {
+                var logicet = logicetMaker.MakeLogicet(t, channels, tags, out var msg);
+                if (logicet is null)
+                {
+                    this._logger.LogError(msg);
+                    return null;
+                }
                 return logicet;
             })
             .Where(t => t != null)
             .ToList();
-        return logicets;
+        return logicets!;
     }
 }
