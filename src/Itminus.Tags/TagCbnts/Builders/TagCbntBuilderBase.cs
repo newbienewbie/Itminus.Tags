@@ -1,5 +1,8 @@
 ﻿
+using Itminus.Tags.Projects;
+using System.Net;
 using System.Threading.Channels;
+using System.Xml.Linq;
 
 namespace Itminus.Tags;
 
@@ -15,6 +18,15 @@ public abstract class TagCbntBuilderBase
     /// </summary>
     public ITagCbnt TagCbnt { get; }
 
+    /// <summary>
+    /// 组合名
+    /// </summary>
+    public virtual string Name => TagCbnt.Name;
+    /// <summary>
+    /// 起始地址
+    /// </summary>
+    public virtual string StartAddress => TagCbnt.StartAddress;
+
     private const string unknown_name = "(unknown_tag_name)";
     private const string unknown_address = "(unknown_start_address)";
 
@@ -23,10 +35,14 @@ public abstract class TagCbntBuilderBase
         this.TagCbnt = new TagCbnt(unknown_name, unknown_address);
     }
 
-    public virtual void SetNameAndAddress(string name, string address)
+    public virtual TagCbntBuilderBase WithXElement(XElement cbntElement)
     {
+        var name = cbntElement.GetTagUnionName();
+        var addr = cbntElement.GetTagUnionAddress(name);
+
         this.WithName(name);
-        this.WithStartAddress(address);
+        this.WithStartAddress(addr);
+        return this;
     }
 
 

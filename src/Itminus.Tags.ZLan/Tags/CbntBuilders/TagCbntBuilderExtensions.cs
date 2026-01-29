@@ -1,6 +1,6 @@
-namespace Itminus.Tags.ZLan;
+﻿namespace Itminus.Tags.ZLan;
 
-public static class TagCombinationBuilderExtensions
+public static class TagCbntBuilderExtensions
 {
     public static ZLanTagFactory MakeZLanTagFactory(this TagCbntBuilderBase tagGroupBuilder)
     {

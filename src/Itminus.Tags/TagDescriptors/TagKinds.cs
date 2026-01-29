@@ -1,4 +1,4 @@
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 
 /// <summary>
@@ -14,4 +14,7 @@ public enum TagKinds
     UINT32 = 106,
     FLOAT = 107,
     STR = 140,
+
+    DI  = 200,
+    DO  = 201,
 }

@@ -18,7 +18,8 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
 
     public S7TagCbntBuilder(string cbntName, string startAddress)
     {
-        this.SetNameAndAddress(cbntName, startAddress);
+        this.WithName(cbntName);
+        this.WithStartAddress(startAddress);
     }
 
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)

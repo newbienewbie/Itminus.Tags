@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Xml.Linq;
 
 namespace Itminus.Tags.Projects;
 
@@ -21,26 +22,31 @@ public static class TagsLoaderExtensions
 
     /// <summary>
     /// 注册特定驱动的 TagsCbnt 加载器: 
-    ///     如果将来被送入加载器的Tag的channel与这里指定的驱动相同，则会构建一个测点组合<br/>
+    ///     如果将来被送入加载器的Tag的channel与这里指定的驱动相同，则会尝试构建一个测点组合；<br/>
+    ///     如果配置了predicate且 predicate调用后给出true，则还会再尝试一次过滤<br/>
     /// </summary>
     /// <typeparam name="TCbntBuilder"></typeparam>
     /// <param name="loader"></param>
     /// <param name="sp"></param>
     /// <param name="driver"></param>
     /// <returns></returns>
-    public static CompositeTagsLoader AddTagsCbntBuilder<TCbntBuilder>(this CompositeTagsLoader loader, IServiceProvider sp, string driver)
-        where TCbntBuilder: TagCbntBuilderBase, new()
+    public static CompositeTagsLoader AddTagsCbntBuilder<TCbntBuilder>(this CompositeTagsLoader loader, IServiceProvider sp, string driver, Func<TCbntBuilder, bool>? predicate = null)
+        where TCbntBuilder : TagCbntBuilderBase, new()
     {
         return loader.AddTagsCbntBuilder((channel, el) => {
             if (channel.Driver != driver)
             {
                 return null;
             }
-            var name = el.GetTagUnionName();
-            var addr = el.GetTagUnionAddress(name);
             var builder = ActivatorUtilities.CreateInstance<TCbntBuilder>(sp);
-            builder.SetNameAndAddress(name, addr);
-            return builder.WithChannel(channel);
+            builder.WithXElement(el);
+
+            var flag = predicate is null ? true : predicate(builder);
+            if (!flag)
+            {
+                return null;
+            }
+            return builder;
         });
     }
 }

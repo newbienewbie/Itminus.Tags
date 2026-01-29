@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.ConsoleSample;
 
-internal class HandleSnap : LogicetBase
+internal class HandleSnap2 : LogicetBase
 {
     private ITagCbnt _cbnt1;
     private ITagCbnt _cbnt2;
@@ -16,14 +16,14 @@ internal class HandleSnap : LogicetBase
     private ITagCbntor _mat;
     private ITagCbntor _prog;
 
-    public HandleSnap(IList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
+    public HandleSnap2(IList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
     {
-        this._cbnt1 = this.Tags.SelectCbnt("g1/拍照请求");
+        this._cbnt1 = this.Tags.SelectCbnt("g2/拍照请求");
         this._reqTag = _cbnt1.SelectTag("拍照-请求-标志");
         this._mat = _cbnt1["拍照-请求-料号"];
         this._prog = _cbnt1["拍照-请求-程序号"];
 
-        this._cbnt2 = this.Tags.SelectCbnt("g1/拍照响应");
+        this._cbnt2 = this.Tags.SelectCbnt("g2/拍照响应");
         this._ackTag = _cbnt2.SelectTag("拍照-响应-标志");
     }
 
@@ -32,7 +32,7 @@ internal class HandleSnap : LogicetBase
 
     public override bool MatchEntry(ITagGrp entry)
     {
-        return true;
+        return entry.Name == "g2";
     }
 
     public override Task ProcessAsync(ITagGrp entry, ITagChannel thisChannel)

@@ -15,7 +15,8 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
 
     public ModbusTcpTagCbntBuilder(string cbntName, string startAddress) 
     {
-        this.SetNameAndAddress(cbntName, startAddress);
+        this.WithName(cbntName);
+        this.WithStartAddress(startAddress);
     }
 
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)

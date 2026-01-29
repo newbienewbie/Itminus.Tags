@@ -34,7 +34,8 @@ namespace Itminus.Tags
             );
             this._channels.Add(channel);
 
-            this._group1 = new ZLanDICbntBuilder("Group1")
+            this._group1 = new ZLanDICbntBuilder()
+                .WithName("Group1")
                 .WithChannel(channel)
                 .Configure(builder =>
                 {
@@ -52,7 +53,8 @@ namespace Itminus.Tags
                 .Build()
                 ;
 
-            this._outs = new ZLanDOCbntBuilder("Group2")
+            this._outs = new ZLanDOCbntBuilder()
+                .WithName("Group2")
                 .WithChannel(channel)
                 .Configure(builder =>
                 {

@@ -11,6 +11,10 @@
         <IpAddr>192.168.1.12</IpAddr> 
         <Port>502</Port>
     </Channel>
+	<Channel name="ZLan-1" driver="ZLanTcp">
+		<IpAddr>localhost</IpAddr>
+		<Port>502</Port>
+	</Channel>
     <Channel name="S7-3" driver="S7" >
         <IpAddr>192.168.1.13</IpAddr>
         <Rack>0</Rack>
@@ -32,6 +36,19 @@
             <Tag name="拍照-响应-I2" address="DB200.400.2" type="INT16" />
         </TagCbnt>
     </TagGrp>
+
+	<TagGrp name="g2" isEntry="true" isEnabled="true" channel="ZLan-1" scanInterval="10">
+		<TagCbnt name="输入" area="DI" access="RO">
+			<Tag name="放行按钮闭合状态" address="DI1" type="BIT"></Tag>
+			<Tag name="手动" address="DI2" type="BIT"></Tag>
+		</TagCbnt>
+		<TagCbnt name="按钮" area="DO" access="R1W">
+			<Tag name="绿灯" address="DI1" type="BIT"></Tag>
+			<Tag name="红灯" address="DI2" type="BIT"></Tag>
+			<Tag name="黄灯" address="DI2" type="BIT"></Tag>
+			<Tag name="放行灯" address="DI2" type="BIT"></Tag>
+		</TagCbnt>
+	</TagGrp>
 
 	<!-- 逻辑配置，可以配置多个 -->
     <Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>
