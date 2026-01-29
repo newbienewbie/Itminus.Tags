@@ -21,6 +21,6 @@ public static class TagRxExtensions
             tag, 
             new TagSyncEventArgs(tag.Value, tag.Timestamp, TagSyncEventArgs.Kinds.None)
             );
-        return obs;//.StartWith(ev);
+        return obs.StartWith(ev);
     }
 }
