@@ -1,52 +1,55 @@
 ﻿using Itminus.Tags;
+using Itminus.Tags.ConsoleSample;
 using Itminus.Tags.ModbusTcp;
 using Itminus.Tags.Projects;
 using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-Console.WriteLine("Hello, World!");
-
-
-var logfactory = new LoggerFactory();
-
+using System.Reflection;
+using System.Xml.Linq;
 
 Console.WriteLine(".");
 
-//var channelDescriptors = ChannelsParser.ReadChannels("C:\\Users\\itminus\\Desktop\\tags.proj1\\channels\\index.json");
+var services = new ServiceCollection();
+services.AddLogging();
+services.AddTagsProjectServices(b =>
+{
+    b.Services.AddKeyedSingleton<IChannelFactory, S7TagChannelFactory>("S7");
+    b.Services.AddKeyedSingleton<IChannelFactory, ModbusTcpChannelFactory>("ModbusTcp");
 
-Console.WriteLine(".");
+    b.ConfigChannelsFactory((sp, factory) => {
+        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("S7"));
+        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("ModbusTcp"));
+    });
 
-//var services = new ServiceCollection();
-//services.AddTagsProjectServices(b =>
-//{
-//    b.Services.AddKeyedSingleton<ITagChannelFactory, S7TagChannelFactory>("S7");
-//    b.Services.AddKeyedSingleton<ITagChannelFactory, ModbusTcpChannelFactory>("ModbusTcp");
+    b.ConfigTagsLoader((sp, loader) => {
+        loader.AddTagsCbntBuilder<S7TagCbntBuilder>(sp, "S7");
+        loader.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>(sp, "ModbusTcp");
+    });
+});
+var sp = services.BuildServiceProvider();
 
-//    b.ConfigChannelsFactory((sp, factory) => {
-//        factory.AddFactory(sp.GetRequiredKeyedService<ITagChannelFactory>("S7"));
-//        factory.AddFactory(sp.GetRequiredKeyedService<ITagChannelFactory>("ModbusTcp"));
-//    });
 
-//    b.ConfigTagsLoader((sp, loader) => {
-//        loader.AddTagsCbntBuilder<S7TagCbntBuilder>(sp, "S7");
-//        loader.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>(sp, "ModbusTcp");
-//    });
-//});
+// 构建 project
+var factory = sp.GetRequiredService<ITagsProjectFactory>();
+var loc = Assembly.GetExecutingAssembly().Location;
+var dir = Path.GetDirectoryName(loc);
+var project = factory.Create(dir!);
+project.TurnCrashed += (grp, ch, ex) => {
 
-var s7runtime = new S7TagRuntime(logfactory);
-s7runtime.Initialize();
-await s7runtime.RunAsync(CancellationToken.None);
+    Console.WriteLine($"{ex.Message}");
+    return Task.CompletedTask;
+};
+
+// (可选)在运行之前，可以手动调整 Logicets，
+//     比如这里移除配置文件中dll，改用代码编写的
+project.Logicets.Clear();
+project.Logicets.Add(new HandleSnap(project.Channels, project.Tags));
+
+// 运行 project
+var cts = new CancellationTokenSource();
+var task = project.RunAsync(cts.Token);
+
 Console.ReadLine();
-
-
-//var modbusTcpRuntime = new ZLanTagRuntime(logfactory);
-//modbusTcpRuntime.Initialize();
-//await modbusTcpRuntime.RunAsync(CancellationToken.None);
-//Console.ReadLine();
-
-
-//var modbusTcpRuntime = new ModbusTcpTagRuntime(logfactory);
-//modbusTcpRuntime.Initialize();
-//await modbusTcpRuntime.RunAsync(CancellationToken.None);
-//Console.ReadLine();
+cts.Cancel();
+await task;

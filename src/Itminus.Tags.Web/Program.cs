@@ -37,10 +37,10 @@ builder.Services.AddTagsProjectServices(b =>
 builder.Services.AddSingleton(sp => { 
     var logger = sp.GetRequiredService<ILogger<ITagsProject>>();
     var factory = sp.GetRequiredService<ITagsProjectFactory>();
-    var proj = factory.Create();
+
     var loc = Assembly.GetExecutingAssembly().Location;
     var dir = Path.GetDirectoryName(loc);
-    proj.Initialize(dir!);
+    var proj = factory.Create(dir!);
     proj.TurnStarted += (grp, ch) => {
         return Task.CompletedTask;
     };

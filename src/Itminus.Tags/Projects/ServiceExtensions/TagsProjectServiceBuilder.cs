@@ -3,46 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags;
 
-public static class TagsProjectServiceCollection
-{
-
-    /// <summary>
-    /// 注册测点项目服务，其中可以配置通道工厂、组合测点加载器
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configTagsLoader"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddTagsProjectServices(this IServiceCollection services,  Action<TagsProjectServiceBuilder> configTagsLoader)
-    {
-
-        services.AddSingleton<IChannelsLoader, ChannelsLoader>();
-        services.AddSingleton<ILogicetLoader, LogicetLoader>();
-
-        var tpsb = new TagsProjectServiceBuilder(services);
-        configTagsLoader?.Invoke(tpsb);
-
-        services.AddSingleton<IChannelFactory, CompositeChannelFactory>(sp =>
-        {
-            tpsb.ApplyChannelFactoriesConfiguration(sp);
-            return tpsb.ChannelFactories;
-        });
-        services.AddSingleton<ITagsLoader>(sp =>
-        {
-            tpsb.ApplyTagsLoadersConfiguration(sp);
-            return tpsb.TagsLoaders;
-        });
-
-        services.AddSingleton<ITagsProjectFactory, TagsProjectFactory>();
-
-        return services;
-    }
-}
-
-
 public class TagsProjectServiceBuilder
 {
     public TagsProjectServiceBuilder(IServiceCollection services) 
     {
+        services.AddSingleton<ILogicetLoader, LogicetLoader>();
+        services.AddSingleton<IChannelsLoader, ChannelsLoader>();
+
         this.Services = services;
         this.ChannelFactories = new CompositeChannelFactory();
         this.ChannelFactoriesConfiguration = new List<Action<IServiceProvider, CompositeChannelFactory>>();
@@ -52,11 +19,21 @@ public class TagsProjectServiceBuilder
 
     }
 
+    /// <summary>
+    /// 服务
+    /// </summary>
     public IServiceCollection Services { get; }
 
 
     #region ChannelFactories
+    /// <summary>
+    /// 通道工厂
+    /// </summary>
     public CompositeChannelFactory ChannelFactories { get; set; }
+
+    /// <summary>
+    /// 通道工厂配置，用于配置<see cref="ChannelFactories"/>
+    /// </summary>
     protected IList<Action<IServiceProvider, CompositeChannelFactory>> ChannelFactoriesConfiguration { get; set; }
 
 
@@ -72,7 +49,7 @@ public class TagsProjectServiceBuilder
     }
 
     /// <summary>
-    /// 应用 通道工厂 配置
+    /// 应用 <see cref="ChannelFactoriesConfiguration"/> 里的配置
     /// </summary>
     /// <param name="sp"></param>
     internal void ApplyChannelFactoriesConfiguration(IServiceProvider sp)
@@ -87,11 +64,18 @@ public class TagsProjectServiceBuilder
 
 
     #region TagLoaders
+    /// <summary>
+    /// 通道加载器
+    /// </summary>
     public CompositeTagsLoader TagsLoaders { get; set; }
+
+    /// <summary>
+    /// 通道加载器的配置
+    /// </summary>
     protected IList<Action<IServiceProvider, CompositeTagsLoader>> TagsLoadersConfiguration { get; set; }
 
     /// <summary>
-    /// 配置TagsLoader
+    /// 配置 <see cref="TagsLoaders"/>
     /// </summary>
     /// <param name="config"></param>
     /// <returns></returns>
@@ -102,7 +86,7 @@ public class TagsProjectServiceBuilder
     }
 
     /// <summary>
-    /// 应用 测点加载器 配置
+    /// 应用 <see cref="TagsLoadersConfiguration"/> 中的配置
     /// </summary>
     /// <param name="sp"></param>
     internal void ApplyTagsLoadersConfiguration(IServiceProvider sp)

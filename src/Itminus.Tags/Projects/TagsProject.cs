@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags.Projects;
 
-public class TagsProject : ITagsProject
+internal class TagsProject : ITagsProject
 {
     private readonly IChannelsLoader _channelsLoader;
     private readonly ITagsLoader _tagsLoader;

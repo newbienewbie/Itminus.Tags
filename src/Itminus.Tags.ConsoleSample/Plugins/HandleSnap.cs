@@ -5,11 +5,12 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Itminus.Tags;
+namespace Itminus.Tags.ConsoleSample;
 
 internal class HandleSnap : LogicetBase
 {
-    private ITagCbnt _cbnt;
+    private ITagCbnt _cbnt1;
+    private ITagCbnt _cbnt2;
     private ITagCbntor _reqTag;
     private ITagCbntor _ackTag;
     private ITagCbntor _mat;
@@ -17,12 +18,13 @@ internal class HandleSnap : LogicetBase
 
     public HandleSnap(IList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
     {
-        this._cbnt = this.Tags.SelectCbnt("Group1");
-        this._reqTag = _cbnt.SelectTag("拍照-请求-标志");
-        this._ackTag = _cbnt.SelectTag("拍照-响应-标志");
+        this._cbnt1 = this.Tags.SelectCbnt("g1/拍照请求");
+        this._reqTag = _cbnt1.SelectTag("拍照-请求-标志");
+        this._mat = _cbnt1["拍照-请求-料号"];
+        this._prog = _cbnt1["拍照-请求-程序号"];
 
-        this._mat = _cbnt["拍照-请求-料号"];
-        this._prog = _cbnt["拍照-请求-程序号"];
+        this._cbnt2 = this.Tags.SelectCbnt("g1/拍照响应");
+        this._ackTag = _cbnt2.SelectTag("拍照-响应-标志");
     }
 
     public override int Order => 1;

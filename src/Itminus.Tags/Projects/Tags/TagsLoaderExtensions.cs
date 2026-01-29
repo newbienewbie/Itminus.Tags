@@ -20,7 +20,7 @@ public static class TagsLoaderExtensions
     //}
 
     /// <summary>
-    /// 注册一个针对测点组合的加载器: 
+    /// 注册特定驱动的 TagsCbnt 加载器: 
     ///     如果将来被送入加载器的Tag的channel与这里指定的驱动相同，则会构建一个测点组合<br/>
     /// </summary>
     /// <typeparam name="TCbntBuilder"></typeparam>

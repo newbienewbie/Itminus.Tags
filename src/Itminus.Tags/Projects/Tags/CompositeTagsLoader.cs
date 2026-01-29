@@ -30,7 +30,6 @@ public delegate TagBuilderBase? MakeTagBuilder(ITagChannel channel, TagDescripto
 
 /// <summary>
 /// 复合测点集加载器。<br/>
-/// 会按顺序逐一调用内部测点构建器集合，如果某个构建器返回为null，表示当前构建器不适用于对应的节点，需要继续尝试其它构建器。
 /// </summary>
 public class CompositeTagsLoader : ITagsLoader
 {
@@ -107,61 +106,6 @@ public class CompositeTagsLoader : ITagsLoader
             }
         }
         return null;
-    }
-    #endregion
-
-
-    /// <summary>
-    /// 构建一个空的根测点组
-    /// </summary>
-    /// <param name="isEntry"></param>
-    /// <returns></returns>
-    public virtual ITagGrp MakeEmptyRoot(bool isEntry)
-    {
-        var root = new TagGrp("root", isEntry, null);
-        return root;
-    }
-
-
-    #region 从index文件中加载测点根
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    public virtual ITagGrp LoadTagRootFromIndex(string indexPath, IList<ITagChannel> channels)
-    {
-        var files = this.ParseTagsIndex(indexPath);
-        var root = MakeEmptyRoot(isEntry: false);
-        foreach (var file in files)
-        {
-            LoadTagGroupFromXmlFile(root, file, channels);
-        }
-        return root;
-
-    }
-
-    protected virtual IList<string> ParseTagsIndex(string indexPath)
-    {
-        if (!File.Exists(indexPath))
-        {
-            throw new Exception($"指定的测点索引文件路径不存在({indexPath})");
-        }
-        var dir = Path.GetDirectoryName(indexPath) ?? throw new Exception("无法获取测点索引所在目录");
-        var doc = XDocument.Load(indexPath);
-        var list = doc.Root?.Elements("file")
-            .Select(e => ((string?)e.Attribute("path")))
-            .Where(e => e != null)
-            .Select(e => Path.Combine(dir, e!))
-            .ToList();
-        return list ?? new List<string>();
-    }
-
-
-    protected virtual ITagGrp LoadTagGroupFromXmlFile(ITagGrp rootGrp, string xmlFilePath, IList<ITagChannel> channels)
-    {
-        var doc = XDocument.Load(xmlFilePath);
-        var thisElement = doc.Root!;
-        LoadTagGroup(rootGrp, thisElement, channels);
-        return rootGrp;
     }
     #endregion
 

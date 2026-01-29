@@ -1,4 +1,6 @@
-﻿namespace Itminus.Tags.Projects;
+﻿using System.Xml.Linq;
+
+namespace Itminus.Tags.Projects;
 
 internal class TagsProjectFactory : ITagsProjectFactory
 {
@@ -13,9 +15,10 @@ internal class TagsProjectFactory : ITagsProjectFactory
         this.logicetLoader = logicetLoader;
     }
 
-    public ITagsProject Create()
+    public ITagsProject Create(string projRoot, XElement? root = null)
     {
         var project = new TagsProject(channelsLoader, tagsLoader, logicetLoader);
+        project.Initialize(projRoot, root);
         return project;
     }
 }

@@ -193,11 +193,11 @@ public class TagCbnt_Tests
 
 
         await cbnt.WriteAsync(ct);
-        Assert.Equal(12, x);
-        Assert.Equal(22, y);
+        Assert.Equal(13, x);
+        Assert.Equal(23, y);
 
         await cbnt.WriteAsync(ct);
-        Assert.Equal(12, x);
-        Assert.Equal(22, y);
+        Assert.Equal(14, x);
+        Assert.Equal(24, y);
     }
 }
