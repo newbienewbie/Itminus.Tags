@@ -10,13 +10,15 @@ internal class TagsProject : ITagsProject
     private readonly ITagsLoader _tagsLoader;
     private readonly ILogicetLoader _logicetLoader;
     private readonly ILogicetMaker _logicetMaker;
+    private readonly IServiceProvider _sp;
 
-    public TagsProject(IChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader, ILogicetMaker logicetMaker)
+    public TagsProject(IChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader, ILogicetMaker logicetMaker, IServiceProvider sp)
     {
         this._channelsLoader = channelsLoader;
         this._tagsLoader = tagsLoader;
         this._logicetLoader = logicetLoader;
         this._logicetMaker = logicetMaker;
+        this._sp = sp;
     }
 
     /// <summary>
@@ -67,7 +69,7 @@ internal class TagsProject : ITagsProject
         var dlls = elements
             .Where(e => !string.IsNullOrEmpty( e.Value) )
             .Select(e => string.IsNullOrEmpty(this.ProjectRoot) ? e.Value : Path.Combine(this.ProjectRoot, e.Value));
-        var logicets = this._logicetLoader.LoadLogicets(dlls, this.Channels, this.Tags);
+        var logicets = this._logicetLoader.LoadLogicets(this._sp, dlls, this.Channels, this.Tags);
         this.AddLogicets(logicets);
         return this;
     }

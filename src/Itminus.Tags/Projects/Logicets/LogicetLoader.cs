@@ -17,24 +17,23 @@ namespace Itminus.Tags.Projects;
 /// </summary>
 public class LogicetLoader : ILogicetLoader
 {
-    private readonly IServiceProvider _sp;
+   
     private readonly ILogger<LogicetLoader> _logger;
 
-    public LogicetLoader(IServiceProvider sp, ILogger<LogicetLoader> logger)
+    public LogicetLoader(ILogger<LogicetLoader> logger)
     {
-        this._sp = sp;
         this._logger = logger;
     }
 
 
     /// <inheritdoc/>
-    public IList<ILogicet> LoadLogicets(IEnumerable<string> dllLocations, IList<ITagChannel> channels, ITagGrp tags)
+    public IList<ILogicet> LoadLogicets(IServiceProvider sp, IEnumerable<string> dllLocations, IList<ITagChannel> channels, ITagGrp tags)
     {
         var results = dllLocations
             .SelectMany(l =>
             {
                 var plugin = LoadPlugin(l);
-                var logicets = this.MakeLogicets(plugin, channels, tags);
+                var logicets = this.MakeLogicets(sp, plugin, channels, tags);
                 return logicets;
             })
             .ToList();
@@ -47,11 +46,11 @@ public class LogicetLoader : ILogicetLoader
         return loadContext.LoadFromAssemblyName(new AssemblyName(Path.GetFileNameWithoutExtension(pluginLocation)));
     }
 
-    protected virtual IList<ILogicet> MakeLogicets(Assembly assembly, IList<ITagChannel> channels, ITagGrp tags)
+    protected virtual IList<ILogicet> MakeLogicets(IServiceProvider sp, Assembly assembly, IList<ITagChannel> channels, ITagGrp tags)
     {
         var types = assembly.GetTypes()
             .Where(t => !t.IsInterface && !t.IsAbstract && !t.IsGenericType);
-        var logicetMaker = this._sp.GetRequiredService<ILogicetMaker>();
+        var logicetMaker = sp.GetRequiredService<ILogicetMaker>();
         
         var logicets = types
             .Select(t => {
