@@ -13,14 +13,18 @@ public class ZLanTagFactory : TagCbntorFactoryBase
     public virtual DITag CreateDITag(TagDescriptor tagDescriptor)
     {
         var tagAddr = PinAddrUtils.ParseDI(tagDescriptor.Address);
-        return new DITag(tagDescriptor, TagCbnt, 0);
+        var startAddr = DIPinAddr.DI1;
+        var offset = (int)tagAddr - (int)startAddr;
+        return new DITag(tagDescriptor, TagCbnt, offset);
     }
 
 
     public virtual DOTag CreateDOTag(TagDescriptor tagDescriptor)
     {
         var tagAddr = PinAddrUtils.ParseDO(tagDescriptor.Address);
-        return new DOTag(tagDescriptor, TagCbnt, 0);
+        var startAddr = DOPinAddr.DO1;
+        var offset = (int)tagAddr - (int)startAddr;
+        return new DOTag(tagDescriptor, TagCbnt, offset);
     }
 
     public override ITagCbntor CreateTag(TagDescriptor descriptor)

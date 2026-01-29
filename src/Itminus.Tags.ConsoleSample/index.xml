@@ -43,10 +43,10 @@
 			<Tag name="手动" address="DI2" type="DI"></Tag>
 		</TagCbnt>
 		<TagCbnt name="输出" area="DO" access="R1W">
-			<Tag name="绿灯" address="DI1" type="DI"></Tag>
-			<Tag name="红灯" address="DI2" type="DI"></Tag>
-			<Tag name="黄灯" address="DI2" type="DI"></Tag>
-			<Tag name="放行灯" address="DI2" type="DI"></Tag>
+			<Tag name="绿灯" address="DO1" type="DO"></Tag>
+			<Tag name="红灯" address="DO2" type="DO"></Tag>
+			<Tag name="黄灯" address="DO3" type="DO"></Tag>
+			<Tag name="放行灯" address="DO4" type="DO"></Tag>
 		</TagCbnt>
 	</TagGrp>
 
