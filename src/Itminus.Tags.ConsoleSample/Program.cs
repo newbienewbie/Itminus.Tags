@@ -45,11 +45,10 @@ project.TurnCrashed += (grp, ch, ex) => {
     return Task.CompletedTask;
 };
 
+
 // (可选)在运行之前，可以手动调整 Logicets，
 //     比如这里移除配置文件中dll，改用代码编写的
 project.Logicets.Clear();
-
-var logicetMaker = sp.GetRequiredService<ILogicetMaker>();
 project.TryAddLogicet<HandleSnap11>();
 project.TryAddLogicet<HandleSnap12>();
 
