@@ -150,6 +150,8 @@ public class CompositeTagsLoader : ITagsLoader
             e =>
             {
                 var thisGrp = new TagGrp(thisTagName, thisIsEntry, thisChannel);
+                var isEnabled = !string.Equals(thisElement.Attribute("isEnabled")?.Value, "false", StringComparison.OrdinalIgnoreCase);
+                thisGrp.IsEnabled = isEnabled;
                 thisGrp.ScanInterval = thisElement.GetTagUnionScanInterval(thisGrp.Name) ?? (parent.GetScanInterval() ?? 1000);
                 parent.AddTag(thisGrp);
                 foreach (var childElement in thisElement.Elements())

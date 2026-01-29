@@ -8,7 +8,7 @@
         <Slot>1</Slot>
     </Channel>
     <Channel name="ModbusTcp-2" driver="ModbusTcp">
-        <IpAddr>192.168.1.12</IpAddr> 
+        <IpAddr>localhost</IpAddr> 
         <Port>502</Port>
     </Channel>
 	<Channel name="ZLan-1" driver="ZLanTcp">
@@ -37,7 +37,8 @@
         </TagCbnt>
     </TagGrp>
 
-	<TagGrp name="g2" isEntry="true" isEnabled="true" channel="ZLan-1" scanInterval="10">
+	<!-- ZLan 配置 -->
+	<TagGrp name="g2" isEntry="true" isEnabled="false" channel="ZLan-1" scanInterval="10">
 		<TagCbnt name="输入" area="DI" access="RO">
 			<Tag name="放行按钮闭合状态" address="DI1" type="DI"></Tag>
 			<Tag name="手动" address="DI2" type="DI"></Tag>
@@ -47,6 +48,20 @@
 			<Tag name="红灯" address="DO2" type="DO"></Tag>
 			<Tag name="黄灯" address="DO3" type="DO"></Tag>
 			<Tag name="放行灯" address="DO4" type="DO"></Tag>
+		</TagCbnt>
+	</TagGrp>
+
+	<!-- ModbusTcp 配置 -->
+	<TagGrp name="g3" isEntry="true" isEnabled="true" channel="ModbusTcp-2" scanInterval="10">
+		<TagCbnt name="输入" address="10001" access="RO">
+			<Tag name="放行按钮闭合状态" address="10001" type="DI"></Tag>
+			<Tag name="手动" address="10002" type="DI"></Tag>
+		</TagCbnt>
+		<TagCbnt name="输出" address="00001" access="R1W">
+			<Tag name="绿灯" address="00020" type="DO"></Tag>
+			<Tag name="红灯" address="00021" type="DO"></Tag>
+			<Tag name="黄灯" address="00022" type="DO"></Tag>
+			<Tag name="放行灯" address="00023" type="DO"></Tag>
 		</TagCbnt>
 	</TagGrp>
 

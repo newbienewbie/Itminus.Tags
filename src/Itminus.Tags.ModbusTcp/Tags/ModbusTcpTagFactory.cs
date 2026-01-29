@@ -1,4 +1,4 @@
-using Itminus.Tags.ModbusTcp.Tags;
+﻿using Itminus.Tags.ModbusTcp.Tags;
 
 namespace Itminus.Tags.ModbusTcp;
 
@@ -155,6 +155,10 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             TagKinds.INT32 => CreateInt32Tag(descriptor) as ITagCbntor,
             TagKinds.UINT32 => CreateUInt32Tag(descriptor) as ITagCbntor,
             TagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
+
+            TagKinds.DI => CreateDITag(descriptor) as ITagCbntor,
+            TagKinds.DO => CreateDOTag(descriptor) as ITagCbntor,
+
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")
         };
         return tag;

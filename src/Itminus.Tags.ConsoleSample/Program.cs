@@ -51,7 +51,7 @@ project.TurnCrashed += (grp, ch, ex) => {
 project.Logicets.Clear();
 project.TryAddLogicet<HandleSnap11>();
 project.TryAddLogicet<HandleSnap12>();
-
+project.TryAddLogicet<HandleSnap13>();
 // 运行 project
 var cts = new CancellationTokenSource();
 var task = project.RunAsync(cts.Token);
