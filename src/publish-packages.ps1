@@ -1,8 +1,8 @@
-param (
+﻿param (
     [string]$packageVersion= $(Read-Host "package version") 
 )
 
-$projects = @(,"Itminus.Tags", "Itminus.Tags.RxExtensions", "Itminus.Tags.ModbusTcp", "Itminus.Tags.S7", "Itminus.Tags.ZLan")
+$projects = @("Itminus.Tags", "Itminus.Tags.RxExtensions", "Itminus.Tags.ModbusTcp", "Itminus.Tags.S7", "Itminus.Tags.ZLan")
 $nugetSource = $Env:NugetSource
 $key = $Env:NugetApiKey
 
