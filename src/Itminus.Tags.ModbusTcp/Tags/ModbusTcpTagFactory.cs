@@ -22,7 +22,13 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
 
     #region
     public virtual DITag CreateDITag(TagDescriptor tagDescriptor)
-    {
+    {           
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 1;
+        }
+
         var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.Address);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
@@ -37,6 +43,12 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
 
     public virtual DOTag CreateDOTag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 1;
+        }
+
         var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.Address);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
@@ -51,6 +63,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
 
     public virtual BitTagCbntor CreateBitTag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 2;
+        }
         var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.Address);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
@@ -84,6 +101,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     public virtual ByteTagCbntor CreateByteTag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 2;
+        }
         int offset = GetTagOffset(tagDescriptor);
         return new ByteTagCbntor(tagDescriptor, TagCbnt, offset);
     }
@@ -95,6 +117,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     public virtual Int16TagCbntor CreateInt16Tag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 2;
+        }
         var offset = GetTagOffset(tagDescriptor);
         return new Int16TagCbntor(tagDescriptor, TagCbnt, offset);
     }
@@ -107,6 +134,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     public virtual UInt16TagCbntor CreateUInt16Tag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 2;
+        }
         var offset = GetTagOffset(tagDescriptor);
         return new UInt16TagCbntor(tagDescriptor, TagCbnt, offset);
     }
@@ -118,6 +150,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     public virtual Int32TagCbntor CreateInt32Tag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 4;
+        }
         var offset = GetTagOffset(tagDescriptor);
         return new Int32TagCbntor(tagDescriptor, TagCbnt, offset);
     }
@@ -129,6 +166,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     public virtual UInt32TagCbntor CreateUInt32Tag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 4;
+        }
         var offset = GetTagOffset(tagDescriptor);
         return new UInt32TagCbntor(tagDescriptor, TagCbnt, offset);
     }
@@ -140,6 +182,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     public virtual FloatTagCbntor CreateFloatTag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 4;
+        }
         var offset = GetTagOffset(tagDescriptor);
         return new FloatTagCbntor(tagDescriptor, TagCbnt, offset);
     }
@@ -148,6 +195,12 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     {
         var tag = descriptor.TagKind switch
         {
+            // 1000x
+            TagKinds.DI => CreateDITag(descriptor) as ITagCbntor,
+            // 0000x
+            TagKinds.DO => CreateDOTag(descriptor) as ITagCbntor,
+
+            // each part has 2-words
             TagKinds.BIT => CreateBitTag(descriptor),
             TagKinds.BYTE => CreateByteTag(descriptor) as ITagCbntor,
             TagKinds.INT16 => CreateInt16Tag(descriptor) as ITagCbntor,
@@ -156,8 +209,6 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             TagKinds.UINT32 => CreateUInt32Tag(descriptor) as ITagCbntor,
             TagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
 
-            TagKinds.DI => CreateDITag(descriptor) as ITagCbntor,
-            TagKinds.DO => CreateDOTag(descriptor) as ITagCbntor,
 
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")
         };

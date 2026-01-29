@@ -2,8 +2,10 @@
 using Itminus.Tags.ModbusTcp;
 using Itminus.Tags.Projects;
 using Itminus.Tags.S7;
+using Itminus.Tags.Web;
 using Itminus.Tags.Web.Components;
 using Itminus.Tags.Web.Tags;
+using Itminus.Tags.ZLan;
 using MudBlazor.Services;
 using System.Reflection;
 
@@ -21,20 +23,26 @@ builder.Services.AddTagsProjectServices(b =>
 {
     b.Services.AddKeyedSingleton<IChannelFactory, S7TagChannelFactory>("S7");
     b.Services.AddKeyedSingleton<IChannelFactory, ModbusTcpChannelFactory>("ModbusTcp");
+    b.Services.AddKeyedSingleton<IChannelFactory, ZLanTcpChannelFactory>("ZLanTcp");
 
     b.ConfigChannelsFactory((sp, factory) => {
         factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("S7"));
         factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("ModbusTcp"));
+        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("ZLanTcp"));
     });
 
     b.ConfigTagsLoader((sp, loader) => {
         loader.AddTagsCbntBuilder<S7TagCbntBuilder>(sp, "S7");
         loader.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>(sp, "ModbusTcp");
+        loader.AddTagsCbntBuilder<ZLanDICbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DI");
+        loader.AddTagsCbntBuilder<ZLanDOCbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DO");
     });
 });
 
 
-builder.Services.AddSingleton(sp => { 
+builder.Services.AddSingleton(rootsp => {
+    var ss = rootsp.CreateScope();
+    var sp = ss.ServiceProvider;
     var logger = sp.GetRequiredService<ILogger<ITagsProject>>();
     var factory = sp.GetRequiredService<ITagsProjectFactory>();
 
@@ -48,6 +56,11 @@ builder.Services.AddSingleton(sp => {
         logger.LogError("{grp}: {ex}", grp.Name, ex.Message);
         return Task.CompletedTask;
     };
+
+    proj.Logicets.Clear();
+    proj.TryAddLogicet<HandleSnap11>();
+    proj.TryAddLogicet<HandleSnap12>();
+    proj.TryAddLogicet<HandleSnap13>();
     return proj;
 });
 builder.Services.AddHostedService<S7BackgroundService>();

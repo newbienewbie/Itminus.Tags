@@ -12,6 +12,11 @@ public class ZLanTagFactory : TagCbntorFactoryBase
 
     public virtual DITag CreateDITag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 1;
+        }
         var tagAddr = PinAddrUtils.ParseDI(tagDescriptor.Address);
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
@@ -21,6 +26,11 @@ public class ZLanTagFactory : TagCbntorFactoryBase
 
     public virtual DOTag CreateDOTag(TagDescriptor tagDescriptor)
     {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 1;
+        }
         var tagAddr = PinAddrUtils.ParseDO(tagDescriptor.Address);
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;
