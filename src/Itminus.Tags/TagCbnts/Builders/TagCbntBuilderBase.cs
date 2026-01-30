@@ -96,21 +96,13 @@ public abstract class TagCbntBuilderBase
 
     public abstract TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors);
 
-    public virtual TagCbntBuilderBase AutoResize()
-    {
-        var cacheSize = 0;
-        foreach (var kvp in this.TagCbnt.Children)
-        {
-            var tag = kvp.Value;
-            var ending = tag.TagOffset + tag.TagDescriptor.TagSize;
-            if (ending > cacheSize)
-            {
-                cacheSize = ending;
-            }
-        }
-        this.TagCbnt.ResizeCache(cacheSize);
-        return this;
-    }
+
+    /// <summary>
+    /// 自动重算底层缓存区的大小需求，并对底层缓存区自动调整。会在<see cref="Build"/>中自动调用。<br/>
+    /// 实现类需要根据自己实际情况，重写自己的布局算法。
+    /// </summary>
+    /// <returns></returns>
+    public abstract TagCbntBuilderBase AutoResize();
 
     public virtual ITagCbnt Build()
     {
