@@ -32,10 +32,10 @@ builder.Services.AddTagsProjectServices(b =>
     });
 
     b.ConfigTagsLoader((sp, loader) => {
-        loader.AddTagsCbntBuilder<S7TagCbntBuilder>(sp, "S7");
-        loader.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>(sp, "ModbusTcp");
-        loader.AddTagsCbntBuilder<ZLanDICbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DI");
-        loader.AddTagsCbntBuilder<ZLanDOCbntBuilder>(sp, "ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DO");
+        loader.AddTagsCbntBuilder<S7TagCbntBuilder>("S7");
+        loader.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>("ModbusTcp");
+        loader.AddTagsCbntBuilder<ZLanDICbntBuilder>("ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DI");
+        loader.AddTagsCbntBuilder<ZLanDOCbntBuilder>("ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DO");
     });
 });
 

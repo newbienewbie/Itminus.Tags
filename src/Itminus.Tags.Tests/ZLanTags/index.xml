@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道，可以配置多个-->
+	<Channel name="ZLan-1" driver="ZLanTcp">
+		<IpAddr>localhost</IpAddr>
+		<Port>502</Port>
+	</Channel>
+
+	<!-- ZLan 配置 -->
+	<TagGrp name="g2" isEntry="true" isEnabled="true" channel="ZLan-1" scanInterval="10">
+		<TagCbnt name="输入" area="DI" access="RO">
+			<Tag name="放行按钮闭合状态" address="DI1" type="DI"></Tag>
+			<Tag name="手动" address="DI2" type="DI"></Tag>
+		</TagCbnt>
+		<TagCbnt name="输出" area="DO" access="R1W">
+			<Tag name="绿灯" address="DO1" type="DO"></Tag>
+			<Tag name="红灯" address="DO2" type="DO"></Tag>
+			<Tag name="黄灯" address="DO3" type="DO"></Tag>
+			<Tag name="放行灯" address="DO4" type="DO"></Tag>
+		</TagCbnt>
+	</TagGrp>
+
+
+</root>

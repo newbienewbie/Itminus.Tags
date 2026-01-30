@@ -30,7 +30,7 @@ public static class TagsLoaderExtensions
     /// <param name="sp"></param>
     /// <param name="driver"></param>
     /// <returns></returns>
-    public static CompositeTagsLoader AddTagsCbntBuilder<TCbntBuilder>(this CompositeTagsLoader loader, IServiceProvider sp, string driver, Func<TCbntBuilder, bool>? predicate = null)
+    public static CompositeTagsLoader AddTagsCbntBuilder<TCbntBuilder>(this CompositeTagsLoader loader, string driver, Func<TCbntBuilder, bool>? predicate = null)
         where TCbntBuilder : TagCbntBuilderBase, new()
     {
         return loader.AddTagsCbntBuilder((channel, el) => {
@@ -38,7 +38,7 @@ public static class TagsLoaderExtensions
             {
                 return null;
             }
-            var builder = ActivatorUtilities.CreateInstance<TCbntBuilder>(sp);
+            var builder = new TCbntBuilder();
             builder.WithXElement(el);
 
             var flag = predicate is null ? true : predicate(builder);
