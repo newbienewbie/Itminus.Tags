@@ -21,15 +21,7 @@ public class ZLanProjTests
         services.AddLogging();
         services.AddTagsProjectServices(b =>
         {
-            b.Services.AddKeyedSingleton<IChannelFactory, ZLanTcpChannelFactory>("ZLanTcp");
-            b.ConfigChannelsFactory((sp, component) => {
-                component.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("ZLanTcp"));
-            });
-
-            b.ConfigTagsLoader((sp, loader) => {
-                loader.AddTagsCbntBuilder<ZLanDICbntBuilder>(driver: "ZLanTcp", predicate: b => b.Area == "DI");
-                loader.AddTagsCbntBuilder<ZLanDOCbntBuilder>(driver: "ZLanTcp", predicate: b => b.Area == "DO");
-            });
+            b.AddZLanTcpSupport();
         });
 
         this._root = services.BuildServiceProvider();

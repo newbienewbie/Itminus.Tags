@@ -32,8 +32,8 @@
 
 		<TagCbnt name="拍照响应" access="R1W" address="DB200.400.0">
 			<Tag name="拍照-响应-标志" address="DB200.400.0" type="BIT" />
-			<Tag name="拍照-响应-B1" address="DB200.400.1" type="BYTE" />
-			<Tag name="拍照-响应-I2" address="DB200.400.2" type="INT16" />
+			<Tag name="拍照-响应-B1" address="DB200.400.1" type="BIT" />
+			<Tag name="拍照-响应-I2" address="DB200.400.2" type="BIT" />
 		</TagCbnt>
 	</TagGrp>
 
@@ -71,6 +71,6 @@
 		</TagCbnt>
 	</TagGrp>
 
-	<!-- 逻辑配置，可以配置多个 -->
-	<Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>
+	<!-- 逻辑配置，可以配置0~N个 -->
+	<!--<Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>-->
 </root>

@@ -21,14 +21,7 @@ public class S7ProjTests
         services.AddLogging();
         services.AddTagsProjectServices(b =>
         {
-            b.Services.AddKeyedSingleton<IChannelFactory, S7TagChannelFactory>("S7");
-            b.ConfigChannelsFactory((sp, component) => {
-                component.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("S7"));
-            });
-
-            b.ConfigTagsLoader((sp, loader) => {
-                loader.AddTagsCbntBuilder<S7TagCbntBuilder>(driver: "S7");
-            });
+            b.AddS7Support();
         });
 
         this._root = services.BuildServiceProvider();

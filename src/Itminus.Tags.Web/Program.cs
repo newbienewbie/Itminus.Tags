@@ -21,22 +21,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddTagsProjectServices(b =>
 {
-    b.Services.AddKeyedSingleton<IChannelFactory, S7TagChannelFactory>("S7");
-    b.Services.AddKeyedSingleton<IChannelFactory, ModbusTcpChannelFactory>("ModbusTcp");
-    b.Services.AddKeyedSingleton<IChannelFactory, ZLanTcpChannelFactory>("ZLanTcp");
-
-    b.ConfigChannelsFactory((sp, factory) => {
-        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("S7"));
-        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("ModbusTcp"));
-        factory.AddFactory(sp.GetRequiredKeyedService<IChannelFactory>("ZLanTcp"));
-    });
-
-    b.ConfigTagsLoader((sp, loader) => {
-        loader.AddTagsCbntBuilder<S7TagCbntBuilder>("S7");
-        loader.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>("ModbusTcp");
-        loader.AddTagsCbntBuilder<ZLanDICbntBuilder>("ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DI");
-        loader.AddTagsCbntBuilder<ZLanDOCbntBuilder>("ZLanTcp", (cbntBuilder) => cbntBuilder.Area == "DO");
-    });
+    b.AddS7Support();
+    b.AddModbusTcpSupport();
+    b.AddZLanTcpSupport();
 });
 
 
