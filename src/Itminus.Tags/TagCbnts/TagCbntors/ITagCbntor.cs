@@ -32,5 +32,5 @@ public interface ITagCbntor: ITag
     /// <summary>
     /// 强行通知测点已经刷入底层
     /// </summary>
-    void NotifyValueWritten();
+    void NotifyTagWritten();
 }

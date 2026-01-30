@@ -70,7 +70,7 @@ public abstract class TagCbntor : ITagCbntor
     }
 
 
-    public void NotifyValueWritten()
+    public void NotifyTagWritten()
     {
         if (this.OnTagWritten != null)
         {
@@ -100,7 +100,7 @@ public abstract class TagCbntor : ITagCbntor
         var channel = this.TagCbnt.GetRequiredChannel();
         var cache = this.TagCbnt.Cache.Slice(this.CacheOffset, this.TagSize());
         await channel.WriteAsync(this.TagAddress(), cache.ToArray(),ct);
-        this.NotifyValueWritten();
+        this.NotifyTagWritten();
         this.IsDirty = false;
     }
 

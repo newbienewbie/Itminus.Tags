@@ -96,7 +96,7 @@ internal class TagCbnt : ITagCbnt
         foreach (var kv in this.Children)
         {
             var tag = kv.Value;
-            tag.NotifyValueWritten();
+            tag.NotifyTagWritten();
             tag.IsDirty = false;
         }
         this.IsDirty = false;
