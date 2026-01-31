@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Opc.Ua;
 using Opc.Ua.Client;
 using System.Net.Sockets;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Itminus.Tags.OpcUaClient;
 public class OpcUaClientTagChannel : ITagChannel
@@ -82,7 +83,6 @@ public class OpcUaClientTagChannel : ITagChannel
             new UserIdentity();
         Session session = await Session.Create(_appConfig, endpoint, false, false, "DataCollector", 60000, iden, null);
         this._logger.LogInformation("OPC UA 连接成功：{url}", _opcServerOpt.DiscoveryUrl);
-        
         //await _mediator.Publish(new UILogNotification(new LogMessage()
         //{
         //    EventSource = "OpcUa",
@@ -118,10 +118,18 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <exception cref="NotImplementedException"></exception>
     public async Task DisconnectAsync(CancellationToken ct)
     {
-        if (this._session != null)
+        try
         {
-            await _session.CloseAsync(ct);
+            if (this._session != null)
+            {
+                await _session.CloseAsync(ct);
+            }
         }
+        finally
+        {
+            this._session = null;
+        }
+
     }
     #endregion
 

@@ -1,4 +1,5 @@
 ﻿using Opc.Ua;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -56,16 +57,41 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// </summary>
     public ConcurrentDictionary<NodeId, DataValue> Bag { get; } = new ConcurrentDictionary<NodeId, DataValue>();
 
+    private Dictionary<string, NodeId> _nodeIdCache { get; } = new Dictionary<string, NodeId>();
+
+    private NodeId GetNodeIdByTagName(OpcUaClientTagCbntor cbntor)
+    {
+        var childTagName = cbntor.TagName();
+        if (_nodeIdCache.TryGetValue(childTagName, out var nodeId))
+        {
+            return nodeId;
+        }
+
+        // 缓存中没有，则从子标签获取
+        nodeId = cbntor.NodeId;
+        _nodeIdCache[childTagName] = nodeId;
+        return nodeId;
+    }
+
     /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.Channel as OpcUaClientTagChannel;
+        var channel = this.GetChannel() as OpcUaClientTagChannel;
         if(channel is null)
         {
             throw new Exception($"TagCbnt({this.Name}) 通道应为{nameof(OpcUaClientTagChannel)},实际为{channel?.GetType()}");
         }
-        var nodeIds = this.Children.Keys.Select(key => new NodeId(key)).ToList() ;
-        var (values, errs) = await channel.ReadAsync(nodeIds, ct);
+        var nodeIds = this.Children
+            .Select(child => { 
+                var cbntor = child.Value as OpcUaClientTagCbntor;
+                if (cbntor is null)
+                {
+                    throw new Exception($"TagCbnt({this.Name}) 下的子标签({child.Key}) 应为{nameof(OpcUaClientTagCbntor)},实际为{child.Value.GetType()}");
+                }
+                return this.GetNodeIdByTagName(cbntor);
+            })
+            .ToList() ;
+        var (values, errs) = await channel.ReadAsync(nodeIds!, ct);
 
         for(int i =0; i< nodeIds.Count; i++)
         {
@@ -88,7 +114,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// <inheritdoc/>
     public async Task WriteAsync(CancellationToken ct)
     {
-        var channel = this.Channel as OpcUaClientTagChannel;
+        var channel = this.GetChannel() as OpcUaClientTagChannel;
         if (channel is null)
         {
             throw new Exception($"TagCbnt({this.Name}) 通道应为{nameof(OpcUaClientTagChannel)},实际为{channel?.GetType()}");
@@ -96,7 +122,12 @@ internal class OpcUaClientTagCbnt : ITagCbnt
         var toBeWritten = this.Children
             .Where(c => c.Value.IsDirty)
             .Select(child => {
-                var nodeId = new NodeId(child.Key);
+                var cbntor = child.Value as OpcUaClientTagCbntor;
+                if (cbntor is null)
+                {
+                    throw new Exception($"TagCbnt({this.Name}) 下的子标签({child.Key}) 应为{nameof(OpcUaClientTagCbntor)},实际为{child.Value.GetType()}");
+                }
+                var nodeId= this.GetNodeIdByTagName(cbntor);
                 return new KeyValuePair<NodeId, DataValue>(
                     nodeId,
                     this.Bag[nodeId]

@@ -10,7 +10,7 @@ namespace Itminus.Tags.OpcUaClient;
 internal class OpcUaClientTagCbntor : TagCbntor
 {
     private OpcUaClientTagCbnt _cbnt;
-    private NodeId _nodeId;
+    public NodeId NodeId { get; }
 
     public OpcUaClientTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
         : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
@@ -18,13 +18,13 @@ internal class OpcUaClientTagCbntor : TagCbntor
         var address = tagDescriptor.Address;
         this._cbnt = this.TagCbnt as OpcUaClientTagCbnt
             ?? throw new InvalidOperationException("Cbnt is not an OpcUaTagCbnt");
-        this._nodeId = address;
+        this.NodeId = address;
     }
 
     public override object? Value {
         get 
         {
-            if(!this._cbnt.Bag.TryGetValue(this._nodeId, out var nodeVal))
+            if(!this._cbnt.Bag.TryGetValue(this.NodeId, out var nodeVal))
             {
                 return null;
             }
@@ -32,7 +32,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
         }
         set
         {
-            this._cbnt.Bag.AddOrUpdate(this._nodeId, new DataValue() { Value = value }, (nid, v) => {
+            this._cbnt.Bag.AddOrUpdate(this.NodeId, new DataValue() { Value = value }, (nid, v) => {
                 v.Value = v;
                 return v;
             });
@@ -48,11 +48,10 @@ internal class OpcUaClientTagCbntor : TagCbntor
             ?? throw new InvalidOperationException("Channel is not an OpcUaTagChannel");
         var cbnt = this.TagCbnt as OpcUaClientTagCbnt
             ?? throw new InvalidOperationException("Cbnt is not an OpcUaTagCbnt");
-        var nodeId = new NodeId(this.TagAddress());
-        var nodeValue = cbnt.Bag[nodeId];
+        var nodeValue = cbnt.Bag[this.NodeId];
         var tobeWritten = new Dictionary<NodeId, DataValue>
         {
-            { nodeId, nodeValue }
+            { this.NodeId, nodeValue }
         };
         await opcUaChannel.WriteAsync(tobeWritten, ct);
         this.NotifyTagWritten();
@@ -67,11 +66,10 @@ internal class OpcUaClientTagCbntor : TagCbntor
             ?? throw new InvalidOperationException("Channel is not an OpcUaTagChannel");
         var cbnt = this.TagCbnt as OpcUaClientTagCbnt
             ?? throw new InvalidOperationException("Cbnt is not an OpcUaTagCbnt");
-        var nodeId = new NodeId(this.TagAddress());
-        var (values, errs) = await opcUaChannel.ReadAsync([nodeId], ct);
+        var (values, errs) = await opcUaChannel.ReadAsync([this.NodeId], ct);
 
         var value = values[0];
-        cbnt.Bag[nodeId] = value;
+        cbnt.Bag[this.NodeId] = value;
 
         this.NotifyTagRead();
     }

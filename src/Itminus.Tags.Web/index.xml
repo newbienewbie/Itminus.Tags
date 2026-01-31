@@ -23,7 +23,7 @@
 	<Channel name="OpcUaClient-2" driver="OpcUaClient">
 		<ClientName>client-name-1</ClientName>
 		<ServerOpt>
-			<DiscoveryUrl>opc.tcp://localhost:4840</DiscoveryUrl>
+			<DiscoveryUrl>opc.tcp://DESKTOP-FM4T292:4840</DiscoveryUrl>
 			<UsePassword>false</UsePassword>
 			<UserName>user</UserName>
 			<Password>1</Password>
