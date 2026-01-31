@@ -32,7 +32,7 @@ public class S7TagChannel : ITagChannel
 
     private static readonly string DRIVER = S7Names.DriverName;
 
-    public virtual Task DisconnectAsync()
+    public virtual Task DisconnectAsync(CancellationToken ct)
     {
         if (this.Client == null)
             return Task.CompletedTask;
@@ -56,7 +56,7 @@ public class S7TagChannel : ITagChannel
         return tcs.Task;
     }
 
-    public async Task EnsureConnectedAsync(bool force = false)
+    public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
         //当前client存在并且连接有效
         if (!force && Client != null && Client.Connected)
@@ -64,7 +64,7 @@ public class S7TagChannel : ITagChannel
             return;
         }
 
-        var result = await this.CreateClientAndConnectAsync();
+        var result = await this.CreateClientAndConnectAsync(ct);
         if (result.IsError)
         {
             throw new Exception(result.ErrorValue.ToString());
@@ -72,7 +72,7 @@ public class S7TagChannel : ITagChannel
         this.Client = result.ResultValue;
     }
 
-    protected virtual Task<FSharpResult<S7Client, ApiError>> CreateClientAndConnectAsync()
+    protected virtual Task<FSharpResult<S7Client, ApiError>> CreateClientAndConnectAsync(CancellationToken ct)
     {
         var tcs = new TaskCompletionSource<FSharpResult<S7Client, ApiError>>();
         var th = new Thread(() =>

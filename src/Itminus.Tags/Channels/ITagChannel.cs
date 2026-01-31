@@ -19,13 +19,13 @@ public interface ITagChannel : IDisposable
     /// 连接
     /// </summary>
     /// <returns></returns>
-    Task EnsureConnectedAsync(bool force = false);
+    Task EnsureConnectedAsync(bool force, CancellationToken ct);
 
     /// <summary>
     /// 关闭
     /// </summary>
     /// <returns></returns>
-    Task DisconnectAsync();
+    Task DisconnectAsync(CancellationToken ct);
 
     /// <summary>
     /// 读取底层硬件，返回一段字节数组表示所读取的结果。

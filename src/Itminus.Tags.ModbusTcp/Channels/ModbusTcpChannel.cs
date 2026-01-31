@@ -60,9 +60,9 @@ public class ModbusTcpChannel : ITagChannel
     /// 创建连接并初始化
     /// </summary>
     /// <returns></returns>
-    protected virtual async Task CreateConnectionAsync(int timeout)
+    protected virtual async Task CreateConnectionAsync(int timeout, CancellationToken ct)
     {
-        var entered = await _connSignal.WaitAsync(timeout);
+        var entered = await _connSignal.WaitAsync(timeout, ct);
         if (!entered)
         {
             throw new TimeoutException($"ModbusTcp 通道={ChannelName} 在创建连接前，获取锁超时！");
@@ -70,7 +70,7 @@ public class ModbusTcpChannel : ITagChannel
         try
         {
             _tcpClient = new TcpClient();
-            await _tcpClient.ConnectAsync(IpAddr, Port);
+            await _tcpClient.ConnectAsync(IpAddr, Port, ct);
             var factory = new ModbusFactory();
             ModbusMaster = factory.CreateMaster(_tcpClient);
             ModbusMaster.Transport.ReadTimeout = ReadTimeout;
@@ -114,14 +114,15 @@ public class ModbusTcpChannel : ITagChannel
     /// </summary>
     /// <param name="timeout"></param>
     /// <returns></returns>
-    public async Task EnsureConnectedAsync(bool force = false)
+    public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
         //当前client存在并且连接有效
         if (Connected)
         {
             return;
         }
-        await CreateConnectionAsync(ConnTimeout);
+        
+        await CreateConnectionAsync(ConnTimeout, ct);
         return;
     }
 
@@ -130,7 +131,7 @@ public class ModbusTcpChannel : ITagChannel
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task DisconnectAsync()
+    public Task DisconnectAsync(CancellationToken ct)
     {
         if (_tcpClient == null)
             return Task.CompletedTask;

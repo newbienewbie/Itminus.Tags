@@ -25,7 +25,7 @@ public class TagCbnt_Tests
 
         public string Driver => "MOCKCHANNEL";
 
-        public Task DisconnectAsync()
+        public Task DisconnectAsync(CancellationToken ct)
         {
             return Task.CompletedTask;
         }
@@ -35,7 +35,7 @@ public class TagCbnt_Tests
             return;
         }
 
-        public Task EnsureConnectedAsync(bool force = false)
+        public Task EnsureConnectedAsync(bool force, CancellationToken ct)
         {
             return Task.CompletedTask;
         }

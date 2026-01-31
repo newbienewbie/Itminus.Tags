@@ -21,7 +21,7 @@ public class TagGrpRunner : ITagGrpRunner
             {
                 if (!entry.IsEnabled)
                 {
-                    await Task.Delay(500);
+                    await Task.Delay(500, ct);
                     continue;
                 }
 
@@ -33,7 +33,7 @@ public class TagGrpRunner : ITagGrpRunner
                 // 开始轮询
                 while (!ct.IsCancellationRequested)
                 {
-                    await channel.EnsureConnectedAsync();
+                    await channel.EnsureConnectedAsync(force: false, ct);
                     await entry.ReadAsync(ct);
                     if(TurnProcess is not null)
                     {
@@ -54,7 +54,7 @@ public class TagGrpRunner : ITagGrpRunner
                     }
                     try
                     {
-                        channel?.DisconnectAsync();
+                        channel?.DisconnectAsync(ct);
                     }
                     catch 
                     { 
