@@ -3,8 +3,13 @@
 
 	<!-- 通道，可以配置多个-->
 	<Channel name="OpcUaClient-2" driver="OpcUaClient">
-		<IpAddr>localhost</IpAddr>
-		<Port>502</Port>
+		<ClientName>client-name-1</ClientName>
+		<ServerOpt>
+			<DiscoveryUrl>192.168.10.1</DiscoveryUrl>
+			<UsePassword>false</UsePassword>
+			<UserName>user-1</UserName>
+			<Password>pass-1</Password>
+		</ServerOpt>
 	</Channel>
 
 

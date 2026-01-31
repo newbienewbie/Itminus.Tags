@@ -13,25 +13,31 @@ public class OpcUaClientTagChannelDescriptor : ChannelDescriptor
 
     private static OpcUaServerOpt ParseSreverOpt(XElement serverOptEle)
     {
+        var discoveryUrl = 
+            serverOptEle.Attribute(nameof(OpcUaServerOpt.DiscoveryUrl))?.Value ?? 
+            serverOptEle.Element(nameof(OpcUaServerOpt.DiscoveryUrl))?.Value ??
+            "localhost";
+        var usePasswordStr =
+            serverOptEle.Attribute(nameof(OpcUaServerOpt.UsePassword))?.Value ??
+            serverOptEle.Element(nameof(OpcUaServerOpt.UsePassword))?.Value ??
+            "false";
+        var username = 
+            serverOptEle.Attribute(nameof(OpcUaServerOpt.UserName))?.Value ??
+            serverOptEle.Element(nameof(OpcUaServerOpt.UserName))?.Value ??
+            string.Empty;
+        var password = 
+            serverOptEle.Attribute(nameof(OpcUaServerOpt.Password))?.Value ??
+            serverOptEle.Element(nameof(OpcUaServerOpt.Password))?.Value ??
+            string.Empty;
         var serverOpt = new OpcUaServerOpt()
         {
-            DiscoveryUrl = serverOptEle.Attribute(nameof(OpcUaServerOpt.DiscoveryUrl))?.Value ?? "localhost",
-            ScanInterval =
-                int.TryParse(
-                    serverOptEle.Attribute(nameof(OpcUaServerOpt.ScanInterval))?.Value,
-                    out var scanInterval
-                ) ?
-                scanInterval :
-                500,
+            DiscoveryUrl = discoveryUrl,
             UsePassword =
-                bool.TryParse(
-                    serverOptEle.Attribute(nameof(OpcUaServerOpt.UsePassword))?.Value,
-                    out var usePassword
-                ) ?
+                bool.TryParse(usePasswordStr, out var usePassword ) ?
                 usePassword :
                 false,
-            UserName = serverOptEle.Attribute(nameof(OpcUaServerOpt.UserName))?.Value ?? string.Empty,
-            Password = serverOptEle.Attribute(nameof(OpcUaServerOpt.Password))?.Value ?? string.Empty,
+            UserName = username,
+            Password = password,
         };
         return serverOpt;
     }
@@ -48,7 +54,7 @@ public class OpcUaClientTagChannelDescriptor : ChannelDescriptor
         }
 
         var serverOpt = descriptor.Extras.TryGetValue(nameof(OpcUaTagChannelOpt.ServerOpt), out var serverEle) ?
-            ParseSreverOpt(XElement.Parse(serverEle.Value)) :
+            ParseSreverOpt(serverEle) :
             new OpcUaServerOpt();
 
         var res = new OpcUaClientTagChannelDescriptor

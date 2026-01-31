@@ -41,6 +41,13 @@ public class OpcUaClientProjTests
         // Test Channels
         Assert.Single(proj.Channels);
         Assert.IsType<OpcUaClientTagChannel>(proj.Channels[0]);
+        var channel = (OpcUaClientTagChannel) proj.Channels[0] ;
+        Assert.Equal("OpcUaClient-2", channel.ChannelName);
+        Assert.Equal(OpcUaClientNames.DriverName, channel.Driver);
+        Assert.Equal("192.168.10.1", channel.ServerOpt.DiscoveryUrl);
+        Assert.False(channel.ServerOpt.UsePassword);
+        Assert.Equal("user-1",channel.ServerOpt.UserName);
+        Assert.Equal("pass-1", channel.ServerOpt.Password);
 
         // Test Tags
         var g3 = proj.Tags.SelectGrp("g4");

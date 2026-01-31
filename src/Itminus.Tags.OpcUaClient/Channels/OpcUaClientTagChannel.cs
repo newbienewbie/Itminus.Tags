@@ -14,6 +14,9 @@ public class OpcUaClientTagChannel : ITagChannel
 
     #region 配置
     private readonly OpcUaClientTagChannelOpt _channelOpt;
+
+    public string ClientName => _channelOpt.ClientName;
+    public OpcUaServerOpt ServerOpt => _channelOpt.ServerOpt;
     #endregion
 
 
@@ -92,7 +95,7 @@ public class OpcUaClientTagChannel : ITagChannel
     }
 
     #region 连接
-    public Session? _session { get; private set; }
+    private Session? _session { get; set; }
 
     /// <summary>
     /// 确保已经建立连接
