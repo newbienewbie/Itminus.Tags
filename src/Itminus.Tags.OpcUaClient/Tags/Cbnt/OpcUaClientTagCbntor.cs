@@ -9,14 +9,35 @@ namespace Itminus.Tags.OpcUaClient;
 
 internal class OpcUaClientTagCbntor : TagCbntor
 {
+    private OpcUaClientTagCbnt _cbnt;
+    private NodeId _nodeId;
+
     public OpcUaClientTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
         : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
     {
+        var address = tagDescriptor.Address;
+        this._cbnt = this.TagCbnt as OpcUaClientTagCbnt
+            ?? throw new InvalidOperationException("Cbnt is not an OpcUaTagCbnt");
+        this._nodeId = address;
     }
 
-    public override object? Value { 
-        get => throw new NotImplementedException(); 
-        set => throw new NotImplementedException(); 
+    public override object? Value {
+        get 
+        {
+            if(!this._cbnt.Bag.TryGetValue(this._nodeId, out var nodeVal))
+            {
+                return null;
+            }
+            return nodeVal.Value;
+        }
+        set
+        {
+            this._cbnt.Bag.AddOrUpdate(this._nodeId, new DataValue() { Value = value }, (nid, v) => {
+                v.Value = v;
+                return v;
+            });
+            this.MarkDirty();
+        }
     }
 
     /// <inheritdoc />

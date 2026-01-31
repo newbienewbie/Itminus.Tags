@@ -1,11 +1,14 @@
 ﻿using Itminus.Tags;
-using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.Projects;
 using Itminus.Tags.S7;
+using Itminus.Tags.ZLan;
+using Itminus.Tags.ModbusTcp;
+using Itminus.Tags.OpcUaClient;
+using Itminus.Tags.Projects;
+
 using Itminus.Tags.Web;
 using Itminus.Tags.Web.Components;
 using Itminus.Tags.Web.Tags;
-using Itminus.Tags.ZLan;
+
 using MudBlazor.Services;
 using System.Reflection;
 
@@ -24,6 +27,7 @@ builder.Services.AddTagsProjectServices(b =>
     b.AddS7Support();
     b.AddModbusTcpSupport();
     b.AddZLanTcpSupport();
+    b.AddOpcUaClientSupport();
 });
 
 

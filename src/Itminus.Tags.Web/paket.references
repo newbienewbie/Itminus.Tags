@@ -1,2 +1,4 @@
 System.Reactive
 MudBlazor
+Microsoft.Extensions.Logging
+System.Diagnostics.DiagnosticSource
