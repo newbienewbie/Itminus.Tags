@@ -32,7 +32,7 @@
 
 
 	<!-- 测点配置，可以配置多个 -->
-	<!--<TagGrp name="g1" isEntry="true" isEnabled="true" address="DB200.100.1" channel="S7-1" scanInterval="10">
+	<TagGrp name="g1" isEntry="true" isEnabled="true" address="DB200.100.1" channel="S7-1" scanInterval="10">
 		<TagCbnt name="拍照请求" access="RO" address="DB200.100.1">
 			<Tag name="拍照-请求-标志" address="DB200.100.1" type="BIT" />
 			<Tag name="拍照-请求-料号" address="DB200.102" type="BYTE" />
@@ -44,10 +44,10 @@
 			<Tag name="拍照-响应-B1" address="DB200.400.1" type="BIT" />
 			<Tag name="拍照-响应-I2" address="DB200.400.2" type="BIT" />
 		</TagCbnt>
-	</TagGrp>-->
+	</TagGrp>
 
 	<!-- ZLan 配置 -->
-	<!--<TagGrp name="g2" isEntry="true" isEnabled="true" channel="ZLan-1" scanInterval="10">
+	<TagGrp name="g2" isEntry="true" isEnabled="true" channel="ZLan-1" scanInterval="10">
 		<TagCbnt name="输入" area="DI" access="RO">
 			<Tag name="放行按钮闭合状态" address="DI1" type="DI"></Tag>
 			<Tag name="手动" address="DI2" type="DI"></Tag>
@@ -58,10 +58,10 @@
 			<Tag name="黄灯" address="DO3" type="DO"></Tag>
 			<Tag name="放行灯" address="DO4" type="DO"></Tag>
 		</TagCbnt>
-	</TagGrp>-->
+	</TagGrp>
 
 	<!-- ModbusTcp 配置 -->
-	<!--<TagGrp name="g3" isEntry="true" isEnabled="true" channel="ModbusTcp-2" scanInterval="10">
+	<TagGrp name="g3" isEntry="true" isEnabled="true" channel="ModbusTcp-2" scanInterval="10">
 		<TagCbnt name="输入" address="10001" access="RO">
 			<Tag name="放行按钮闭合状态" address="10001" type="DI"></Tag>
 			<Tag name="手动" address="10002" type="DI"></Tag>
@@ -78,7 +78,7 @@
 			<Tag name="int32" address="40022" type="INT32"></Tag>
 			<Tag name="float" address="40024" type="FLOAT"></Tag>
 		</TagCbnt>
-	</TagGrp>-->
+	</TagGrp>
 
 	<!-- OpcUa 配置 -->
 	<TagGrp name="g4" isEntry="true" isEnabled="true" channel="OpcUaClient-2" scanInterval="10">
