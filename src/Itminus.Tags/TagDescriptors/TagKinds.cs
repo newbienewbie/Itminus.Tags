@@ -6,6 +6,8 @@
 /// </summary>
 public enum TagKinds
 {
+    Unknown = 0,
+
     BIT = 100,
     BYTE = 102,
     INT16 = 103,

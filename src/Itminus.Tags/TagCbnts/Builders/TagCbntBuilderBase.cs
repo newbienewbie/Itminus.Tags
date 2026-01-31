@@ -16,7 +16,7 @@ public abstract class TagCbntBuilderBase
     /// <summary>
     /// 测点组
     /// </summary>
-    public ITagCbnt TagCbnt { get; }
+    public virtual ITagCbnt TagCbnt { get; protected set; }
 
     /// <summary>
     /// 组合名

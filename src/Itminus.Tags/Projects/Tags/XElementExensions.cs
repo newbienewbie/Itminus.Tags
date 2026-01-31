@@ -55,7 +55,12 @@ public static class XElementExensions
 
     internal static TagKinds GetTagUnionTagKind(this XElement e, string tagName)
     {
-        var type = (string?)e.Attribute("type") ?? throw new Exception($"Tag(Name={tagName})未配置类型");
+        var type = (string?)e.Attribute("type");
+        if(string.IsNullOrEmpty(type))
+        {
+            return TagKinds.Unknown;
+        }
+
         if (!Enum.TryParse<TagKinds>(type, out var tagKind))
         {
             throw new Exception($"Tag(Name={tagName}) 配置了未知类型={type}");

@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Itminus.Tags.ModbusTcp\Itminus.Tags.ModbusTcp.csproj" />
+    <ProjectReference Include="..\Itminus.Tags.OpcUaClient\Itminus.Tags.OpcUaClient.csproj" />
     <ProjectReference Include="..\Itminus.Tags.RxExtensions\Itminus.Tags.RxExtensions.csproj" />
     <ProjectReference Include="..\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
     <ProjectReference Include="..\Itminus.Tags.ZLan\Itminus.Tags.ZLan.csproj" />
@@ -14,6 +15,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="ModbusTags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="OpcUaClientTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="S7Tags\index.xml">
