@@ -5,7 +5,6 @@ namespace Itminus.Tags.Web.Tags;
 
 internal class S7BackgroundService : BackgroundService
 {
-    private IDisposable? _dispoable;
     private readonly ITagsProject proj;
 
     public S7BackgroundService(ITagsProject proj)
@@ -21,7 +20,6 @@ internal class S7BackgroundService : BackgroundService
 
     public override Task StopAsync(CancellationToken cancellationToken)
     {
-        this._dispoable?.Dispose();
         return base.StopAsync(cancellationToken);
     }
 }
