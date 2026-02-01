@@ -34,7 +34,7 @@ public class S7TagChannelFactory : ITagChannelFactory
     /// <exception cref="InvalidOperationException"></exception>
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
-        var s7ChannelDescriptor = S7TagChannelDescriptor.FromDescriptor(descriptor);
+        var s7ChannelDescriptor = descriptor.ToS7TagChannelDescriptor();
 
         var plcitem = new S7PlcItem() { 
             IpAddr = s7ChannelDescriptor.IpAddr,

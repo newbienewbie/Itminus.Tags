@@ -8,5 +8,10 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <PropertyGroup>
+	<XmlSerializerGeneration>GenerateSerializationAssembly</XmlSerializerGeneration>
+  </PropertyGroup>
+	
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

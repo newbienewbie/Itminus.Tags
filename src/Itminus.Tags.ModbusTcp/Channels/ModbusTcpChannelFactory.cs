@@ -34,7 +34,7 @@ public class ModbusTcpChannelFactory : ITagChannelFactory
     /// <exception cref="InvalidOperationException"></exception>
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
-        var mbDescriptor = ModbusTcpTagChannelDescriptor.FromDescriptor(descriptor);
+        var mbDescriptor = descriptor.ToModbusTcpTagChannelDescriptor();
 
         var plcitem = new ModbusTcpItem() { 
             IpAddr = mbDescriptor.IpAddr,

@@ -1,0 +1,106 @@
+﻿@using Itminus.Tags.ModbusTcp
+@using Itminus.Tags.S7
+@using Itminus.Tags.Web.Components.Channels
+@using Itminus.Tags.Web.Components.Tags
+@using System.Collections.ObjectModel
+@using Itminus.Tags
+@using Itminus.Tags.ZLan
+
+@page "/designer"
+@rendermode InteractiveServer
+@inject ITagsProject proj
+
+<PageTitle>Designer</PageTitle>
+
+<MudTabs>
+
+    <MudTabPanel Text="通道" Icon="@Icons.Material.Filled.AllInclusive">
+        <ChannelCreator ChannelUpdated="@(args=>{
+                            var found = false;
+                            for (var i = 0; i < this.channelDescriptors.Count; i++)
+                            {
+                                var d = this.channelDescriptors[i];
+                                if (d.Name == args.Name && d.Driver == args.Driver)
+                                {
+                                    found = true;
+                                    this.channelDescriptors[i] = args;
+                                    return;
+                                }
+                            }
+                            if (!found)
+                            {
+                                this.channelDescriptors.Add(args);
+                            }
+                            this.InvokeAsync(StateHasChanged);
+                        })">
+        </ChannelCreator>
+
+        <h3 Class="mt-8">通道列表</h3>
+        <MudPaper Class="pl-4 pb-4 pr-4">
+
+            <MudTreeView T="TagChannelDescriptor" AutoExpand="false" ExpandOnClick="true" >
+                @if(channelDescriptors.Count == 0)
+                {
+                    <MudText class="pa-8">什么也没有...请添加通道</MudText>
+                }
+                else
+                {
+                    @foreach (var descriptor in channelDescriptors)
+                    {
+                        @if (descriptor is S7TagChannelDescriptor s7channelDescriptor)
+                        {
+                            <S7ChannelViewer ChannelDescriptor="s7channelDescriptor"></S7ChannelViewer>
+                        }
+                        else if (descriptor is ZLanTcpTagChannelDescriptor zlanchannelDescriptor)
+                        {
+                            <ZLanTcpChannelViewer ChannelDescriptor="zlanchannelDescriptor"></ZLanTcpChannelViewer>
+                        }
+                        else if (descriptor is ModbusTcpTagChannelDescriptor mbchannelDescriptor)
+                        {
+                            <ModbusTcpChannelViewer ChannelDescriptor="mbchannelDescriptor"></ModbusTcpChannelViewer>
+                        }
+                        else
+                        {
+                            <MudTreeViewItem T="TagChannelDescriptor" Value="@descriptor">
+                                <BodyContent>
+                                    <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%">
+                                        @descriptor.Name @@ @descriptor.Driver
+                                        <div style="justify-self: end;">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Inherit" />
+                                        </div>
+                                    </div>
+                                </BodyContent>
+                                <ChildContent>
+                                </ChildContent>
+                            </MudTreeViewItem>
+                        }
+                    }
+                }
+
+            </MudTreeView>
+        </MudPaper>
+    </MudTabPanel>
+
+
+    <MudTabPanel Text="测点" Icon="@Icons.Material.Filled.Tag">
+        111
+    </MudTabPanel>
+
+</MudTabs>
+
+@code {
+
+    [Parameter]
+    public IList<TagChannelDescriptor> channelDescriptors { get; set; } = new List<TagChannelDescriptor>();
+
+    
+
+    protected override Task OnInitializedAsync()
+    {
+
+        return base.OnInitializedAsync();
+    }
+
+
+
+}

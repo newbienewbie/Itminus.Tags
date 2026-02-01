@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.ModbusTcp;
+using Itminus.Tags.OpcUaClient;
 using Itminus.Tags.S7;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,9 @@ public class ChannelDescriptorTests
         Assert.Equal("192.168.1.13", descriptor.Extras["IpAddr"].Value);
         Assert.Equal("3", descriptor.Extras["Rack"].Value);
         Assert.Equal("4", descriptor.Extras["Slot"].Value);
+
+        var element2 = descriptor.ToXElement();
+        Assert.Equal(element.ToString(), element2.ToString());
     }
 
 
@@ -48,10 +52,13 @@ public class ChannelDescriptorTests
 ";
         var element = XElement.Parse(xml);
         var descriptor0 = TagChannelDescriptor.LoadFromXElement(element);
-        var descriptor1 = S7TagChannelDescriptor.FromDescriptor(descriptor0);
+        var descriptor1 = descriptor0.ToS7TagChannelDescriptor();
         Assert.Equal("192.168.1.13", descriptor1.IpAddr);
         Assert.Equal(3, descriptor1.Rack);
         Assert.Equal(4, descriptor1.Slot);
+
+        var element2 = descriptor1.ToXElement();
+        Assert.Equal(element.ToString(), element2.ToString());
     }
 
 
@@ -68,9 +75,12 @@ public class ChannelDescriptorTests
 ";
         var element = XElement.Parse(xml);
         var descriptor0 = TagChannelDescriptor.LoadFromXElement(element);
-        var descriptor1 = ModbusTcpTagChannelDescriptor.FromDescriptor(descriptor0);
+        var descriptor1 = descriptor0.ToModbusTcpTagChannelDescriptor();
         Assert.Equal("192.168.1.13", descriptor1.IpAddr);
         Assert.Equal(503, descriptor1.Port);
+
+        var element2 = descriptor1.ToXElement();
+        Assert.Equal(element.ToString(), element2.ToString());
     }
 
 
@@ -81,12 +91,53 @@ public class ChannelDescriptorTests
 @"
 <Channel name='ModbusTcp-1' driver='ModbusTcp' >
     <IpAddr>192.168.1.13</IpAddr>
+    <Port>503</Port>
 </Channel>
 ";
         var element = XElement.Parse(xml);
         var descriptor0 = TagChannelDescriptor.LoadFromXElement(element);
-        var descriptor1 = ModbusTcpTagChannelDescriptor.FromDescriptor(descriptor0);
+        var descriptor1 = descriptor0.ToModbusTcpTagChannelDescriptor();
         Assert.Equal("192.168.1.13", descriptor1.IpAddr);
-        Assert.Equal(502, descriptor1.Port);
+        Assert.Equal(503, descriptor1.Port);
+
+        var element2 = descriptor1.ToXElement();
+        var xml1 = element.ToString();
+        var xml2 = element2.ToString();
+        Assert.Equal(xml1, xml2);
+    }
+
+
+    [Fact]
+    public void TestLoadOpcUaClientTagChannelDescriptorFromXml()
+    {
+        var xml =
+@"
+<Channel name='OpcUaClient-2' driver='OpcUaClient'>
+	<ClientName>client-name-1</ClientName>
+	<ServerOpt>
+		<DiscoveryUrl>opc.tcp://DESKTOP-FM4T292:4840</DiscoveryUrl>
+		<UsePassword>false</UsePassword>
+		<UserName>user</UserName>
+		<Password>1</Password>
+	</ServerOpt>
+</Channel>
+";
+        var element = XElement.Parse(xml);
+        var descriptor0 = TagChannelDescriptor.LoadFromXElement(element);
+        var descriptor1 = descriptor0.ToOpcUaClientTagChannelDescriptor();
+        Assert.Equal(OpcUaClientNames.DriverName, descriptor1.Driver);
+        Assert.Equal("OpcUaClient-2", descriptor1.Name);
+        Assert.Equal("client-name-1", descriptor1.OpcUaTagChannelOpt.ClientName);
+        var serverOpt = descriptor1.OpcUaTagChannelOpt.ServerOpt;
+        Assert.Equal("opc.tcp://DESKTOP-FM4T292:4840", serverOpt.DiscoveryUrl);
+        Assert.False(serverOpt.UsePassword);
+        Assert.Equal("user", serverOpt.UserName);
+        Assert.Equal("1", serverOpt.Password);
+
+
+        var element2 = descriptor1.ToXElement();
+        var xml1 = element.ToString();
+        var xml2 = element2.ToString();
+        Assert.Equal(xml1, xml2);
     }
 }

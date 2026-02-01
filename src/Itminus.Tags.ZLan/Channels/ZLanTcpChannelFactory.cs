@@ -35,7 +35,7 @@ public class ZLanTcpChannelFactory : ITagChannelFactory
     /// <exception cref="InvalidOperationException"></exception>
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
-        var mbDescriptor = ZLanTcpTagChannelDescriptor.FromDescriptor(descriptor);
+        var mbDescriptor = descriptor.ToZLanTcpTagChannelDescriptor();
 
         var plcitem = new ModbusTcpItem() { 
             IpAddr = mbDescriptor.IpAddr,

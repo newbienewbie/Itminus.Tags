@@ -29,7 +29,7 @@ public class OpcUaClientTagChannelFactory : ITagChannelFactory
     /// <exception cref="InvalidOperationException"></exception>
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
-        var opcDescriptor = OpcUaClientTagChannelDescriptor.FromDescriptor(descriptor);
+        var opcDescriptor = descriptor.ToOpcUaClientTagChannelDescriptor();
 
         var opt = opcDescriptor.OpcUaTagChannelOpt;
         var logger = _loggerFactory.CreateLogger<OpcUaClientTagChannel>();

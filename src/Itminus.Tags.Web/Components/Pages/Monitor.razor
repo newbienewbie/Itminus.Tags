@@ -3,16 +3,14 @@
 @using System.Collections.ObjectModel
 @using Itminus.Tags
 
-@page "/counter"
+@page "/monitor"
 @rendermode InteractiveServer
 @inject ITagsProject proj
 
-<PageTitle>Counter</PageTitle>
+<PageTitle>Monitor</PageTitle>
 
-<h1>Counter</h1>
-<div>
-    <TagsView RootTag="@RootTag"></TagsView>
-</div>
+<TagsView RootTag="@RootTag"></TagsView>
+
 
 @code {
 

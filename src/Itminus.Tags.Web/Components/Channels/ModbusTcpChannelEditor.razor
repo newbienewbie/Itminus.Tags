@@ -1,0 +1,13 @@
+﻿@using Itminus.Tags.ModbusTcp
+
+<MudItem xs="12" sm="3" md="3">
+	<MudTextField Label="IpAddr" @bind-Value="Descriptor.IpAddr" Variant="Variant.Text"></MudTextField>
+</MudItem>		
+
+<MudItem xs="12" sm="3" md="3">
+	<MudNumericField Label="Rack" @bind-Value="Descriptor.Port" Variant="Variant.Text"></MudNumericField>
+</MudItem>
+@code {
+	[Parameter]
+	public ModbusTcpTagChannelDescriptor Descriptor { get; set; } = new ModbusTcpTagChannelDescriptor();
+}

@@ -1,0 +1,130 @@
+﻿@using Itminus.Tags.ModbusTcp
+@using Itminus.Tags.S7
+@using Itminus.Tags.ZLan
+
+<MudForm>
+	<MudGrid Style="padding-left:20px; padding-top:20px;">
+
+		<MudItem xs="12" sm="6" md="3">
+			<MudTextField Label="通道名" @bind-Value="Descriptor.Name"
+						  Required="true" RequiredError="通道名是必填项"
+						  Variant="Variant.Text"></MudTextField>
+		</MudItem>
+
+		<MudItem xs="12" sm="12" md="6">
+			<MudRadioGroup @bind-Value="Driver" Required="true">
+				<MudRadio Value="@S7Names.DriverName">S7</MudRadio>
+				<MudRadio Value="@ModbusTcpNames.DriverName">ModbusTcp</MudRadio>
+				<MudRadio Value="@ZLanTcpNames.DriverName">ZLan</MudRadio>
+			</MudRadioGroup>
+		</MudItem>
+
+		<MudItem xs="12" sm="3" md="3">
+			<MudButton OnClick="OnSave" Disabled=@disableCreate Variant="Variant.Filled" Color="Color.Secondary">新增</MudButton>
+		</MudItem>
+
+		@this.RenderChannelImpl(this.Descriptor)
+
+	</MudGrid>
+</MudForm>
+
+@code {
+	private bool disableCreate = true;
+
+	[Parameter]
+	public EventCallback<TagChannelDescriptor> ChannelUpdated { get; set; }
+
+	[Parameter]
+	public TagChannelDescriptor Descriptor { get; set; } = new();
+
+	private string _driver = "";
+	public string Driver
+	{
+		get => _driver;
+		set
+		{
+			this._driver = value;
+			this.Descriptor.Driver = value;
+			this.OnDriverChanged(value);
+			this.disableCreate = string.IsNullOrEmpty(this._driver);
+		}
+	}
+
+	private RenderFragment<TagChannelDescriptor> RenderChannelImpl = EmptyChannelEditor;
+
+
+	#region 构建子编辑器
+	private RenderFragment<TagChannelDescriptor> BuildS7Editor()
+	{
+		return descriptor => builder =>
+		{
+			builder.OpenComponent<S7ChannelEditor>(0);
+			builder.AddAttribute(1, nameof(S7ChannelEditor.Descriptor), descriptor);
+			builder.CloseComponent();
+		};
+	}
+	private RenderFragment<TagChannelDescriptor> BuildModbusTcpEditor()
+	{
+		return descriptor => builder =>
+		{
+			builder.OpenComponent<ModbusTcpChannelEditor>(0);
+			builder.AddAttribute(1, nameof(ModbusTcpChannelEditor.Descriptor), descriptor);
+			builder.CloseComponent();
+		};
+	}
+	private RenderFragment<TagChannelDescriptor> BuildZLanTcpEditor()
+	{
+		return descriptor => builder =>
+		{
+			builder.OpenComponent<ZLanTcpChannelEditor>(0);
+			builder.AddAttribute(1, nameof(ZLanTcpChannelEditor.Descriptor), descriptor);
+			builder.CloseComponent();
+		};
+	}
+	#endregion
+
+	private static readonly RenderFragment<TagChannelDescriptor> EmptyChannelEditor = descriptor => builder => { };
+
+
+	private void OnDriverChanged(string driver)
+	{
+		if (driver == S7Names.DriverName)
+		{
+			this.Descriptor = this.Descriptor.ToS7TagChannelDescriptor();
+			this.RenderChannelImpl = BuildS7Editor();
+		}
+		else if (driver == ModbusTcpNames.DriverName)
+		{
+			this.Descriptor = this.Descriptor.ToModbusTcpTagChannelDescriptor();
+			this.RenderChannelImpl = BuildModbusTcpEditor();
+		}
+		else if (driver == ZLanTcpNames.DriverName)
+		{
+			this.Descriptor = this.Descriptor.ToZLanTcpTagChannelDescriptor();
+			this.RenderChannelImpl = BuildZLanTcpEditor();
+		}
+		else
+		{
+			this.RenderChannelImpl = EmptyChannelEditor;
+		}
+		this.InvokeAsync(StateHasChanged);
+	}
+
+	public override Task SetParametersAsync(ParameterView parameters)
+	{
+		if (parameters.TryGetValue<TagChannelDescriptor>(nameof(Descriptor), out var d))
+		{
+			this.Descriptor = d;
+		}
+		return base.SetParametersAsync(parameters);
+	}
+
+	private async void OnSave()
+	{
+		var xml = this.Descriptor.ToXElement().ToString();
+		await this.ChannelUpdated.InvokeAsync(this.Descriptor);
+		this.Descriptor = this.Descriptor.Copy();
+		this.OnDriverChanged(this.Descriptor.Driver);
+	}
+
+}

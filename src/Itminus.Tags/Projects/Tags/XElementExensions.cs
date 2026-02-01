@@ -4,6 +4,31 @@ namespace Itminus.Tags;
 
 public static class XElementExensions
 {
+
+    #region
+    /// <summary>
+    /// 如果子元素存在则设置其值，否则添加新的子元素
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="childName"></param>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    public static XElement SetOrAddChild(this XElement parent, string childName, object v)
+    {
+        var child = parent.Element(childName);
+
+        if (child != null)
+        { 
+            child.SetValue(v);
+        }
+        else
+        {
+            parent.Add(new XElement(childName, v));
+        }
+        return parent;
+    }
+    #endregion
+
     #region helpers
     internal static string GetTagUnionName(this XElement e)
     {
