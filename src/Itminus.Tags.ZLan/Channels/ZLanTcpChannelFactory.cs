@@ -8,7 +8,7 @@ namespace Itminus.Tags.ZLan;
 /// <summary>
 /// 构建 <see cref="ZLanChannel"/>
 /// </summary>
-public class ZLanTcpChannelFactory : IChannelFactory
+public class ZLanTcpChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
@@ -33,7 +33,7 @@ public class ZLanTcpChannelFactory : IChannelFactory
     /// <param name="descriptor"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public ITagChannel Create(ChannelDescriptor descriptor)
+    public ITagChannel Create(TagChannelDescriptor descriptor)
     {
         var mbDescriptor = ZLanTcpTagChannelDescriptor.FromDescriptor(descriptor);
 

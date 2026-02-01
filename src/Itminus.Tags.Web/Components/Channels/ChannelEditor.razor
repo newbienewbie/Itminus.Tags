@@ -23,10 +23,10 @@
 
 @code {
 	[Parameter]
-	public EventCallback<ChannelDescriptor> ChannelUpdated { get; set; }
+	public EventCallback<TagChannelDescriptor> ChannelUpdated { get; set; }
 
 	[Parameter]
-	public ChannelDescriptor Descriptor { get; set; } = new();
+	public TagChannelDescriptor Descriptor { get; set; } = new();
 
 	private string _driver = "";
 	public string Driver
@@ -39,9 +39,9 @@
 		}
 	}
 
-	private RenderFragment<ChannelDescriptor> RenderChannelImpl = EmptyChannelEditor;
+	private RenderFragment<TagChannelDescriptor> RenderChannelImpl = EmptyChannelEditor;
 
-	private RenderFragment<ChannelDescriptor> BuildS7Editor()
+	private RenderFragment<TagChannelDescriptor> BuildS7Editor()
 	{
 		return descriptor => builder => {
 			builder.OpenComponent<S7ChannelEditor>(0);
@@ -50,7 +50,7 @@
 		};
 	}
 
-	private static readonly RenderFragment<ChannelDescriptor> EmptyChannelEditor = descriptor => builder => { };
+	private static readonly RenderFragment<TagChannelDescriptor> EmptyChannelEditor = descriptor => builder => { };
 
 
 	private void OnDriverChanged(string driver)
@@ -68,7 +68,7 @@
 
 	public override Task SetParametersAsync(ParameterView parameters)
 	{
-		if(parameters.TryGetValue<ChannelDescriptor>(nameof(Descriptor), out var d))
+		if(parameters.TryGetValue<TagChannelDescriptor>(nameof(Descriptor), out var d))
 		{
 			this.Descriptor = d;
 		}

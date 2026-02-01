@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.Projects;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +12,10 @@ public static class TagsProject_Extensions
     public static TagsProjectServiceBuilder AddModbusTcpSupport(this TagsProjectServiceBuilder builder)
     {
         // register channel factory
-        builder.Services.AddKeyedSingleton<IChannelFactory, ModbusTcpChannelFactory>(ModbusTcpNames.DriverName);
+        builder.Services.AddKeyedSingleton<ITagChannelFactory, ModbusTcpChannelFactory>(ModbusTcpNames.DriverName);
         builder.ConfigChannelsFactory((sp, composite) =>
         {
-            var factory = sp.GetRequiredKeyedService<IChannelFactory>(ModbusTcpNames.DriverName);
+            var factory = sp.GetRequiredKeyedService<ITagChannelFactory>(ModbusTcpNames.DriverName);
             composite.AddFactory(factory);
         });
 

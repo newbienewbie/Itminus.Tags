@@ -2,7 +2,7 @@
 
 namespace Itminus.Tags.OpcUaClient;
 
-public class OpcUaClientTagChannelFactory : IChannelFactory
+public class OpcUaClientTagChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
@@ -27,7 +27,7 @@ public class OpcUaClientTagChannelFactory : IChannelFactory
     /// <param name="descriptor"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public ITagChannel Create(ChannelDescriptor descriptor)
+    public ITagChannel Create(TagChannelDescriptor descriptor)
     {
         var opcDescriptor = OpcUaClientTagChannelDescriptor.FromDescriptor(descriptor);
 

@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.Projects;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +12,10 @@ public static class TagsProject_Extensions
     public static TagsProjectServiceBuilder AddZLanTcpSupport(this TagsProjectServiceBuilder builder)
     {
         // register channel factory
-        builder.Services.AddKeyedSingleton<IChannelFactory, ZLanTcpChannelFactory>(ZLanTcpNames.DriverName);
+        builder.Services.AddKeyedSingleton<ITagChannelFactory, ZLanTcpChannelFactory>(ZLanTcpNames.DriverName);
         builder.ConfigChannelsFactory((sp, composite) =>
         {
-            var factory = sp.GetRequiredKeyedService<IChannelFactory>(ZLanTcpNames.DriverName);
+            var factory = sp.GetRequiredKeyedService<ITagChannelFactory>(ZLanTcpNames.DriverName);
             composite.AddFactory(factory);
         });
 

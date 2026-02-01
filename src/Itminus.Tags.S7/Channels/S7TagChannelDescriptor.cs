@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace Itminus.Tags.S7;
 
 
-public class S7TagChannelDescriptor : ChannelDescriptor
+public class S7TagChannelDescriptor : TagChannelDescriptor
 {
     public string IpAddr { get; set; } = "localhost";
     public short Rack { get; set; } = 0;
     public short Slot { get; set; } = 1;
 
 
-    public static S7TagChannelDescriptor FromDescriptor(ChannelDescriptor descriptor)
+    public static S7TagChannelDescriptor FromDescriptor(TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != S7Names.DriverName)
         {

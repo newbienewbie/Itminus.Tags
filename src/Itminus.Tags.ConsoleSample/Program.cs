@@ -1,7 +1,6 @@
 ﻿using Itminus.Tags;
 using Itminus.Tags.ConsoleSample;
 using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.Projects;
 using Itminus.Tags.S7;
 using Itminus.Tags.ZLan;
 using Microsoft.Extensions.DependencyInjection;

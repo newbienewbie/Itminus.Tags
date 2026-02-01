@@ -7,7 +7,7 @@ using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Itminus.Tags.Projects;
+namespace Itminus.Tags;
 
 /// <summary>
 /// 根据channel和element，给出 <see cref="TagCbntBuilderBase"/> <br/>。

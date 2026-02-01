@@ -24,7 +24,7 @@ public class ChannelDescriptorTests
 </Channel>
 ";
         var element = XElement.Parse(xml);
-        var descriptor = ChannelDescriptor.LoadFromXElement(element);
+        var descriptor = TagChannelDescriptor.LoadFromXElement(element);
         Assert.Equal("S7-3", descriptor.Name);
         Assert.Equal("S7", descriptor.Driver);
         Assert.NotEmpty(descriptor.Extras);
@@ -47,7 +47,7 @@ public class ChannelDescriptorTests
 </Channel>
 ";
         var element = XElement.Parse(xml);
-        var descriptor0 = ChannelDescriptor.LoadFromXElement(element);
+        var descriptor0 = TagChannelDescriptor.LoadFromXElement(element);
         var descriptor1 = S7TagChannelDescriptor.FromDescriptor(descriptor0);
         Assert.Equal("192.168.1.13", descriptor1.IpAddr);
         Assert.Equal(3, descriptor1.Rack);
@@ -67,7 +67,7 @@ public class ChannelDescriptorTests
 </Channel>
 ";
         var element = XElement.Parse(xml);
-        var descriptor0 = ChannelDescriptor.LoadFromXElement(element);
+        var descriptor0 = TagChannelDescriptor.LoadFromXElement(element);
         var descriptor1 = ModbusTcpTagChannelDescriptor.FromDescriptor(descriptor0);
         Assert.Equal("192.168.1.13", descriptor1.IpAddr);
         Assert.Equal(503, descriptor1.Port);
@@ -84,7 +84,7 @@ public class ChannelDescriptorTests
 </Channel>
 ";
         var element = XElement.Parse(xml);
-        var descriptor0 = ChannelDescriptor.LoadFromXElement(element);
+        var descriptor0 = TagChannelDescriptor.LoadFromXElement(element);
         var descriptor1 = ModbusTcpTagChannelDescriptor.FromDescriptor(descriptor0);
         Assert.Equal("192.168.1.13", descriptor1.IpAddr);
         Assert.Equal(502, descriptor1.Port);

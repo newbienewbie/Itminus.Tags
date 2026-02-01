@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.Projects;
-using Itminus.Tags.S7;
+﻿using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

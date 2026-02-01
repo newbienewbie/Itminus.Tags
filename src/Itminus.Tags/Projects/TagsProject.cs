@@ -1,18 +1,17 @@
 ﻿using Itminus.Tags.Plugins;
-using Itminus.Tags.Projects;
 using System.Xml.Linq;
 
-namespace Itminus.Tags.Projects;
+namespace Itminus.Tags;
 
 internal class TagsProject : ITagsProject
 {
-    private readonly IChannelsLoader _channelsLoader;
+    private readonly ITagChannelsLoader _channelsLoader;
     private readonly ITagsLoader _tagsLoader;
     private readonly ILogicetLoader _logicetLoader;
     private readonly ILogicetMaker _logicetMaker;
     private readonly IServiceProvider _sp;
 
-    public TagsProject(IChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader, ILogicetMaker logicetMaker, IServiceProvider sp)
+    public TagsProject(ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader, ILogicetMaker logicetMaker, IServiceProvider sp)
     {
         this._channelsLoader = channelsLoader;
         this._tagsLoader = tagsLoader;
@@ -34,7 +33,7 @@ internal class TagsProject : ITagsProject
     protected virtual TagsProject LoadChannels(XElement root)
     {
         var elements = root.Elements("Channel") ?? [];
-        var descriptors = elements.Select(ChannelDescriptor.LoadFromXElement);
+        var descriptors = elements.Select(TagChannelDescriptor.LoadFromXElement);
         var channels = this._channelsLoader.LoadChannels(descriptors);
         this.AddChannels(channels);
         return this;

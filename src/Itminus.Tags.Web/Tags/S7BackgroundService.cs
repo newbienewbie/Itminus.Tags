@@ -1,5 +1,5 @@
 ﻿
-using Itminus.Tags.Projects;
+using Itminus.Tags;
 
 namespace Itminus.Tags.Web.Tags;
 

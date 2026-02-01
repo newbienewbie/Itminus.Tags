@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.Projects;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags;
 
@@ -17,7 +16,7 @@ public static class TagsProjectServiceCollection
         var tpsb = new TagsProjectServiceBuilder(services);
         configTagsLoader?.Invoke(tpsb);
 
-        services.AddSingleton<IChannelFactory>(sp =>
+        services.AddSingleton<ITagChannelFactory>(sp =>
         {
             tpsb.ApplyChannelFactoriesConfiguration(sp);
             return tpsb.ChannelFactories;

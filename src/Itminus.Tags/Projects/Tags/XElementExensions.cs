@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace Itminus.Tags.Projects;
+namespace Itminus.Tags;
 
 public static class XElementExensions
 {

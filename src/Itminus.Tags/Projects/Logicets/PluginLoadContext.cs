@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Itminus.Tags.Projects;
+namespace Itminus.Tags;
 
 class PluginLoadContext : AssemblyLoadContext
 {

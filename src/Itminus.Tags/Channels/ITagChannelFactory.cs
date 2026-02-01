@@ -9,7 +9,7 @@ namespace Itminus.Tags;
 /// <summary>
 /// 构建 <see cref="ITagChannel"/>
 /// </summary>
-public interface IChannelFactory
+public interface ITagChannelFactory
 {
     /// <summary>
     /// 支持的驱动名称列表
@@ -20,5 +20,5 @@ public interface IChannelFactory
     /// </summary>
     /// <param name="descriptor"></param>
     /// <returns></returns>
-    ITagChannel Create(ChannelDescriptor descriptor);
+    ITagChannel Create(TagChannelDescriptor descriptor);
 }

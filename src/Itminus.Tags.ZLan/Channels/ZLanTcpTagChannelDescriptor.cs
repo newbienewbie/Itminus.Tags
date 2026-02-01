@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace Itminus.Tags.ZLan;
 
 
-public class ZLanTcpTagChannelDescriptor : ChannelDescriptor
+public class ZLanTcpTagChannelDescriptor : TagChannelDescriptor
 {
     public string IpAddr { get; set; } = "localhost";
 
     public int Port { get; set; } = 502;
 
 
-    public static ZLanTcpTagChannelDescriptor FromDescriptor(ChannelDescriptor descriptor)
+    public static ZLanTcpTagChannelDescriptor FromDescriptor(TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != ZLanTcpNames.DriverName)
         {

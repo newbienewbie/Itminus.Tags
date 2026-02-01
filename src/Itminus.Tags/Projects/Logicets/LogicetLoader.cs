@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Itminus.Tags.Projects;
+namespace Itminus.Tags;
 
 
 /// <summary>
@@ -57,7 +57,7 @@ public class LogicetLoader : ILogicetLoader
                 var logicet = logicetMaker.MakeLogicet(t, channels, tags, out var msg);
                 if (logicet is null)
                 {
-                    this._logger.LogError(msg);
+                    this._logger.LogError("构建Logicet错误：t={t}, {msg}", t.GetType().Name, msg);
                     return null;
                 }
                 return logicet;

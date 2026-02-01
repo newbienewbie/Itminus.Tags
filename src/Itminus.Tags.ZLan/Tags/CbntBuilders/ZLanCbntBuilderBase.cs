@@ -1,5 +1,4 @@
 ﻿using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

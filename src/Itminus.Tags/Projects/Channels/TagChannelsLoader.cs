@@ -5,20 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Itminus.Tags.Projects;
+namespace Itminus.Tags;
 
-internal class ChannelsLoader : IChannelsLoader
+internal class TagChannelsLoader : ITagChannelsLoader
 {
-    private readonly IChannelFactory _channelFactory;
+    private readonly ITagChannelFactory _channelFactory;
 
-    public ChannelsLoader(IChannelFactory channelFactory)
+    public TagChannelsLoader(ITagChannelFactory channelFactory)
     {
         this._channelFactory = channelFactory;
     }
 
 
     /// <inheritdoc/>
-    public virtual IList<ITagChannel> LoadChannels(IEnumerable<ChannelDescriptor> descriptors)
+    public virtual IList<ITagChannel> LoadChannels(IEnumerable<TagChannelDescriptor> descriptors)
     {
         var channels = descriptors
             .Select(this._channelFactory.Create)

@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.Projects;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +12,10 @@ public static class TagsProject_Extensions
     public static TagsProjectServiceBuilder AddS7Support(this TagsProjectServiceBuilder builder)
     {
         // register S7 channel factory
-        builder.Services.AddKeyedSingleton<IChannelFactory, S7TagChannelFactory>(S7Names.DriverName);
+        builder.Services.AddKeyedSingleton<ITagChannelFactory, S7TagChannelFactory>(S7Names.DriverName);
         builder.ConfigChannelsFactory((sp, composite) =>
         {
-            var s7Factory = sp.GetRequiredKeyedService<IChannelFactory>(S7Names.DriverName);
+            var s7Factory = sp.GetRequiredKeyedService<ITagChannelFactory>(S7Names.DriverName);
             composite.AddFactory(s7Factory);
         });
 

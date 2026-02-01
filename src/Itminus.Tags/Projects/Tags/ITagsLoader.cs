@@ -1,7 +1,7 @@
 ﻿
 using System.Xml.Linq;
 
-namespace Itminus.Tags.Projects;
+namespace Itminus.Tags;
 
 /// <summary>
 /// 测点集加载器

@@ -1,5 +1,4 @@
 ﻿using Itminus.Tags.Plugins;
-using Itminus.Tags.Projects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags;
@@ -9,11 +8,11 @@ public class TagsProjectServiceBuilder
     public TagsProjectServiceBuilder(IServiceCollection services) 
     {
         services.AddSingleton<ILogicetLoader, LogicetLoader>();
-        services.AddSingleton<IChannelsLoader, ChannelsLoader>();
+        services.AddSingleton<ITagChannelsLoader, TagChannelsLoader>();
         services.AddScoped<ILogicetMaker, LogicetMaker>();
         this.Services = services;
-        this.ChannelFactories = new CompositeChannelFactory();
-        this.ChannelFactoriesConfiguration = new List<Action<IServiceProvider, CompositeChannelFactory>>();
+        this.ChannelFactories = new CompositeTagChannelFactory();
+        this.ChannelFactoriesConfiguration = new List<Action<IServiceProvider, CompositeTagChannelFactory>>();
 
         this.TagsLoaders = new CompositeTagsLoader();
         this.TagsLoadersConfiguration = new List<Action<IServiceProvider, CompositeTagsLoader>>(); 
@@ -30,12 +29,12 @@ public class TagsProjectServiceBuilder
     /// <summary>
     /// 通道工厂
     /// </summary>
-    public CompositeChannelFactory ChannelFactories { get; set; }
+    public CompositeTagChannelFactory ChannelFactories { get; set; }
 
     /// <summary>
     /// 通道工厂配置，用于配置<see cref="ChannelFactories"/>
     /// </summary>
-    protected IList<Action<IServiceProvider, CompositeChannelFactory>> ChannelFactoriesConfiguration { get; set; }
+    protected IList<Action<IServiceProvider, CompositeTagChannelFactory>> ChannelFactoriesConfiguration { get; set; }
 
 
     /// <summary>
@@ -43,7 +42,7 @@ public class TagsProjectServiceBuilder
     /// </summary>
     /// <param name="config"></param>
     /// <returns></returns>
-    public TagsProjectServiceBuilder ConfigChannelsFactory(Action<IServiceProvider, CompositeChannelFactory> config)
+    public TagsProjectServiceBuilder ConfigChannelsFactory(Action<IServiceProvider, CompositeTagChannelFactory> config)
     {
         this.ChannelFactoriesConfiguration.Add(config);
         return this;

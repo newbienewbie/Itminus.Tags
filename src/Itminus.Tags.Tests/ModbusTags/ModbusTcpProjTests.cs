@@ -1,5 +1,4 @@
 ﻿using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.Projects;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

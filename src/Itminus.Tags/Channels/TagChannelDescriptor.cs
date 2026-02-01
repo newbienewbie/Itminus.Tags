@@ -9,7 +9,7 @@ namespace Itminus.Tags;
 /// <summary>
 /// <see cref="ITagChannel"/> 描述符
 /// </summary>
-public class ChannelDescriptor
+public class TagChannelDescriptor
 {
 
     /// <summary>
@@ -29,12 +29,12 @@ public class ChannelDescriptor
     public IDictionary<string, XElement> Extras { get; set; } = new Dictionary<string, XElement>();
 
 
-    public static ChannelDescriptor LoadFromXElement(XElement e)
+    public static TagChannelDescriptor LoadFromXElement(XElement e)
     {
         var name = e.Attribute("name")?.Value ?? throw new Exception($"通道元素未配置元素名({e.Name.LocalName})");
         var driver = e.Attribute("driver")?.Value ?? throw new Exception($"通道元素未配置驱动({e.Name.LocalName})"); ;
 
-        var descriptor = new ChannelDescriptor()
+        var descriptor = new TagChannelDescriptor()
         {
             Name = name,
             Driver = driver,

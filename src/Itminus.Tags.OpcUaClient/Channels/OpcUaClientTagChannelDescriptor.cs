@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags.OpcUaClient;
 
-public class OpcUaClientTagChannelDescriptor : ChannelDescriptor
+public class OpcUaClientTagChannelDescriptor : TagChannelDescriptor
 {
 
     public OpcUaClientTagChannelOpt OpcUaTagChannelOpt { get; set; } = new();
@@ -42,7 +42,7 @@ public class OpcUaClientTagChannelDescriptor : ChannelDescriptor
         return serverOpt;
     }
 
-    public static OpcUaClientTagChannelDescriptor FromDescriptor(ChannelDescriptor descriptor)
+    public static OpcUaClientTagChannelDescriptor FromDescriptor(TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != OpcUaClientNames.DriverName)
         {

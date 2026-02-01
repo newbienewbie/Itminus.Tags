@@ -3,7 +3,6 @@ using Itminus.Tags.S7;
 using Itminus.Tags.ZLan;
 using Itminus.Tags.ModbusTcp;
 using Itminus.Tags.OpcUaClient;
-using Itminus.Tags.Projects;
 
 using Itminus.Tags.Web;
 using Itminus.Tags.Web.Components;
