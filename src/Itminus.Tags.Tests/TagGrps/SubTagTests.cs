@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Itminus.Tags.Tests.TagGroups;
+namespace Itminus.Tags.Tests.TagGrps;
 
 public class SubTagTests
 {

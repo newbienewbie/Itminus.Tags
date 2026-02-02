@@ -31,30 +31,11 @@ public class TagChannelDescriptor
     /// </summary>
     public virtual IDictionary<string, XElement> Extras { get; set; } = new Dictionary<string, XElement>();
 
-    /// <summary>
-    /// 从 XElement 加载
-    /// </summary>
-    /// <param name="e"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public static TagChannelDescriptor LoadFromXElement(XElement e)
-    {
-        var name = e.Attribute("name")?.Value ?? throw new Exception($"通道元素未配置元素名({e.Name.LocalName})");
-        var driver = e.Attribute("driver")?.Value ?? throw new Exception($"通道元素未配置驱动({e.Name.LocalName})"); ;
-
-        var descriptor = new TagChannelDescriptor()
-        {
-            Name = name,
-            Driver = driver,
-            Extras = e.Elements().ToDictionary(child => child.Name.LocalName, child => child)
-        };
-        return descriptor;
-    }
 
     public virtual TagChannelDescriptor Copy()
     {
         var xml = this.ToXElement();
-        var descriptor = LoadFromXElement(xml);
+        var descriptor = xml.ToTagChannelDescriptor();
         return descriptor;
     }
 

@@ -24,7 +24,7 @@ public enum TagAccessMode
 /// <summary>
 /// 测点描述
 /// </summary>
-public class TagDescriptor
+public class TagDescriptor: ITagsDescriptor
 {
     /// <summary>
     /// 测点名称——用于展示，在测组中具有唯一性

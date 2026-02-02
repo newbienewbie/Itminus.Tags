@@ -2,8 +2,9 @@
 
 namespace Itminus.Tags;
 
-public static class TagDescriptorExtensions
+public static class XElementExtensions_TagDescriptor
 {
+    #region
     /// <summary>
     /// 构造 <see cref="TagDescriptor"/> 对象
     /// </summary>
@@ -55,20 +56,26 @@ public static class TagDescriptorExtensions
     {
         var name = new XAttribute("name", descriptor.TagName);
         var address = new XAttribute("address", descriptor.Address);
-        var tagKind = new XAttribute("type", descriptor.TagKind);
         var tagEndian = new XAttribute("endian", descriptor.EndianKind);
-
         var access = new XAttribute("access", descriptor.AccessMode);
-        var tagSize = new XAttribute("tagSize", descriptor.TagSize);
+
 
         var attrs = new List<XAttribute> {
             name,
             address,
-            tagKind,
             tagEndian,
             access,
-            tagSize
         };
+        if (descriptor.TagKind != TagKinds.Unknown)
+        {
+            var tagKind = new XAttribute("type", descriptor.TagKind);
+            attrs.Add(tagKind);
+        }
+        if (descriptor.TagSize != default)
+        {
+            var tagSize = new XAttribute("tagSize", descriptor.TagSize);
+            attrs.Add(tagSize);
+        }
         if (!string.IsNullOrEmpty(descriptor.Note))
         {
             attrs.Add(new XAttribute("note", descriptor.Note));
@@ -76,4 +83,6 @@ public static class TagDescriptorExtensions
         var ele = new XElement("Tag", attrs);
         return ele;
     }
+
+    #endregion
 }

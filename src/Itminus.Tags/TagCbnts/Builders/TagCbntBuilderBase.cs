@@ -34,13 +34,10 @@ public abstract class TagCbntBuilderBase
         this.TagCbnt = new TagCbnt(unknown_name, unknown_address);
     }
 
-    public virtual TagCbntBuilderBase WithXElement(XElement cbntElement)
+    public virtual TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor cbntDescriptor)
     {
-        var name = cbntElement.GetTagUnionName();
-        var addr = cbntElement.GetTagUnionAddress(name);
-
-        this.WithName(name);
-        this.WithStartAddress(addr);
+        this.WithName(cbntDescriptor.Name);
+        this.WithStartAddress(cbntDescriptor.StartAddress);
         return this;
     }
 

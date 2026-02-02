@@ -22,12 +22,13 @@ public abstract class ZLanCbntBuilderBase: ModbusTcpTagCbntBuilder
     public abstract string AreaStartAddr { get; }
 
 
-    public override TagCbntBuilderBase WithXElement(XElement cbntElement)
+    public override TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor descriptor)
     {
-        var name = (string?)cbntElement.Attribute("name") ?? throw new ArgumentException($"Tag 未配置名称：<{cbntElement.Name.LocalName}/>");
-        var area = (string?)cbntElement.Attribute("area");
-        this.Area = area;
-        this.WithName(name);
+        if(descriptor.Extras.TryGetValue("area", out var area))
+        {
+            this.Area = area.Value;
+        }
+        this.WithName(descriptor.Name);
         this.WithStartAddress(AreaStartAddr);
         return this;
     }

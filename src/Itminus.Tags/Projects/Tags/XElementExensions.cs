@@ -69,6 +69,12 @@ public static class XElementExensions
         return address;
     }
 
+    internal static string? GetTagUnionChannelName(this XElement e)
+    {
+        var channelName = (string?)e.Attribute("channel");
+        return channelName;
+    }
+
     internal static ITagChannel? GetTagUnionChannel(this XElement e, IList<ITagChannel> channels)
     {
         var channelName = (string?)e.Attribute("channel");

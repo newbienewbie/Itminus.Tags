@@ -27,19 +27,19 @@ public static class TagsLoaderExtensions
     /// </summary>
     /// <typeparam name="TCbntBuilder"></typeparam>
     /// <param name="loader"></param>
-    /// <param name="sp"></param>
     /// <param name="driver"></param>
+    /// <param name="predicate"></param>
     /// <returns></returns>
     public static CompositeTagsLoader AddTagsCbntBuilder<TCbntBuilder>(this CompositeTagsLoader loader, string driver, Func<TCbntBuilder, bool>? predicate = null)
         where TCbntBuilder : TagCbntBuilderBase, new()
     {
-        return loader.AddTagsCbntBuilder((channel, el) => {
+        return loader.AddTagsCbntBuilder((channel, descriptor) => {
             if (channel.Driver != driver)
             {
                 return null;
             }
             var builder = new TCbntBuilder();
-            builder.WithXElement(el);
+            builder.WithCbntDescriptor(descriptor);
 
             var flag = predicate is null ? true : predicate(builder);
             if (!flag)

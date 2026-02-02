@@ -56,5 +56,11 @@ public interface ITagsProject
     /// <param name="ct"></param>
     /// <returns></returns>
     Task RunAsync(CancellationToken ct);
+
+    /// <summary>
+    /// 尝试添加逻辑，成功则返回true；如果失败，则返回false
+    /// </summary>
+    /// <typeparam name="TLogicet"></typeparam>
+    /// <returns></returns>
     bool TryAddLogicet<TLogicet>() where TLogicet : class, ILogicet;
 }

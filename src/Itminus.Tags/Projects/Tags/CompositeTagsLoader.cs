@@ -16,7 +16,7 @@ namespace Itminus.Tags;
 /// <param name="channel"></param>
 /// <param name="element"></param>
 /// <returns></returns>
-public delegate TagCbntBuilderBase? MakeTagCbntBuilder(ITagChannel channel, XElement element);
+public delegate TagCbntBuilderBase? MakeTagCbntBuilder(ITagChannel channel, TagCbntDescriptor element);
 
 /// <summary>
 /// 根据channel、tagDescriptor 和element，给出<see cref="TagBuilderBase"/>  <br/>
@@ -26,7 +26,7 @@ public delegate TagCbntBuilderBase? MakeTagCbntBuilder(ITagChannel channel, XEle
 /// <param name="descriptor"></param>
 /// <param name="element"></param>
 /// <returns></returns>
-public delegate TagBuilderBase? MakeTagBuilder(ITagChannel channel, TagDescriptor descriptor, XElement element);
+public delegate TagBuilderBase? MakeTagBuilder(ITagChannel channel, TagDescriptor descriptor);
 
 /// <summary>
 /// 复合测点集加载器。<br/>
@@ -57,11 +57,11 @@ public class CompositeTagsLoader : ITagsLoader
     /// <param name="channel"></param>
     /// <param name="thisElement"></param>
     /// <returns></returns>
-    protected virtual TagBuilderBase? ChooseTagBuilder(ITagChannel channel, TagDescriptor tagDescriptor, XElement thisElement)
+    protected virtual TagBuilderBase? ChooseTagBuilder(ITagChannel channel, TagDescriptor tagDescriptor)
     {
         foreach (var f in this._tagFactories)
         {
-            var x = f(channel, tagDescriptor, thisElement);
+            var x = f(channel, tagDescriptor);
             if (x != null)
             {
                 return x;
@@ -95,7 +95,7 @@ public class CompositeTagsLoader : ITagsLoader
     /// <param name="channel"></param>
     /// <param name="thisElement"></param>
     /// <returns></returns>
-    protected virtual TagCbntBuilderBase? ChooseTagCbntBuilder(ITagChannel channel, XElement thisElement)
+    protected virtual TagCbntBuilderBase? ChooseTagCbntBuilder(ITagChannel channel, TagCbntDescriptor thisElement)
     {
         foreach (var b in this._tagCbntBuilders)
         {
@@ -111,58 +111,83 @@ public class CompositeTagsLoader : ITagsLoader
 
 
     #region 从 XElement 中加载 Tag|TagCbnt|TagGrp，并作为子节点追加到指定的父节点中
-    /// <inheritdoc/>
-    public virtual void LoadTagGroup(ITagGrp parent, XElement thisElement, IList<ITagChannel> availableChannels)
+    public virtual void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IList<ITagChannel> availableChannels)
     {
-        var thisTagName = thisElement.GetTagUnionName();
-        var thisIsEntry = thisElement.GetTagUnionIsEntry(thisTagName);
-        var thisChannel = thisElement.GetTagUnionChannel(availableChannels);
-
-        var unit = new ValueTuple();
-        thisElement.MapTagUnion(
-            e =>
-            {
-                var channel = thisChannel ?? parent.GetRequiredChannel();
-                var descriptor = this.LoadTagDescriptor(thisElement);
-                var builder = this.ChooseTagBuilder(channel, descriptor, thisElement) ??
-                    throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={thisElement.ToString()}");
-                var tag = builder.Build();
-                parent.AddTag(tag);
-                return unit;
-            },
-            e =>
-            {
-                var channel = thisChannel ?? parent.GetRequiredChannel();
-                var builder = this.ChooseTagCbntBuilder(channel, thisElement) ??
-                    throw new Exception($"未注册相应的TagCbntBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={thisElement.ToString()}");
-                var cbntors = e.Elements().Select(t => LoadTagDescriptor(t)).ToList();
-                var cbntBuilder = builder
-                    .AddTags(cbntors);
-                var accessMode = e.GetTagUnionAccess(thisTagName);
-                if (accessMode.HasValue)
-                {
-                    cbntBuilder.WithAccessMode(accessMode.Value);
-                }
-                var cbnt = cbntBuilder.Build();
-                parent.AddTag(cbnt);
-                return unit;
-            },
-            e =>
-            {
-                var thisGrp = new TagGrp(thisTagName, thisIsEntry, thisChannel);
-                var isEnabled = !string.Equals(thisElement.Attribute("isEnabled")?.Value, "false", StringComparison.OrdinalIgnoreCase);
-                thisGrp.IsEnabled = isEnabled;
-                thisGrp.ScanInterval = thisElement.GetTagUnionScanInterval(thisGrp.Name) ?? (parent.GetScanInterval() ?? 1000);
-                parent.AddTag(thisGrp);
-                foreach (var childElement in thisElement.Elements())
-                {
-                    LoadTagGroup(thisGrp, childElement, availableChannels);
-                }
-                return unit;
-            }
-        );
+        if(descriptor is TagGrpDescriptor grpDescriptor)
+        {
+            LoadTagGroup(parent, grpDescriptor, availableChannels);
+        }
+        else if(descriptor is TagCbntDescriptor cbntDescriptor)
+        {
+            LoadTagCbnt(parent, cbntDescriptor, availableChannels);
+        }
+        else if(descriptor is TagDescriptor tagDescriptor)
+        {
+            LoadDirectTag(parent, tagDescriptor, availableChannels);
+        }
+        else
+        {
+            throw new NotImplementedException($"不支持的 ITagsDescriptor 类型: {descriptor.GetType().FullName}");
+        }
     }
 
+    /// <inheritdoc/>
+    protected virtual void LoadTagGroup(ITagGrp parent, TagGrpDescriptor grpDescriptor, IList<ITagChannel> availableChannels)
+    {
+        var thisTagName = grpDescriptor.Name;
+        var thisIsEntry = grpDescriptor.IsEntry;
+        var thisChannel = string.IsNullOrEmpty( grpDescriptor.ChannelName) ?
+            null:
+            availableChannels.FirstOrDefault(c => c.ChannelName == grpDescriptor.ChannelName);
+
+        var thisGrp = new TagGrp(thisTagName, thisIsEntry, thisChannel);
+        thisGrp.IsEnabled = grpDescriptor.IsEnabled;
+        thisGrp.ScanInterval = grpDescriptor.ScanInterval;
+        parent.AddTag(thisGrp);
+        foreach (var child in grpDescriptor.Children)
+        {
+            if(child is TagGrpDescriptor childGrpDescriptor)
+            {
+                LoadTagGroup(thisGrp, childGrpDescriptor, availableChannels);
+            }
+            else if( child is TagCbntDescriptor childCbntDescriptor)
+            {
+                LoadTagCbnt(thisGrp, childCbntDescriptor, availableChannels);
+            }
+            else if( child is TagDescriptor childTagDescriptor)
+            {
+                LoadDirectTag(thisGrp, childTagDescriptor, availableChannels);
+            }
+        }
+        return;
+    }
+
+    protected virtual void LoadTagCbnt(ITagGrp parent, TagCbntDescriptor cbntDescriptor, IList<ITagChannel> availableChannels)
+    {
+        var channel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
+            parent.GetRequiredChannel() :
+            availableChannels.FirstOrDefault(c => c.ChannelName == cbntDescriptor.ChannelName) ??
+                throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
+
+        var builder = this.ChooseTagCbntBuilder(channel, cbntDescriptor) ??
+            throw new Exception($"未注册相应的TagCbntBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={cbntDescriptor.Name}");
+        var cbntors = cbntDescriptor.Children.ToList();
+        var cbntBuilder = builder
+            .AddTags(cbntors);
+        cbntBuilder.WithAccessMode(cbntDescriptor.AccessMode);
+        var cbnt = cbntBuilder.Build();
+        parent.AddTag(cbnt);
+        return;
+    }
+
+    protected virtual void LoadDirectTag(ITagGrp parent, TagDescriptor tagDescriptor, IList<ITagChannel> availableChannels)
+    {
+        var channel = parent.GetRequiredChannel();
+        var builder = this.ChooseTagBuilder(channel, tagDescriptor) ??
+            throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={tagDescriptor.TagName}");
+        var tag = builder.Build();
+        parent.AddTag(tag);
+    }
 
     protected virtual TagDescriptor LoadTagDescriptor(XElement e) => e.ToTagDescriptor();
     #endregion

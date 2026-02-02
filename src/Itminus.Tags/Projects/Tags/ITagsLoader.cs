@@ -12,7 +12,7 @@ public interface ITagsLoader
     /// 把一个 XElement 加载为 TagGrp | TagCbnt | Tag，并添加到 parent的子元素
     /// </summary>
     /// <param name="parent"></param>
-    /// <param name="thisElement"></param>
+    /// <param name="descriptor"></param>
     /// <param name="availableChannels"></param>
-    void LoadTagGroup(ITagGrp parent, XElement thisElement, IList<ITagChannel> availableChannels);
+    void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IList<ITagChannel> availableChannels);
 }

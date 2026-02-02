@@ -32,7 +32,7 @@ internal class TagsProject : ITagsProject
     protected virtual TagsProject LoadChannels(XElement root)
     {
         var elements = root.Elements("Channel") ?? [];
-        var descriptors = elements.Select(TagChannelDescriptor.LoadFromXElement);
+        var descriptors = elements.Select(e=> e.ToTagChannelDescriptor());
         var channels = this._channelsLoader.LoadChannels(descriptors);
         this.AddChannels(channels);
         return this;
@@ -46,9 +46,11 @@ internal class TagsProject : ITagsProject
     {
         var main = new TagGrp(name: "__main__", isEntry: false, null);
         var elements = root.Elements().Where(e => e.IsTagUnion())?? [];
+
         foreach (var ele in elements) 
         {
-            this._tagsLoader.LoadTagGroup(main, ele, this.Channels);
+            ITagsDescriptor descriptor = ele.ToTagGrpDescriptor(); 
+            this._tagsLoader.LoadTagGroup(main, descriptor, this.Channels);
         }
         this.Tags = main;
         return this;
