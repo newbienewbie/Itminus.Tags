@@ -12,28 +12,31 @@
 
 <PageTitle>Designer</PageTitle>
 
-<MudTabs>
+<MudTabs KeepPanelsAlive="true" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
 
     <MudTabPanel Text="通道" Icon="@Icons.Material.Filled.AllInclusive">
-        <ChannelCreator ChannelUpdated="@(args=>{
-                            var found = false;
-                            for (var i = 0; i < this.channelDescriptors.Count; i++)
-                            {
-                                var d = this.channelDescriptors[i];
-                                if (d.Name == args.Name && d.Driver == args.Driver)
+      
+        <MudPaper Class="pl-4 pb-4 pr-4">
+            <ChannelCreator ChannelUpdated="@(args=>{
+                                var found = false;
+                                for (var i = 0; i < this.channelDescriptors.Count; i++)
                                 {
-                                    found = true;
-                                    this.channelDescriptors[i] = args;
-                                    return;
+                                    var d = this.channelDescriptors[i];
+                                    if (d.Name == args.Name && d.Driver == args.Driver)
+                                    {
+                                        found = true;
+                                        this.channelDescriptors[i] = args;
+                                        return;
+                                    }
                                 }
-                            }
-                            if (!found)
-                            {
-                                this.channelDescriptors.Add(args);
-                            }
-                            this.InvokeAsync(StateHasChanged);
-                        })">
-        </ChannelCreator>
+                                if (!found)
+                                {
+                                    this.channelDescriptors.Add(args);
+                                }
+                                this.InvokeAsync(StateHasChanged);
+                            })">
+            </ChannelCreator>
+        </MudPaper>
 
         <h3 Class="mt-8">通道列表</h3>
         <MudPaper Class="pl-4 pb-4 pr-4">

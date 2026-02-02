@@ -164,41 +164,7 @@ public class CompositeTagsLoader : ITagsLoader
     }
 
 
-    protected virtual TagDescriptor LoadTagDescriptor(XElement e)
-    {
-        var tagName = e.GetTagUnionName();
-        var address = e.GetTagUnionAddress(tagName);
-        var tagKind = e.GetTagUnionTagKind(tagName);
-        var tagEndian = e.GetTagUnionEndian(tagName);
-
-        var tagNote = e.GetTagUnionNote(tagName);
-
-        var tagdescriptor = new TagDescriptor()
-        {
-            Address = address,
-            TagName = tagName,
-            TagKind = tagKind,
-            EndianKind = tagEndian,
-            Note = tagNote,
-        };
-
-        var tagAccess = e.GetTagUnionAccess(tagName);
-        if (tagAccess.HasValue)
-        {
-            tagdescriptor.AccessMode = tagAccess.Value;
-        }
-
-        var tagSize = (string?)e.Attribute("tagSize");
-        if (!string.IsNullOrEmpty(tagSize))
-        {
-            if (!int.TryParse(tagSize, out var size))
-            {
-                throw new Exception($"Tag(Name={tagName}) 配置了非法大小={tagSize}");
-            }
-            tagdescriptor.TagSize = size;
-        }
-        return tagdescriptor;
-    }
+    protected virtual TagDescriptor LoadTagDescriptor(XElement e) => e.ToTagDescriptor();
     #endregion
 
 }
