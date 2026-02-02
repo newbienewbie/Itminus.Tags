@@ -28,7 +28,6 @@ internal class TagsProject : ITagsProject
     /// <summary>
     /// 从根元素中加载通道
     /// </summary>
-    /// <param name="channelFactory"></param>
     /// <returns></returns>
     protected virtual TagsProject LoadChannels(XElement root)
     {
@@ -42,7 +41,6 @@ internal class TagsProject : ITagsProject
     /// <summary>
     /// 加载测点
     /// </summary>
-    /// <param name="parser"></param>
     /// <returns></returns>
     protected virtual TagsProject LoadTags(XElement root)
     {
@@ -60,7 +58,6 @@ internal class TagsProject : ITagsProject
     /// <summary>
     /// 加载 Logicets
     /// </summary>
-    /// <param name="loader"></param>
     /// <returns></returns>
     protected virtual TagsProject LoadLogicets(XElement root)
     {
