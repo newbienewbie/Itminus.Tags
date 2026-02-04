@@ -51,6 +51,7 @@ builder.Services.AddSingleton(rootsp => {
     proj.TryAddLogicet<HandleSnap11>();
     proj.TryAddLogicet<HandleSnap12>();
     proj.TryAddLogicet<HandleSnap13>();
+    proj.TryAddLogicet<HandleSnap14>();
     return proj;
 });
 builder.Services.AddHostedService<S7BackgroundService>();

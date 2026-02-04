@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Plugin1", "Samples.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.OpcUaClient", "Itminus.Tags.OpcUaClient\Itminus.Tags.OpcUaClient.csproj", "{16F2257D-A3D4-15BD-4123-6618EE334683}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.BlazorLib", "Itminus.Tags.BlazorLib\Itminus.Tags.BlazorLib.csproj", "{6DADACB1-1F1D-459E-A454-7710796A15F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{16F2257D-A3D4-15BD-4123-6618EE334683}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F2257D-A3D4-15BD-4123-6618EE334683}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F2257D-A3D4-15BD-4123-6618EE334683}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DADACB1-1F1D-459E-A454-7710796A15F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DADACB1-1F1D-459E-A454-7710796A15F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DADACB1-1F1D-459E-A454-7710796A15F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DADACB1-1F1D-459E-A454-7710796A15F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

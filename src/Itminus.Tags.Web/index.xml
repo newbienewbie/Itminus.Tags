@@ -32,11 +32,11 @@
 
 
 	<!-- 测点配置，可以配置多个 -->
-	<TagGrp name="g1" isEntry="true" isEnabled="true" address="DB200.100.1" channel="S7-1" scanInterval="10">
-		<TagCbnt name="拍照请求" access="RO" address="DB200.100.1">
-			<Tag name="拍照-请求-标志" address="DB200.100.1" type="BIT" />
-			<Tag name="拍照-请求-料号" address="DB200.102" type="BYTE" />
-			<Tag name="拍照-请求-程序号" address="DB200.104" type="INT16" />
+	<!--<TagGrp name="g1" isEntry="false" isEnabled="true" address="DB200.500.1" channel="S7-1" scanInterval="10">
+		<TagCbnt name="拍照请求" access="RO" address="DB200.500.1">
+			<Tag name="拍照-请求-标志" address="DB200.500.1" type="BIT" />
+			<Tag name="拍照-请求-料号" address="DB200.502" type="BYTE" />
+			<Tag name="拍照-请求-程序号" address="DB200.504" type="INT16" />
 		</TagCbnt>
 
 		<TagCbnt name="拍照响应" access="R1W" address="DB200.400.0">
@@ -44,7 +44,7 @@
 			<Tag name="拍照-响应-B1" address="DB200.400.1" type="BIT" />
 			<Tag name="拍照-响应-I2" address="DB200.400.2" type="BIT" />
 		</TagCbnt>
-	</TagGrp>
+	</TagGrp>-->
 
 	<!-- ZLan 配置 -->
 	<TagGrp name="g2" isEntry="true" isEnabled="true" channel="ZLan-1" scanInterval="10">
@@ -93,6 +93,46 @@
 			<Tag name="放行灯" address="ns=4;s=|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var6"></Tag>
 		</TagCbnt>
 	</TagGrp>
+
+
+
+	<TagGrp name="拧紧枪" isEntry="true"  isEnabled="true" channel="S7-1" scanInterval="10">
+
+		<TagGrp name="1#">
+			<TagCbnt name="拧紧请求" address="DB400.0" access="RW">
+				<Tag name="请求标志" address="DB400.0.0" type="BIT"></Tag>
+				<Tag name="程序号" address="DB400.2" type="INT16"></Tag>
+				<Tag name="套筒号" address="DB400.4" type="INT16"></Tag>
+			</TagCbnt>
+			<TagCbnt name="拧紧响应" address="DB500.0" access="RW">
+				<Tag name="响应标志" address="DB500.0.0" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagGrp name="2#">
+			<TagCbnt name="拧紧请求" address="DB400.20" access="RW">
+				<Tag name="请求标志" address="DB400.20.0" type="BIT"></Tag>
+				<Tag name="程序号" address="DB400.22" type="INT16"></Tag>
+				<Tag name="套筒号" address="DB400.24" type="INT16"></Tag>
+			</TagCbnt>
+			<TagCbnt name="拧紧响应" address="DB500.20" access="RW">
+				<Tag name="响应标志" address="DB500.20.0" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagGrp name="3#">
+			<TagCbnt name="拧紧请求" address="DB400.60" access="RW">
+				<Tag name="请求标志" address="DB400.60.0" type="BIT"></Tag>
+				<Tag name="程序号" address="DB400.62" type="INT16"></Tag>
+				<Tag name="套筒号" address="DB400.64" type="INT16"></Tag>
+			</TagCbnt>
+			<TagCbnt name="拧紧响应" address="DB500.60" access="RW">
+				<Tag name="响应标志" address="DB500.60.0" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+	</TagGrp>
+
 
 	<!-- 逻辑配置，可以配置0~N个 -->
 	<!--<Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>-->

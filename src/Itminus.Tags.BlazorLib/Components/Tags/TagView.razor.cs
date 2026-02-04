@@ -1,7 +1,7 @@
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.Web.Components.Tags;
+namespace Itminus.Tags.BlazorLib.Components.Tags;
 
 
 

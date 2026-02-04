@@ -41,7 +41,7 @@ public class S7TagChannel : ITagChannel
         var th = new Thread(() => {
             try
             {
-                this.Client.Disconnect();
+                this.Client?.Disconnect();
                 this.Client = null;
                 tcs.SetResult(null);
             }
