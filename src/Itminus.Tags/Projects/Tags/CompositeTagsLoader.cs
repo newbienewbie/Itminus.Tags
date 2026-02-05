@@ -55,7 +55,7 @@ public class CompositeTagsLoader : ITagsLoader
     /// 返回null表示未找到结果
     /// </summary>
     /// <param name="channel"></param>
-    /// <param name="thisElement"></param>
+    /// <param name="tagDescriptor"></param>
     /// <returns></returns>
     protected virtual TagBuilderBase? ChooseTagBuilder(ITagChannel channel, TagDescriptor tagDescriptor)
     {

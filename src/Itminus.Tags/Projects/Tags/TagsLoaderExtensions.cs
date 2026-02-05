@@ -5,20 +5,35 @@ namespace Itminus.Tags;
 
 public static class TagsLoaderExtensions
 {
-    //public static CompositeTagsLoader AddTagBuilder<TTagBuilder>(this CompositeTagsLoader loader, IServiceProvider sp, string driver)
-    //    where TTagBuilder : TagBuilderBase, new()
-    //{
-    //    return loader.AddTagBuilder((channel, descriptor, el) => {
-    //        if (channel.Driver != driver)
-    //        {
-    //            return null;
-    //        }
-    //        var name = el.GetTagUnionName();
-    //        var addr = el.GetTagUnionAddress(name);
-    //        var builder = ActivatorUtilities.CreateInstance<TTagBuilder>(sp, name, addr);
-    //        return builder.WithDevice(channel);
-    //    });
-    //}
+    /// <summary>
+    /// 注册特定驱动的 Tag Loader
+    /// </summary>
+    /// <typeparam name="TTagBuilder"></typeparam>
+    /// <param name="loader"></param>
+    /// <param name="driver"></param>
+    /// <param name="predicate"></param>
+    /// <returns></returns>
+    public static CompositeTagsLoader AddTagBuilder<TTagBuilder>(this CompositeTagsLoader loader, string driver, Func<TTagBuilder, bool>? predicate = null)
+        where TTagBuilder : TagBuilderBase, new()
+    {
+        return loader.AddTagBuilder((channel, descriptor) =>
+        {
+            if (channel.Driver != driver)
+            {
+                return null;
+            }
+            var builder = new TTagBuilder();
+            builder.WithChannel(channel);
+            builder.WithTagDescriptor(descriptor);
+
+            var flag = predicate is null ? true : predicate(builder);
+            if (!flag)
+            {
+                return null;
+            }
+            return builder;
+        });
+    }
 
     /// <summary>
     /// 注册特定驱动的 TagsCbnt 加载器: 

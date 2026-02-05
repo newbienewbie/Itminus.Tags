@@ -37,7 +37,7 @@ public abstract class Tag<T> : ITag
     public bool IsScaned { get; set; }
 
     #region 读写测点值
-    private T _value = default!;
+    private T? _value = default!;
 
 
     object? ITag.Value
@@ -45,11 +45,11 @@ public abstract class Tag<T> : ITag
         get => Value;
         set
         {
-            Value = (T)value!;
+            Value = (T?)value;
         }
     }
 
-    public virtual T Value
+    public virtual T? Value
     {
         get => _value;
         set
@@ -79,10 +79,10 @@ public abstract class Tag<T> : ITag
 
     protected virtual void NotifyTagWritten(object? newValue)
     {
-        if (this.OnTagRead != null)
+        if (this.OnTagWritten != null)
         {
             var eArgs = new TagSyncEventArgs(newValue, this.Timestamp, TagSyncEventArgs.Kinds.Written);
-            this.OnTagRead(this, eArgs);
+            this.OnTagWritten(this, eArgs);
         }
     }
 

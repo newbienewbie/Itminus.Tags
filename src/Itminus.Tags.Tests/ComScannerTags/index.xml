@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道，可以配置多个-->
+	<Channel name="COM-1" driver="ComScanner">
+		<Port>COM1</Port>
+		<BaundRate>9600</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+	</Channel>
+
+
+	<!-- 测点配置，可以配置多个 -->
+
+	<!-- 测点 配置 -->
+	<TagGrp name="g" isEntry="true" isEnabled="true" channel="COM-1" scanInterval="10">
+		<Tag name="1#扫码枪" type="STR"></Tag>
+	</TagGrp>
+
+	<!-- 逻辑配置，可以配置0~N个 -->
+	<!--<Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>-->
+</root>

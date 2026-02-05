@@ -20,6 +20,8 @@ nuget StdUnit.Sharp7 >= 0.6.4 lowest_matching: true
 nuget StdUnit.Sharp7.Options >= 0.6.4 lowest_matching: true
 
 nuget System.Reactive >= 6.0 lowest_matching: true
+nuget System.IO.Ports >= 6.0 lowest_matching: true
+nuget System.IO.Pipelines >= 6.0.0 lowest_matching: true
 
 nuget Microsoft.AspNetCore.Components.Web >= 8.0.12 lowest_matching: true
 nuget MudBlazor >= 8.5.0 lowest_matching: true

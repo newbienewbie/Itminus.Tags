@@ -26,7 +26,6 @@ internal class HandleSnap14 : LogicetBase
         return entry.Name == "拧紧枪";
     }
 
-    private int i=0;
 
     public override Task ProcessAsync(ITagGrp entry, ITagChannel thisChannel)
     {

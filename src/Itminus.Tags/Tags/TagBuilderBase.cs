@@ -11,14 +11,23 @@ namespace Itminus.Tags;
 /// </summary>
 public abstract class TagBuilderBase
 {
-    public TagDescriptor TagDescriptor { get; private set; }
-    public string Name => TagDescriptor.TagName;
-    public ITagChannel Channel { get; set; }
+    public abstract TagDescriptor TagDescriptor { get; protected set; }
 
-    public TagBuilderBase(TagDescriptor tagDescriptor, ITagChannel tagChannel)
+    public abstract ITagChannel Channel { get; protected set; }
+
+    public string Name => TagDescriptor.TagName;
+
+    public TagBuilderBase WithTagDescriptor(TagDescriptor descriptor)
     {
-        this.TagDescriptor = tagDescriptor;
-        this.Channel = tagChannel;
+        this.TagDescriptor = descriptor;
+        return this;
+    }
+
+
+    public virtual TagBuilderBase WithChannel(ITagChannel channel)
+    {
+        this.Channel = channel;
+        return this;
     }
 
     public virtual TagBuilderBase Configure(Action<TagBuilderBase> action)
