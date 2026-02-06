@@ -10,6 +10,7 @@ using Itminus.Tags.Web.Tags;
 
 using MudBlazor.Services;
 using System.Reflection;
+using Itminus.Tags.ComScanner;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ builder.Services.AddTagsProjectServices(b =>
     b.AddModbusTcpSupport();
     b.AddZLanTcpSupport();
     b.AddOpcUaClientSupport();
+
+    b.AddComScannerSupport();
 });
 
 
@@ -54,7 +57,7 @@ builder.Services.AddSingleton(rootsp => {
     proj.TryAddLogicet<HandleSnap14>();
     return proj;
 });
-builder.Services.AddHostedService<S7BackgroundService>();
+builder.Services.AddHostedService<TagProjBackgroundService>();
 builder.Services.AddMudServices();
 
 

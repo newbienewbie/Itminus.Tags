@@ -37,7 +37,7 @@ public abstract class Tag<T> : ITag
     public bool IsScaned { get; set; }
 
     #region 读写测点值
-    private T? _value = default!;
+    protected T? _value = default!;
 
 
     object? ITag.Value

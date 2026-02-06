@@ -30,17 +30,24 @@ public class ComCodeScannerTag : Tag<string>
     }
     #endregion
 
-
-    public override Task ReadAsync(CancellationToken ct)
+    public override string? Value
     {
+        get => _value;
+        set => throw new InvalidOperationException("扫码枪只支持读取，不可写入");
+    }
+
+
+    public override async Task ReadAsync(CancellationToken ct)
+    {
+        await this._channel.EnsureConnectedAsync(force: false, ct);
         var str = this._channel.ReadString();
-        this.Value = str;
-        return Task.CompletedTask;
+        this._value = str;
+        this.NotifyTagRead(str);
     }
 
 
     public override Task WriteAsync(CancellationToken ct)
     {
-        throw new InvalidOperationException($"扫码枪只能读不可写入");
+        throw new InvalidOperationException("扫码枪只能读不可写入，请不要给Value复制");
     }
 }
