@@ -7,6 +7,7 @@
 	<NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Itminus.Tags.ComScanner\Itminus.Tags.ComScanner.csproj" />
     <ProjectReference Include="..\Itminus.Tags.ModbusTcp\Itminus.Tags.ModbusTcp.csproj" />
     <ProjectReference Include="..\Itminus.Tags.OpcUaClient\Itminus.Tags.OpcUaClient.csproj" />
     <ProjectReference Include="..\Itminus.Tags.RxExtensions\Itminus.Tags.RxExtensions.csproj" />
@@ -15,6 +16,9 @@
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="ComScannerTags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ModbusTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

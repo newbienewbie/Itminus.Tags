@@ -51,7 +51,8 @@ public interface ITagsProject
     void Initialize(string projRoot, XElement? root=null);
 
     /// <summary>
-    /// 运行
+    /// 运行。<br/>
+    /// 这个方法在所有入口组都运行结束之前，不会返回！
     /// </summary>
     /// <param name="ct"></param>
     /// <returns></returns>
