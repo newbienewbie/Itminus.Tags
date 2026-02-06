@@ -7,11 +7,40 @@
 /// </summary>
 public abstract record TagUnion
 {
-    public record TagUnit(ITag Value): TagUnion;
+    /// <summary>
+    /// 接收一个访问者
+    /// </summary>
+    /// <param name="visitor"></param>
+    public abstract void Accept(ITagUnionVisitor visitor);
 
-    public record TagCbnt(ITagCbnt Value) : TagUnion;
 
-    public record TagGrp(ITagGrp Value): TagUnion;
+    public record TagUnit(ITag Value) : TagUnion 
+    {
+        /// <inheritdoc/>
+        public override void Accept(ITagUnionVisitor visitor) 
+        {
+            visitor.Visit(this);
+        }
+    };
+
+
+    public record TagCbnt(ITagCbnt Value) : TagUnion
+    {
+        /// <inheritdoc/>
+        public override void Accept(ITagUnionVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+    }
+
+    public record TagGrp(ITagGrp Value): TagUnion
+    {
+        /// <inheritdoc/>
+        public override void Accept(ITagUnionVisitor visitor)
+        {
+            visitor.Visit(this);
+        }
+    }
 
     public T Map<T>(Func<ITag, T> handleTagUnit, Func<ITagCbnt, T> handleTagCbnt, Func<ITagGrp, T> handleTagGrp) => this switch
     {
