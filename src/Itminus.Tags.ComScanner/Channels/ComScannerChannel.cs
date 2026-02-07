@@ -74,16 +74,8 @@ public class ComScannerChannel : ITagChannel
 
     private string? ReadInputLine(SerialPort serial)
     {
-        this._sema.Wait();
-        try
-        {
-            var str = serial.ReadLine();
-            return str;
-        }
-        finally
-        {
-            this._sema.Release();
-        }
+        var str = serial.ReadLine();
+        return str;
     }
 
     public string? ReadString()
