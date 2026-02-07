@@ -23,25 +23,41 @@ public class ComScannerChannel : ITagChannel
 
     public string NewLine { get; } = "\r";
 
-    public Task EnsureConnectedAsync(bool force, CancellationToken ct)
-    {
-        if(this.SerialPort != null)
-        {
-            return Task.CompletedTask;
-        }
+    private readonly SemaphoreSlim _sema = new SemaphoreSlim(1);
 
-        // 打开串口
-        this.SerialPort = new SerialPort(this._opt.Port, this._opt.BaundRate, this._opt.Parity, this._opt.DataBits, this._opt.StopBits);
-        this.SerialPort.Open();
-        this.SerialPort.NewLine = this.NewLine;
-        return Task.CompletedTask;
+    public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
+    {
+        await this._sema.WaitAsync();
+        try
+        {
+            if (this.SerialPort != null)
+            {
+                return;
+            }
+
+            // 打开串口
+            this.SerialPort = new SerialPort(this._opt.Port, this._opt.BaundRate, this._opt.Parity, this._opt.DataBits, this._opt.StopBits);
+            this.SerialPort.Open();
+            this.SerialPort.NewLine = this.NewLine;
+        }
+        finally
+        {
+            this._sema.Release();
+        }
     }
 
-    public Task DisconnectAsync(CancellationToken ct)
+    public async Task DisconnectAsync(CancellationToken ct)
     {
-        this.SerialPort?.Close();
-        this.SerialPort = null;
-        return Task.CompletedTask;
+        await this._sema.WaitAsync();
+        try
+        {
+            this.SerialPort?.Close();
+            this.SerialPort = null;
+        }
+        finally
+        {
+            this._sema.Release();
+        }
     }
 
     public void Dispose()
@@ -57,8 +73,16 @@ public class ComScannerChannel : ITagChannel
 
     private string? ReadInputLine(SerialPort serial)
     {
-        var str = serial.ReadLine();
-        return str;
+        this._sema.Wait();
+        try
+        {
+            var str = serial.ReadLine();
+            return str;
+        }
+        finally
+        {
+            this._sema.Release();
+        }
     }
 
     public string? ReadString()

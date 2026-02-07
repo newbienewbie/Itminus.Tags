@@ -22,42 +22,8 @@ builder.Services.AddLogging(lb =>{
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddTagsProjectServices(b =>
-{
-    b.AddS7Support();
-    b.AddModbusTcpSupport();
-    b.AddZLanTcpSupport();
-    b.AddOpcUaClientSupport();
+builder.Services.AddTags();
 
-    b.AddComScannerSupport();
-});
-
-
-builder.Services.AddSingleton(rootsp => {
-    var ss = rootsp.CreateScope();
-    var sp = ss.ServiceProvider;
-    var logger = sp.GetRequiredService<ILogger<ITagsProject>>();
-    var factory = sp.GetRequiredService<ITagsProjectFactory>();
-
-    var loc = Assembly.GetExecutingAssembly().Location;
-    var dir = Path.GetDirectoryName(loc);
-    var proj = factory.Create(dir!);
-    proj.TurnStarted += (grp, ch) => {
-        return Task.CompletedTask;
-    };
-    proj.TurnCrashed +=  (grp, ch, ex) => {
-        logger.LogError("{grp}: {ex}", grp.Name, ex.Message);
-        return Task.CompletedTask;
-    };
-
-    proj.Logicets.Clear();
-    proj.TryAddLogicet<HandleSnap11>();
-    proj.TryAddLogicet<HandleSnap12>();
-    proj.TryAddLogicet<HandleSnap13>();
-    proj.TryAddLogicet<HandleSnap14>();
-    return proj;
-});
-builder.Services.AddHostedService<TagProjBackgroundService>();
 builder.Services.AddMudServices();
 
 
@@ -65,6 +31,11 @@ builder.Services.AddMudServices();
 var app = builder.Build();
 
 
+_ = Task.Run(() =>
+{
+    var projctrl = app.Services.GetRequiredService<TagsProjectCtrl>();
+    _ = projctrl.StartPoll(dir: null);
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
