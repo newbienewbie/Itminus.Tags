@@ -1,6 +1,7 @@
 ﻿using Itminus.Tags.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.Xml.Linq;
 
 namespace Itminus.Tags;
@@ -188,8 +189,9 @@ internal class TagsProject : ITagsProject
             throw new Exception("未配置入口测点组");
         }
 
-
-        var tasks = entries.Select(async entry => {
+        var tasks = new ConcurrentBag<Task>();
+        Parallel.ForEach(entries, entry =>
+        {
             var logicets = this.Logicets
                 .Where(l => l.MatchEntry(entry))
                 .OrderBy(l => l.Order)
@@ -204,8 +206,10 @@ internal class TagsProject : ITagsProject
                 }
             };
             runner.TurnCrashed += TurnCrashed;
-            await runner.StartAsync(entry, ct);
+            Task task = runner.StartAsync(entry, ct);
+            tasks.Add(task);
         });
+
         return Task.WhenAll(tasks);
     }
 
