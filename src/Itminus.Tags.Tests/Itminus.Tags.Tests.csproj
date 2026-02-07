@@ -28,6 +28,9 @@
     <None Update="S7Tags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TagUnions\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ZLanTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
