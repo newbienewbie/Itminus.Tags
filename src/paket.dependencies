@@ -19,7 +19,7 @@ nuget FutureTech.Protocols >= 0.5.2 lowest_matching: true
 nuget StdUnit.Sharp7 >= 0.6.4 lowest_matching: true
 nuget StdUnit.Sharp7.Options >= 0.6.4 lowest_matching: true
 
-nuget System.Reactive >= 6.0 lowest_matching: true
+nuget System.Reactive >= 6.1.0 lowest_matching: true
 nuget System.IO.Ports >= 6.0 lowest_matching: true
 nuget System.IO.Pipelines >= 6.0.0 lowest_matching: true
 

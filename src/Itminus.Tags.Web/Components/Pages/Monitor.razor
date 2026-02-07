@@ -2,10 +2,13 @@
 @using Itminus.Tags.BlazorLib.Components.Tags
 @using System.Collections.ObjectModel
 @using Itminus.Tags
+@using Itminus.Tags.Web.Tags
+@using System.Reactive.Linq
 
 @page "/monitor"
+@implements IDisposable
 @rendermode InteractiveServer
-@inject ITagsProject proj
+@inject TagsProjectCtrl projctrl
 
 <PageTitle>Monitor</PageTitle>
 
@@ -13,10 +16,32 @@
 
 
 @code {
+    private IDisposable? _dispose;
 
     protected override Task OnInitializedAsync()
     {
-        this.RootTag = this.proj.Tags;
+        this.RootTag = this.projctrl.Project?.Tags;
+
+        var startorstopped = Observable.FromEventPattern<TagsProjectStartedOrStopped, TagsProjectEventArgs>(
+            h => this.projctrl.StartedOrStopped += h,
+            h => this.projctrl.StartedOrStopped -= h
+        );
+        this._dispose = startorstopped
+            .Subscribe(ep =>
+            {
+                var sender = ep.Sender;
+                var args = ep.EventArgs;
+                if (args.IsStarted)
+                {
+                    this.RootTag = this.projctrl.Project?.Tags;
+                }
+                else
+                {
+                    this.RootTag = null;
+                }
+            });
+
+
         return base.OnInitializedAsync();
     }
 
@@ -30,4 +55,12 @@
         }
     }
 
+
+    public void Dispose()
+    {
+        if (this._dispose is not null)
+        {
+            this._dispose.Dispose();
+        }
+    }
 }
