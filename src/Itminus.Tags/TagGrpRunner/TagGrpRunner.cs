@@ -1,7 +1,16 @@
-﻿namespace Itminus.Tags;
+﻿using Microsoft.Extensions.Logging;
 
-public class TagGrpRunner : ITagGrpRunner
+namespace Itminus.Tags;
+
+internal class TagGrpRunner : ITagGrpRunner
 {
+    private readonly ILogger<TagGrpRunner> _logger;
+
+    public TagGrpRunner(ILogger<TagGrpRunner> logger)
+    {
+        this._logger = logger;
+    }
+
     /// <inheritdoc/>
     public event TurnStarted? TurnStarted;
 
@@ -50,7 +59,21 @@ public class TagGrpRunner : ITagGrpRunner
                 {
                     if (TurnCrashed is not null)
                     {
-                        await TurnCrashed(entry, channel, ex);
+                        try
+                        {
+                            await TurnCrashed(entry, channel, ex);
+                        }
+                        catch(Exception handlingError)
+                        {
+                            this._logger.LogCritical(
+                                "测点分组(分组={grp},通道={channel})错误处理又抛出了错误，这破坏了错误处理不能再抛出异常的假设。err={errMsg}\r\nStackTrace={strace}", 
+                                entry.Name, 
+                                channel.ChannelName,
+                                handlingError.Message, 
+                                handlingError.StackTrace
+                                );
+                            throw;
+                        }
                     }
                 }
                 finally

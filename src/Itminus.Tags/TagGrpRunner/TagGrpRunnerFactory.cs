@@ -1,0 +1,22 @@
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+namespace Itminus.Tags;
+
+internal class TagGrpRunnerFactory : ITagGrpRunnerFactory
+{
+    private readonly IServiceProvider _sp;
+
+    public TagGrpRunnerFactory(IServiceProvider sp)
+    {
+        this._sp = sp;
+    }
+
+    /// <inheritdoc/>
+    public ITagGrpRunner Create()
+    {
+        var logger = this._sp.GetRequiredService<ILogger<TagGrpRunner>>();
+        var runner = new TagGrpRunner(logger);
+        return runner;
+    }
+}

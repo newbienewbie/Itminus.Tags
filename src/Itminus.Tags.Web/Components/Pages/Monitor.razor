@@ -12,11 +12,23 @@
 
 <PageTitle>Monitor</PageTitle>
 
+<MudButton OnClick="@(async e=>{
+    _ = Task.Run(async () =>{
+        await this.projctrl.StartPoll( null);
+    });
+})">启动</MudButton>
+
+<MudButton OnClick="@(async e=>{
+    await this.projctrl.StopAsync();
+})">停止</MudButton>
+
 <TagsView RootTag="@RootTag"></TagsView>
 
 
 @code {
     private IDisposable? _dispose;
+
+
 
     protected override Task OnInitializedAsync()
     {

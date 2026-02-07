@@ -52,10 +52,11 @@ public class ComScannerChannel : ITagChannel
         try
         {
             this.SerialPort?.Close();
-            this.SerialPort = null;
+            this.SerialPort?.Dispose();
         }
         finally
         {
+            this.SerialPort = null;
             this._sema.Release();
         }
     }

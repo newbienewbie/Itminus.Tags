@@ -1,4 +1,6 @@
 ﻿using Itminus.Tags.Plugins;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Xml.Linq;
 
 namespace Itminus.Tags;
@@ -192,16 +194,17 @@ internal class TagsProject : ITagsProject
                 .Where(l => l.MatchEntry(entry))
                 .OrderBy(l => l.Order)
                 .ToList();
-            var monitor = new TagGrpRunner();
-            monitor.TurnStarted += TurnStarted;
-            monitor.TurnProcess += async (entry, ch) => {
+            var factory = this._sp.GetRequiredService<ITagGrpRunnerFactory>();
+            var runner = factory.Create();
+            runner.TurnStarted += TurnStarted;
+            runner.TurnProcess += async (entry, ch) => {
                 foreach (var l in logicets)
                 {
                     await l.ProcessAsync(entry, ch);
                 }
             };
-            monitor.TurnCrashed += TurnCrashed;
-            await monitor.StartAsync(entry, ct);
+            runner.TurnCrashed += TurnCrashed;
+            await runner.StartAsync(entry, ct);
         });
         return Task.WhenAll(tasks);
     }

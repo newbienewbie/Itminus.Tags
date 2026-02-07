@@ -7,6 +7,7 @@ public class TagsProjectServiceBuilder
 {
     public TagsProjectServiceBuilder(IServiceCollection services) 
     {
+        services.AddSingleton<ITagGrpRunnerFactory, TagGrpRunnerFactory>();
         services.AddSingleton<ILogicetLoader, LogicetLoader>();
         services.AddSingleton<ITagChannelsLoader, TagChannelsLoader>();
         services.AddScoped<ILogicetMaker, LogicetMaker>();
