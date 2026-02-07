@@ -49,13 +49,16 @@ public static class ServiceExtensions
         }
 
         var proj = factory.Create(dir!);
+
         proj.TurnStarted += (grp, ch) => {
+            Console.WriteLine($"[Tags] 开始处理 {grp.Name}");
             return Task.CompletedTask;
         };
         proj.TurnCrashed += (grp, ch, ex) => {
-            Console.WriteLine("{grp}: 轮次错误：{ex}", grp.Name, ex.Message);
+            Console.WriteLine("{0}: 轮次错误：{1}", grp.Name, ex.Message);
             return Task.CompletedTask;
         };
+
 
         proj.Logicets.Clear();
         proj.TryAddLogicet<HandleSnap11>();
@@ -63,14 +66,7 @@ public static class ServiceExtensions
         proj.TryAddLogicet<HandleSnap13>();
         proj.TryAddLogicet<HandleSnap14>();
 
-        proj.TurnStarted += (grp, ch) => {
-            Console.WriteLine($"[Tags] 开始处理 {grp.Name}");
-            return Task.CompletedTask;
-        };
-        proj.TurnCrashed += (grp, ch, ex) => {
-            Console.WriteLine($"Tags处理异常,grp={grp.Name}：{ex.Message}\r\n{ex.StackTrace}");
-            return Task.CompletedTask;
-        };
+
         return proj;
     }
 }

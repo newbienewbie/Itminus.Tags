@@ -31,47 +31,53 @@ public class TagsProjectCtrl
         using var scope = this._ssf.CreateScope();
         var sp = scope.ServiceProvider;
 
+
         try
         {
-            lock (_lock)
+            await this.DoOneByOneAsync(() =>
             {
                 this._cts = new CancellationTokenSource();
                 this.Project = sp.MakeProject(dir);
-            }
-            var observeOnComPorts = this.ObserveOnComPorts(this.Project.Tags);
+            });
+            var proj = this.Project!;
+            var ct = _cts!.Token;
+
+            var observeOnComPorts = this.ObserveOnComPorts(proj.Tags);
             observeOnComPorts
                 .TakeUntil(_cts.Token)
                 .Subscribe(
-                    ep => {
+                    ep =>
+                    {
                         var tag = ep.Sender ?? throw new Exception($"COM 测点不可为空");
                         var ch = tag.Channel as ComScannerChannel ?? throw new Exception("COM通道不可为空");
                         var chname = ch.ChannelName;
                         var code = ep.EventArgs.NewValue as string ?? "";
-                        Console.WriteLine($"[扫码枪]({chname}): 模拟处理消息:{code}");
+                        Console.WriteLine($"-------------{chname}---------------模拟处理扫描事件={code}");
                     },
-                    async ex => {
-                        Console.WriteLine($"[扫码枪]: 模拟异常处理消息:{ex.Message}");
+                    ex =>
+                    {
+                        Console.WriteLine($"！！！模拟处理扫描错误={ex.Message}");
                     }
                 );
 
-            this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(true, this.Project));
-            await this.Project.RunAsync(_cts.Token);
+            this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(true, proj));
+            await this.Project!.RunAsync(ct);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Tag]: 发生异常:{ex.Message}");
+            // todo: logging
+            Console.WriteLine($"[Tags] {ex.Message}");
             throw;
         }
         finally
         {
-            lock (_lock)
+            await this.DoOneByOneAsync(() =>
             {
                 this.Project = null;
                 this._cts = null;
-            }
+            });
         }
     }
-
     protected virtual IObservable<EventPattern<ITag, TagSyncEventArgs>> ObserveOnComPorts(ITagGrp grp)
     {
         var comtags = new List<ComCodeScannerTag>();
@@ -90,22 +96,88 @@ public class TagsProjectCtrl
             .Merge();
     }
 
-    public void Stop()
+    public async Task StopAsync()
     {
-        try
+        await this.DoOneByOneAsync(async () =>
         {
-            lock (_lock)
+
+
+            // reset proj ctrl
+            var oldchannels = this.Project?.Channels;
+            try
             {
-                this._cts?.Cancel();
+                if (this._cts != null)
+                {
+                    this._cts.Cancel();
+                }
                 this.Project = null;
             }
-            this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(false, this.Project!));
-        }
-        catch
-        {
-        }
+            catch
+            {
+                // ignore error when cancelling
+            }
+
+            try
+            {
+                // disconnect from each channel
+                if (oldchannels is not null)
+                {
+                    foreach (var ch in oldchannels)
+                    {
+                        try
+                        {
+                            if (ch is not null)
+                            {
+                                await ch.DisconnectAsync(CancellationToken.None);
+                            }
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                }
+
+                this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(false, this.Project!));
+            }
+            catch
+            {
+                // ignore errors thrown by StartedOrStopped event handlers
+            }
+        });
+
     }
 
 
     public event TagsProjectStartedOrStopped? StartedOrStopped;
+
+    #region sema helper
+    private SemaphoreSlim _sema = new SemaphoreSlim(1);
+
+    private async Task DoOneByOneAsync(Action action)
+    {
+        await this._sema.WaitAsync();
+        try
+        {
+            action();
+        }
+        finally
+        {
+            this._sema.Release();
+        }
+    }
+
+    private async Task DoOneByOneAsync(Func<Task> func)
+    {
+        await this._sema.WaitAsync();
+        try
+        {
+            await func();
+        }
+        finally
+        {
+            this._sema.Release();
+        }
+    }
+    #endregion
 }
