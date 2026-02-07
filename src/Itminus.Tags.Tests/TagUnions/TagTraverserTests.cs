@@ -1,5 +1,6 @@
 ﻿using Itminus.Tags.ComScanner;
 using Itminus.Tags.ComScanner.Channels;
+using Itminus.Tags.ComScanner.Tags;
 using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,11 +13,11 @@ using Xunit;
 
 namespace Itminus.Tags.Tests.TagUnions;
 
-public class TagUnionVisitTests
+public class TagTraverserTests
 {
     private readonly ServiceProvider _root;
 
-    public TagUnionVisitTests()
+    public TagTraverserTests()
     {
         var services = new ServiceCollection();
         services.AddLogging();
@@ -27,28 +28,6 @@ public class TagUnionVisitTests
         });
 
         this._root = services.BuildServiceProvider();
-    }
-
-    
-
-    class MyVisitor : TraversingVisitorBase
-    {
-        private readonly Action<ITagGrp> visitGrp;
-        private readonly Action<ITagCbnt> visitCbnt;
-        private readonly Action<ITag> visitTag;
-
-        public MyVisitor(Action<ITagGrp> visitGrp, Action<ITagCbnt> visitCbnt, Action<ITag> visitTag)
-        {
-            this.visitGrp = visitGrp;
-            this.visitCbnt = visitCbnt;
-            this.visitTag = visitTag;
-        }
-
-        protected override void Process(ITagGrp grp) => this.visitGrp(grp);
-
-        protected override void Process(ITagCbnt cbnt) => this.visitCbnt(cbnt);
-
-        protected override void Process(ITag tag) => this.visitTag(tag);
     }
 
     [Fact]
@@ -69,19 +48,17 @@ public class TagUnionVisitTests
         Assert.IsType<ComScannerChannel>(proj.Channels[2]);
 
         // Test Tags
-        var groups = new List<ITagGrp>();
-        var tags = new List<ITag>();    
-        var cbnts =new List<ITagCbnt>();
-        var g1 = proj.Tags.SelectGrp("g1");
-        var union = new TagUnion.TagGrp(g1!); ;
-        var visitor = new MyVisitor(
-            grp => groups.Add(grp),
-            cbnt => cbnts.Add(cbnt),
-            tag => tags.Add(tag)
-            );
+        var g1 = proj.Tags.SelectGrp("扫码枪");
+        var union = new TagUnion.TagGrp(g1!); 
+        var tags = new List<ITag>();
+        var visitor = new TagTraverser(t => { 
+            if(t is ComCodeScannerTag tag)
+            {
+                tags.Add(tag);
+            }
+        });
         union.Accept(visitor);
-        Assert.Equal(3, groups.Count);
-        Assert.Equal(2, cbnts.Count);
-        Assert.Equal(6, tags.Count);
+        Assert.Single(tags);
+        Assert.Equal(g1.SelectTag("输入"),tags[0]);
     }
 }

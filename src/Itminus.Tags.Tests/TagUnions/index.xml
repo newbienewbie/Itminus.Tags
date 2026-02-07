@@ -12,6 +12,13 @@
 		<Rack>0</Rack>
 		<Slot>3</Slot>
 	</Channel>
+	<Channel name="COM-1" driver="ComScanner">
+		<Port>COM1</Port>
+		<BaundRate>115200</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+	</Channel>
 
 
 	<!-- 测点配置，可以配置多个 -->
@@ -31,5 +38,8 @@
 		</TagGrp>
 		<TagGrp name="g12">
 		</TagGrp>
+	</TagGrp>
+	<TagGrp name="扫码枪" isEntry="true" isEnabled="true" channel="COM-1" scanInterval="10">
+		<Tag name="输入" type="STR"></Tag>
 	</TagGrp>
 </root>
