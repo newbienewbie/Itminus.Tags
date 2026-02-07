@@ -52,17 +52,17 @@ public class TagGrpRunner : ITagGrpRunner
                     {
                         await TurnCrashed(entry, channel, ex);
                     }
+                }
+                finally
+                {
                     try
                     {
                         channel?.DisconnectAsync(ct);
                     }
-                    catch 
-                    { 
+                    catch
+                    {
+                        // ignore all the error thrown by the Channel's DisconnectAsync() method
                     }
-                }
-                catch
-                {
-
                 }
             }
             finally
