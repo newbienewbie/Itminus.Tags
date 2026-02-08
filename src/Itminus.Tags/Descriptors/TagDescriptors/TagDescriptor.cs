@@ -68,6 +68,13 @@ public class TagDescriptor: ITagsDescriptor
     public TagAccessMode AccessMode { get; set; }
 
     /// <summary>
+    /// 通道名。<br/>
+    /// 对于组合型的子测点，这个属性通常会被忽略，因为会使用多个组合子所共享的父级<see cref="ITagCbnt.Channel"/>或者更上层的<see cref="ITagGrp.Channel"/>；<br/>
+    /// 而对于分组的直接子测点，设置了这个属性，会遮蔽上层的通道名。<br/>
+    /// </summary>
+    public string? ChannelName { set; get; } 
+
+    /// <summary>
     /// 备注
     /// </summary>
     public string? Note{ set; get; }
