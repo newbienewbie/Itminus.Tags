@@ -5,9 +5,11 @@ namespace Itminus.Tags.ZLan;
 
 public class ZLanTagFactory : TagCbntorFactoryBase
 {
+    private readonly ZLanCbntBuilderBase _cbntBuilder;
 
-    public ZLanTagFactory(TagCbntBuilderBase builder) : base(builder)
+    public ZLanTagFactory(ZLanCbntBuilderBase builder) : base(builder)
     {
+        this._cbntBuilder = builder;
     }
 
     public virtual DITag CreateDITag(TagDescriptor tagDescriptor)
@@ -18,6 +20,7 @@ public class ZLanTagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
         var tagAddr = PinAddrUtils.ParseDI(tagDescriptor.Address);
+        tagDescriptor.Address = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
         return new DITag(tagDescriptor, TagCbnt, offset);
@@ -32,6 +35,7 @@ public class ZLanTagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
         var tagAddr = PinAddrUtils.ParseDO(tagDescriptor.Address);
+        tagDescriptor.Address = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;
         return new DOTag(tagDescriptor, TagCbnt, offset);

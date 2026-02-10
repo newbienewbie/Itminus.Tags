@@ -7,14 +7,15 @@ public static class ZLanTagFactoryExtensions
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="tagName"></param>
+    /// <param name="slave"></param>
     /// <param name="pin"></param>
     /// <returns></returns>
-    public static ITagCbntor AddDI(this ZLanTagFactory factory, string tagName, DIPinAddr pin)
+    public static ITagCbntor AddDI(this ZLanTagFactory factory, string tagName, byte slave, DIPinAddr pin)
     {
         return factory.CreateTag(new TagDescriptor()
         {
             TagName = tagName,
-            Address = pin.ToModbusTcpAddr(),
+            Address = pin.ToModbusTcpAddr(slave),
             TagKind = BuiltinTagKinds.BIT,
             TagSize = 1,
         });
@@ -25,14 +26,15 @@ public static class ZLanTagFactoryExtensions
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="tagName"></param>
+    /// <param name="slave"></param>
     /// <param name="pin"></param>
     /// <returns></returns>
-    public static ITagCbntor AddDO(this ZLanTagFactory factory, string tagName, DOPinAddr pin)
+    public static ITagCbntor AddDO(this ZLanTagFactory factory, string tagName, byte slave, DOPinAddr pin)
     {
         return factory.CreateTag(new TagDescriptor()
         {
             TagName = tagName,
-            Address = pin.ToModbusTcpAddr(),
+            Address = pin.ToModbusTcpAddr(slave),
             TagKind = BuiltinTagKinds.BIT,
             TagSize = 1,
         });
