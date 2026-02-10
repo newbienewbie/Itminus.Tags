@@ -6,15 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Itminus.Tags.ZLan;
+namespace Itminus.Tags.Hjzk;
 
 
-public abstract class ZLanCbntBuilderBase: ModbusTcpTagCbntBuilder
+public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
 {
+
+
     /// <summary>
     /// 区域起始地址
     /// </summary>
     public abstract string AreaStartAddr { get; }
+
 
 
     public override TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor descriptor)
@@ -27,7 +30,7 @@ public abstract class ZLanCbntBuilderBase: ModbusTcpTagCbntBuilder
 
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
     {
-        var tagFactory = this.MakeZLanTagFactory();
+        var tagFactory = this.MakeHjzkTagFactory();
         this.Configure(builder => {
             foreach (var descriptor in descriptors)
             {

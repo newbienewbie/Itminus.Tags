@@ -1,0 +1,51 @@
+﻿using Itminus.Tags.ModbusTcp;
+using Microsoft.Extensions.Logging;
+
+namespace Itminus.Tags.Hjzk;
+
+
+
+/// <summary>
+/// 构建 <see cref="HjzkChannel"/>
+/// </summary>
+public class HjzkChannelFactory : ITagChannelFactory
+{
+    private readonly ILoggerFactory _loggerFactory;
+
+    public HjzkChannelFactory(ILoggerFactory loggerFactory)
+    {
+
+        this._loggerFactory = loggerFactory;
+    }
+
+    private static IReadOnlyList<string> _drivers = new List<string>() { HjzkNames.DriverName };
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public IReadOnlyList<string> GetAvailableDrivers() => _drivers;
+
+
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public ITagChannel Create(TagChannelDescriptor descriptor)
+    {
+        var mbDescriptor = descriptor.ToHjzkTagChannelDescriptor();
+
+        var plcitem = new ModbusTcpItem() { 
+            IpAddr = mbDescriptor.IpAddr,
+            Port = mbDescriptor.Port,
+        };
+        var logger = _loggerFactory.CreateLogger<HjzkChannel>();
+        return new HjzkChannel(
+            descriptor.Name,
+            plcitem,
+            logger
+        );
+    }
+}

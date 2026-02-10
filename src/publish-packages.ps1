@@ -2,7 +2,7 @@
     [string]$packageVersion= $(Read-Host "package version") 
 )
 
-$projects = @("Itminus.Tags", "Itminus.Tags.BlazorLib", "Itminus.Tags.RxExtensions", "Itminus.Tags.ModbusTcp", "Itminus.Tags.S7", "Itminus.Tags.ZLan","Itminus.Tags.OpcUaClient","Itminus.Tags.ComScanner")
+$projects = @("Itminus.Tags", "Itminus.Tags.BlazorLib", "Itminus.Tags.RxExtensions", "Itminus.Tags.ModbusTcp", "Itminus.Tags.S7", "Itminus.Tags.ZLan","Itminus.Tags.Hjzk","Itminus.Tags.OpcUaClient","Itminus.Tags.ComScanner")
 $nugetSource = $Env:NugetSource
 $key = $Env:NugetApiKey
 

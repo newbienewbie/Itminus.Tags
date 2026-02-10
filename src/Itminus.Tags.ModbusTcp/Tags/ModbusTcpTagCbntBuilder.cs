@@ -13,11 +13,43 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
     {
     }
 
+
     public ModbusTcpTagCbntBuilder(string cbntName, string startAddress) 
     {
         this.WithName(cbntName);
         this.WithStartAddress(startAddress);
     }
+
+    /// <summary>
+    /// 从站站号
+    /// </summary>
+    public virtual byte Slave { get; protected set; } = 1;
+
+    /// <summary>
+    /// 区域
+    /// </summary>
+    public virtual string? Area { get; protected set; }
+
+
+
+    public override TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor descriptor)
+    {
+        if (descriptor.Extras.TryGetValue("slave", out var slaveAttr))
+        {
+            if (!byte.TryParse(slaveAttr.Value, out var slave))
+            {
+                throw new ArgumentException($"无效的Modbus从站地址:{slaveAttr.Value}");
+            }
+            this.Slave = slave;
+        }
+        if (descriptor.Extras.TryGetValue("area", out var areaAttr))
+        {
+            this.Area = areaAttr.Value;
+        }
+        base.WithCbntDescriptor(descriptor);
+        return this;
+    }
+
 
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
     {

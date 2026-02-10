@@ -15,6 +15,10 @@
 		<IpAddr>localhost</IpAddr>
 		<Port>502</Port>
 	</Channel>
+	<Channel name="Hjzk-1" driver="HjzkIoBox">
+		<IpAddr>172.16.2.21</IpAddr>
+		<Port>502</Port>
+	</Channel>
 	<Channel name="S7-3" driver="S7" >
 		<IpAddr>192.168.1.13</IpAddr>
 		<Rack>0</Rack>
@@ -73,6 +77,33 @@
 		</TagCbnt>
 	</TagGrp>
 
+	<TagGrp name="hjzk" isEntry="true" isEnabled="true" channel="Hjzk-1" scanInterval="10">
+		<TagCbnt name="输入" area="DI" slave="2" access="RO">
+			<Tag name="放行按钮闭合状态"	address="DI1" type="DI"></Tag>
+			<Tag name="手动"				address="DI2" type="DI"></Tag>
+			<Tag name="3"				address="DI3" type="DI"></Tag>
+			<Tag name="4"				address="DI4" type="DI"></Tag>
+		</TagCbnt>
+		<TagCbnt name="输出" area="DO" slave="2"  access="RW">
+			<Tag name="绿灯" address="DO1" type="DO"></Tag>
+			<Tag name="红灯" address="DO2" type="DO"></Tag>
+			<Tag name="黄灯" address="DO3" type="DO"></Tag>
+			<Tag name="放行灯" address="DO4" type="DO"></Tag>
+			<Tag name="灯5" address="DO5" type="DO"></Tag>
+			<Tag name="灯6" address="DO6" type="DO"></Tag>
+			<Tag name="灯7" address="DO7" type="DO"></Tag>
+			<Tag name="灯8" address="DO8" type="DO"></Tag>
+			<Tag name="灯9" address="DO9" type="DO"></Tag>
+			<Tag name="灯10" address="DO10" type="DO"></Tag>
+			<Tag name="灯11" address="DO11" type="DO"></Tag>
+			<Tag name="灯12" address="DO12" type="DO"></Tag>
+			<Tag name="灯13" address="DO13" type="DO"></Tag>
+			<Tag name="灯14" address="DO14" type="DO"></Tag>
+			<Tag name="灯15" address="DO15" type="DO"></Tag>
+			<Tag name="灯16" address="DO16" type="DO"></Tag>
+		</TagCbnt>
+	</TagGrp>
+	
 	<!-- ModbusTcp 配置 -->
 	<TagGrp name="g3" isEntry="true" isEnabled="false" channel="ModbusTcp-2" scanInterval="10">
 		<TagCbnt name="输入" address="10001" access="RO">

@@ -1,0 +1,18 @@
+﻿using Itminus.Tags.ModbusTcp;
+
+namespace Itminus.Tags.Hjzk;
+
+public class HjzkDOCbntBuilder : HjzkCbntBuilderBase
+{
+    /// <summary>
+    /// Modbus地址解析器会自动将这里的地址-1, 这里需要人为加1
+    /// </summary>
+    const ushort u_DO_START_ADDRESS = HjzkAddrDefines.BASE_DO + 1;
+    static string DO_START_ADDR = $"{u_DO_START_ADDRESS:d5}";
+
+    public HjzkDOCbntBuilder() : base()
+    {
+    }
+    public override string AreaStartAddr => DO_START_ADDR;
+}
+
