@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.IO.Ports;
 
 namespace Itminus.Tags.ComScanner.Channels;
@@ -27,7 +28,7 @@ public class ComScannerChannel : ITagChannel
 
     public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
-        await this._sema.WaitAsync();
+        await this._sema.WaitAsync(ct);
         try
         {
             if (this.SerialPort != null)
@@ -39,6 +40,12 @@ public class ComScannerChannel : ITagChannel
             this.SerialPort = new SerialPort(this._opt.Port, this._opt.BaundRate, this._opt.Parity, this._opt.DataBits, this._opt.StopBits);
             this.SerialPort.Open();
             this.SerialPort.NewLine = this.NewLine;
+            
+            // 清空缓存
+            this._buffer.Clear();
+            // 启动轮询
+            var t = new Thread(async() => await PollDataAsync(ct));
+            t.Start();
         }
         finally
         {
@@ -67,26 +74,52 @@ public class ComScannerChannel : ITagChannel
         {
             return;
         }
-
+        this._buffer.Clear();
         this.SerialPort?.Dispose();
         this.SerialPort=null;
     }
 
-    private string? ReadInputLine(SerialPort serial)
-    {
-        var str = serial.ReadLine();
-        return str;
-    }
+    private ConcurrentQueue<string> _buffer = new ConcurrentQueue<string>();
 
-    public string? ReadString()
+    private async Task PollDataAsync(CancellationToken ct)
     {
         if (this.SerialPort is null)
         {
             throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
         }
-        var input = ReadInputLine(this.SerialPort);
+        var stream = this.SerialPort.BaseStream;
+        using var reader = new StreamReader(stream);
+        try
+        {
+            while (!ct.IsCancellationRequested)
+            {
+                string data = this.SerialPort.ReadLine();
+                _buffer.Enqueue(data);
+                DataReceived?.Invoke(this, data);
+            }
+        }
+        catch(Exception ex) 
+        {
+            this._logger.LogError("通道({channel})读取失败：{ex}", this.ChannelName, ex.Message);
+            await this.DisconnectAsync(CancellationToken.None);
+        }
+
+    }
+    public event EventHandler<string>? DataReceived;
+
+    public bool TryDequeueInput(out string? input)
+    {
+        if (this.SerialPort is null)
+        {
+            throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
+        }
+        if (!this._buffer.TryDequeue(out input))
+        {
+            return false;
+        }
+        input = input?.TrimEnd(['\n', ' ']);
         this._logger.LogInformation("通道({ChannelName})收到扫码枪输入：{input}", this.ChannelName, input);
-        return input?.TrimEnd(['\n', ' ']);
+        return true;
     }
 
     public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)

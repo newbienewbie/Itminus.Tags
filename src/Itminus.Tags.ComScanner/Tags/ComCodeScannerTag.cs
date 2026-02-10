@@ -40,7 +40,12 @@ public class ComCodeScannerTag : Tag<string>
     public override async Task ReadAsync(CancellationToken ct)
     {
         await this._channel.EnsureConnectedAsync(force: false, ct);
-        var str = this._channel.ReadString();
+
+        if (!this._channel.TryDequeueInput(out var str))
+        {
+            return;
+        }
+
         this._value = str;
         this.NotifyTagRead(str);
     }
