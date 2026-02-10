@@ -1,13 +1,13 @@
 ﻿namespace Itminus.Tags;
 
-
+ 
 /// <summary>
 /// 通知新一轮处理
 /// </summary>
 /// <param name="grp"></param>
 /// <param name="channel"></param>
 /// <returns></returns>
-public delegate Task TurnProcess(ITagGrp grp, ITagChannel channel);
+public delegate Task TurnProcess(ITagGrp grp, ITagChannel? channel);
 
 /// <summary>
 /// 通知新一轮轮训启动
@@ -15,7 +15,7 @@ public delegate Task TurnProcess(ITagGrp grp, ITagChannel channel);
 /// <param name="grp"></param>
 /// <param name="channel"></param>
 /// <returns></returns>
-public delegate Task TurnStarted(ITagGrp grp, ITagChannel channel);
+public delegate Task TurnStarted(ITagGrp grp, ITagChannel? channel);
 
 /// <summary>
 /// 通知一轮错误出现

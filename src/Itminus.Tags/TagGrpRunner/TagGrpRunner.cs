@@ -28,8 +28,7 @@ internal class TagGrpRunner : ITagGrpRunner
             ITagChannel? channel = null;
             try
             {
-                channel = entry.GetRequiredChannel();
-
+                channel = entry.GetChannel();
                 if (!entry.IsEnabled)
                 {
                     await Task.Delay(500, ct);
@@ -44,7 +43,10 @@ internal class TagGrpRunner : ITagGrpRunner
                 // 开始轮询
                 while (!ct.IsCancellationRequested)
                 {
-                    await channel.EnsureConnectedAsync(force: false, ct);
+                    if (channel != null)
+                    {
+                        await channel.EnsureConnectedAsync(force: false, ct);
+                    }
                     await entry.ReadAsync(ct);
                     if(TurnProcess is not null)
                     {

@@ -27,5 +27,5 @@ public abstract class LogicetBase : ILogicet
     public abstract bool MatchEntry(ITagGrp entry);
 
     /// <inheritdoc/>
-    public abstract Task ProcessAsync(ITagGrp entry, ITagChannel thisChannel);
+    public abstract Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel);
 }

@@ -51,7 +51,7 @@ public static class ServiceExtensions
         var proj = factory.Create(dir!);
 
         proj.TurnStarted += (grp, ch) => {
-            Console.WriteLine($"[Tags] 开始处理 {grp.Name}");
+            Console.WriteLine($"[Tags] 开始处理分组 {grp.Name}");
             return Task.CompletedTask;
         };
         proj.TurnCrashed += (grp, ch, ex) => {
