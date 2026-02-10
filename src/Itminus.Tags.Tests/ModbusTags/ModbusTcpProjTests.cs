@@ -89,22 +89,22 @@ public class ModbusTcpProjTests
         var acq1 = acq.SelectTag("byte");
         Assert.Equal("byte", acq1.TagName());
         Assert.Equal("40020", acq1.TagDescriptor.Address);
-        Assert.Equal(TagKinds.BYTE, acq1.TagKind());
+        Assert.Equal(BuiltinTagKinds.BYTE, acq1.TagKind());
 
         var acq2 = acq.SelectTag("int16");
         Assert.Equal("int16", acq2.TagName());
         Assert.Equal("40021", acq2.TagDescriptor.Address);
-        Assert.Equal(TagKinds.INT16, acq2.TagKind());
+        Assert.Equal(BuiltinTagKinds.INT16, acq2.TagKind());
 
         var acq3 = acq.SelectTag("int32");
         Assert.Equal("int32", acq3.TagName());
         Assert.Equal("40022", acq3.TagDescriptor.Address);
-        Assert.Equal(TagKinds.INT32, acq3.TagKind());
+        Assert.Equal(BuiltinTagKinds.INT32, acq3.TagKind());
 
         var acq4 = acq.SelectTag("float");
         Assert.Equal("float", acq4.TagName());
         Assert.Equal("40024", acq4.TagDescriptor.Address);
-        Assert.Equal(TagKinds.FLOAT, acq4.TagKind());
+        Assert.Equal(BuiltinTagKinds.FLOAT, acq4.TagKind());
         #endregion
     }
 }

@@ -37,7 +37,7 @@ public class TagGrpDescriptor_Tests
         {
             TagName = "Tag1",
             Address = "DB100.100",
-            TagKind = TagKinds.INT16,
+            TagKind = BuiltinTagKinds.INT16,
             EndianKind = EndianKinds.BigEndian,
             AccessMode = TagAccessMode.RW,
         });
@@ -55,7 +55,7 @@ public class TagGrpDescriptor_Tests
         {
             TagName = "Tag3",
             Address = "DB200.200",
-            TagKind = TagKinds.FLOAT,
+            TagKind = BuiltinTagKinds.FLOAT,
             EndianKind = EndianKinds.LittleEndian,
             AccessMode = TagAccessMode.RO,
         });

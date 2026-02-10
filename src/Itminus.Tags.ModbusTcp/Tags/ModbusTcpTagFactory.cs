@@ -196,18 +196,18 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         var tag = descriptor.TagKind switch
         {
             // 1000x
-            TagKinds.DI => CreateDITag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.DI => CreateDITag(descriptor) as ITagCbntor,
             // 0000x
-            TagKinds.DO => CreateDOTag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.DO => CreateDOTag(descriptor) as ITagCbntor,
 
             // each part has 2-words
-            TagKinds.BIT => CreateBitTag(descriptor),
-            TagKinds.BYTE => CreateByteTag(descriptor) as ITagCbntor,
-            TagKinds.INT16 => CreateInt16Tag(descriptor) as ITagCbntor,
-            TagKinds.UINT16 => CreateUInt16Tag(descriptor) as ITagCbntor,
-            TagKinds.INT32 => CreateInt32Tag(descriptor) as ITagCbntor,
-            TagKinds.UINT32 => CreateUInt32Tag(descriptor) as ITagCbntor,
-            TagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.BIT => CreateBitTag(descriptor),
+            BuiltinTagKinds.BYTE => CreateByteTag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.INT16 => CreateInt16Tag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.UINT16 => CreateUInt16Tag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
 
 
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")

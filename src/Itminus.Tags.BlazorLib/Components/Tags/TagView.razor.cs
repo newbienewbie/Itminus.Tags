@@ -12,7 +12,7 @@ public partial class TagView: IDisposable
 
     private string TagName { get; set; } = string.Empty;
     private string TagAddress { get; set; } = string.Empty;
-    private TagKinds TagKind { get; set; }
+    private TagKinds TagKind { get; set; } = BuiltinTagKinds.Unknown;
     private int TagSize { get; set; }
     public object? Value { get; set; }
     private DateTime Timestamp { get; set; }

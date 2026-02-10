@@ -89,14 +89,10 @@ public static class XElementExensions
         var type = (string?)e.Attribute("type");
         if(string.IsNullOrEmpty(type))
         {
-            return TagKinds.Unknown;
+            return BuiltinTagKinds.Unknown;
         }
 
-        if (!Enum.TryParse<TagKinds>(type, out var tagKind))
-        {
-            throw new Exception($"Tag(Name={tagName}) 配置了未知类型={type}");
-        }
-        return tagKind;
+        return type;
     }
 
     internal static EndianKinds GetTagUnionEndian(this XElement e, string tagName)

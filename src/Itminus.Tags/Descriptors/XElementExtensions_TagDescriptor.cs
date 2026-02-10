@@ -67,7 +67,7 @@ public static class XElementExtensions_TagDescriptor
             tagEndian,
             access,
         };
-        if (descriptor.TagKind != TagKinds.Unknown)
+        if (descriptor.TagKind != BuiltinTagKinds.Unknown)
         {
             var tagKind = new XAttribute("type", descriptor.TagKind);
             attrs.Add(tagKind);

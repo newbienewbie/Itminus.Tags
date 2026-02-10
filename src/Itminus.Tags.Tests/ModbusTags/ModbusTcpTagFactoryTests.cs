@@ -31,7 +31,7 @@ public class ModbusTcpTagFactoryTests
         var builder = new ModbusTcpTagCbntBuilder("g1",baseAddr)
             .WithChannel(null!);
         var factory = new ModbusTcpTagFactory(builder);
-        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = bitAddr, Address = bitAddr, TagKind = TagKinds.BIT, TagSize = 2 });
+        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = bitAddr, Address = bitAddr, TagKind = BuiltinTagKinds.BIT, TagSize = 2 });
         Assert.Equal(cacheOffset, bittag.CacheOffset);
         Assert.Equal(tagOffset, bittag.TagOffset);
         Assert.Equal(2, bittag.TagSize());
@@ -45,7 +45,7 @@ public class ModbusTcpTagFactoryTests
         var builder = new ModbusTcpTagCbntBuilder("g1", baseAddr)
             .WithChannel(null!);
         var factory = new ModbusTcpTagFactory(builder);
-        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = bitAddr, Address = bitAddr, TagKind = TagKinds.BIT, TagSize = 1 });
+        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = bitAddr, Address = bitAddr, TagKind = BuiltinTagKinds.BIT, TagSize = 1 });
         Assert.Equal(cacheOffset, bittag.CacheOffset);
         Assert.Equal(tagOffset, bittag.TagOffset);
         Assert.Equal(1, bittag.TagSize());
@@ -62,7 +62,7 @@ public class ModbusTcpTagFactoryTests
             .WithChannel(null!)
             .WithName("g1");
         var factory = new ModbusTcpTagFactory(builder);
-        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = tagAddr, Address = tagAddr, TagKind = TagKinds.UINT16, TagSize = 2 });
+        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = tagAddr, Address = tagAddr, TagKind = BuiltinTagKinds.UINT16, TagSize = 2 });
         Assert.Equal(offset, bittag.CacheOffset);
         Assert.Equal(offset, bittag.TagOffset);
     }
@@ -77,7 +77,7 @@ public class ModbusTcpTagFactoryTests
         var builder = new ModbusTcpTagCbntBuilder("g1", baseAddr)
             .WithChannel(null!); 
         var factory = new ModbusTcpTagFactory(builder);
-        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = tagAddr, Address = tagAddr, TagKind = TagKinds.FLOAT, TagSize = 4 });
+        var bittag = factory.CreateBitTag(new TagDescriptor() { TagName = tagAddr, Address = tagAddr, TagKind = BuiltinTagKinds.FLOAT, TagSize = 4 });
         Assert.Equal(offset, bittag.CacheOffset);
         Assert.Equal(offset, bittag.TagOffset);
     }

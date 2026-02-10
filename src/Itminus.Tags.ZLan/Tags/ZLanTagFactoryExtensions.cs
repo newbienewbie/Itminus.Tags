@@ -15,7 +15,7 @@ public static class ZLanTagFactoryExtensions
         {
             TagName = tagName,
             Address = pin.ToModbusTcpAddr(),
-            TagKind = TagKinds.BIT,
+            TagKind = BuiltinTagKinds.BIT,
             TagSize = 1,
         });
     }
@@ -33,7 +33,7 @@ public static class ZLanTagFactoryExtensions
         {
             TagName = tagName,
             Address = pin.ToModbusTcpAddr(),
-            TagKind = TagKinds.BIT,
+            TagKind = BuiltinTagKinds.BIT,
             TagSize = 1,
         });
     }

@@ -4,19 +4,20 @@
 /// <summary>
 /// 测点种类，位、字节、ushort、整型、浮点等
 /// </summary>
-public enum TagKinds
+public static class BuiltinTagKinds
 {
-    Unknown = 0,
+    public const string Unknown = "Unknown";
 
-    BIT = 100,
-    BYTE = 102,
-    INT16 = 103,
-    UINT16 = 104,
-    INT32 = 105,
-    UINT32 = 106,
-    FLOAT = 107,
-    STR = 140,
+    public const string BIT = "BIT";
+    public const string BYTE = "BYTE";
+    public const string INT16 = "INT16";
+    public const string UINT16 = "UINT16";
+    public const string INT32 = "INT32";
+    public const string UINT32 = "UINT32";
+    public const string FLOAT = "FLOAT";
+    public const string STR = "STR";
 
-    DI  = 200,
-    DO  = 201,
+    public const string DI = "DI";
+    public const string DO = "DO";
+
 }
