@@ -17,7 +17,7 @@ public static class XElementExtensions_TagDescriptor
         var address = e.GetTagUnionAddress(tagName);
         var tagKind = e.GetTagUnionTagKind(tagName);
         var tagEndian = e.GetTagUnionEndian(tagName);
-
+        var tagChannelName = e.GetTagUnionChannelName();
         var tagNote = e.GetTagUnionNote(tagName);
 
         var tagdescriptor = new TagDescriptor()
@@ -26,6 +26,7 @@ public static class XElementExtensions_TagDescriptor
             TagName = tagName,
             TagKind = tagKind,
             EndianKind = tagEndian,
+            ChannelName = tagChannelName,
             Note = tagNote,
         };
 
@@ -76,6 +77,11 @@ public static class XElementExtensions_TagDescriptor
             var tagSize = new XAttribute("tagSize", descriptor.TagSize);
             attrs.Add(tagSize);
         }
+        if (!string.IsNullOrEmpty(descriptor.ChannelName))
+        {
+            attrs.Add(new XAttribute("channel", descriptor.ChannelName));
+        }
+
         if (!string.IsNullOrEmpty(descriptor.Note))
         {
             attrs.Add(new XAttribute("note", descriptor.Note));

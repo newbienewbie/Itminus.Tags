@@ -9,13 +9,21 @@
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
+	<Channel name="COM-2" driver="ComScanner">
+		<Port>COM2</Port>
+		<BaundRate>9600</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+	</Channel>
 
 
 	<!-- 测点配置，可以配置多个 -->
 
 	<!-- 测点 配置 -->
-	<TagGrp name="g" isEntry="true" isEnabled="true" channel="COM-1" scanInterval="10">
-		<Tag name="1#扫码枪" type="STR"></Tag>
+	<TagGrp name="g" isEntry="true" isEnabled="true" scanInterval="10">
+		<Tag name="1#扫码枪" channel="COM-1" type="STR"></Tag>
+		<Tag name="2#扫码枪" channel="COM-2" type="STR"></Tag>
 	</TagGrp>
 
 	<!-- 逻辑配置，可以配置0~N个 -->

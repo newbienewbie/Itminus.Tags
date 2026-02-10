@@ -40,8 +40,9 @@ public class ComScannerTcpProjTests
         var proj = factory.Create(dir!);
 
         // Test Channels
-        Assert.Single(proj.Channels);
+        Assert.Equal(2, proj.Channels.Count);
         Assert.IsType<ComScannerChannel>(proj.Channels[0]);
+        Assert.IsType<ComScannerChannel>(proj.Channels[1]);
 
         // Test Tags
         var g = proj.Tags.SelectGrp("g");
@@ -49,9 +50,17 @@ public class ComScannerTcpProjTests
 
 
         #region input group
-        var gun = g.SelectTag("1#扫码枪");
-        Assert.Equal("1#扫码枪", gun.TagName());
-        Assert.Equal(TagKinds.STR, gun.TagKind());
+        var gun1 = g.SelectTag("1#扫码枪");
+        Assert.Equal("1#扫码枪", gun1.TagName());
+        Assert.Equal(TagKinds.STR, gun1.TagKind());
+        Assert.IsType<ComScannerChannel>(gun1.Channel);
+        Assert.Equal(proj.Channels[0], gun1.Channel);
+
+        var gun2 = g.SelectTag("2#扫码枪");
+        Assert.Equal("2#扫码枪", gun2.TagName());
+        Assert.Equal(TagKinds.STR, gun2.TagKind());
+        Assert.IsType<ComScannerChannel>(gun2.Channel);
+        Assert.Equal(proj.Channels[1], gun2.Channel);
         #endregion
 
 

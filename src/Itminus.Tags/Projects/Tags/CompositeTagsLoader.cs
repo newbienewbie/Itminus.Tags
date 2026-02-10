@@ -182,7 +182,12 @@ public class CompositeTagsLoader : ITagsLoader
 
     protected virtual void LoadDirectTag(ITagGrp parent, TagDescriptor tagDescriptor, IList<ITagChannel> availableChannels)
     {
-        var channel = parent.GetRequiredChannel();
+        // 优先使用自身指定的通道名，然后向上冒泡检索
+        var channel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
+            parent.GetRequiredChannel() :
+            availableChannels.FirstOrDefault(c => c.ChannelName == tagDescriptor.ChannelName) ??
+            throw new Exception($"未找到名称为 {tagDescriptor.ChannelName} 的通道");
+
         var builder = this.ChooseTagBuilder(channel, tagDescriptor) ??
             throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={tagDescriptor.TagName}");
         var tag = builder.Build();
