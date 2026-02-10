@@ -24,7 +24,7 @@ public delegate Task TurnStarted(ITagGrp grp, ITagChannel channel);
 /// <param name="channel"></param>
 /// <param name="ex"></param>
 /// <returns></returns>
-public delegate Task TurnCrashed(ITagGrp grp, ITagChannel channel, Exception ex);
+public delegate Task TurnCrashed(ITagGrp grp, ITagChannel? channel, Exception ex);
 
 
 /// <summary>
