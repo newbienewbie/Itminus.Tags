@@ -36,6 +36,13 @@
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
+	<Channel name="COM-2" driver="ComScanner">
+		<Port>COM2</Port>
+		<BaundRate>115200</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+	</Channel>
 
 	<!-- 测点配置，可以配置多个 -->
 	<!--<TagGrp name="g1" isEntry="false" isEnabled="true" address="DB200.500.1" channel="S7-1" scanInterval="10">
@@ -53,7 +60,7 @@
 	</TagGrp>-->
 
 	<!-- ZLan 配置 -->
-	<TagGrp name="g2" isEntry="true" isEnabled="true" channel="ZLan-1" scanInterval="10">
+	<TagGrp name="g2" isEntry="true" isEnabled="false" channel="ZLan-1" scanInterval="10">
 		<TagCbnt name="输入" area="DI" access="RO">
 			<Tag name="放行按钮闭合状态" address="DI1" type="DI"></Tag>
 			<Tag name="手动" address="DI2" type="DI"></Tag>
@@ -67,7 +74,7 @@
 	</TagGrp>
 
 	<!-- ModbusTcp 配置 -->
-	<TagGrp name="g3" isEntry="true" isEnabled="true" channel="ModbusTcp-2" scanInterval="10">
+	<TagGrp name="g3" isEntry="true" isEnabled="false" channel="ModbusTcp-2" scanInterval="10">
 		<TagCbnt name="输入" address="10001" access="RO">
 			<Tag name="放行按钮闭合状态" address="10001" type="DI"></Tag>
 			<Tag name="手动" address="10002" type="DI"></Tag>
@@ -87,7 +94,7 @@
 	</TagGrp>
 
 	<!-- OpcUa 配置 -->
-	<TagGrp name="g4" isEntry="true" isEnabled="true" channel="OpcUaClient-2" scanInterval="10">
+	<TagGrp name="g4" isEntry="true" isEnabled="false" channel="OpcUaClient-2" scanInterval="10">
 		<TagCbnt name="输入" access="RO">
 			<Tag name="放行按钮闭合状态" address="ns=4;s=|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var3" ></Tag>
 			<Tag name="手动" address="ns=4;s=|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var3"></Tag>
@@ -102,7 +109,7 @@
 
 
 
-	<TagGrp name="拧紧枪" isEntry="true"  isEnabled="true" channel="S7-1" scanInterval="10">
+	<TagGrp name="拧紧枪" isEntry="true"  isEnabled="false" channel="S7-1" scanInterval="10">
 
 		<TagGrp name="1#">
 			<TagCbnt name="拧紧请求" address="DB400.0" access="RW">
@@ -140,8 +147,9 @@
 	</TagGrp>
 
 
-	<TagGrp name="扫码枪" isEntry="true" isEnabled="true" channel="COM-1" scanInterval="10">
-		<Tag name="输入" type="STR"></Tag>
+	<TagGrp name="扫码枪" isEntry="true" isEnabled="true" scanInterval="10">
+		<Tag name="1#" type="STR"  channel="COM-1"></Tag>
+		<Tag name="2#" type="STR"  channel="COM-2"></Tag>
 	</TagGrp>
 
 	<!-- 逻辑配置，可以配置0~N个 -->

@@ -36,7 +36,7 @@ internal class Handle1Snap : LogicetBase
         return true;
     }
 
-    public override Task ProcessAsync(ITagGrp entry, ITagChannel channel)
+    public override Task ProcessAsync(ITagGrp entry, ITagChannel? channel)
     {
         var hasReq = this._reqTag.GetTagValue<bool>();
         var hasAck = _ackTag.GetTagValue<bool>();

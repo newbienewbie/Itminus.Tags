@@ -38,5 +38,5 @@ public interface ILogicet
     /// 处理
     /// </summary>
     /// <returns></returns>
-    Task ProcessAsync(ITagGrp entry, ITagChannel thisChannel);
+    Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel);
 }
