@@ -1,16 +1,15 @@
-﻿namespace Itminus.Tags.ZLan;
+﻿namespace Itminus.Tags.Hjzk;
 
-public static class ZLanTagFactoryExtensions
+public static class HjzkTagFactoryExtensions
 {
     /// <summary>
     /// 这是为了以编程方式而设计的接口，可以通过指定一个强类型的地址，来增加DI测点
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="tagName"></param>
-    /// <param name="slave"></param>
     /// <param name="pin"></param>
     /// <returns></returns>
-    public static ITagCbntor AddDI(this ZLanTagFactory factory, string tagName, byte slave, DIPinAddr pin)
+    public static ITagCbntor AddDI(this HjzkTagFactory factory, string tagName, byte slave, DIPinAddr pin)
     {
         return factory.CreateTag(new TagDescriptor()
         {
@@ -26,10 +25,9 @@ public static class ZLanTagFactoryExtensions
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="tagName"></param>
-    /// <param name="slave"></param>
     /// <param name="pin"></param>
     /// <returns></returns>
-    public static ITagCbntor AddDO(this ZLanTagFactory factory, string tagName, byte slave, DOPinAddr pin)
+    public static ITagCbntor AddDO(this HjzkTagFactory factory, string tagName, byte slave, DOPinAddr pin)
     {
         return factory.CreateTag(new TagDescriptor()
         {

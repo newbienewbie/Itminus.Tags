@@ -83,6 +83,7 @@ public static class XElementExtensions_TagCbntDescriptor
             elem.SetAttributeValue("scanInterval", descriptor.ScanInterval);
         }
         elem.SetAttributeValue("access", descriptor.AccessMode.ToString());
+
         foreach (var child in descriptor.Children)
         {
             elem.Add(child.ToXElement());

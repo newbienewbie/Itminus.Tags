@@ -14,6 +14,7 @@ using Itminus.Tags.ZLan;
 using Itminus.Tags.ModbusTcp;
 using Itminus.Tags.OpcUaClient;
 using Itminus.Tags.ComScanner;
+using Itminus.Tags.Hjzk;
 
 namespace Itminus.Tags.Web.Tags;
 
@@ -27,7 +28,7 @@ public static class ServiceExtensions
             b.AddModbusTcpSupport();
             b.AddZLanTcpSupport();
             b.AddOpcUaClientSupport();
-
+            b.AddHjzkSupport();
             b.AddComScannerSupport();
         });
 

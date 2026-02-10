@@ -1,13 +1,12 @@
-﻿using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.ModbusTcp.Tags;
+﻿using Itminus.Tags.ModbusTcp.Tags;
 
-namespace Itminus.Tags.ZLan;
+namespace Itminus.Tags.Hjzk;
 
-public class ZLanTagFactory : TagCbntorFactoryBase
+public class HjzkTagFactory : TagCbntorFactoryBase
 {
-    private readonly ZLanCbntBuilderBase _cbntBuilder;
+    private readonly HjzkCbntBuilderBase _cbntBuilder;
 
-    public ZLanTagFactory(ZLanCbntBuilderBase builder) : base(builder)
+    public HjzkTagFactory(HjzkCbntBuilderBase builder) : base(builder)
     {
         this._cbntBuilder = builder;
     }
@@ -19,8 +18,11 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 1;
         }
-        var tagAddr = PinAddrUtils.ParseDI(tagDescriptor.Address);
-        tagDescriptor.Address = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+        var tagAddr = PinAddrUtils.TryParseDI(tagDescriptor.Address, out var addr) ?
+            addr : 
+            throw new ArgumentException($"Hjzk DI 地址非法({tagDescriptor.Address})");
+        tagDescriptor.Address = addr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
         return new DITag(tagDescriptor, TagCbnt, offset);
@@ -34,8 +36,11 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 1;
         }
-        var tagAddr = PinAddrUtils.ParseDO(tagDescriptor.Address);
-        tagDescriptor.Address = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+        var tagAddr = PinAddrUtils.TryParseDO(tagDescriptor.Address, out var addr) ?
+            addr:  
+            throw new ArgumentException($"Hjzk DO 地址非法({tagDescriptor.Address})");
+        tagDescriptor.Address = addr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;
         return new DOTag(tagDescriptor, TagCbnt, offset);
