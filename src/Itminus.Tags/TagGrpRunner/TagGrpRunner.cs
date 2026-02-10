@@ -25,9 +25,11 @@ internal class TagGrpRunner : ITagGrpRunner
     {
         while (!ct.IsCancellationRequested)
         {
-            var channel = entry.GetRequiredChannel();
+            ITagChannel? channel = null;
             try
             {
+                channel = entry.GetRequiredChannel();
+
                 if (!entry.IsEnabled)
                 {
                     await Task.Delay(500, ct);
@@ -68,7 +70,7 @@ internal class TagGrpRunner : ITagGrpRunner
                             this._logger.LogCritical(
                                 "测点分组(分组={grp},通道={channel})错误处理又抛出了错误，这破坏了错误处理不能再抛出异常的假设。err={errMsg}\r\nStackTrace={strace}", 
                                 entry.Name, 
-                                channel.ChannelName,
+                                channel?.ChannelName ?? "null",
                                 handlingError.Message, 
                                 handlingError.StackTrace
                                 );
