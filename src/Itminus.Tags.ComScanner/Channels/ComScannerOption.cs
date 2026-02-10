@@ -2,7 +2,7 @@
 
 namespace Itminus.Tags.ComScanner.Channels;
 
-public class ScannerOption
+public class ComScannerOption
 {
     public string Port { get; set; } = "COM1";
     public int BaundRate { get; set; }

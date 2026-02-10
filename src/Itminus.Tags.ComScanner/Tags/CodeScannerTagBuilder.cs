@@ -17,11 +17,11 @@ public class CodeScannerTagBuilder : TagBuilderBase
     {
         if(this.Channel is null)
         {
-            throw new Exception($"扫码枪测点未配置通道({this.TagDescriptor.TagName})");
+            throw new Exception($"测点({this.Name})未配置通道({this.TagDescriptor.TagName})");
         }
         if (this.Channel is not ComScannerChannel channel)
         {
-            throw new InvalidCastException($"扫码枪通道不是{nameof(ComScannerChannel)}(实际是{this.Channel.GetType()})");
+            throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComScannerChannel)}！实际={this.Channel.GetType()}");
         }
 
 

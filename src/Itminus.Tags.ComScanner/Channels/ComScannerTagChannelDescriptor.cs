@@ -12,7 +12,7 @@ namespace Itminus.Tags.ComScanner.Channels;
 public class ComScannerTagChannelDescriptor : TagChannelDescriptor
 {
 
-    public ScannerOption Option { get;set;} = new ScannerOption();
+    public ComScannerOption Option { get;set;} = new ComScannerOption();
 
 
     public override XElement ToXElement()
@@ -69,7 +69,7 @@ public static class TagChannelDescriptor_ComScannerExtensions
             Name = descriptor.Name,
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
-            Option = new ScannerOption {
+            Option = new ComScannerOption {
                 Port = port,
                 BaundRate = baundRate,
                 Parity = parity,

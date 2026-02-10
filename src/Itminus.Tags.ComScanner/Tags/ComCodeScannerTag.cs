@@ -33,7 +33,11 @@ public class ComCodeScannerTag : Tag<string>
     public override string? Value
     {
         get => _value;
-        set => throw new InvalidOperationException("扫码枪只支持读取，不可写入");
+        set
+        {
+            this._value = value;
+            this.IsDirty = true;
+        }
     }
 
 
@@ -53,6 +57,13 @@ public class ComCodeScannerTag : Tag<string>
 
     public override Task WriteAsync(CancellationToken ct)
     {
-        throw new InvalidOperationException("扫码枪只能读不可写入，请不要给Value复制");
+        var val = this._value;
+        if(val is not null)
+        {
+            this._channel.Write(val);
+        }
+        this.NotifyTagWritten(ct);
+        this.IsDirty = false;
+        return Task.CompletedTask;
     }
 }
