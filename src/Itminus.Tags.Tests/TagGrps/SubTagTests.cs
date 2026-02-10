@@ -32,7 +32,7 @@ public class SubTagTests
                 {
                     TagName = "拍照-请求-标志",
                     Address = "DB200.100.1",
-                    TagKind = TagKinds.BIT,
+                    TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
 
@@ -40,7 +40,7 @@ public class SubTagTests
                 {
                     TagName = "拍照-请求-料号",
                     Address = "DB200.102",
-                    TagKind = TagKinds.BYTE,
+                    TagKind = BuiltinTagKinds.BYTE,
                     TagSize = 1,
                 }));
 
@@ -48,7 +48,7 @@ public class SubTagTests
                 {
                     TagName = "拍照-请求-程序号",
                     Address = "DB200.104",
-                    TagKind = TagKinds.INT16,
+                    TagKind = BuiltinTagKinds.INT16,
                     TagSize = 2,
                 }));
 
@@ -56,7 +56,7 @@ public class SubTagTests
                 {
                     TagName = "拍照-响应-标志",
                     Address = "DB200.400.0",
-                    TagKind = TagKinds.BIT,
+                    TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
 
@@ -64,7 +64,7 @@ public class SubTagTests
                 {
                     TagName = "拍照-响应-OK",
                     Address = "DB200.400.1",
-                    TagKind = TagKinds.BIT,
+                    TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
 
@@ -72,7 +72,7 @@ public class SubTagTests
                 {
                     TagName = "拍照-响应-NG",
                     Address = "DB200.400.2",
-                    TagKind = TagKinds.BIT,
+                    TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
             })

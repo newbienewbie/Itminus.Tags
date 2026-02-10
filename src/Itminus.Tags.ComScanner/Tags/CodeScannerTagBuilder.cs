@@ -26,14 +26,14 @@ public class CodeScannerTagBuilder : TagBuilderBase
 
 
         var tagkind = this.TagDescriptor.TagKind;
-        if(tagkind == TagKinds.STR)
+        if(tagkind == BuiltinTagKinds.STR)
         {
             var tag = new ComCodeScannerTag(this.TagDescriptor, channel);
             return tag;
         }
         else
         {
-            throw new ArgumentException($"{nameof(CodeScannerTagBuilder)}目前只支持{TagKinds.STR}型测点，但是当前测点的类型是{tagkind}(Tag={this.TagDescriptor.TagName})");
+            throw new ArgumentException($"{nameof(CodeScannerTagBuilder)}目前只支持{BuiltinTagKinds.STR}型测点，但是当前测点的类型是{tagkind}(Tag={this.TagDescriptor.TagName})");
         }
     }
 }

@@ -34,7 +34,7 @@ public class TagDescriptor: ITagsDescriptor
     /// <summary>
     /// 测点类型，位、字节、ushort、整型、浮点等
     /// </summary>
-    public TagKinds TagKind { set; get; }
+    public TagKinds TagKind { set; get; } = BuiltinTagKinds.Unknown;
 
     /// <summary>
     /// 本测点所占据的内存大小，以字节为单位。<br/>

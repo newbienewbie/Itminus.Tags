@@ -19,7 +19,7 @@ public class TagDescriptor_Tests
         var descriptor1 = new TagDescriptor 
         {
             Address = "DB200.100.1",
-            TagKind = TagKinds.BIT,
+            TagKind = BuiltinTagKinds.BIT,
             TagName = "拍照-请求-标志",
             EndianKind = EndianKinds.LittleEndian,
             TagSize = 1,

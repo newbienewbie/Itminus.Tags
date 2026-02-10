@@ -22,51 +22,51 @@ public class ModbusTcpTagCombinationBuilderTests
             new TagDescriptor{
                 TagName ="Float1",
                 Address = "40001",
-                TagKind = TagKinds.FLOAT,
+                TagKind = BuiltinTagKinds.FLOAT,
                 TagSize = 4,
             },
             new TagDescriptor{
                 TagName ="Float2",
                 Address = "40003",
-                TagKind = TagKinds.FLOAT,
+                TagKind = BuiltinTagKinds.FLOAT,
                 TagSize = 4,
             },
             // leave 40005 empty
             new TagDescriptor{
                 TagName ="Bit1",
                 Address = "40006.1",
-                TagKind = TagKinds.BIT,
+                TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="Bit2",
                 Address = "40006.2",
-                TagKind = TagKinds.BIT,
+                TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="Bit3",
                 Address = "40006.15",
-                TagKind = TagKinds.BIT,
+                TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="UInt1",
                 Address = "40007",
-                TagKind = TagKinds.UINT16,
+                TagKind = BuiltinTagKinds.UINT16,
                 TagSize = 2,
             },
             // leave 40008 empty
             new TagDescriptor{
                 TagName ="UInt2",
                 Address = "40009",
-                TagKind = TagKinds.UINT16,
+                TagKind = BuiltinTagKinds.UINT16,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="Bit4",
                 Address = "40010.15",
-                TagKind = TagKinds.BIT,
+                TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
         });

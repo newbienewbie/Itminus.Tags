@@ -1,4 +1,4 @@
-namespace Itminus.Tags.S7;
+﻿namespace Itminus.Tags.S7;
 
 
 
@@ -122,11 +122,11 @@ public class S7TagFactory : TagCbntorFactoryBase
     {
         var tag = descriptor.TagKind switch
         {
-            TagKinds.BIT => CreateBitTag(descriptor),
-            TagKinds.BYTE => CreateByteTag(descriptor),
-            TagKinds.INT16 => CreateInt16Tag(descriptor),
-            TagKinds.INT32 => CreateInt32Tag(descriptor),
-            TagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.BIT => CreateBitTag(descriptor),
+            BuiltinTagKinds.BYTE => CreateByteTag(descriptor),
+            BuiltinTagKinds.INT16 => CreateInt16Tag(descriptor),
+            BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor),
+            BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")
         };
         return tag;

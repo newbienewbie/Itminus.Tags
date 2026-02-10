@@ -41,8 +41,8 @@ public class ZLanTagFactory : TagCbntorFactoryBase
     {
         var tag = descriptor.TagKind switch
         {
-            TagKinds.DI => this.CreateDITag(descriptor) as ITagCbntor,
-            TagKinds.DO => this.CreateDOTag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.DI => this.CreateDITag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.DO => this.CreateDOTag(descriptor) as ITagCbntor,
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")
         };
         return tag;
