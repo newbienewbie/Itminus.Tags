@@ -6,10 +6,10 @@ namespace Itminus.Tags.ComScanner.Channels;
 
 public class ComScannerChannel : ITagChannel
 {
-    private readonly ScannerOption _opt;
+    private readonly ComScannerOption _opt;
     private readonly ILogger<ComScannerChannel> _logger;
 
-    public ComScannerChannel(string channelName, ScannerOption opt, ILogger<ComScannerChannel> logger)
+    public ComScannerChannel(string channelName, ComScannerOption opt, ILogger<ComScannerChannel> logger)
     {
         this.ChannelName = channelName;
         this._opt = opt;
@@ -120,6 +120,17 @@ public class ComScannerChannel : ITagChannel
         input = input?.TrimEnd(['\n', ' ']);
         this._logger.LogInformation("通道({ChannelName})收到扫码枪输入：{input}", this.ChannelName, input);
         return true;
+    }
+
+
+    public void Write(string response)
+    {
+        if (this.SerialPort is null)
+        {
+            throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
+        }
+
+        this.SerialPort.Write(response);
     }
 
     public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
