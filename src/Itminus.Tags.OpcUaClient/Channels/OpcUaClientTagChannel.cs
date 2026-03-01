@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Opc.Ua;
 using Opc.Ua.Client;
-using System.Net.Sockets;
-using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace Itminus.Tags.OpcUaClient;
 public class OpcUaClientTagChannel : ITagChannel
