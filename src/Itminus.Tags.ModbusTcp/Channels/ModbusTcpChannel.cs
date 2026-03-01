@@ -5,7 +5,7 @@ using System.Net.Sockets;
 
 namespace Itminus.Tags.ModbusTcp;
 
-public class ModbusTcpChannel : ITagChannel
+public class ModbusTcpChannel : IContinousBytesBasedTagChannel
 {
     private readonly ILogger<ModbusTcpChannel> _logger;
 

@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Itminus.Tags;
-
 namespace Itminus.Tags.OpcUaClient;
 
 public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
 {
-    public OpcUaClientTagCbntBuilder()
+    public OpcUaClientTagCbntBuilder() 
+        :base(new OpcUaClientTagCbnt("unkown_opcua_cbnt_name", "unknown_opcua_cbnt_start_address"))
     {
-        this.TagCbnt = new OpcUaClientTagCbnt(this.Name, this.StartAddress);
     }
 
     public OpcUaClientTagCbntBuilder(string cbntName, string startAddress) 
+        :base(new OpcUaClientTagCbnt(cbntName, startAddress))
     {
         this.WithName(cbntName);
         this.WithStartAddress(startAddress);

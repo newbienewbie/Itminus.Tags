@@ -10,15 +10,17 @@ namespace Itminus.Tags.ModbusTcp;
 public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
 {
     public ModbusTcpTagCbntBuilder()
+        : base(new TagCbnt("unkown_modbustcp_cbnt_name", "unknown_modbustcp_cbnt_start_address"))
     {
     }
 
-
-    public ModbusTcpTagCbntBuilder(string cbntName, string startAddress) 
+    public ModbusTcpTagCbntBuilder(string cbntName, string startAddress)
+        :base(new TagCbnt(cbntName, startAddress))
     {
         this.WithName(cbntName);
         this.WithStartAddress(startAddress);
     }
+
 
     /// <summary>
     /// 从站站号

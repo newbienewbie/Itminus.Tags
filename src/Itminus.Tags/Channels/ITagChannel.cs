@@ -27,21 +27,4 @@ public interface ITagChannel : IDisposable
     /// <returns></returns>
     Task DisconnectAsync(CancellationToken ct);
 
-    /// <summary>
-    /// 读取底层硬件，返回一段字节数组表示所读取的结果。
-    /// </summary>
-    /// <param name="address"></param>
-    /// <param name="count></param>
-    /// <param name="ct></param>
-    /// <returns></returns>
-    public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct);
-
-    /// <summary>
-    /// 写入字节数组
-    /// </summary>
-    /// <param name="address"></param>
-    /// <param name="bytes"></param>
-    /// <param name="ct></param>
-    /// <returns></returns>
-    public Task WriteAsync(string address, byte[] bytes, CancellationToken ct);
 }

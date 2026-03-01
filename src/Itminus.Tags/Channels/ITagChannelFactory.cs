@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 /// <summary>
 /// 构建 <see cref="ITagChannel"/>

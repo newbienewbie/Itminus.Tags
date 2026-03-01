@@ -1,9 +1,4 @@
-﻿
-using System.Net;
-using System.Threading.Channels;
-using System.Xml.Linq;
-
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 
 /// <summary>
@@ -12,6 +7,14 @@ namespace Itminus.Tags;
 /// </summary>
 public abstract class TagCbntBuilderBase
 {
+    /// <summary>
+    /// c'tor <br/>
+    /// </summary>
+    public TagCbntBuilderBase(ITagCbnt cbnt)
+    {
+        this.TagCbnt = cbnt;
+    }
+
     /// <summary>
     /// 测点组
     /// </summary>
@@ -25,14 +28,6 @@ public abstract class TagCbntBuilderBase
     /// 起始地址
     /// </summary>
     public virtual string StartAddress => TagCbnt.StartAddress;
-
-    private const string unknown_name = "(unknown_tag_name)";
-    private const string unknown_address = "(unknown_start_address)";
-
-    public TagCbntBuilderBase()
-    {
-        this.TagCbnt = new TagCbnt(unknown_name, unknown_address);
-    }
 
     public virtual TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor cbntDescriptor)
     {

@@ -12,11 +12,13 @@ namespace Itminus.Tags.S7;
 /// </summary>
 public class S7TagCbntBuilder : TagCbntBuilderBase
 {
-    public S7TagCbntBuilder()
+    public S7TagCbntBuilder() 
+        : base(new TagCbnt("unkown_s7_cbnt_name", "unknown_s7_cbnt_start_address"))
     {
     }
 
     public S7TagCbntBuilder(string cbntName, string startAddress)
+        :base(new TagCbnt(cbntName, startAddress))
     {
         this.WithName(cbntName);
         this.WithStartAddress(startAddress);

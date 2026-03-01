@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 public class BitTagCbntor : TagCbntor
 {

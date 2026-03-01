@@ -14,11 +14,11 @@ namespace Itminus.Tags.Tests.TagCbnts;
 
 public class TagCbnt_Tests
 {
-    internal class MockChannel : ITagChannel
+    internal class MockChannel : IContinousBytesBasedTagChannel
     {
         private byte[] _bytes = new byte[4]
         {
-        0x03, 0x00, 0x00, 0x00,
+            0x03, 0x00, 0x00, 0x00,
         };
 
         public string ChannelName => "MockChannel";

@@ -132,14 +132,4 @@ public class ComScannerChannel : ITagChannel
 
         this.SerialPort.Write(response);
     }
-
-    public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
-    {
-        throw new InvalidOperationException($"扫码枪不支持连续地址读取");
-    }
-
-    public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
-    {
-        throw new InvalidOperationException($"扫码枪不支持写入");
-    }
 }

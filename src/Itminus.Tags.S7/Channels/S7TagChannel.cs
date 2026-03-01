@@ -2,12 +2,11 @@
 using StdUnit.Sharp7.Options;
 using StdUnit.Sharp7;
 using Microsoft.FSharp.Core;
-using System;
 
 namespace Itminus.Tags.S7;
 
 
-public class S7TagChannel : ITagChannel
+public class S7TagChannel : IContinousBytesBasedTagChannel
 {
 
     public S7TagChannel(string channelName, S7PlcItem plc, ILogger<S7TagChannel> logger)
