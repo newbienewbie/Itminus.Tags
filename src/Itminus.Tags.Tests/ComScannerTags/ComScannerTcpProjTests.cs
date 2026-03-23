@@ -55,12 +55,16 @@ public class ComScannerTcpProjTests
         Assert.Equal(BuiltinTagKinds.STR, gun1.TagKind());
         Assert.IsType<ComScannerChannel>(gun1.Channel);
         Assert.Equal(proj.Channels[0], gun1.Channel);
+        var channel1 = (ComScannerChannel) gun1.Channel;
+        Assert.Null(channel1.NewLine);
 
         var gun2 = g.SelectTag("2#扫码枪");
         Assert.Equal("2#扫码枪", gun2.TagName());
         Assert.Equal(BuiltinTagKinds.STR, gun2.TagKind());
         Assert.IsType<ComScannerChannel>(gun2.Channel);
         Assert.Equal(proj.Channels[1], gun2.Channel);
+        var channel2 = (ComScannerChannel)gun2.Channel;
+        Assert.Equal("\r\n",channel2.NewLine);
         #endregion
 
 

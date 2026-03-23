@@ -4,6 +4,10 @@ using System.IO.Ports;
 
 namespace Itminus.Tags.ComScanner.Channels;
 
+
+/// <summary>
+/// 基于行的串口通道。每一次读取一行
+/// </summary>
 public class ComScannerChannel : ITagChannel
 {
     private readonly ComScannerOption _opt;
@@ -13,6 +17,7 @@ public class ComScannerChannel : ITagChannel
     {
         this.ChannelName = channelName;
         this._opt = opt;
+        this.NewLine = opt.NewLine;
         this._logger = logger;
     }
 
@@ -22,7 +27,7 @@ public class ComScannerChannel : ITagChannel
 
     public SerialPort? SerialPort { get; private set; }
 
-    public string NewLine { get; } = "\r";
+    public string? NewLine { get; }
 
     private readonly SemaphoreSlim _sema = new SemaphoreSlim(1);
 
@@ -39,8 +44,11 @@ public class ComScannerChannel : ITagChannel
             // 打开串口
             this.SerialPort = new SerialPort(this._opt.Port, this._opt.BaundRate, this._opt.Parity, this._opt.DataBits, this._opt.StopBits);
             this.SerialPort.Open();
-            this.SerialPort.NewLine = this.NewLine;
-            
+            if(!string.IsNullOrEmpty(this.NewLine))
+            {
+                this.SerialPort.NewLine = this.NewLine;
+            }
+
             // 清空缓存
             this._buffer.Clear();
             // 启动轮询

@@ -10,6 +10,7 @@
 		<StopBits>One</StopBits>
 	</Channel>
 	<Channel name="COM-2" driver="ComScanner">
+		<NewLine>\r\n</NewLine>
 		<Port>COM2</Port>
 		<BaundRate>9600</BaundRate>
 		<Parity>None</Parity>

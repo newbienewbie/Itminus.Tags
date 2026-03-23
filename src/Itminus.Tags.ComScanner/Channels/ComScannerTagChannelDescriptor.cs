@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Text.RegularExpressions;
 
 namespace Itminus.Tags.ComScanner.Channels;
 
@@ -18,7 +19,10 @@ public class ComScannerTagChannelDescriptor : TagChannelDescriptor
     public override XElement ToXElement()
     {
         var ele = base.ToXElement();
-
+        if(!string.IsNullOrEmpty(this.Option.NewLine))
+        {
+            ele.SetOrAddChild(nameof(Option.NewLine), this.Option.NewLine);
+        }
         ele.SetOrAddChild(nameof(Option.Port), this.Option.Port);
         ele.SetOrAddChild(nameof(Option.BaundRate), this.Option.BaundRate);
         ele.SetOrAddChild(nameof(Option.Parity), this.Option.Parity);
@@ -46,6 +50,18 @@ public static class TagChannelDescriptor_ComScannerExtensions
         int defaultDataBits = 8;
         StopBits defaultStopBits = StopBits.None;
 
+        string? newline = null;
+        if (descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.NewLine), out var newLine))
+        {
+            var raw = newLine.Value ?? string.Empty;
+            // If XML contains literal escape sequences like "\\r\\n", unescape them to actual control chars
+            if (raw.Contains("\\r") || raw.Contains("\\n") || raw.Contains("\\t"))
+            {
+                raw = Regex.Unescape(raw);
+            }
+            newline = raw;
+        }
+
         var port = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.Port), out var comPort) ?
                     "COM1" :
                     comPort.Value;
@@ -70,6 +86,7 @@ public static class TagChannelDescriptor_ComScannerExtensions
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
             Option = new ComScannerOption {
+                NewLine = newline,
                 Port = port,
                 BaundRate = baundRate,
                 Parity = parity,
