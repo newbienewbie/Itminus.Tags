@@ -57,6 +57,7 @@ public class ComScannerTcpProjTests
         Assert.Equal(proj.Channels[0], gun1.Channel);
         var channel1 = (ComScannerChannel) gun1.Channel;
         Assert.Null(channel1.NewLine);
+        Assert.Equal(1, channel1.Capacity);
 
         var gun2 = g.SelectTag("2#扫码枪");
         Assert.Equal("2#扫码枪", gun2.TagName());
@@ -65,6 +66,7 @@ public class ComScannerTcpProjTests
         Assert.Equal(proj.Channels[1], gun2.Channel);
         var channel2 = (ComScannerChannel)gun2.Channel;
         Assert.Equal("\r\n",channel2.NewLine);
+        Assert.Equal(42, channel2.Capacity);
         #endregion
 
 

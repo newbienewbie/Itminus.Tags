@@ -11,6 +11,7 @@
 	</Channel>
 	<Channel name="COM-2" driver="ComScanner">
 		<NewLine>\r\n</NewLine>
+		<ChannelCapacity>42</ChannelCapacity>
 		<Port>COM2</Port>
 		<BaundRate>9600</BaundRate>
 		<Parity>None</Parity>

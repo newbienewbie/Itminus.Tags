@@ -13,4 +13,9 @@ public class ComScannerOption
     public Parity Parity { get; set; }
     public int DataBits { get; set; }
     public StopBits StopBits { get; set; }
+
+    /// <summary>
+    /// 通道元素数量
+    /// </summary>
+    public int ChannelCapacity { get; internal set; } = 1;
 }
