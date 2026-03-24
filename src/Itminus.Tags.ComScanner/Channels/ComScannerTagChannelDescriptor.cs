@@ -28,6 +28,7 @@ public class ComScannerTagChannelDescriptor : TagChannelDescriptor
         ele.SetOrAddChild(nameof(Option.Parity), this.Option.Parity);
         ele.SetOrAddChild(nameof(Option.DataBits), this.Option.DataBits);
         ele.SetOrAddChild(nameof(Option.StopBits), this.Option.StopBits);
+        ele.SetOrAddChild(nameof(Option.ChannelCapacity), this.Option.ChannelCapacity);
         return ele;
     }
 }
@@ -49,6 +50,7 @@ public static class TagChannelDescriptor_ComScannerExtensions
         Parity defaultParity = Parity.None;
         int defaultDataBits = 8;
         StopBits defaultStopBits = StopBits.None;
+        int defaultChanneCapacity = 1;
 
         string? newline = null;
         if (descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.NewLine), out var newLine))
@@ -80,6 +82,10 @@ public static class TagChannelDescriptor_ComScannerExtensions
                     Enum.TryParse<StopBits>(stopbitsStr.Value, out var stopbitsVal) ? stopbitsVal :
                     throw new Exception($"串口停止位非法，无法解析成StopBits({stopbitsStr.Value})");
 
+        var channelCapacity = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.ChannelCapacity), out var channelCapacityStr) ? defaultChanneCapacity :
+                   int.TryParse(channelCapacityStr.Value, out var channelCapacityVal) ? channelCapacityVal :
+                    throw new Exception($"串口停止位非法，无法解析成ChannelElementSize({channelCapacityStr.Value})");
+
         var res = new ComScannerTagChannelDescriptor
         {
             Name = descriptor.Name,
@@ -92,6 +98,7 @@ public static class TagChannelDescriptor_ComScannerExtensions
                 Parity = parity,
                 DataBits = databits,
                 StopBits = stopbits,
+                ChannelCapacity = channelCapacity,
             },
         };
         return res;

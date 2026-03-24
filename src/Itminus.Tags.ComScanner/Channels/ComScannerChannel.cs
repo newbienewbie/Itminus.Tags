@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
 using System.IO.Ports;
+using System.Threading.Channels;
+
 
 namespace Itminus.Tags.ComScanner.Channels;
 
@@ -13,12 +14,20 @@ public class ComScannerChannel : ITagChannel
     private readonly ComScannerOption _opt;
     private readonly ILogger<ComScannerChannel> _logger;
 
+
+    public int Capacity { get; }
+
+    private Channel<string> _channel;
+
     public ComScannerChannel(string channelName, ComScannerOption opt, ILogger<ComScannerChannel> logger)
     {
         this.ChannelName = channelName;
         this._opt = opt;
         this.NewLine = opt.NewLine;
+        this.Capacity = opt.ChannelCapacity == default ? 1 : opt.ChannelCapacity;
         this._logger = logger;
+
+        this._channel = Channel.CreateBounded<string>(this.Capacity);
     }
 
     public string ChannelName { get; }
@@ -30,6 +39,7 @@ public class ComScannerChannel : ITagChannel
     public string? NewLine { get; }
 
     private readonly SemaphoreSlim _sema = new SemaphoreSlim(1);
+
 
     public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
@@ -50,7 +60,7 @@ public class ComScannerChannel : ITagChannel
             }
 
             // 清空缓存
-            this._buffer.Clear();
+            this._channel = Channel.CreateBounded<string>(Capacity);
             // 启动轮询
             var t = new Thread(async() => await PollDataAsync(ct));
             t.Start();
@@ -68,6 +78,7 @@ public class ComScannerChannel : ITagChannel
         {
             this.SerialPort?.Close();
             this.SerialPort?.Dispose();
+            this._channel.Writer.TryComplete();
         }
         finally
         {
@@ -82,12 +93,12 @@ public class ComScannerChannel : ITagChannel
         {
             return;
         }
-        this._buffer.Clear();
+        this._channel.Writer.TryComplete();
         this.SerialPort?.Dispose();
         this.SerialPort=null;
     }
 
-    private ConcurrentQueue<string> _buffer = new ConcurrentQueue<string>();
+
 
     private async Task PollDataAsync(CancellationToken ct)
     {
@@ -102,7 +113,7 @@ public class ComScannerChannel : ITagChannel
             while (!ct.IsCancellationRequested)
             {
                 string data = this.SerialPort.ReadLine();
-                _buffer.Enqueue(data);
+                await _channel.Writer.WriteAsync(data, ct);
                 DataReceived?.Invoke(this, data);
             }
         }
@@ -121,11 +132,10 @@ public class ComScannerChannel : ITagChannel
         {
             throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
         }
-        if (!this._buffer.TryDequeue(out input))
+        if (!this._channel.Reader.TryRead(out input))
         {
             return false;
         }
-        input = input?.TrimEnd(['\n', ' ']);
         this._logger.LogInformation("通道({ChannelName})收到扫码枪输入：{input}", this.ChannelName, input);
         return true;
     }
