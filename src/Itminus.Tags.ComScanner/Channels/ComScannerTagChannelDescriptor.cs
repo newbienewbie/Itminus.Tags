@@ -50,7 +50,7 @@ public static class TagChannelDescriptor_ComScannerExtensions
         Parity defaultParity = Parity.None;
         int defaultDataBits = 8;
         StopBits defaultStopBits = StopBits.None;
-        int defaultChanneCapacity = 1;
+        int defaultChannelCapacity = 1;
 
         string? newline = null;
         if (descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.NewLine), out var newLine))
@@ -82,9 +82,9 @@ public static class TagChannelDescriptor_ComScannerExtensions
                     Enum.TryParse<StopBits>(stopbitsStr.Value, out var stopbitsVal) ? stopbitsVal :
                     throw new Exception($"串口停止位非法，无法解析成StopBits({stopbitsStr.Value})");
 
-        var channelCapacity = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.ChannelCapacity), out var channelCapacityStr) ? defaultChanneCapacity :
+        var channelCapacity = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.ChannelCapacity), out var channelCapacityStr) ? defaultChannelCapacity :
                    int.TryParse(channelCapacityStr.Value, out var channelCapacityVal) ? channelCapacityVal :
-                    throw new Exception($"串口停止位非法，无法解析成ChannelElementSize({channelCapacityStr.Value})");
+                    throw new Exception($"通道容量非法，无法解析成正整数({channelCapacityStr.Value})");
 
         var res = new ComScannerTagChannelDescriptor
         {

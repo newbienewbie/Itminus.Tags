@@ -24,7 +24,7 @@ public class ComScannerChannel : ITagChannel
         this.ChannelName = channelName;
         this._opt = opt;
         this.NewLine = opt.NewLine;
-        this.Capacity = opt.ChannelCapacity == default ? 1 : opt.ChannelCapacity;
+        this.Capacity = opt.ChannelCapacity <=0 ? 1 : opt.ChannelCapacity;
         this._logger = logger;
 
         this._channel = Channel.CreateBounded<string>(this.Capacity);

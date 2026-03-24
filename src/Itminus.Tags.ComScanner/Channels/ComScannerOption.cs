@@ -17,5 +17,5 @@ public class ComScannerOption
     /// <summary>
     /// 通道元素数量
     /// </summary>
-    public int ChannelCapacity { get; internal set; }
+    public int ChannelCapacity { get; internal set; } = 1;
 }
