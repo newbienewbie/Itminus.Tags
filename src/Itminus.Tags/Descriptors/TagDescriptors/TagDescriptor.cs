@@ -12,7 +12,7 @@ public enum TagAccessMode
     /// <summary>
     /// ReadOnly
     /// </summary>
-    RO = 0,
+    RO = 2,
 
 
     /// <summary>
