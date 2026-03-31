@@ -1,4 +1,6 @@
+﻿using System;
 using System.Buffers.Binary;
+using System.Linq;
 using Itminus.Tags;
 using Xunit;
 
@@ -38,7 +40,8 @@ public class FloatTagCbntorEndianTests
 
         var expected = new byte[4];
         BinaryPrimitives.WriteSingleBigEndian(expected, value);
-        Assert.Equal(expected, cbnt.Cache.Span.Slice(0, 4).ToArray());
+        var actual = cbnt.Cache.Span.Slice(0, 4).ToArray();
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
@@ -53,26 +56,30 @@ public class FloatTagCbntorEndianTests
 
         var expected = new byte[4];
         BinaryPrimitives.WriteSingleLittleEndian(expected, value);
-        Assert.Equal(expected, cbnt.Cache.Span.Slice(0, 4).ToArray());
+        var actual = cbnt.Cache.Span.Slice(0, 4).ToArray();
+        Assert.Equal(expected, actual);
     }
 
     [Fact]
     public void Float_BigEndian_CacheBytesReverseOfLittleEndian()
     {
-        const float value = 1.0f; // asymmetric IEEE 754 layout ensures bytes differ
-
-        var cbntBig = CreateCbnt(8);
+        var cbnt = CreateCbnt(8);
         var dBig = new TagDescriptor { TagName = "f32", Address = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.BigEndian };
-        new FloatTagCbntor(dBig, cbntBig, 0).Value = value;
+        new FloatTagCbntor(dBig, cbnt, 0).Value = 1.0f;
 
-        var cbntLittle = CreateCbnt(8);
         var dLittle = new TagDescriptor { TagName = "f32", Address = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.LittleEndian };
-        new FloatTagCbntor(dLittle, cbntLittle, 0).Value = value;
+        new FloatTagCbntor(dLittle, cbnt, 4).Value = 2.0f;
 
-        var bigBytes = cbntBig.Cache.Span.Slice(0, 4).ToArray();
-        var littleBytes = cbntLittle.Cache.Span.Slice(0, 4).ToArray();
+        var actual1 = cbnt.Cache.Span.Slice(0, 4).ToArray();
+        var actual2 = cbnt.Cache.Span.Slice(4, 4).ToArray();
 
-        Assert.NotEqual(bigBytes, littleBytes);
-        Assert.Equal(bigBytes, littleBytes.Reverse().ToArray());
+        Span<byte> expected1 = stackalloc byte[4];
+        BinaryPrimitives.WriteSingleLittleEndian(expected1, 1.0f);
+
+        Span<byte> expected2 = stackalloc byte[4];
+        BinaryPrimitives.WriteSingleLittleEndian(expected2, 2.0f);
+
+        Assert.Equal(expected1.ToArray().Reverse(), actual1);
+        Assert.Equal(expected2.ToArray(), actual2);
     }
 }
