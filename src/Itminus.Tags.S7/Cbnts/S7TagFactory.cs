@@ -82,6 +82,22 @@ public class S7TagFactory : TagCbntorFactoryBase
         return new Int16TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
+    /// <summary>
+    ///  创建 UInt16型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    protected virtual UInt16TagCbntor CreateUInt16Tag(TagDescriptor tagDescriptor)
+    {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 2;
+        }
+
+        var offset = GetTagOffset(tagDescriptor);
+        return new UInt16TagCbntor(tagDescriptor, this.TagCbnt, offset);
+    }
 
     /// <summary>
     /// 创建 Int32 型测点
@@ -98,6 +114,57 @@ public class S7TagFactory : TagCbntorFactoryBase
 
         var offset = GetTagOffset(tagDescriptor);
         return new Int32TagCbntor(tagDescriptor, this.TagCbnt, offset);
+    }
+
+    /// <summary>
+    /// 创建 UInt32 型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    protected virtual UInt32TagCbntor CreateUInt32Tag(TagDescriptor tagDescriptor)
+    {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 4;
+        }
+
+        var offset = GetTagOffset(tagDescriptor);
+        return new UInt32TagCbntor(tagDescriptor, this.TagCbnt, offset);
+    }
+
+    /// <summary>
+    /// 创建 Int64 型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    protected virtual Int64TagCbntor CreateInt64Tag(TagDescriptor tagDescriptor)
+    {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 8;
+        }
+
+        var offset = GetTagOffset(tagDescriptor);
+        return new Int64TagCbntor(tagDescriptor, this.TagCbnt, offset);
+    }
+
+    /// <summary>
+    /// 创建 UInt64 型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    protected virtual UInt64TagCbntor CreateUInt64Tag(TagDescriptor tagDescriptor)
+    {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 8;
+        }
+
+        var offset = GetTagOffset(tagDescriptor);
+        return new UInt64TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
     /// <summary>
@@ -125,7 +192,11 @@ public class S7TagFactory : TagCbntorFactoryBase
             BuiltinTagKinds.BIT => CreateBitTag(descriptor),
             BuiltinTagKinds.BYTE => CreateByteTag(descriptor),
             BuiltinTagKinds.INT16 => CreateInt16Tag(descriptor),
+            BuiltinTagKinds.UINT16 => CreateUInt16Tag(descriptor),
             BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor),
+            BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor),
+            BuiltinTagKinds.INT64 => CreateInt64Tag(descriptor),
+            BuiltinTagKinds.UINT64 => CreateUInt64Tag(descriptor),
             BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")
         };
