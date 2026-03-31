@@ -1,4 +1,4 @@
-using System.Buffers.Binary;
+﻿using System.Buffers.Binary;
 
 namespace Itminus.Tags;
 
@@ -27,9 +27,9 @@ public class Int16TagCbntor : TagCbntor
         set
         {
 #pragma warning disable CS8605 // Unboxing a possibly null value.
-            var data = (UInt16)value;
+            var data = (Int16)value;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
-            byte[] src = GetUShortValueBytes(data);
+            byte[] src = GetValueBytes(data);
             var dst = this.TagCbnt.Cache.Span.Slice(CacheOffset, 2);
             src.CopyTo(dst);
 
@@ -38,7 +38,7 @@ public class Int16TagCbntor : TagCbntor
         }
     }
 
-    private byte[] GetUShortValueBytes(ushort data)
+    private byte[] GetValueBytes(short data)
     {
         var src = BitConverter.GetBytes(data);
         if (this.TagEndian() == EndianKinds.BigEndian)

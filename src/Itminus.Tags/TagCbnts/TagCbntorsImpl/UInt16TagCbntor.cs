@@ -29,7 +29,7 @@ public class UInt16TagCbntor : TagCbntor
 #pragma warning disable CS8605 // Unboxing a possibly null value.
             var data = (UInt16)value;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
-            byte[] src = GetShortValueBytes(data);
+            byte[] src = GetValueBytes(data);
             var dst = this.TagCbnt.Cache.Span.Slice(CacheOffset, 2);
             src.CopyTo(dst);
 
@@ -38,7 +38,7 @@ public class UInt16TagCbntor : TagCbntor
         }
     }
 
-    private byte[] GetShortValueBytes(ushort data)
+    private byte[] GetValueBytes(ushort data)
     {
         var src = BitConverter.GetBytes(data);
         if (this.TagEndian() == EndianKinds.BigEndian)
