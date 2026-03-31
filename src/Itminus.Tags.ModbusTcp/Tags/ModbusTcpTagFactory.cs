@@ -175,6 +175,30 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         return new UInt32TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
+
+    public virtual Int64TagCbntor CreateInt64Tag(TagDescriptor tagDescriptor)
+    {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 8;
+        }
+        var offset = GetTagOffset(tagDescriptor);
+        return new Int64TagCbntor(tagDescriptor, TagCbnt, offset);
+    }
+
+
+    public virtual UInt64TagCbntor CreateUInt64Tag(TagDescriptor tagDescriptor)
+    {
+        // normalize the tagsize
+        if (tagDescriptor.TagSize == 0)
+        {
+            tagDescriptor.TagSize = 8;
+        }
+        var offset = GetTagOffset(tagDescriptor);
+        return new UInt64TagCbntor(tagDescriptor, TagCbnt, offset);
+    }
+
     /// <summary>
     /// 创建 float 型测点
     /// </summary>
@@ -205,8 +229,14 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             BuiltinTagKinds.BYTE => CreateByteTag(descriptor) as ITagCbntor,
             BuiltinTagKinds.INT16 => CreateInt16Tag(descriptor) as ITagCbntor,
             BuiltinTagKinds.UINT16 => CreateUInt16Tag(descriptor) as ITagCbntor,
+
             BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor) as ITagCbntor,
             BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor) as ITagCbntor,
+
+            BuiltinTagKinds.INT64 => CreateInt64Tag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.UINT64 => CreateUInt64Tag(descriptor) as ITagCbntor,
+
+
             BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
 
 

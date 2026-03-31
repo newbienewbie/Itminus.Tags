@@ -10,10 +10,16 @@ public static class BuiltinTagKinds
 
     public const string BIT = "BIT";
     public const string BYTE = "BYTE";
+
     public const string INT16 = "INT16";
     public const string UINT16 = "UINT16";
+
     public const string INT32 = "INT32";
     public const string UINT32 = "UINT32";
+
+    public const string INT64 = "INT64";
+    public const string UINT64 = "UINT64";
+
     public const string FLOAT = "FLOAT";
     public const string STR = "STR";
 
