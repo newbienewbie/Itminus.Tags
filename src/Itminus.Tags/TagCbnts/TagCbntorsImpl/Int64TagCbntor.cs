@@ -32,24 +32,20 @@ public class Int64TagCbntor : TagCbntor
 #pragma warning disable CS8605 // Unboxing a possibly null value.
             var data = (long)value;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
-            byte[] src = GetValueBytes(data);
+
             var dst = this.TagCbnt.Cache.Span.Slice(CacheOffset, 8);
-            src.CopyTo(dst);
+            if (this.TagEndian() == EndianKinds.BigEndian)
+            {
+                BinaryPrimitives.WriteInt64BigEndian(dst, data);
+            }
+            else
+            {
+                BinaryPrimitives.WriteInt64LittleEndian(dst, data);
+            }
 
             Timestamp = DateTime.UtcNow;
             MarkDirty();
         }
     }
-
-    private byte[] GetValueBytes(long data)
-    {
-        var src = BitConverter.GetBytes(data);
-        if (this.TagEndian() == EndianKinds.BigEndian)
-        {
-            Array.Reverse(src);
-        }
-        return src;
-    }
-
 
 }

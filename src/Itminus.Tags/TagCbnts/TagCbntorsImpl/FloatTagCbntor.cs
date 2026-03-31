@@ -31,24 +31,20 @@ public class FloatTagCbntor : TagCbntor
 #pragma warning disable CS8605 // Unboxing a possibly null value.
             var data = (float)value;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
-            byte[] src = GetFloatValueBytes(data);
-            var dst = this.TagCbnt.Cache.Span.Slice(CacheOffset, 2);
-            src.CopyTo(dst);
+
+            var dst = this.TagCbnt.Cache.Span.Slice(CacheOffset, 4);
+            if (this.TagEndian() == EndianKinds.BigEndian)
+            {
+                BinaryPrimitives.WriteSingleBigEndian(dst, data);
+            }
+            else
+            {
+                BinaryPrimitives.WriteSingleLittleEndian(dst, data);
+            }
 
             this.Timestamp = DateTime.UtcNow;
             this.MarkDirty();
         }
     }
-
-    private byte[] GetFloatValueBytes(float data)
-    {
-        var src = BitConverter.GetBytes(data);
-        if (this.TagEndian() == EndianKinds.BigEndian)
-        {
-            Array.Reverse(src);
-        }
-        return src;
-    }
-
 
 }
