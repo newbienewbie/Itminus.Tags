@@ -124,4 +124,21 @@ public class TagGrp : ITagGrp
             await tagunion.WriteAsync(ct);
         }
     }
+
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    public bool IsDirty()
+    {
+        foreach(var kvp in Children)
+        {
+            var child = kvp.Value;
+            if(child.IsDirty())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
