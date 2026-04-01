@@ -2,9 +2,9 @@
 
 namespace Itminus.Tags.BlazorLib.Components.Tags.Editing.DefaultEditors;
 
-public sealed class NumericTagValueEditor : ITagValueEditor
+sealed class NumericTagValueEditor : ITagValueEditor
 {
-    public int Priority => 50;
+    public int Priority => int.MaxValue - 1;
 
     public bool CanEdit(ITag tag)
     {

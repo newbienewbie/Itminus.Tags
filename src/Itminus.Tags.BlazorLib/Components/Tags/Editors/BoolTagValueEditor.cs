@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 
 namespace Itminus.Tags.BlazorLib.Components.Tags.Editing.DefaultEditors;
-
-public sealed class BoolTagValueEditor : ITagValueEditor
+sealed class BoolTagValueEditor : ITagValueEditor
 {
-    public int Priority => 100;
+    public int Priority => int.MaxValue - 2;
 
     public bool CanEdit(ITag tag)
     {
