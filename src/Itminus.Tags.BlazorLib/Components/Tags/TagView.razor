@@ -8,7 +8,7 @@
     <MudText Style="justify-self: start;">@TagKind</MudText>
     <MudText Style="justify-self: start;">@TagSize</MudText>
     <div style="display: flex; align-items: center">
-        <MudText Style="align-self:center;cursor:pointer;">@Value</MudText>
+        <MudText>@Value</MudText>
         @if(!this.IsReadOnly)
         {
             <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="OpenEditDialog"></MudIconButton>

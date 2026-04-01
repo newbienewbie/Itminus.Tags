@@ -45,11 +45,12 @@
         {
             _popopen = true;
             this.ErrorMessage = ex.Message;
-                        SnackbarService.Add
+            SnackbarService.Add
             (
                 @<div>
                     @ex.Message
-                </div>
+                </div>,
+                Severity.Error
             );
         }
     }
