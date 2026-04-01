@@ -74,7 +74,7 @@ NUGET
       Microsoft.NETCore.Targets (>= 1.1)
       System.Runtime (>= 4.3)
     Microsoft.XmlSerializer.Generator (8.0)
-    MudBlazor (8.5)
+    MudBlazor (9.2)
       Microsoft.AspNetCore.Components (>= 8.0.12)
       Microsoft.AspNetCore.Components.Web (>= 8.0.12)
       Microsoft.Extensions.Localization (>= 8.0.12)

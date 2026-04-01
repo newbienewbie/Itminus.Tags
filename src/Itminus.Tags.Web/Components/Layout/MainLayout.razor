@@ -1,5 +1,23 @@
 ﻿@inherits LayoutComponentBase
 
+
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider FullWidth="true"
+                   MaxWidth="MaxWidth.ExtraSmall"
+                   CloseButton="true"
+                   BackdropClick="false"
+                   NoHeader="true"
+                   Position="DialogPosition.Center"
+                   CloseOnEscapeKey="true"
+                   BackgroundClass="my-custom-class" />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -22,14 +40,3 @@
     <a class="dismiss">🗙</a>
 </div>
 
-
-
-@* Required *@
-<MudThemeProvider />
-<MudPopoverProvider />
-
-@* Needed for dialogs *@
-<MudDialogProvider />
-
-@* Needed for snackbars *@
-<MudSnackbarProvider />
