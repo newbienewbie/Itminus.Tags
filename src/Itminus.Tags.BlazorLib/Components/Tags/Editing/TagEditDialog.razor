@@ -1,0 +1,48 @@
+﻿@using Itminus.Tags.BlazorLib.Components.Tags.Editing
+@using MudBlazor
+@inject TagValueEditorRegistry Registry
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6">编辑: @Tag.TagName()</MudText>
+        <MudText Typo="Typo.caption">@Tag.TagAddress() | @Tag.TagKind() | Access=@Tag.TagDescriptor.AccessMode</MudText>
+
+        <MudDivider class="my-3" />
+
+        @if (_editor is null)
+        {
+            <MudText Color="Color.Error">
+                未找到可用编辑器。
+                <MudList T="string">
+                    <MudListItem>1. 如果是内置类型，你是否忘记注册 servies.AddTagsBlazorLib() ？</MudListItem>
+                    <MudListItem>2. 如果不是内置类型，请手动注册 services.AddTagValueEditor&lt;TEditor&gt;() </MudListItem>
+                </MudList>
+
+            </MudText>
+        }
+        else
+        {
+            @_editor.Render(Tag)
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Text" OnClick="Cancel">关闭</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public ITag Tag { get; set; } = null!;
+
+    private ITagValueEditor? _editor;
+
+    protected override void OnParametersSet()
+    {
+        _editor = Registry.Resolve(Tag);
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

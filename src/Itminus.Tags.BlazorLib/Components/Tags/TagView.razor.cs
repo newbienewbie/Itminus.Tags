@@ -1,11 +1,12 @@
-﻿using System.Reactive.Linq;
+﻿using Itminus.Tags.BlazorLib.Components.Tags.Editing;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using System.Reactive.Linq;
+
 
 namespace Itminus.Tags.BlazorLib.Components.Tags;
 
-
-
-public partial class TagView: IDisposable
+public partial class TagView : IDisposable
 {
     [Parameter]
     public ITag? Tag { get; set; }
@@ -17,30 +18,37 @@ public partial class TagView: IDisposable
     public object? Value { get; set; }
     private DateTime Timestamp { get; set; }
 
-
+    public bool IsReadOnly { get; private set; } = true;
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
-        if(parameters.TryGetValue<ITag>(nameof(Tag), out var tag))
+        if (parameters.TryGetValue<ITag>(nameof(Tag), out var tag))
         {
-            this._disposable?.Dispose();
-            this._disposable = null;
+            _disposable?.Dispose();
+            _disposable = null;
 
-            if(this.Tag is not null)
+            if (tag is not null)
             {
-                this.TagName = tag.TagName();
-                this.TagAddress = tag.TagAddress();
-                this.TagKind = tag.TagKind();
-                this.TagSize = tag.TagDescriptor.TagSize;
-                this._disposable = tag.Watch()
+                TagName = tag.TagName();
+                TagAddress = tag.TagAddress();
+                TagKind = tag.TagKind();
+                TagSize = tag.TagDescriptor.TagSize;
+                IsReadOnly = tag.AccessMode() == TagAccessMode.RO;
+
+                // Throttle updates and avoid re-rendering if nothing actually changed.
+                _disposable = tag.Watch()
                     .Sample(TimeSpan.FromMilliseconds(50))
                     .Subscribe(ev =>
                     {
                         var val = ev.EventArgs.NewValue;
                         var ts = ev.EventArgs.Timestamp;
 
-                        this.Value = val;
-                        this.InvokeAsync(StateHasChanged);
+                        if (IsSame(Value, val) && ts == Timestamp)
+                            return;
+
+                        Value = val;
+                        Timestamp = ts;
+                        _ = InvokeAsync(StateHasChanged);
                     });
             }
         }
@@ -48,28 +56,27 @@ public partial class TagView: IDisposable
         return base.SetParametersAsync(parameters);
     }
 
-
-    private bool IsSame(object? a, object? b)
+    private static bool IsSame(object? a, object? b)
     {
-        if(a == null)
-        {
-            if ( b == null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else if(b != null)
-        {
+        if (ReferenceEquals(a, b))
             return true;
-        }
-        else
+        if (a is null || b is null)
+            return false;
+        return a.Equals(b);
+    }
+
+    private async Task OpenEditDialog()
+    {
+        if (Tag is null)
+            return;
+
+        var parameters = new DialogParameters<TagEditDialog>
         {
-            return a.Equals(b);
-        }
+            { x => x.Tag, Tag }
+        };
+
+        var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraSmall };
+        await DialogService.ShowAsync<TagEditDialog>("编辑测点", parameters, options);
     }
 
     #region
@@ -84,11 +91,10 @@ public partial class TagView: IDisposable
             {
                 try
                 {
-                    this._disposable?.Dispose();
+                    _disposable?.Dispose();
                 }
                 catch
                 {
-
                 }
             }
             disposedValue = true;
