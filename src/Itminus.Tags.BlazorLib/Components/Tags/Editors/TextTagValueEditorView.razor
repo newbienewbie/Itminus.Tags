@@ -1,0 +1,57 @@
+﻿@using Itminus.Tags.BlazorLib.Components.Tags.Editing
+@inject ISnackbar SnackbarService
+
+<MudTextField T="string" @bind-Value="_text" Label="值" Disabled="@IsReadOnly" Immediate="true" />
+<div class="mt-2" style="display:flex; gap:12px; align-items:center;">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Write" Disabled="@IsReadOnly">写入</MudButton>
+    <MudText Typo="Typo.caption">当前: @Tag.Value</MudText>
+</div>
+
+
+<MudPopover Open="@_popopen" Fixed="true" Class="px-4 pt-4">
+    <div class="d-flex flex-column">
+        <MudText>@ErrorMessage</MudText>
+        <MudButton OnClick="@ToggleOPopOpen" Class="ml-auto mr-n3 mb-1" Color="Color.Error">Close</MudButton>
+    </div>
+</MudPopover>
+
+@code {
+    [Parameter, EditorRequired]
+    public ITag Tag { get; set; } = null!;
+
+
+    private bool _popopen;
+
+    private void ToggleOPopOpen() => _popopen = !_popopen;
+    protected string ErrorMessage { get; set; } = string.Empty;
+
+    private string? _text;
+
+    private bool IsReadOnly => Tag.TagDescriptor.AccessMode == TagAccessMode.RO;
+
+    protected override void OnParametersSet()
+    {
+        _text = Tag.Value?.ToString();
+    }
+
+    private void Write()
+    {
+        try
+        {
+            Tag.Value = _text;
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_text</span>);
+        }
+        catch(Exception ex)
+        {
+            _popopen = true;
+            this.ErrorMessage = ex.Message;
+            SnackbarService.Add
+            (
+                @<div>
+                    @ex.Message
+                </div>,
+                Severity.Error
+            );
+        }
+    }
+}

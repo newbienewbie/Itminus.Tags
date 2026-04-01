@@ -1,0 +1,44 @@
+﻿@using Itminus.Tags.BlazorLib.Components.Tags.Editing
+@inject ISnackbar SnackbarService
+
+
+<div style="display:flex; gap:12px; align-items:center;">
+    <MudSwitch T="bool" @bind-Value="_checked" Color="Color.Primary" Disabled="@IsReadOnly" />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Write" Disabled="@IsReadOnly">写入</MudButton>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public ITag Tag { get; set; } = null!;
+
+    private bool _checked;
+
+    private bool IsReadOnly => Tag.TagDescriptor.AccessMode == TagAccessMode.RO;
+
+    protected override void OnParametersSet()
+    {
+        if (Tag.Value is bool b)
+            _checked = b;
+        else if (Tag.Value is null)
+            _checked = false;
+    }
+
+    private void Write()
+    {
+        try
+        {
+            Tag.Value = _checked;
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_checked</span>);
+        }
+        catch(Exception ex)
+        {
+            SnackbarService.Add
+            (
+                @<div>
+                    @ex.Message
+                </div>,
+                Severity.Error
+            );
+        }
+    }
+}

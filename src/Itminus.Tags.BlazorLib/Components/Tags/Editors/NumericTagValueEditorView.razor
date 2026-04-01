@@ -1,0 +1,69 @@
+﻿@using System.Globalization
+@using Itminus.Tags.BlazorLib.Components.Tags.Editing
+@inject ISnackbar SnackbarService
+
+<MudTextField T="string" @bind-Value="_text" Label="值" Disabled="@IsReadOnly" Immediate="true" />
+<div class="mt-2" style="display:flex; gap:12px; align-items:center;">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Write" Disabled="@IsReadOnly">写入</MudButton>
+    <MudText Typo="Typo.caption">当前: @Tag.Value</MudText>
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public ITag Tag { get; set; } = null!;
+
+    private string? _text;
+
+    private bool IsReadOnly => Tag.TagDescriptor.AccessMode == TagAccessMode.RO;
+
+    protected override void OnParametersSet()
+    {
+        _text = Tag.Value?.ToString();
+    }
+
+    private void Write()
+    {
+        try
+        {
+            var kind = Tag.TagKind();
+            var s = _text ?? "0";
+
+            // Assign the correctly-typed value directly.
+            switch (kind)
+            {
+                case BuiltinTagKinds.BYTE:
+                    Tag.Value = byte.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                    break;
+                case BuiltinTagKinds.INT16:
+                    Tag.Value = short.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                    break;
+                case BuiltinTagKinds.UINT16:
+                    Tag.Value = ushort.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                    break;
+                case BuiltinTagKinds.INT32:
+                    Tag.Value = int.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                    break;
+                case BuiltinTagKinds.UINT32:
+                    Tag.Value = uint.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                    break;
+                case BuiltinTagKinds.INT64:
+                    Tag.Value = long.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                    break;
+                case BuiltinTagKinds.UINT64:
+                    Tag.Value = ulong.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                    break;
+                case BuiltinTagKinds.FLOAT:
+                    Tag.Value = float.Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                    break;
+                default:
+                    throw new InvalidOperationException($"不支持的数值测点类型: {kind}");
+            }
+
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_text</span>);
+        }
+        catch (Exception ex)
+        {
+            SnackbarService.Add(@<div>@ex.Message</div>, Severity.Error);
+        }
+    }
+}

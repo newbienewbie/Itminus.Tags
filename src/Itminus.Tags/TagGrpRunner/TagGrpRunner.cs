@@ -47,6 +47,11 @@ internal class TagGrpRunner : ITagGrpRunner
                     {
                         await channel.EnsureConnectedAsync(force: false, ct);
                     }
+
+                    if(entry.IsDirty())
+                    {
+                        await entry.WriteAsync(ct);
+                    }
                     await entry.ReadAsync(ct);
                     if(TurnProcess is not null)
                     {

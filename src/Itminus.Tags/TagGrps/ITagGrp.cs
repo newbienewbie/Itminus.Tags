@@ -98,5 +98,11 @@ public interface ITagGrp
     /// <returns></returns>
     public abstract Task WriteAsync(CancellationToken ct);
 
+
+    /// <summary>
+    /// 是否有脏数据
+    /// </summary>
+    /// <returns></returns>
+    bool IsDirty();
     #endregion
 }

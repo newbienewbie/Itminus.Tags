@@ -11,6 +11,7 @@ using Itminus.Tags.Web.Tags;
 using MudBlazor.Services;
 using System.Reflection;
 using Itminus.Tags.ComScanner;
+using Itminus.Tags.BlazorLib;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddTags();
 
 builder.Services.AddMudServices();
+builder.Services.AddTagsBlazorLib();
 
 
 

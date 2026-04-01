@@ -52,6 +52,15 @@ public static class TagUnionExtensions
             }
          );
     }
+
+    public static bool IsDirty(this TagUnion tagunion)
+    {
+        return tagunion.Map(
+            tag => tag.IsDirty,
+            cbnt => cbnt.IsDirty,
+            grp => grp.IsDirty()
+         );
+    }
     #endregion
 
 
