@@ -58,17 +58,7 @@ public static class TagUnionExtensions
         return tagunion.Map(
             tag => tag.IsDirty,
             cbnt => cbnt.IsDirty,
-            grp => {
-                foreach(var kvp in grp.Children)
-                {
-                    var child = kvp.Value;
-                    if(child.IsDirty())
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+            grp => grp.IsDirty()
          );
     }
     #endregion
