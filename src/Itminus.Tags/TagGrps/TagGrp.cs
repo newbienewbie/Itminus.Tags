@@ -13,9 +13,7 @@ public class TagGrp : ITagGrp
         this.IsEntry = isEntry;
     }
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public string Name { get; set; } = "";
 
     /// <summary>
@@ -31,14 +29,10 @@ public class TagGrp : ITagGrp
 
     #region 子节点
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public IDictionary<string, TagUnion> Children { get; } = new Dictionary<string, TagUnion>();
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public TagUnion this[string tagName] => Children.TryGetValue(tagName, out var tag) ?
         tag :
         throw new Exception($"TagGrp({this.Name}) has no child who's name={tagName}");
@@ -92,17 +86,13 @@ public class TagGrp : ITagGrp
     }
     #endregion
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public bool IsEnabled { get; set; } = true;
 
     /// <inheritdoc/>
-    public int ScanInterval {get;set;} 
+    public int ScanInterval {get;set;}
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public async Task ReadAsync(CancellationToken ct)
     {
         foreach(var kvp in Children)
@@ -113,9 +103,7 @@ public class TagGrp : ITagGrp
     }
 
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public async Task WriteAsync(CancellationToken ct)
     {
         foreach (var kvp in Children)
@@ -125,10 +113,7 @@ public class TagGrp : ITagGrp
         }
     }
 
-
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public bool IsDirty()
     {
         foreach(var kvp in Children)
