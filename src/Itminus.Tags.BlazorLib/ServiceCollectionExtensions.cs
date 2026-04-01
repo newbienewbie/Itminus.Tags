@@ -11,9 +11,9 @@ public static class ServiceCollectionExtensions
         // Registry
         services.AddScoped<TagValueEditorRegistry>();
 
-        services.AddScoped<BoolTagValueEditor>()
-                .AddScoped<NumericTagValueEditor>()
-                .AddScoped<TextTagValueEditor>();
+        services.AddTagValueEditor<BoolTagValueEditor>()
+                .AddTagValueEditor<NumericTagValueEditor>()
+                .AddTagValueEditor<TextTagValueEditor>();
 
         return services;
     }
