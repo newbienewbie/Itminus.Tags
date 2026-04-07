@@ -1,5 +1,5 @@
 ﻿using Itminus.Tags.BlazorLib.Components.Tags.Editing;
-using Itminus.Tags.BlazorLib.Components.Tags.Editing.DefaultEditors;
+using Itminus.Tags.BlazorLib.Components.Tags.Editors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags.BlazorLib;
