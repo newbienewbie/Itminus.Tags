@@ -1,5 +1,6 @@
 ﻿@using Itminus.Tags
 @using Itminus.Tags.BlazorLib.Components.Channels
+@using Itminus.Tags.BlazorLib.Components.TagDescriptors
 @using Itminus.Tags.Web.Tags
 @using System.Xml.Linq
 @using System.IO
@@ -39,7 +40,7 @@
     </MudTabPanel>
 
     <MudTabPanel Text="测点" Icon="@Icons.Material.Filled.Tag">
-        111
+        <TagDescriptorDesigner Items="tagGrpDescriptors" />
     </MudTabPanel>
 
 </MudTabs>

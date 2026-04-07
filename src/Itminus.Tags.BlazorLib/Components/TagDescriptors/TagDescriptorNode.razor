@@ -1,0 +1,204 @@
+﻿@using Itminus.Tags
+@using MudBlazor
+
+<style>
+    .td-node-root {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .td-node-left {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .td-node-actions {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+
+    .td-node-button {
+        padding: 4px8px;
+        min-width: 0;
+    }
+
+        .td-node-button.selected {
+            background-color: rgba(0,0,0,0.06);
+            border-radius: 6px;
+        }
+</style>
+
+@* Recursive component to render tag/group/cbnt descriptors using MudBlazor expansion panels for collapse/expand and MudButton for selection *@
+
+@if (Descriptor is TagGrpDescriptor grp)
+{
+    <MudExpansionPanel Elevation="0" DisableGutters="true" Expanded="@IsDescendant(Descriptor, Selected)">
+        <TitleContent>
+            <div class="td-node-root" style="margin-left:@(Depth *1)rem;">
+                <div class="td-node-left">
+                    <MudButton Variant="Variant.Text" Class="@GetButtonClass(grp)" StartIcon="@GetIcon(Descriptor)" OnClick="@(() => OnSelect(grp))">@grp.Name</MudButton>
+                </div>
+                <div class="td-node-actions">
+                    <MudIconButton Icon="@GetAddIcon(TagElementType.Group)" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OnAddGroup())" />
+                    <MudIconButton Icon="@GetAddIcon(TagElementType.Cbnt)" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OnAddCbnt())" />
+                    <MudIconButton Icon="@GetAddIcon(TagElementType.Tag)" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OnAddTag())" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => OnDelete())" />
+                </div>
+            </div>
+        </TitleContent>
+        <ChildContent>
+            @if (grp.Children != null)
+            {
+                @foreach (var child in grp.Children)
+                {
+                    <TagDescriptorNode Descriptor="child" Selected="Selected" SelectedChanged="SelectedChanged" AddTagRequested="AddTagRequested" AddCbntRequested="AddCbntRequested" AddGroupRequested="AddGroupRequested" DeleteRequested="DeleteRequested" Depth="@(Depth +1)" />
+                }
+            }
+        </ChildContent>
+    </MudExpansionPanel>
+}
+else if (Descriptor is TagCbntDescriptor cd)
+{
+    <MudExpansionPanel Elevation="0" DisableGutters="true" Expanded="@IsDescendant(Descriptor, Selected)">
+        <TitleContent>
+            <div class="td-node-root" style="margin-left:@(Depth *1)rem;">
+                <div class="td-node-left">
+                    <MudButton Variant="Variant.Text" Class="@GetButtonClass(cd)" StartIcon="@GetIcon(Descriptor)" OnClick="@(() => OnSelect(cd))">@cd.Name</MudButton>
+                </div>
+                <div class="td-node-actions">
+                    <MudIconButton Icon="@GetAddIcon(TagElementType.Tag)" Color="Color.Primary" Size="Size.Small" OnClick="@(() => OnAddTag())" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => OnDelete())" />
+                </div>
+            </div>
+        </TitleContent>
+        <ChildContent>
+            @if (cd.Children != null && cd.Children.Count >0)
+            {
+                @foreach (var child in cd.Children)
+                {
+                    <TagDescriptorNode Descriptor="child" Selected="Selected" SelectedChanged="SelectedChanged" AddTagRequested="AddTagRequested" AddCbntRequested="AddCbntRequested" AddGroupRequested="AddGroupRequested" DeleteRequested="DeleteRequested" Depth="@(Depth +1)" />
+                }
+            }
+        </ChildContent>
+    </MudExpansionPanel>
+}
+else if (Descriptor is TagDescriptor td)
+{
+    <div style="margin-left:@(Depth *1)rem; padding:4px; display:flex; gap:8px; align-items:center; justify-content:space-between; width:100%;">
+        <div style="display:flex; gap:8px; align-items:center;">
+            <MudButton Variant="Variant.Text" Class="@GetButtonClass(td)" StartIcon="@GetIcon(Descriptor)" OnClick="@(() => OnSelect(td))">@td.TagName</MudButton>
+        </div>
+        <div style="display:flex; gap:4px; align-items:center;">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => OnDelete())" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public required ITagsDescriptor Descriptor { get; set; }
+
+    [Parameter]
+    public ITagsDescriptor? Selected { get; set; }
+
+    [Parameter]
+    public EventCallback<ITagsDescriptor?> SelectedChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<ITagsDescriptor?> AddTagRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<ITagsDescriptor?> AddCbntRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<ITagsDescriptor?> AddGroupRequested { get; set; }
+
+    [Parameter]
+    public EventCallback<ITagsDescriptor?> DeleteRequested { get; set; }
+
+    [Parameter]
+    public int Depth { get; set; } =0;
+
+    private Task OnSelect(ITagsDescriptor d)
+    {
+        // notify parent about selection
+        return SelectedChanged.InvokeAsync(d);
+    }
+
+    private string GetIcon(ITagsDescriptor d)
+    {
+        // Use the required primary icon kinds for each descriptor type (Filled for stronger emphasis)
+        return d switch
+        {
+            TagGrpDescriptor _ => Icons.Material.Filled.Layers,
+            TagCbntDescriptor _ => Icons.Material.Filled.GroupWork,
+            TagDescriptor _ => Icons.Material.Filled.Tag,
+            _ => Icons.Material.Filled.DeviceUnknown,
+        };
+    }
+
+    private bool IsDescendant(ITagsDescriptor ancestor, ITagsDescriptor? selected)
+    {
+        if (selected is null) return false;
+        if (ReferenceEquals(ancestor, selected)) return true;
+        if (ancestor is TagGrpDescriptor g && g.Children != null)
+        {
+            foreach (var child in g.Children)
+            {
+                if (IsDescendant(child, selected)) return true;
+            }
+        }
+        else if (ancestor is TagCbntDescriptor cb && cb.Children != null)
+        {
+            foreach (var child in cb.Children)
+            {
+                if (ReferenceEquals(child, selected)) return true;
+            }
+        }
+        return false;
+    }
+
+    private Task OnAddTag()
+    {
+        return AddTagRequested.InvokeAsync(Descriptor);
+    }
+
+    private Task OnAddCbnt()
+    {
+        return AddCbntRequested.InvokeAsync(Descriptor);
+    }
+
+    private Task OnAddGroup()
+    {
+        return AddGroupRequested.InvokeAsync(Descriptor);
+    }
+
+    private Task OnDelete()
+    {
+        return DeleteRequested.InvokeAsync(Descriptor);
+    }
+
+    private enum TagElementType { Tag, Cbnt, Group }
+
+    private string GetAddIcon(TagElementType t)
+    {
+        // Add-action icons are variants (outlined) of the same icon families to keep visual consistency
+        return t switch
+        {
+            TagElementType.Tag => Icons.Material.Outlined.Tag,
+            TagElementType.Cbnt => Icons.Material.Outlined.GroupWork,
+            TagElementType.Group => Icons.Material.Outlined.Layers,
+            _ => Icons.Material.Outlined.Add,
+        };
+    }
+
+    private string GetButtonClass(ITagsDescriptor d)
+    {
+        return $"td-node-button {(ReferenceEquals(d, Selected) ? "selected" : "")}";
+    }
+}
