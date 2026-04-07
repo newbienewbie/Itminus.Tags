@@ -39,7 +39,7 @@
 {
     <MudExpansionPanel Elevation="0" DisableGutters="true" Expanded="@IsDescendant(Descriptor, Selected)">
         <TitleContent>
-            <div class="td-node-root" style="margin-left:@(Depth *1)rem;">
+            <div class="td-node-root" style="margin-left:@(Depth * 1)rem;">
                 <div class="td-node-left">
                     <MudButton Variant="Variant.Text" Class="@GetButtonClass(grp)" StartIcon="@GetIcon(Descriptor)" OnClick="@(() => OnSelect(grp))">@grp.Name</MudButton>
                 </div>
@@ -56,7 +56,7 @@
             {
                 @foreach (var child in grp.Children)
                 {
-                    <TagDescriptorNode Descriptor="child" Selected="Selected" SelectedChanged="SelectedChanged" AddTagRequested="AddTagRequested" AddCbntRequested="AddCbntRequested" AddGroupRequested="AddGroupRequested" DeleteRequested="DeleteRequested" Depth="@(Depth +1)" />
+                    <TagDescriptorNode Descriptor="child" Selected="Selected" SelectedChanged="SelectedChanged" AddTagRequested="AddTagRequested" AddCbntRequested="AddCbntRequested" AddGroupRequested="AddGroupRequested" DeleteRequested="DeleteRequested" Depth="@(Depth + 1)" />
                 }
             }
         </ChildContent>
@@ -66,7 +66,7 @@ else if (Descriptor is TagCbntDescriptor cd)
 {
     <MudExpansionPanel Elevation="0" DisableGutters="true" Expanded="@IsDescendant(Descriptor, Selected)">
         <TitleContent>
-            <div class="td-node-root" style="margin-left:@(Depth *1)rem;">
+            <div class="td-node-root" style="margin-left:@(Depth * 1)rem;">
                 <div class="td-node-left">
                     <MudButton Variant="Variant.Text" Class="@GetButtonClass(cd)" StartIcon="@GetIcon(Descriptor)" OnClick="@(() => OnSelect(cd))">@cd.Name</MudButton>
                 </div>
@@ -77,11 +77,11 @@ else if (Descriptor is TagCbntDescriptor cd)
             </div>
         </TitleContent>
         <ChildContent>
-            @if (cd.Children != null && cd.Children.Count >0)
+            @if (cd.Children != null && cd.Children.Count > 0)
             {
                 @foreach (var child in cd.Children)
                 {
-                    <TagDescriptorNode Descriptor="child" Selected="Selected" SelectedChanged="SelectedChanged" AddTagRequested="AddTagRequested" AddCbntRequested="AddCbntRequested" AddGroupRequested="AddGroupRequested" DeleteRequested="DeleteRequested" Depth="@(Depth +1)" />
+                    <TagDescriptorNode Descriptor="child" Selected="Selected" SelectedChanged="SelectedChanged" AddTagRequested="AddTagRequested" AddCbntRequested="AddCbntRequested" AddGroupRequested="AddGroupRequested" DeleteRequested="DeleteRequested" Depth="@(Depth + 1)" />
                 }
             }
         </ChildContent>
@@ -89,7 +89,7 @@ else if (Descriptor is TagCbntDescriptor cd)
 }
 else if (Descriptor is TagDescriptor td)
 {
-    <div style="margin-left:@(Depth *1)rem; padding:4px; display:flex; gap:8px; align-items:center; justify-content:space-between; width:100%;">
+    <div style="margin-left:@(Depth * 1)rem; padding:4px; display:flex; gap:8px; align-items:center; justify-content:space-between; width:100%;">
         <div style="display:flex; gap:8px; align-items:center;">
             <MudButton Variant="Variant.Text" Class="@GetButtonClass(td)" StartIcon="@GetIcon(Descriptor)" OnClick="@(() => OnSelect(td))">@td.TagName</MudButton>
         </div>
@@ -122,7 +122,7 @@ else if (Descriptor is TagDescriptor td)
     public EventCallback<ITagsDescriptor?> DeleteRequested { get; set; }
 
     [Parameter]
-    public int Depth { get; set; } =0;
+    public int Depth { get; set; } = 0;
 
     private Task OnSelect(ITagsDescriptor d)
     {
