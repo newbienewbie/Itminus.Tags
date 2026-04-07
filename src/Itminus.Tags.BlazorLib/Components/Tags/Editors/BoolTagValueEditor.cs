@@ -1,7 +1,8 @@
-﻿using Itminus.Tags.BlazorLib.Components.Tags.Editors;
+﻿
+using Itminus.Tags.BlazorLib.Components.Tags.Editing;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Tags.Editing.DefaultEditors;
+namespace Itminus.Tags.BlazorLib.Components.Tags.Editors;
 sealed class BoolTagValueEditor : ITagValueEditor
 {
     public int Priority => int.MaxValue - 2;
