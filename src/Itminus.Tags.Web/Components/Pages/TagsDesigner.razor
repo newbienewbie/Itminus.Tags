@@ -1,10 +1,12 @@
 ﻿@using Itminus.Tags
-@using Itminus.Tags.BlazorLib
 @using Itminus.Tags.BlazorLib.Components.Channels
 @using Itminus.Tags.Web.Tags
 @using System.Xml.Linq
-@inject IJSRuntime JS
-@inject TagsBlazorLibJsInterop tagsBlazorLibJsInterop
+@using System.IO
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.AspNetCore.Components.Forms
+@inject Itminus.Tags.BlazorLib.TagsBlazorLibJsInterop _tagsBlazorLibJsInterop
+@inject IServiceScopeFactory _ssf
 
 @page "/designer"
 @rendermode InteractiveServer
@@ -20,6 +22,13 @@
             <div style="display:flex; gap:12px; align-items:center;">
                 <TagChannelCreateButton ChannelCreated="OnChannelUpdated" />
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportProject">导出项目</MudButton>
+                
+                <MudInputLabel ForId="upload-project-file">
+                    导入项目
+                    <InputFile OnChange="ImportProject" id="upload-project-file" />
+                </MudInputLabel>
+
+
             </div>
         </MudPaper>
 
@@ -42,6 +51,8 @@
     // Placeholder for future tag group descriptors; export will use these when populated.
     [Parameter]
     public IList<TagGrpDescriptor> tagGrpDescriptors { get; set; } = new List<TagGrpDescriptor>();
+
+    private ITagsProject? importedProject;
 
     private void OnChannelUpdated(TagChannelDescriptor args)
     {
@@ -98,9 +109,45 @@
         var doc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"), root);
         var xml = doc.ToString();
 
-        // Use JS to trigger file download
+        // Use interop helper to trigger file download
+        await _tagsBlazorLibJsInterop.DownloadTextFile("index.xml", xml);
+    }
 
-        await tagsBlazorLibJsInterop.DownloadTextFile("index.xml", xml);
-        // await JS.InvokeVoidAsync("fileUtil.downloadTextFile", "index.xml", xml);
+    private async Task ImportProject(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null)
+            return;
+
+        try
+        {
+            using var stream = file.OpenReadStream(10_000_000);
+            using var reader = new StreamReader(stream);
+            var content = await reader.ReadToEndAsync();
+
+            var root = XElement.Parse(content);
+
+            this.channelDescriptors = root.GetTagProjectChannelDescriptors().ToList();
+            this.tagGrpDescriptors = root.GetTagProjectGrpDescriptors().ToList();
+
+            using var scope = _ssf.CreateScope();
+            var factory = scope.ServiceProvider.GetRequiredService<ITagsProjectFactory>();
+
+            var projRoot = Directory.GetCurrentDirectory();
+            try
+            {
+                this.importedProject = factory.Create(projRoot, root);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"创建项目失败：{ex.Message}");
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"导入失败：{ex.Message}");
+        }
     }
 }
