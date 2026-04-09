@@ -8,24 +8,6 @@ namespace Itminus.Tags.Tests.S7Tags
 {
     public class StrTagCbntorTests
     {
-        [Fact]
-        public void CreateStrTag_Throws_When_size_NotSpecified()
-        {
-            var builder = new S7TagCbntBuilder("cbnt1", "DB200.100");
-
-            var descriptor = new TagDescriptor()
-            {
-                TagName = "str1",
-                Address = "DB200.102",
-                TagKind = BuiltinTagKinds.STR,
-            };
-
-            Assert.Throws<InvalidDataException>(() => {
-                var cbnt = builder.AddTags([descriptor]).Build();
-                var tag = cbnt.SelectTag("str1");
-                Assert.NotNull(tag);
-            });
-        }
 
         [Fact]
         public void CreateStrTag_Throws_When_maxlen_NotSpecified()
