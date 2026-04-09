@@ -51,8 +51,8 @@ public class S7ProjTests
         #region input group
         // Verify Cache Size
         var input = g1.SelectCbnt("拍照请求");
-        Assert.Equal(6, input.CacheSize);
-        Assert.Equal(6, input.Cache.Length);
+        Assert.Equal(6 + 15 + 2, input.CacheSize);
+        Assert.Equal(6 + 15 + 2, input.Cache.Length);
 
         var req = g1.SelectTag("拍照请求/拍照-请求-标志");
         Assert.Equal("拍照-请求-标志", req.TagName());
@@ -65,6 +65,16 @@ public class S7ProjTests
         Assert.Equal("DB200.104", reqProg.TagAddress());
         Assert.Equal(BuiltinTagKinds.INT16, reqProg.TagKind());
 
+
+        var reqPN = g1.SelectTag("拍照请求/拍照-请求-PN");
+        Assert.Equal("拍照-请求-PN", reqPN.TagName());
+        Assert.Equal("DB200.106", reqPN.TagAddress());
+        Assert.Equal(BuiltinTagKinds.STR, reqPN.TagKind());
+        Assert.IsType<S7StrTagCbntor>(reqPN);
+        var pnTag = reqPN as S7StrTagCbntor;
+        Assert.NotNull(pnTag);
+        Assert.Equal(0, pnTag.Strlen);
+        Assert.Equal(15, pnTag.Maxlen);
         #endregion
 
         #region output group

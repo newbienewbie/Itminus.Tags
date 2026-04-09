@@ -1,4 +1,6 @@
-﻿namespace Itminus.Tags;
+﻿using System.Xml.Linq;
+
+namespace Itminus.Tags;
 
 
 public enum TagAccessMode
@@ -78,4 +80,9 @@ public class TagDescriptor: ITagsDescriptor
     /// 备注
     /// </summary>
     public string? Note{ set; get; }
+
+    /// <summary>
+    /// 额外参数
+    /// </summary>
+    public virtual IDictionary<string, XAttribute> Extras { get; set; } = new Dictionary<string, XAttribute>();
 }

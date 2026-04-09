@@ -56,8 +56,26 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
                 cacheSize = occupied;
             }
         }
+
         this.TagCbnt.ResizeCache(cacheSize);
+
+        // initialize str tag prefix
+        foreach (var kvp in this.TagCbnt.Children)
+        {
+            var tag = kvp.Value;
+            if (tag is S7StrTagCbntor strTag)
+            {
+                this.InitializeStrTag(strTag);
+            }
+        }
         return this;
+    }
+
+    private void InitializeStrTag(S7StrTagCbntor tag)
+    {
+        var prefix = this.TagCbnt.Cache.Slice(tag.CacheOffset, 2).Span;
+        prefix[0] = tag.Maxlen;
+        prefix[1] = 0;
     }
 }
 
