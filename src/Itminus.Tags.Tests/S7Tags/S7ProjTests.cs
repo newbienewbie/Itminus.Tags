@@ -73,7 +73,7 @@ public class S7ProjTests
         Assert.IsType<S7StrTagCbntor>(reqPN);
         var pnTag = reqPN as S7StrTagCbntor;
         Assert.NotNull(pnTag);
-        Assert.Equal(10, pnTag.Strlen);
+        Assert.Equal(0, pnTag.Strlen);
         Assert.Equal(15, pnTag.Maxlen);
         #endregion
 

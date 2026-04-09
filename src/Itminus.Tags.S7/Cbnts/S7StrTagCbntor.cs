@@ -8,19 +8,28 @@ namespace Itminus.Tags.S7;
 public class S7StrTagCbntor : TagCbntor
 {
     /// <summary>
-    /// 字符串有效长度
-    /// </summary>
-    public byte Strlen { get; private set; }
-
-    /// <summary>
     /// 字符串最大长度，ReadOnly
     /// </summary>
     public byte Maxlen { get; }
 
-    internal S7StrTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset, byte strLen, byte maxLen)
+    /// <summary>
+    /// 字符串有效长度，ReadOnly。
+    /// </summary>
+    public byte Strlen
+    {
+        get
+        {
+            var cache = this.TagCbnt.Cache;
+            var span = cache.Span.Slice(CacheOffset);
+            var total = span[0];
+            var size = span[1];
+            return size;
+        }
+    }
+
+    internal S7StrTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset, byte maxLen)
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {
-        this.Strlen = strLen;
         this.Maxlen = maxLen;
     }
 
@@ -32,13 +41,9 @@ public class S7StrTagCbntor : TagCbntor
         get
         {
             var cache = this.TagCbnt.Cache;
-            var span = cache.Span.Slice(CacheOffset, 2 + this.Strlen);
+            var span = cache.Span.Slice(CacheOffset);
             var total = span[0];
             var size = span[1];
-            if(size != this.Strlen)
-            {
-                throw new InvalidDataException($"字符串长度不匹配，期望{this.Strlen}，实际{size}");
-            }
             var str = Encoding.ASCII.GetString(span.Slice(2, size));
             return str;
         }
@@ -57,7 +62,6 @@ public class S7StrTagCbntor : TagCbntor
 
             var read = Encoding.ASCII.GetBytes(str, span.Slice(2));
             span[1] = (byte)read;
-            this.Strlen = span[1];
 
             Timestamp = DateTime.UtcNow;
             MarkDirty();
