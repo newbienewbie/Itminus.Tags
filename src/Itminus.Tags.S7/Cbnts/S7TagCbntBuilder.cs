@@ -75,7 +75,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
     {
         var prefix = this.TagCbnt.Cache.Slice(tag.CacheOffset, 2).Span;
         prefix[0] = tag.Maxlen;
-        prefix[1] = tag.Strlen;
+        prefix[1] = 0;
     }
 }
 
