@@ -106,6 +106,10 @@ public static class XElementExtensions_TagDescriptor
         {
             foreach (var extra in descriptor.Extras)
             {
+                if (TagDescriptorBuiltinAttrNames.Contains(extra.Key))
+                {
+                    continue;
+                }
                 attrs.Add(extra.Value);
             }
         }
