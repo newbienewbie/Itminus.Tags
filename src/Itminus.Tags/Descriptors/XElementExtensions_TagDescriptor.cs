@@ -5,16 +5,16 @@ namespace Itminus.Tags;
 public static class XElementExtensions_TagDescriptor
 {
     #region
-    private static string[] TagDescriptorBuiltinAttrNames = new string[] {
-        "name", 
-        "address", 
-        "type", 
+    private static readonly HashSet<string> TagDescriptorBuiltinAttrNames = new()
+    {
+        "name",
+        "address",
+        "type",
         "endian",
         "access",
         "channel",
         "note",
         "tagSize",
-        "note",
     };
 
     /// <summary>
