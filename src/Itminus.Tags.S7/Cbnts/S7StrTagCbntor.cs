@@ -44,10 +44,7 @@ public class S7StrTagCbntor : TagCbntor
         }
         set
         {
-#pragma warning disable CS8605 // Unboxing a possibly null value.
-            var str = (string?)value ?? string.Empty;
-#pragma warning restore CS8605 // Unboxing a possibly null value.
-            
+            var str = value is null ? string.Empty : value is string s ? s : throw new InvalidCastException();
             var cache = this.TagCbnt.Cache;
             var tagsize = this.TagSize();
             var span = cache.Span.Slice(CacheOffset, tagsize);
