@@ -1,0 +1,70 @@
+﻿using System.Buffers.Binary;
+using System.Text;
+
+
+
+namespace Itminus.Tags.S7;
+
+public class S7StrTagCbntor : TagCbntor
+{
+    /// <summary>
+    /// 字符串有效长度
+    /// </summary>
+    public byte Strlen { get; private set; }
+
+    /// <summary>
+    /// 字符串最大长度，ReadOnly
+    /// </summary>
+    public byte Maxlen { get; }
+
+    internal S7StrTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset, byte strLen, byte maxLen)
+        : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
+    {
+        this.Strlen = strLen;
+        this.Maxlen = maxLen;
+    }
+
+    /// <summary>
+    /// 测点值
+    /// </summary>
+    public override object? Value
+    {
+        get
+        {
+            var cache = this.TagCbnt.Cache;
+            var span = cache.Span.Slice(CacheOffset, 2 + this.Strlen);
+            var total = span[0];
+            var size = span[1];
+            if(size != this.Strlen)
+            {
+                throw new InvalidDataException($"字符串长度不匹配，期望{this.Strlen}，实际{size}");
+            }
+            var str = Encoding.ASCII.GetString(span.Slice(2, size));
+            return str;
+        }
+        set
+        {
+#pragma warning disable CS8605 // Unboxing a possibly null value.
+            var str = (string?)value ?? string.Empty;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
+            
+            var cache = this.TagCbnt.Cache;
+            var tagsize = this.TagSize();
+            var span = cache.Span.Slice(CacheOffset, tagsize);
+            var total = span[0];
+            var size = span[1];
+            if(str.Length > total)
+            {
+                throw new ArgumentException($"字符串长度超过限制，最大{total}，实际{str.Length}");
+            }
+
+            var read = Encoding.ASCII.GetBytes(str, span.Slice(2));
+            span[1] = (byte)read;
+            this.Strlen = span[1];
+
+            Timestamp = DateTime.UtcNow;
+            MarkDirty();
+        }
+    }
+
+}

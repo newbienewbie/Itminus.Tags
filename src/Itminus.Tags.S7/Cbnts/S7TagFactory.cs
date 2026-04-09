@@ -183,11 +183,42 @@ public class S7TagFactory : TagCbntorFactoryBase
         var offset = GetTagOffset(tagDescriptor);
         return new FloatTagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
+
+
+    /// <summary>
+    /// 创建 STR 型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    protected virtual S7StrTagCbntor CreateStrTag(TagDescriptor tagDescriptor)
+    {
+        var tagName = tagDescriptor.TagName;
+        var strLen =
+            ! tagDescriptor.Extras.TryGetValue("strlen", out var strlenAttr) ?  throw new InvalidDataException($"字符串型测点必须指定字符串有效长度 strlen。测点={tagName}") :
+            !byte.TryParse(strlenAttr.Value, out var strlen) ? throw new InvalidDataException($"字符串型测点 strlen 属性必须可解析成正整数，当前 strlen={strlenAttr}, 测点={tagName}"):
+            strlen < 1 ? throw new InvalidDataException($"字符串型测点 strlen 属性必须大于0，当前 strlen={strlen}, 测点={tagName}"):
+            strlen;
+        var maxLen =
+            !tagDescriptor.Extras.TryGetValue("maxlen", out var maxlenAttr) ? throw new InvalidDataException($"字符串型测点必须指定字符串有效长度 maxlen。测点={tagName}") :
+            !byte.TryParse(maxlenAttr.Value, out var maxlen) ? throw new InvalidDataException($"字符串型测点 maxlen 属性必须可解析成正整数，当前 maxlen={maxlenAttr}, 测点={tagName}") :
+            maxlen < 1 ? throw new InvalidDataException($"字符串型测点 maxlen 属性必须大于0，当前 maxlen={maxlen}, 测点={tagName}") :
+            maxlen;
+
+        if(strLen > maxLen)
+        {
+            throw new InvalidDataException($"字符串型测点应该满足 strlen <= maxlen。当前 strlen={strLen}, maxlen={maxLen}，测点={tagName}");
+        }
+
+        // normalize the tagsize
+        tagDescriptor.TagSize = 2 + maxlen; // S7字符串的前2个字节是用来存储字符串的实际长度的，所以总长度=2+maxlen
+        var offset = GetTagOffset(tagDescriptor);
+        return new S7StrTagCbntor(tagDescriptor, this.TagCbnt, offset, strLen, maxLen);
+    }
     #endregion
 
     public override ITagCbntor CreateTag(TagDescriptor descriptor)
     {
-        var tag = descriptor.TagKind switch
+        ITagCbntor tag = descriptor.TagKind switch
         {
             BuiltinTagKinds.BIT => CreateBitTag(descriptor),
             BuiltinTagKinds.BYTE => CreateByteTag(descriptor),
@@ -197,7 +228,8 @@ public class S7TagFactory : TagCbntorFactoryBase
             BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor),
             BuiltinTagKinds.INT64 => CreateInt64Tag(descriptor),
             BuiltinTagKinds.UINT64 => CreateUInt64Tag(descriptor),
-            BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor) as ITagCbntor,
+            BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor),
+            BuiltinTagKinds.STR => CreateStrTag(descriptor),
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")
         };
         return tag;

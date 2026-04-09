@@ -5,6 +5,18 @@ namespace Itminus.Tags;
 public static class XElementExtensions_TagDescriptor
 {
     #region
+    private static string[] TagDescriptorBuiltinAttrNames = new string[] {
+        "name", 
+        "address", 
+        "type", 
+        "endian",
+        "access",
+        "channel",
+        "note",
+        "tagSize",
+        "note",
+    };
+
     /// <summary>
     /// 构造 <see cref="TagDescriptor"/> 对象
     /// </summary>
@@ -28,6 +40,9 @@ public static class XElementExtensions_TagDescriptor
             EndianKind = tagEndian,
             ChannelName = tagChannelName,
             Note = tagNote,
+            Extras = e.Attributes()
+                .Where(a => !TagDescriptorBuiltinAttrNames.Contains(a.Name.LocalName))
+                .ToDictionary(attr => attr.Name.LocalName, attr => attr)
         };
 
         var tagAccess = e.GetTagUnionAccess(tagName);
@@ -86,6 +101,15 @@ public static class XElementExtensions_TagDescriptor
         {
             attrs.Add(new XAttribute("note", descriptor.Note));
         }
+
+        if (descriptor.Extras != null)
+        {
+            foreach (var extra in descriptor.Extras)
+            {
+                attrs.Add(extra.Value);
+            }
+        }
+
         var ele = new XElement("Tag", attrs);
         return ele;
     }

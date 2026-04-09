@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Itminus.Tags.Tests.TagDescriptors;
@@ -41,6 +42,38 @@ public class TagDescriptor_Tests
         Assert.Equal(descriptor1.TagSize, descriptor2.TagSize);
         Assert.Equal(descriptor1.AccessMode, descriptor2.AccessMode);
         Assert.Equal(descriptor1.Note, descriptor2.Note);
+    }
+
+    [Fact]
+    public void Test_ConversionWithXElement_IncludesExtras()
+    {
+        var descriptor1 = new TagDescriptor
+        {
+            Address = "DB200.100.2",
+            TagKind = BuiltinTagKinds.BYTE,
+            TagName = "ExtraTest",
+            EndianKind = EndianKinds.LittleEndian,
+            TagSize = 1,
+            AccessMode = TagAccessMode.RW,
+            Note = "with extras",
+        };
+
+        // add extras
+        descriptor1.Extras["ext1"] = new XAttribute("ext1", "v1");
+        descriptor1.Extras["ext2"] = new XAttribute("ext2", "v2");
+
+        var ele1 = descriptor1.ToXElement();
+        var descriptor2 = ele1.ToTagDescriptor();
+
+        Assert.NotNull(descriptor2.Extras);
+        Assert.True(descriptor2.Extras.ContainsKey("ext1"));
+        Assert.True(descriptor2.Extras.ContainsKey("ext2"));
+        Assert.Equal("v1", descriptor2.Extras["ext1"].Value);
+        Assert.Equal("v2", descriptor2.Extras["ext2"].Value);
+
+        // ensure roundtrip xml equals
+        var ele2 = descriptor2.ToXElement();
+        Assert.Equal(ele1.ToString(), ele2.ToString());
     }
 
 }
