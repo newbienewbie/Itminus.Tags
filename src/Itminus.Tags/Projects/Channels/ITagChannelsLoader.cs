@@ -1,5 +1,4 @@
-﻿
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags.Core.Projects;
 
 
 /// <summary>

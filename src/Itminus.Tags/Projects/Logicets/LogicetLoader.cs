@@ -1,13 +1,8 @@
-﻿using Itminus.Tags.Plugins;
+﻿using Itminus.Tags.Core.Projects;
+using Itminus.Tags.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Itminus.Tags;
 

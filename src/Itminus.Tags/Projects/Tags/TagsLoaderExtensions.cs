@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace Itminus.Tags;
 

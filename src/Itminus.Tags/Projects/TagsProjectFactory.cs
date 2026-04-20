@@ -1,4 +1,5 @@
-﻿using Itminus.Tags.Plugins;
+﻿using Itminus.Tags.Core.Projects;
+using Itminus.Tags.Plugins;
 using System.Xml.Linq;
 
 namespace Itminus.Tags;
