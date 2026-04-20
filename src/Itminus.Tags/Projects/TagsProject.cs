@@ -1,6 +1,6 @@
-﻿using Itminus.Tags.Plugins;
+﻿using Itminus.Tags.Core.Projects;
+using Itminus.Tags.Plugins;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Xml.Linq;
 
@@ -202,6 +202,10 @@ internal class TagsProject : ITagsProject
             runner.TurnProcess += async (entry, ch) => {
                 foreach (var l in logicets)
                 {
+                    if(!l.Enabled)
+                    {
+                        continue;
+                    }
                     await l.ProcessAsync(entry, ch);
                 }
             };

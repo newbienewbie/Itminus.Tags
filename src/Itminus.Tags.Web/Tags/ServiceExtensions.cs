@@ -1,14 +1,5 @@
 ﻿
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Itminus.Tags;
 using Itminus.Tags.S7;
 using Itminus.Tags.ZLan;
 using Itminus.Tags.ModbusTcp;

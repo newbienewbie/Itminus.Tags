@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 
 /// <summary>
@@ -26,6 +20,11 @@ public interface ILogicet
     /// 测点
     /// </summary>
     ITagGrp Tags { get; }
+
+    /// <summary>
+    /// 启用？
+    /// </summary>
+    bool Enabled { get; }
 
     /// <summary>
     /// 是否能匹配入口？返回true表示应该处理当前entry，否则应该跳过处理

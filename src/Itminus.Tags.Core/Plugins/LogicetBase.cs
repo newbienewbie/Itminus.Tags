@@ -11,10 +11,7 @@ public abstract class LogicetBase : ILogicet
         this.Tags = tags ?? throw new Exception("构造逻辑组件时测点集不可为空");
     }
 
-
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public virtual IList<ITagChannel> Channels { get; }
 
     /// <inheritdoc/>
@@ -25,6 +22,9 @@ public abstract class LogicetBase : ILogicet
 
     /// <inheritdoc/>
     public abstract bool MatchEntry(ITagGrp entry);
+
+    /// <inheritdoc/>
+    public virtual bool Enabled { get; set; } = true;
 
     /// <inheritdoc/>
     public abstract Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel);

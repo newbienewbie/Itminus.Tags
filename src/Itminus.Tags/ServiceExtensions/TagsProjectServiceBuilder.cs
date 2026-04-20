@@ -1,4 +1,5 @@
-﻿using Itminus.Tags.Plugins;
+﻿using Itminus.Tags.Core.Projects;
+using Itminus.Tags.Plugins;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags;

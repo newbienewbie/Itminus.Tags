@@ -157,7 +157,7 @@ public static class XElementExensions
         }
     }
 
-    internal static bool IsTagUnion(this XElement e)
+    public static bool IsTagUnion(this XElement e)
     {
         if (e.Name == "Tag")
         {

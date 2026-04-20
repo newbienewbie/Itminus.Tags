@@ -1,7 +1,6 @@
-﻿
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
-namespace Itminus.Tags;
+namespace Itminus.Tags.Core.Projects;
 
 /// <summary>
 /// Logicet 解析器

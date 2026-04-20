@@ -1,8 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 public class TagSyncEventArgs : EventArgs 
 {
