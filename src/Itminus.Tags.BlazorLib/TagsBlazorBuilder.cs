@@ -1,4 +1,4 @@
-﻿using Itminus.Tags.BlazorLib.Components.Channels.Editing;
+﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 
 using Itminus.Tags.BlazorLib.Components.Tags.Editing;
 using Microsoft.Extensions.DependencyInjection;

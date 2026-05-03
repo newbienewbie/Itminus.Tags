@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Impl.Hjzk;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Hjzk;
 
 internal static class ServiceCollectionExtensions
 {

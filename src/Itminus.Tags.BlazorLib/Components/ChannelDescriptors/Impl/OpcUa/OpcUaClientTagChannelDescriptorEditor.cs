@@ -1,9 +1,9 @@
 ﻿using Itminus.Tags;
-using Itminus.Tags.BlazorLib.Components.Channels.Editing;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 using Itminus.Tags.OpcUaClient;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Impl.OpcUa;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.OpcUa;
 
 public sealed class OpcUaClientTagChannelDescriptorEditor : ITagChannelDescriptorEditor
 {

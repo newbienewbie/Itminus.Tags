@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Editing;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 
 public interface ITagChannelDescriptorEditor
 {

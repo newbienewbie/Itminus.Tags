@@ -1,8 +1,8 @@
-﻿using Itminus.Tags.BlazorLib.Components.Channels.Editing;
+﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 using Itminus.Tags.S7;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Impl.S7;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.S7;
 
 sealed class S7TagChannelDescriptorEditor : ITagChannelDescriptorEditor
 {

@@ -1,8 +1,8 @@
-﻿using Itminus.Tags.BlazorLib.Components.Channels.Editing;
+﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 using Itminus.Tags.Hjzk;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Impl.Hjzk;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Hjzk;
 
 sealed class HjzkTagChannelDescriptorViewer : ITagChannelDescriptorViewer
 {

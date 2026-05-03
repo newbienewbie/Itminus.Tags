@@ -1,8 +1,8 @@
-﻿using Itminus.Tags.BlazorLib.Components.Channels.Editing;
+﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 using Itminus.Tags.ModbusTcp;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Impl.ModbusTcp;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ModbusTcp;
 
 sealed class ModbusTcpTagChannelDescriptorViewer : ITagChannelDescriptorViewer
 {

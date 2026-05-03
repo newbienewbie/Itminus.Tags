@@ -1,9 +1,9 @@
 ﻿using Itminus.Tags;
-using Itminus.Tags.BlazorLib.Components.Channels.Editing;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 using Itminus.Tags.ZLan;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Impl.ZLan;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ZLan;
 
 public sealed class ZLanTcpTagChannelDescriptorViewer : ITagChannelDescriptorViewer
 {

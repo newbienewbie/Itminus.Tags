@@ -1,9 +1,9 @@
-﻿using Itminus.Tags.BlazorLib.Components.Channels.Impl.OpcUa;
-using Itminus.Tags.BlazorLib.Components.Channels.Impl.ZLan;
-using Itminus.Tags.BlazorLib.Components.Channels.Impl.ComScanner;
-using Itminus.Tags.BlazorLib.Components.Channels.Impl.Hjzk;
-using Itminus.Tags.BlazorLib.Components.Channels.Impl.ModbusTcp;
-using Itminus.Tags.BlazorLib.Components.Channels.Impl.S7;
+﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.OpcUa;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ZLan;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ComScanner;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Hjzk;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ModbusTcp;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.S7;
 using Itminus.Tags.BlazorLib.Components.Tags.Editors;
 using Microsoft.Extensions.DependencyInjection;
 

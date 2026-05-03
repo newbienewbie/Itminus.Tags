@@ -1,4 +1,4 @@
-﻿namespace Itminus.Tags.BlazorLib.Components.Channels.Editing;
+﻿namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
 
 public sealed class TagChannelDescriptorRendererRegistry
 {

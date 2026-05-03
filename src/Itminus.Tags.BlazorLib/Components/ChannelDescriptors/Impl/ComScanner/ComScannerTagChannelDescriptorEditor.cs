@@ -1,9 +1,10 @@
-﻿using Itminus.Tags.BlazorLib.Components.Channels.Editing;
+﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ComScanner;
 using Itminus.Tags.ComScanner;
 using Itminus.Tags.ComScanner.Channels;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.Channels.Impl.ComScanner;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ComScanner;
 
 sealed class ComScannerTagChannelDescriptorEditor : ITagChannelDescriptorEditor
 {
