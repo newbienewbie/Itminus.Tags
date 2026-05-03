@@ -3,18 +3,23 @@
 
 @if (Model is null)
 {
-    <MudText Typo="Typo.caption">未选中节点</MudText>
+    <MudText Typo="Typo.caption">-</MudText>
 }
 else
 {
     <MudPaper Class="pa-4">
         @if (Model is TagDescriptor td)
         {
-            <MudText Typo="Typo.h6">编辑 Tag</MudText>
             <MudTextField Label="Name" @bind-Value="td.TagName" />
             <MudTextField Label="Address" @bind-Value="td.Address" />
             <MudTextField Label="Type" @bind-Value="td.TagKind" />
-            <MudTextField Label="Channel" @bind-Value="td.ChannelName" />
+            <MudSelect T="string" Label="Channel" @bind-Value="td.ChannelName">
+                <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                @foreach(var channel in Channels)
+                {
+                    <MudSelectItem Value="@channel.Name">@channel.Name</MudSelectItem>
+				}
+            </MudSelect>
             <MudTextField Label="Note" @bind-Value="td.Note" />
             <MudNumericField T="int" Label="TagSize" @bind-Value="td.TagSize" />
             <MudSelect T="TagAccessMode" Label="Access" @bind-Value="td.AccessMode">
@@ -25,61 +30,35 @@ else
         }
         else if (Model is TagCbntDescriptor cbd)
         {
-            <MudText Typo="Typo.h6">编辑 TagCbnt</MudText>
             <MudTextField Label="Name" @bind-Value="cbd.Name" />
             <MudTextField Label="StartAddress" @bind-Value="cbd.StartAddress" />
             <MudNumericField T="int" Label="ScanInterval" @bind-Value="cbd.ScanInterval" />
+            <MudSelect T="string" Label="Channel" @bind-Value="cbd.ChannelName">
+                <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                @foreach (var channel in Channels)
+                {
+                    <MudSelectItem Value="@channel.Name">@channel.Name</MudSelectItem>
+                }
+            </MudSelect>
             <MudSelect T="TagAccessMode" Label="Access" @bind-Value="cbd.AccessMode">
                 <MudSelectItem Value="TagAccessMode.RW">RW</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.RO">RO</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.R1W">R1W</MudSelectItem>
             </MudSelect>
-            <MudPaper Class="mt-4">
-                <MudText Typo="Typo.subtitle1">Children</MudText>
-                @foreach (var t in cbd.Children)
-                {
-                    <div style="display:flex; gap:8px; align-items:center; margin-top:4px;">
-                        <MudText>@t.TagName</MudText>
-                        <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="(() => RemoveChild(cbd, t))">删除</MudButton>
-                    </div>
-                }
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => AddChildToCbnt(cbd))">添加 Tag</MudButton>
-            </MudPaper>
         }
         else if (Model is TagGrpDescriptor tgd)
         {
-            <MudText Typo="Typo.h6">编辑 Group</MudText>
             <MudTextField Label="Name" @bind-Value="tgd.Name" />
-            <MudTextField Label="Channel" @bind-Value="tgd.ChannelName" />
-            <MudCheckBox T="bool" @bind-Checked="tgd.IsEntry" >IsEntry</MudCheckBox>
-            <MudNumericField T="int" Label="ScanInterval" @bind-Value="tgd.ScanInterval" />
-            <MudCheckBox T="bool" @bind-Checked="tgd.IsEnabled">IsEnabled</MudCheckBox>
-            <MudPaper Class="mt-4">
-                <MudText Typo="Typo.subtitle1">Children</MudText>
-                @foreach (var child in tgd.Children)
+            <MudSelect T="string" Label="Channel" @bind-Value="tgd.ChannelName">
+                <MudSelectItem Value="@string.Empty"></MudSelectItem>
+                @foreach (var channel in Channels)
                 {
-                    <div style="display:flex; gap:8px; align-items:center; margin-top:4px;">
-                        @if(child is TagDescriptor d)
-                        {
-                        <MudText>@d.TagName</MudText>
-                        }
-                        else if (child is TagCbntDescriptor c)
-                        {
-                        <MudText>@c.Name</MudText>
-                        }
-                        else if (child is TagGrpDescriptor g)
-                        {
-                        <MudText>@g.Name</MudText>
-                        }
-                        <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="(() => RemoveChildFromGroup(tgd, child))">删除</MudButton>
-                    </div>
+                    <MudSelectItem Value="@channel.Name">@channel.Name</MudSelectItem>
                 }
-                <div style="display:flex; gap:8px; margin-top:8px;">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => AddTagToGroup(tgd))">添加 Tag</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => AddCbntToGroup(tgd))">添加 TagCbnt</MudButton>
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => AddGroupToGroup(tgd))">添加 Group</MudButton>
-                </div>
-            </MudPaper>
+            </MudSelect>
+            <MudNumericField T="int" Label="ScanInterval" @bind-Value="tgd.ScanInterval" />
+            <MudCheckBox T="bool" @bind-Checked="tgd.IsEntry" >IsEntry</MudCheckBox>
+            <MudCheckBox T="bool" @bind-Checked="tgd.IsEnabled">IsEnabled</MudCheckBox>
         }
         <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">保存</MudButton>
@@ -89,6 +68,9 @@ else
 }
 
 @code {
+    [Parameter]
+    public IList<TagChannelDescriptor> Channels { get; set; } = new List<TagChannelDescriptor>();
+
     [Parameter]
     public ITagsDescriptor? Model { get; set; }
 

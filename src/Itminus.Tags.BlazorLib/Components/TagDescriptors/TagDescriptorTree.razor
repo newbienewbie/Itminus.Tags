@@ -8,17 +8,13 @@
     }
     else
     {
-        <MudTreeView T="ITagsDescriptor" Items="_treeItems" AutoExpand="true" ExpandOnClick="true" @bind-SelectedValue="Selected">
+        <MudTreeView T="ITagsDescriptor" Items="_treeItems" SelectionMode="SelectionMode.SingleSelection" SelectedValue="Selected" SelectedValueChanged="OnSelectedValueChanged" Class="overflow-y-auto" MaxHeight="600px">
             <ItemTemplate>
-                @{
-                    var node = context; var it = node.Value;
-                }
-
-                <MudTreeViewItem Items="@node.Children" Value="@node.Value" Icon="@node.Icon" Text="@node.Text">
+                <MudTreeViewItem Items="@context.Children" Value="@context.Value" Expanded Icon="@context.Icon" Text="@context.Text">
                     <BodyContent Context="child">
                         <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
                             <div style="display:flex; gap:8px; align-items:center;">
-                                <MudText Typo="Typo.body2">@GetLabel(child.Value)</MudText>
+                                <MudText Typo="Typo.body2">@child.Value.GetLabel()</MudText>
                             </div>
                             <div style="display:flex; gap:6px; align-items:center;">
                                 @if (child.Value is TagGrpDescriptor)
@@ -40,6 +36,7 @@
             </ItemTemplate>
         </MudTreeView>
     }
+
 </div>
 
 @code {
@@ -52,7 +49,6 @@
     [Parameter]
     public EventCallback<ITagsDescriptor?> SelectedChanged { get; set; }
 
-    // kept for designer compatibility
     [Parameter]
     public EventCallback<ITagsDescriptor?> AddTagRequested { get; set; }
 
@@ -67,11 +63,19 @@
 
     private IReadOnlyList<TreeItemData<ITagsDescriptor>>? _treeItems;
 
+    private async Task OnSelectedValueChanged(ITagsDescriptor? value)
+    {
+        Selected = value;
+        await SelectedChanged.InvokeAsync(value);
+    }
+
     public override Task SetParametersAsync(ParameterView parameters)
     {
         if (parameters.TryGetValue<IList<TagGrpDescriptor>>(nameof(Items), out var items))
         {
-            _treeItems = items == null || items.Count == 0 ? Array.Empty<TreeItemData<ITagsDescriptor>>() : items.Select(ConvertGroup).ToList();
+            _treeItems = items == null || items.Count == 0 ?
+                Array.Empty<TreeItemData<ITagsDescriptor>>() : 
+                items.Select(ConvertGroup).ToList();
         }
         return base.SetParametersAsync(parameters);
     }
@@ -93,7 +97,7 @@
             {
                 children.Add(new TreeItemData<ITagsDescriptor>
                 {
-                    Text = GetLabel(td),
+                    Text = td.GetLabel(),
                     Value = td,
                     Icon = Icons.Material.Filled.Tag
                 });
@@ -115,7 +119,7 @@
                     {
                         cbChildren.Add(new TreeItemData<ITagsDescriptor>
                         {
-                            Text = GetLabel(t),
+                            Text = t.GetLabel(),
                             Value = t,
                             Icon = Icons.Material.Filled.Tag
                         });
@@ -140,33 +144,5 @@
         }
 
         return node;
-    }
-
-    private static string? GetLabel(ITagsDescriptor? d)
-    {
-        if (d is null) return null;
-        if (d is TagGrpDescriptor g) return g.Name;
-        if (d is TagCbntDescriptor c) return c.Name;
-        if (d is TagDescriptor td)
-        {
-            // try property TagName
-            var type = td.GetType();
-            var prop = type.GetProperty("TagName");
-            if (prop != null)
-            {
-                var v = prop.GetValue(td);
-                if (v != null) return v.ToString();
-            }
-            // try method TagName()
-            var m = type.GetMethod("TagName", Array.Empty<Type>());
-            if (m != null)
-            {
-                var v = m.Invoke(td, null);
-                if (v != null) return v.ToString();
-            }
-            // fallback to ToString
-            return td.ToString();
-        }
-        return d.ToString();
     }
 }

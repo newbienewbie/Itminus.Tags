@@ -8,37 +8,39 @@ else
 {
     <MudPaper Class="pa-2">
         <MudStack Spacing="1">
-        @for (var i =0; i < _items.Count; i++)
-        {
-            var idx = i;
-            <TagChannelItem Descriptor="_items[idx]" Editable="Editable" DescriptorChanged="(d => OnDescriptorChanged(idx, d))" />
-        }
+			@for (var i =0; i < this.Descriptors.Count; i++)
+			{
+				var idx = i;
+				<TagChannelItem Descriptor="this.Descriptors[idx]" Editable="Editable" DescriptorChanged="(d => _ = OnDescriptorChangedAsync(idx, d))" />
+			}
         </MudStack>
     </MudPaper>
 }
 
 @code {
-    [Parameter] public IEnumerable<TagChannelDescriptor>? Descriptors { get; set; }
+    [Parameter] public IList<TagChannelDescriptor>? Descriptors { get; set; }
     [Parameter] public bool Editable { get; set; }
+    [Parameter] public EventCallback<TagChannelDescriptorItemUpdatedArgs> OnChannelDescriptorUpdated { get; set; }
 
-    private List<TagChannelDescriptor> _items = new();
 
-    protected override void OnParametersSet()
+    private async Task OnDescriptorChangedAsync(int index, TagChannelDescriptor newDescriptor)
     {
-        _items = Descriptors?.ToList() ?? new();
-    }
+        if(this.Descriptors is null)
+        {
+            return;
+        }
 
-    private void OnDescriptorChanged(int index, TagChannelDescriptor newDescriptor)
-    {
-        if (index <0 || index >= _items.Count)
+        if (index <0 || index >= this.Descriptors.Count)
             return;
 
-        _items[index] = newDescriptor;
+        this.Descriptors[index] = newDescriptor;
 
-        // If the incoming Descriptors is a mutable list, also replace it so outer components see the upgraded type.
-        if (Descriptors is IList<TagChannelDescriptor> list)
+        if(this.OnChannelDescriptorUpdated.HasDelegate)
         {
-            list[index] = newDescriptor;
+            await this.OnChannelDescriptorUpdated.InvokeAsync(new TagChannelDescriptorItemUpdatedArgs(index, newDescriptor));
         }
     }
+
+
+    public record TagChannelDescriptorItemUpdatedArgs(int Index, TagChannelDescriptor ChannelDescriptor);
 }

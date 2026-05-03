@@ -5,25 +5,31 @@
 @inject IJSRuntime JS
 @inject ISnackbar Snackbar
 
-<div style="display:flex; gap:12px;">
-    <div style="flex:1; max-width:380px;" tabindex="0" @onkeydown="OnLeftPanelKeyDown">
-        <div style="display:flex; gap:8px; margin-bottom:8px;">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddTag">添加 Tag</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddCbnt">添加 TagCbnt</MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddGroup">添加 Group</MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="ConfirmDelete">删除</MudButton>
-        </div>
-        <TagDescriptorTree Items="Items" Selected="Selected" SelectedChanged="OnSelectedChanged"
-                           AddTagRequested="OnAddTagRequested" AddCbntRequested="OnAddCbntRequested" AddGroupRequested="OnAddGroupRequested" DeleteRequested="OnDeleteRequested" />
-    </div>
-    <div style="flex:2;">
-        <TagDescriptorEditor Model="Selected" ModelChanged="OnSelectedChanged" />
-    </div>
-</div>
+<MudPaper Class="d-flex flex-grow-1">
+    <MudPaper Class="mr-8 px-0 border border-solid mud-border-primary" MinWidth="360px" @onkeydown="OnLeftPanelKeyDown">
+        <MudPaper onclick="@(() => {this.Selected = null;})" Class="pl-4 pr-1 mb-4 d-flex justify-space-between align-items-center">
+            <MudText Class="w-32 mr-32">/</MudText>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddGroup" Class="pr-1 my-1" >添加 Group</MudButton>
+        </MudPaper>
+        <TagDescriptorTree Items="Grps" Selected="Selected" 
+            SelectedChanged="OnSelectedChanged"
+            AddTagRequested="OnAddTagRequested" 
+            AddCbntRequested="OnAddCbntRequested" 
+            AddGroupRequested="OnAddGroupRequested" 
+            DeleteRequested="OnDeleteRequested" 
+            />
+    </MudPaper>
+    <MudPaper Class="flex-grow-1 border border-solid mud-border-primary px-1">
+        <TagDescriptorEditor Model="Selected" Channels="@Channels" ModelChanged="OnSelectedChanged" />
+    </MudPaper>
+</MudPaper>
 
 @code {
     [Parameter]
-    public IList<TagGrpDescriptor> Items { get; set; } = new List<TagGrpDescriptor>();
+    public IList<TagChannelDescriptor> Channels { get; set; } = new List<TagChannelDescriptor>();
+
+    [Parameter]
+    public IList<TagGrpDescriptor> Grps { get; set; } = new List<TagGrpDescriptor>();
 
     private ITagsDescriptor? Selected { get; set; }
 
@@ -59,12 +65,12 @@
         }
         else
         {
-            if (Items.Count == 0)
+            if (Grps.Count == 0)
             {
                 var root = new TagGrpDescriptor { Name = "Root" };
-                Items.Add(root);
+                Grps.Add(root);
             }
-            var parentRoot = Items[0];
+            var parentRoot = Grps[0];
             var newTag = new TagDescriptor { TagName = "NewTag", Address = "" };
             parentRoot.Children.Add(newTag);
             Selected = newTag;
@@ -82,12 +88,12 @@
         }
         else
         {
-            if (Items.Count == 0)
+            if (Grps.Count == 0)
             {
                 var root = new TagGrpDescriptor { Name = "Root" };
-                Items.Add(root);
+                Grps.Add(root);
             }
-            var parentRoot = Items[0];
+            var parentRoot = Grps[0];
             var cb = new TagCbntDescriptor { Name = "NewCbnt", StartAddress = "" };
             parentRoot.Children.Add(cb);
             Selected = cb;
@@ -107,7 +113,7 @@
         else
         {
             var g = new TagGrpDescriptor { Name = "NewGroup" };
-            Items.Add(g);
+            Grps.Add(g);
             Selected = g;
         }
         StateHasChanged();
@@ -132,10 +138,10 @@
     private void DoRemove(ITagsDescriptor selected)
     {
         // find parent and index
-        if (selected is TagGrpDescriptor tg && Items.Contains(tg))
+        if (selected is TagGrpDescriptor tg && Grps.Contains(tg))
         {
-            var idx = Items.IndexOf(tg);
-            Items.RemoveAt(idx);
+            var idx = Grps.IndexOf(tg);
+            Grps.RemoveAt(idx);
             _lastDeletion = new DeletionRecord { ParentIsRoot = true, RootIndex = idx, RemovedGroup = tg };
             Selected = null;
             ShowUndoSnackbar();
@@ -143,7 +149,7 @@
             return;
         }
 
-        var parent = FindParent(selected, Items);
+        var parent = FindParent(selected, Grps);
         if (parent.ParentGrp is not null)
         {
             var p = parent.ParentGrp!;
@@ -199,8 +205,8 @@
         var d = _lastDeletion;
         if (d.ParentIsRoot && d.RemovedGroup is not null)
         {
-            var idx = Math.Min(d.RootIndex.GetValueOrDefault(Items.Count), Items.Count);
-            Items.Insert(idx, d.RemovedGroup);
+            var idx = Math.Min(d.RootIndex.GetValueOrDefault(Grps.Count), Grps.Count);
+            Grps.Insert(idx, d.RemovedGroup);
             Selected = d.RemovedGroup;
         }
         else if (d.ParentGrp is not null && d.Removed is not null)
@@ -263,59 +269,6 @@
         }
     }
 
-    private void AddTag()
-    {
-        // If nothing selected, add to first root group or create one
-        if (Selected is TagGrpDescriptor grp)
-        {
-            var t = new TagDescriptor { TagName = "NewTag", Address = "" };
-            grp.Children.Add(t);
-            Selected = t;
-        }
-        else if (Selected is TagCbntDescriptor cbnt)
-        {
-            var t = new TagDescriptor { TagName = "NewTag", Address = "" };
-            cbnt.Children.Add(t);
-            Selected = t;
-        }
-        else
-        {
-            if (Items.Count == 0)
-            {
-                var root = new TagGrpDescriptor { Name = "Root" };
-                Items.Add(root);
-            }
-            var parent = Items[0];
-            var newTag = new TagDescriptor { TagName = "NewTag", Address = "" };
-            parent.Children.Add(newTag);
-            Selected = newTag;
-        }
-        StateHasChanged();
-    }
-
-    private void AddCbnt()
-    {
-        if (Selected is TagGrpDescriptor grp)
-        {
-            var cb = new TagCbntDescriptor { Name = "NewCbnt", StartAddress = "" };
-            grp.Children.Add(cb);
-            Selected = cb;
-        }
-        else
-        {
-            if (Items.Count == 0)
-            {
-                var root = new TagGrpDescriptor { Name = "Root" };
-                Items.Add(root);
-            }
-            var parent = Items[0];
-            var cb = new TagCbntDescriptor { Name = "NewCbnt", StartAddress = "" };
-            parent.Children.Add(cb);
-            Selected = cb;
-        }
-        StateHasChanged();
-    }
-
     private void AddGroup()
     {
         if (Selected is TagGrpDescriptor grp)
@@ -327,7 +280,7 @@
         else
         {
             var g = new TagGrpDescriptor { Name = "NewGroup" };
-            Items.Add(g);
+            Grps.Add(g);
             Selected = g;
         }
         StateHasChanged();

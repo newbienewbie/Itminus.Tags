@@ -5,7 +5,10 @@
 <MudExpansionPanels Elevation="0" Dense="true">
     <MudExpansionPanel>
         <TitleContent>
-            <MudText Typo="Typo.body1">@Descriptor.Name <MudText Typo="Typo.caption" Class="ml-2">(@Descriptor.Driver)</MudText></MudText>
+            <MudText Typo="Typo.body1">
+                @Descriptor.Name 
+                <MudText Typo="Typo.caption" Class="ml-2">(@Descriptor.Driver)</MudText>
+			</MudText>
         </TitleContent>
         <ChildContent>
             <MudPaper Class="pa-4 ml-4 border-1 border-lime-50" Elevation="0" >
@@ -52,3 +55,5 @@
         }
     }
 }
+
+
