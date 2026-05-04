@@ -1,11 +1,13 @@
-﻿@using Itminus.Tags.ModbusTcp
-@using Itminus.Tags.S7
-@using Itminus.Tags.BlazorLib.Components.Channels
-@using Itminus.Tags.BlazorLib.Components.Tags
-@using System.Collections.ObjectModel
+﻿@using System.IO
+@using System.Xml.Linq
 @using Itminus.Tags
+@using Itminus.Tags.BlazorLib.Components.ChannelDescriptors
+@using Itminus.Tags.BlazorLib.Components.TagDescriptors
 @using Itminus.Tags.Web.Tags
-@using Itminus.Tags.ZLan
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.DependencyInjection
+@inject Itminus.Tags.BlazorLib.TagsBlazorLibJsInterop _tagsBlazorLibJsInterop
+@inject IServiceScopeFactory _ssf
 
 @page "/designer"
 @rendermode InteractiveServer
@@ -13,98 +15,134 @@
 
 <PageTitle>Designer</PageTitle>
 
-<MudTabs KeepPanelsAlive="true" Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+<MudPaper Class="d-flex align-items-center mt-4 mb-8">
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExportProject" Class="mb-2">导出项目</MudButton>
+					
+		<MudInputLabel ForId="upload-project-file" Class="d-flex ml-8 mb-2 align-items-center" >
+		    <MudText Color="Color.Primary" >导入项目</MudText>	
+			<InputFile OnChange="ImportProject" id="upload-project-file" />
+		</MudInputLabel>
+</MudPaper>
+
+<MudTabs KeepPanelsAlive="true" Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
 
     <MudTabPanel Text="通道" Icon="@Icons.Material.Filled.AllInclusive">
-      
-        <MudPaper Class="pl-4 pb-4 pr-4">
-            <ChannelCreator ChannelUpdated="@(args=>{
-                                var found = false;
-                                for (var i = 0; i < this.channelDescriptors.Count; i++)
-                                {
-                                    var d = this.channelDescriptors[i];
-                                    if (d.Name == args.Name && d.Driver == args.Driver)
-                                    {
-                                        found = true;
-                                        this.channelDescriptors[i] = args;
-                                        return;
-                                    }
-                                }
-                                if (!found)
-                                {
-                                    this.channelDescriptors.Add(args);
-                                }
-                                this.InvokeAsync(StateHasChanged);
-                            })">
-            </ChannelCreator>
+
+        <MudPaper Class="pl-4 pb-4 pr-4 mt-4">
+            <div style="display:flex; gap:12px; align-items:center;">
+                <TagChannelCreateButton ChannelCreated="OnChannelCreated" />
+
+            </div>
         </MudPaper>
 
-        <h3 Class="mt-8">通道列表</h3>
+        <h3 Class="mt-8">通道列表 (共@(channelDescriptors.Count)项)</h3>
         <MudPaper Class="pl-4 pb-4 pr-4">
-
-            <MudTreeView T="TagChannelDescriptor" AutoExpand="false" ExpandOnClick="true" >
-                @if(channelDescriptors.Count == 0)
-                {
-                    <MudText class="pa-8">什么也没有...请添加通道</MudText>
-                }
-                else
-                {
-                    @foreach (var descriptor in channelDescriptors)
-                    {
-                        @if (descriptor is S7TagChannelDescriptor s7channelDescriptor)
-                        {
-                            <S7ChannelViewer ChannelDescriptor="s7channelDescriptor"></S7ChannelViewer>
-                        }
-                        else if (descriptor is ZLanTcpTagChannelDescriptor zlanchannelDescriptor)
-                        {
-                            <ZLanTcpChannelViewer ChannelDescriptor="zlanchannelDescriptor"></ZLanTcpChannelViewer>
-                        }
-                        else if (descriptor is ModbusTcpTagChannelDescriptor mbchannelDescriptor)
-                        {
-                            <ModbusTcpChannelViewer ChannelDescriptor="mbchannelDescriptor"></ModbusTcpChannelViewer>
-                        }
-                        else
-                        {
-                            <MudTreeViewItem T="TagChannelDescriptor" Value="@descriptor">
-                                <BodyContent>
-                                    <div style="display: grid; grid-template-columns: 1fr auto; align-items: center; width: 100%">
-                                        @descriptor.Name @@ @descriptor.Driver
-                                        <div style="justify-self: end;">
-                                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Medium" Color="Color.Inherit" />
-                                        </div>
-                                    </div>
-                                </BodyContent>
-                                <ChildContent>
-                                </ChildContent>
-                            </MudTreeViewItem>
-                        }
-                    }
-                }
-
-            </MudTreeView>
+            <TagChannelsView Descriptors="channelDescriptors" Editable="true" OnChannelDescriptorUpdated="OnChannelDescriptorUpdated" />
         </MudPaper>
     </MudTabPanel>
 
-
     <MudTabPanel Text="测点" Icon="@Icons.Material.Filled.Tag">
-        111
+        <MudPaper class="pl-4 pb-4 mt-4" >
+			<TagDescriptorDesigner Channels="@channelDescriptors"  Grps="tagGrpDescriptors"/>
+        </MudPaper>
     </MudTabPanel>
 
 </MudTabs>
 
 @code {
+	[Parameter]
+	public IList<TagChannelDescriptor> channelDescriptors { get; set; } = new List<TagChannelDescriptor>();
 
-    [Parameter]
-    public IList<TagChannelDescriptor> channelDescriptors { get; set; } = new List<TagChannelDescriptor>();
+	[Parameter]
+	public IList<TagGrpDescriptor> tagGrpDescriptors { get; set; } = new List<TagGrpDescriptor>();
 
-    
-
-    protected override Task OnInitializedAsync()
-    {
-
-        return base.OnInitializedAsync();
-    }
+	private ITagsProject? importedProject;
 
 
+	private void OnChannelCreated(TagChannelDescriptor args)
+	{
+		this.channelDescriptors.Add(args);
+		InvokeAsync(StateHasChanged);
+	}
 
+
+	private async Task ExportProject()
+	{
+		// Build root document
+		var root = new XElement("root");
+
+		// Channels
+		foreach (var ch in this.channelDescriptors)
+		{
+			try
+			{
+				root.Add(ch.ToXElement());
+			}
+			catch
+			{
+				// ignore individual channel export failures
+			}
+		}
+
+		// Tag groups
+		foreach (var grp in this.tagGrpDescriptors)
+		{
+			try
+			{
+				root.Add(grp.ToXElement());
+			}
+			catch
+			{
+				// ignore individual group export failures
+			}
+		}
+
+		var doc = new XDocument(new XDeclaration("1.0", "utf-8", "yes"), root);
+		var xml = doc.ToString();
+
+		// Use interop helper to trigger file download
+		await _tagsBlazorLibJsInterop.DownloadTextFile("index.xml", xml);
+	}
+
+	private async Task ImportProject(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file == null)
+			return;
+
+		try
+		{
+			using var stream = file.OpenReadStream(10_000_000);
+			using var reader = new StreamReader(stream);
+			var content = await reader.ReadToEndAsync();
+
+			var root = XElement.Parse(content);
+
+			this.channelDescriptors = root.GetTagProjectChannelDescriptors().ToList();
+			this.tagGrpDescriptors = root.GetTagProjectGrpDescriptors().ToList();
+
+			using var scope = _ssf.CreateScope();
+			var factory = scope.ServiceProvider.GetRequiredService<ITagsProjectFactory>();
+
+			var projRoot = Directory.GetCurrentDirectory();
+			try
+			{
+				this.importedProject = factory.Create(projRoot, root);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"创建项目失败：{ex.Message}");
+			}
+
+			await InvokeAsync(StateHasChanged);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"导入失败：{ex.Message}");
+		}
+	}
+	private async Task OnChannelDescriptorUpdated(TagChannelsView.TagChannelDescriptorItemUpdatedArgs args)
+	{
+		await this.InvokeAsync(StateHasChanged);
+	}
 }

@@ -1,6 +1,5 @@
 ﻿using Itminus.Tags.Core.Projects;
 using Itminus.Tags.Plugins;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.Xml.Linq;
 
@@ -10,16 +9,18 @@ internal class TagsProject : ITagsProject
 {
     private readonly ITagChannelsLoader _channelsLoader;
     private readonly ITagsLoader _tagsLoader;
-    private readonly ILogicetLoader _logicetLoader;
+    private readonly ILogicetsLoader _logicetLoader;
     private readonly ILogicetMaker _logicetMaker;
+    private readonly ITagGrpRunnerFactory _tagGrpRunnerFactory;
     private readonly IServiceProvider _sp;
 
-    public TagsProject(ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetLoader logicetLoader, ILogicetMaker logicetMaker, IServiceProvider sp)
+    public TagsProject(ITagGrpRunnerFactory tagGrpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, ILogicetMaker logicetMaker,IServiceProvider sp)
     {
         this._channelsLoader = channelsLoader;
         this._tagsLoader = tagsLoader;
         this._logicetLoader = logicetLoader;
         this._logicetMaker = logicetMaker;
+        this._tagGrpRunnerFactory = tagGrpRunnerFactory;
         this._sp = sp;
     }
 
@@ -34,8 +35,7 @@ internal class TagsProject : ITagsProject
     /// <returns></returns>
     protected virtual TagsProject LoadChannels(XElement root)
     {
-        var elements = root.Elements("Channel") ?? [];
-        var descriptors = elements.Select(e=> e.ToTagChannelDescriptor());
+        var descriptors = root.GetTagProjectChannelDescriptors();
         var channels = this._channelsLoader.LoadChannels(descriptors);
         this.AddChannels(channels);
         return this;
@@ -48,11 +48,9 @@ internal class TagsProject : ITagsProject
     protected virtual TagsProject LoadTags(XElement root)
     {
         var main = new TagGrp(name: "__main__", isEntry: false, null);
-        var elements = root.Elements().Where(e => e.IsTagUnion())?? [];
-
-        foreach (var ele in elements) 
+        var descriptors = root.GetTagProjectGrpDescriptors();
+        foreach (var descriptor in descriptors) 
         {
-            ITagsDescriptor descriptor = ele.ToTagGrpDescriptor(); 
             this._tagsLoader.LoadTagGroup(main, descriptor, this.Channels);
         }
         this.Tags = main;
@@ -196,8 +194,7 @@ internal class TagsProject : ITagsProject
                 .Where(l => l.MatchEntry(entry))
                 .OrderBy(l => l.Order)
                 .ToList();
-            var factory = this._sp.GetRequiredService<ITagGrpRunnerFactory>();
-            var runner = factory.Create();
+            var runner = this._tagGrpRunnerFactory.Create();
             runner.TurnStarted += TurnStarted;
             runner.TurnProcess += async (entry, ch) => {
                 foreach (var l in logicets)

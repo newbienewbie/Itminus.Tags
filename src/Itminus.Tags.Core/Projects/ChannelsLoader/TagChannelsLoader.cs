@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags;
 
-internal class TagChannelsLoader : ITagChannelsLoader
+public class TagChannelsLoader : ITagChannelsLoader
 {
     private readonly ITagChannelFactory _channelFactory;
 

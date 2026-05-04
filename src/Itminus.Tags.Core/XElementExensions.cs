@@ -175,6 +175,31 @@ public static class XElementExensions
         return false;
     }
     #endregion
+
+    #region
+    /// <summary>
+    /// 获取项目根节点下的所有测点组描述符
+    /// </summary>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static IEnumerable<TagGrpDescriptor> GetTagProjectGrpDescriptors(this XElement root)
+    {
+        var elements = root.Elements().Where(e => e.IsTagUnion()) ?? [];
+        return elements.Select(ele => ele.ToTagGrpDescriptor());
+    }
+
+    /// <summary>
+    /// 获取项目根节点下的所有通道描述符
+    /// </summary>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static IEnumerable<TagChannelDescriptor> GetTagProjectChannelDescriptors(this XElement root)
+    {
+        var elements = root.Elements("Channel") ?? [];
+        var descriptors = elements.Select(e => e.ToTagChannelDescriptor());
+        return descriptors;
+    }
+    #endregion
 }
 
 

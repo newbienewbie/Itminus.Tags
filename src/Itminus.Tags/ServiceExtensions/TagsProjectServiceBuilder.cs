@@ -8,11 +8,9 @@ public class TagsProjectServiceBuilder
 {
     public TagsProjectServiceBuilder(IServiceCollection services) 
     {
-        services.AddSingleton<ITagGrpRunnerFactory, TagGrpRunnerFactory>();
-        services.AddSingleton<ILogicetLoader, LogicetLoader>();
-        services.AddSingleton<ITagChannelsLoader, TagChannelsLoader>();
-        services.AddScoped<ILogicetMaker, LogicetMaker>();
+
         this.Services = services;
+
         this.ChannelFactories = new CompositeTagChannelFactory();
         this.ChannelFactoriesConfiguration = new List<Action<IServiceProvider, CompositeTagChannelFactory>>();
 
@@ -54,7 +52,7 @@ public class TagsProjectServiceBuilder
     /// 应用 <see cref="ChannelFactoriesConfiguration"/> 里的配置
     /// </summary>
     /// <param name="sp"></param>
-    internal void ApplyChannelFactoriesConfiguration(IServiceProvider sp)
+    private void ApplyChannelFactoriesConfiguration(IServiceProvider sp)
     {
         foreach(var config in this.ChannelFactoriesConfiguration)
         {
@@ -91,7 +89,7 @@ public class TagsProjectServiceBuilder
     /// 应用 <see cref="TagsLoadersConfiguration"/> 中的配置
     /// </summary>
     /// <param name="sp"></param>
-    internal void ApplyTagsLoadersConfiguration(IServiceProvider sp)
+    private void ApplyTagsLoadersConfiguration(IServiceProvider sp)
     {
         foreach (var config in this.TagsLoadersConfiguration)
         {
@@ -101,6 +99,27 @@ public class TagsProjectServiceBuilder
     #endregion
 
 
+
+    public void Build()
+    {
+        this.Services.AddSingleton<ITagGrpRunnerFactory, TagGrpRunnerFactory>();
+        this.Services.AddSingleton<ILogicetsLoader, LogicetLoader>();
+        this.Services.AddSingleton<ITagChannelsLoader, TagChannelsLoader>();
+        this.Services.AddScoped<ILogicetMaker, LogicetMaker>();
+
+        this.Services.AddSingleton<ITagChannelFactory>(sp =>
+        {
+            this.ApplyChannelFactoriesConfiguration(sp);
+            return this.ChannelFactories;
+        });
+        this.Services.AddSingleton<ITagsLoader>(sp =>
+        {
+            this.ApplyTagsLoadersConfiguration(sp);
+            return this.TagsLoaders;
+        });
+
+        this.Services.AddScoped<ITagsProjectFactory, TagsProjectFactory>();
+    }
 
 
 }

@@ -9,20 +9,26 @@ namespace Itminus.Tags.BlazorLib;
 // This class can be registered as scoped DI service and then injected into Blazor
 // components for use.
 
-public class ExampleJsInterop : IAsyncDisposable
+public class TagsBlazorLibJsInterop : IAsyncDisposable
 {
     private readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
-    public ExampleJsInterop(IJSRuntime jsRuntime)
+    public TagsBlazorLibJsInterop(IJSRuntime jsRuntime)
     {
         moduleTask = new(() => jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", "./_content/Itminus.Tags.BlazorLib/exampleJsInterop.js").AsTask());
+            "import", "./_content/Itminus.Tags.BlazorLib/tags.JsInterop.js").AsTask());
     }
 
     public async ValueTask<string> Prompt(string message)
     {
         var module = await moduleTask.Value;
         return await module.InvokeAsync<string>("showPrompt", message);
+    }
+
+    public async ValueTask DownloadTextFile(string filename, string text)
+    {
+        var module = await moduleTask.Value;
+        await module.InvokeVoidAsync("downloadTextFile", new[] { filename, text });
     }
 
     public async ValueTask DisposeAsync()
