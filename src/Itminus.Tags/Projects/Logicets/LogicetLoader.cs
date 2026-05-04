@@ -10,7 +10,7 @@ namespace Itminus.Tags;
 /// <summary>
 /// Logicet 加载器
 /// </summary>
-public class LogicetLoader : ILogicetLoader
+public class LogicetLoader : ILogicetsLoader
 {
    
     private readonly ILogger<LogicetLoader> _logger;

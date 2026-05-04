@@ -5,7 +5,7 @@ namespace Itminus.Tags.Core.Projects;
 /// <summary>
 /// Logicet 解析器
 /// </summary>
-public interface ILogicetLoader
+public interface ILogicetsLoader
 {
     /// <summary>
     /// 加载 Logicet 列表

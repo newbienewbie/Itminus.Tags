@@ -15,20 +15,7 @@ public static class TagsProjectServiceCollection
     {
         var tpsb = new TagsProjectServiceBuilder(services);
         configTagsLoader?.Invoke(tpsb);
-
-        services.AddSingleton<ITagChannelFactory>(sp =>
-        {
-            tpsb.ApplyChannelFactoriesConfiguration(sp);
-            return tpsb.ChannelFactories;
-        });
-        services.AddSingleton<ITagsLoader>(sp =>
-        {
-            tpsb.ApplyTagsLoadersConfiguration(sp);
-            return tpsb.TagsLoaders;
-        });
-
-        services.AddScoped<ITagsProjectFactory, TagsProjectFactory>();
-
+        tpsb.Build();
         return services;
     }
 }
