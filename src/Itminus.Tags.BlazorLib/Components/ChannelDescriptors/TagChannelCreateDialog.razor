@@ -11,7 +11,7 @@
                 <MudSelect T="string" Label="Driver" Variant="Variant.Filled" @bind-Value="Driver" Immediate="true">
                     @foreach (var d in Drivers)
                     {
-                        <MudSelectItem T="string" Value="d">@d</MudSelectItem>
+                        <MudSelectItem T="string" Value="@d">@d</MudSelectItem>
                     }
                 </MudSelect>
             </MudItem>

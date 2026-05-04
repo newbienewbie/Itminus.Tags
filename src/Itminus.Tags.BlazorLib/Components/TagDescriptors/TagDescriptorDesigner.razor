@@ -144,7 +144,6 @@
             Grps.RemoveAt(idx);
             _lastDeletion = new DeletionRecord { ParentIsRoot = true, RootIndex = idx, RemovedGroup = tg };
             Selected = null;
-            ShowUndoSnackbar();
             StateHasChanged();
             return;
         }
@@ -159,7 +158,6 @@
                 p.Children.RemoveAt(idx);
                 _lastDeletion = new DeletionRecord { ParentGrp = p, ChildIndex = idx, Removed = selected };
                 Selected = p; // select parent
-                ShowUndoSnackbar();
                 StateHasChanged();
                 return;
             }
@@ -175,7 +173,6 @@
                     cb.Children.RemoveAt(idx);
                     _lastDeletion = new DeletionRecord { ParentCbnt = cb, ChildIndex = idx, Removed = td };
                     Selected = cb;
-                    ShowUndoSnackbar();
                     StateHasChanged();
                     return;
                 }
@@ -184,46 +181,6 @@
 
         // fallback
         Snackbar.Add("删除失败或未找到父节点", Severity.Error);
-    }
-
-    private void ShowUndoSnackbar()
-    {
-        if (_lastDeletion is null) return;
-        var message = "已删除";
-        Snackbar.Add(message, Severity.Normal, config =>
-        {
-            config.Action = "撤销";
-            config.ActionColor = Color.Primary;
-            config.RequireInteraction = false;
-            // Note: MudBlazor SnackbarOptions does not expose an onclick callback in this version.
-        });
-    }
-
-    private void UndoDelete()
-    {
-        if (_lastDeletion is null) return;
-        var d = _lastDeletion;
-        if (d.ParentIsRoot && d.RemovedGroup is not null)
-        {
-            var idx = Math.Min(d.RootIndex.GetValueOrDefault(Grps.Count), Grps.Count);
-            Grps.Insert(idx, d.RemovedGroup);
-            Selected = d.RemovedGroup;
-        }
-        else if (d.ParentGrp is not null && d.Removed is not null)
-        {
-            var idx = Math.Min(d.ChildIndex.GetValueOrDefault(d.ParentGrp.Children.Count), d.ParentGrp.Children.Count);
-            d.ParentGrp.Children.Insert(idx, d.Removed);
-            Selected = d.Removed;
-        }
-        else if (d.ParentCbnt is not null && d.Removed is TagDescriptor td)
-        {
-            var idx = Math.Min(d.ChildIndex.GetValueOrDefault(d.ParentCbnt.Children.Count), d.ParentCbnt.Children.Count);
-            d.ParentCbnt.Children.Insert(idx, td);
-            Selected = td;
-        }
-
-        _lastDeletion = null;
-        StateHasChanged();
     }
 
     private (TagGrpDescriptor? ParentGrp, TagCbntDescriptor? ParentCbnt) FindParent(ITagsDescriptor target, IEnumerable<TagGrpDescriptor> roots)

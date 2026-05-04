@@ -60,10 +60,6 @@ else
             <MudCheckBox T="bool" @bind-Checked="tgd.IsEntry" >IsEntry</MudCheckBox>
             <MudCheckBox T="bool" @bind-Checked="tgd.IsEnabled">IsEnabled</MudCheckBox>
         }
-        <div style="margin-top:12px; display:flex; gap:8px; justify-content:flex-end;">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Save">保存</MudButton>
-            <MudButton Variant="Variant.Text" OnClick="Cancel">取消</MudButton>
-        </div>
     </MudPaper>
 }
 
@@ -76,17 +72,6 @@ else
 
     [Parameter]
     public EventCallback<ITagsDescriptor?> ModelChanged { get; set; }
-
-    private void Save()
-    {
-        // Model is bound directly to descriptors, so nothing else to do
-    }
-
-    private void Cancel()
-    {
-        Model = null;
-        ModelChanged.InvokeAsync(null);
-    }
 
     private void RemoveChild(TagCbntDescriptor cbnt, TagDescriptor child)
     {

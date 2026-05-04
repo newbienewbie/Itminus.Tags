@@ -73,7 +73,15 @@
 
     private static string? Unescape(string? s)
     {
-        if (string.IsNullOrEmpty(s)) return null;
-        return System.Text.RegularExpressions.Regex.Unescape(s);
+        if (string.IsNullOrEmpty(s)) 
+            return null;
+        try
+        {
+            return System.Text.RegularExpressions.Regex.Unescape(s);
+        }
+        catch
+        {
+			return "\\r\\n"; // ignore invalid escape sequences
+        }
     }
 }
