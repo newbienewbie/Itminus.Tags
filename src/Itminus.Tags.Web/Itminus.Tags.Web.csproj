@@ -7,6 +7,19 @@
     <ServerGarbageCollection>false</ServerGarbageCollection>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
+
+	<PropertyGroup>
+		<StaticFilesFolderName>Samples.Plugin1</StaticFilesFolderName>
+	</PropertyGroup>
+	
+  <ItemGroup>
+	  <ContentWithTargetPath Include="Samples.Plugin1\**\*.*">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <TargetPath>$(StaticFilesFolderName)\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+	  </ContentWithTargetPath>
+  </ItemGroup>
+
+
   <ItemGroup>
     <ProjectReference Include="..\Itminus.Tags.BlazorLib\Itminus.Tags.BlazorLib.csproj" />
     <ProjectReference Include="..\Itminus.Tags.ComScanner\Itminus.Tags.ComScanner.csproj" />
@@ -19,6 +32,9 @@
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="index-plugin.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

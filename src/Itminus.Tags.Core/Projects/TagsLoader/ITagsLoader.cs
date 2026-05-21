@@ -14,5 +14,5 @@ public interface ITagsLoader
     /// <param name="parent"></param>
     /// <param name="descriptor"></param>
     /// <param name="availableChannels"></param>
-    void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IList<ITagChannel> availableChannels);
+    void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IReadOnlyList<ITagChannel> availableChannels);
 }

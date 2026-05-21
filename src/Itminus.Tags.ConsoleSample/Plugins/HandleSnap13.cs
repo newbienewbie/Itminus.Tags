@@ -19,7 +19,7 @@ internal class HandleSnap13 : LogicetBase
     private ITag _ledYellow;
     private ITag _ledLetGo;
 
-    public HandleSnap13(IList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
+    public HandleSnap13(IReadOnlyList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
     {
         this._cbnt1 = this.Tags.SelectCbnt("g3/输入");
         this._btnLetGo = this._cbnt1.SelectTag("放行按钮闭合状态");

@@ -3,12 +3,17 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags;
 
+
+/// <summary>
+/// 一个测点项目，包含通道、测点、逻辑等信息。<br/>
+/// 测点项目往往由<see cref="ITagsProjectFactory"/>按需构建。
+/// </summary>
 public interface ITagsProject
 {
     /// <summary>
     /// 通道
     /// </summary>
-    IList<ITagChannel> Channels { get; }
+    IReadOnlyList<ITagChannel> Channels { get; }
 
     /// <summary>
     /// 逻辑
@@ -36,13 +41,6 @@ public interface ITagsProject
     event TurnCrashed? TurnCrashed;
 
     /// <summary>
-    /// 动态添加逻辑，成功则返回true；如果失败，则返回false
-    /// </summary>
-    /// <typeparam name="TLogicet"></typeparam>
-    /// <returns></returns>
-    bool TryAddLogicet<TLogicet>(out TLogicet? logicet, out string? msg) where TLogicet : class, ILogicet;
-
-    /// <summary>
     /// 初始化，如果root为空，则默认取 projRoot下的index.xml文件
     /// </summary>
     /// <param name="projRoot"></param>
@@ -56,11 +54,4 @@ public interface ITagsProject
     /// <param name="ct"></param>
     /// <returns></returns>
     Task RunAsync(CancellationToken ct);
-
-    /// <summary>
-    /// 尝试添加逻辑，成功则返回true；如果失败，则返回false
-    /// </summary>
-    /// <typeparam name="TLogicet"></typeparam>
-    /// <returns></returns>
-    bool TryAddLogicet<TLogicet>() where TLogicet : class, ILogicet;
 }

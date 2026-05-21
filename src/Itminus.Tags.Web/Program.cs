@@ -1,16 +1,7 @@
-﻿using Itminus.Tags;
-using Itminus.Tags.S7;
-using Itminus.Tags.ZLan;
-using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.OpcUaClient;
-
-using Itminus.Tags.Web;
-using Itminus.Tags.Web.Components;
+﻿using Itminus.Tags.Web.Components;
 using Itminus.Tags.Web.Tags;
 
 using MudBlazor.Services;
-using System.Reflection;
-using Itminus.Tags.ComScanner;
 using Itminus.Tags.BlazorLib;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,11 +24,13 @@ builder.Services.AddTagsBlazorLib();
 var app = builder.Build();
 
 
-_ = Task.Run(() =>
-{
-    var projctrl = app.Services.GetRequiredService<TagsProjectCtrl>();
-    _ = projctrl.StartPoll(dir: null);
-});
+//_ = Task.Run(() =>
+//{
+//    var projctrl = app.Services.GetRequiredService<TagsProjectCtrl>();
+
+//    var xml = "index-plugin.xml";
+//    _ = projctrl.StartPoll(dir: null, xml);
+//});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

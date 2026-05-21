@@ -21,12 +21,14 @@ public class TagsProjectCtrl
     CancellationTokenSource? _cts;
 
 
-    public async Task StartPoll(string? dir)
+    public async Task StartPoll(string? dir, string xmlFileName)
     {
         if (this.Project != null)
         {
             throw new Exception("当前测点项目已经启动！");
         }
+
+        var root = XDocument.Load(xmlFileName).Root;
 
         using var scope = this._ssf.CreateScope();
         var sp = scope.ServiceProvider;
@@ -37,7 +39,7 @@ public class TagsProjectCtrl
             await this.DoOneByOneAsync(() =>
             {
                 this._cts = new CancellationTokenSource();
-                this.Project = sp.MakeProject(dir);
+                this.Project = sp.MakeProject(dir, root);
             });
             var proj = this.Project!;
             var ct = _cts!.Token;

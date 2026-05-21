@@ -34,9 +34,10 @@ project.TurnCrashed += (grp, ch, ex) => {
 // (可选)在运行之前，可以手动调整 Logicets，
 //     比如这里移除配置文件中dll，改用代码编写的
 project.Logicets.Clear();
-project.TryAddLogicet<HandleSnap11>();
-project.TryAddLogicet<HandleSnap12>();
-project.TryAddLogicet<HandleSnap13>();
+
+project.Logicets.Add(new HandleSnap11(project.Channels, project.Tags));
+project.Logicets.Add(new HandleSnap12(project.Channels, project.Tags));
+project.Logicets.Add(new HandleSnap13(project.Channels, project.Tags));
 // 运行 project
 var cts = new CancellationTokenSource();
 var task = project.RunAsync(cts.Token);

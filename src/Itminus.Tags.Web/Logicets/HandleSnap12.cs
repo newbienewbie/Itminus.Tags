@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.Web;
 
-internal class HandleSnap13 : LogicetBase
+internal class HandleSnap12 : LogicetBase
 {
     private ITagCbnt _cbnt1;
     private ITagCbnt _cbnt2;
@@ -19,13 +19,13 @@ internal class HandleSnap13 : LogicetBase
     private ITag _ledYellow;
     private ITag _ledLetGo;
 
-    public HandleSnap13(IList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
+    public HandleSnap12(IReadOnlyList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
     {
-        this._cbnt1 = this.Tags.SelectCbnt("g3/输入");
+        this._cbnt1 = this.Tags.SelectCbnt("g2/输入");
         this._btnLetGo = this._cbnt1.SelectTag("放行按钮闭合状态");
         this._btnManual = this._cbnt1.SelectTag("手动");
 
-        this._cbnt2 = this.Tags.SelectCbnt("g3/输出");
+        this._cbnt2 = this.Tags.SelectCbnt("g2/输出");
         this._ledGreen = this._cbnt2.SelectTag("绿灯");
         this._ledRed = this._cbnt2.SelectTag("红灯");
         this._ledYellow = this._cbnt2.SelectTag("黄灯");
@@ -37,7 +37,7 @@ internal class HandleSnap13 : LogicetBase
 
     public override bool MatchEntry(ITagGrp entry)
     {
-        return entry.Name == "g3";
+        return entry.Name == "g2";
     }
 
     private int i=0;
@@ -54,12 +54,12 @@ internal class HandleSnap13 : LogicetBase
         {
             Console.WriteLine($"{i++}: LetGo Btn has been pressed");
 
-            if(!red && !yellow && !green)
+            if (!red && !yellow && !green)
             {
                 this._ledGreen.Value = true;
             }
 
-            if(red)
+            if (red)
             {
                 this._ledRed.Value = false;
                 this._ledYellow.Value = true;

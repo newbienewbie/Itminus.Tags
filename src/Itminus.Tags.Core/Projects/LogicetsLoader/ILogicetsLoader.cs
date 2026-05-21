@@ -15,5 +15,5 @@ public interface ILogicetsLoader
     /// <param name="channels"></param>
     /// <param name="tags"></param>
     /// <returns></returns>
-    IList<ILogicet> LoadLogicets(IServiceProvider sp, IEnumerable<string> dlls, IList<ITagChannel> channels, ITagGrp tags);
+    IList<ILogicet> LoadLogicets(IServiceProvider sp, IEnumerable<string> dlls, IReadOnlyList<ITagChannel> channels, ITagGrp tags);
 }
