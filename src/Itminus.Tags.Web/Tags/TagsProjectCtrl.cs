@@ -75,7 +75,11 @@ public class TagsProjectCtrl
         {
             await this.DoOneByOneAsync(() =>
             {
-                this.Project = null;
+                if(this.Project is not null)
+                {
+                    this.Project?.Dispose();
+                    this.Project = null;
+                }
                 this._cts = null;
             });
         }

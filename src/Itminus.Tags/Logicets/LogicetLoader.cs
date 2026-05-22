@@ -38,6 +38,7 @@ internal class LogicetLoader : ILogicetsLoader
             var plugin = loader.LoadDefaultAssembly();
             var batch = MakeLogicets(sp, plugin, channels, tags);
             logicets.AddRange(batch);
+            disposables.Add(loader);
         }
         return new LoadedLogicets(logicets, disposables);
     }
@@ -61,15 +62,15 @@ internal class LogicetLoader : ILogicetsLoader
         
         var logicets = types
             .Select(t => {
-                var logicet = LogicetProviderUtils.CreateLogicet(sp, t, channels, tags); 
+                var (logicet, ex) = LogicetProviderUtils.CreateLogicet(sp, t, channels, tags); 
                 if (logicet is null)
                 {
-                    _logger.LogError("构建Logicet错误：t={t}", t.Name);
+                    _logger.LogError("构建Logicet错误：t={t}, ex={ex}, strace={strace}", t.Name, ex?.Message, ex?.StackTrace);
                     return null;
                 }
                 return logicet;
             })
-            .Where(t => t != null)
+            .Where(logicet => logicet != null)
             .ToList();
         return logicets!;
     }

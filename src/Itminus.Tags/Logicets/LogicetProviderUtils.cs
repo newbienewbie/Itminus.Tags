@@ -9,7 +9,7 @@ internal static class LogicetProviderUtils
     /// 创建Logicet实例。
     /// 传入的 type 参数必须是一个实现了 ILogicet 接口的非抽象类。
     /// </summary>
-    internal static ILogicet? CreateLogicet(IServiceProvider sp, Type type, IReadOnlyList<ITagChannel> channels, ITagGrp tags)
+    internal static (ILogicet?, Exception?) CreateLogicet(IServiceProvider sp, Type type, IReadOnlyList<ITagChannel> channels, ITagGrp tags)
     {
         if (!type.IsAssignableTo(typeof(ILogicet)))
         {
@@ -22,19 +22,19 @@ internal static class LogicetProviderUtils
         {
             var item = creator.CreateLogicet(sp, type, channels, tags);
             if (item is not null)
-                return item;
+                return (item, null);
         }
 
         // fallback
         try
         {
             var logicet = ActivatorUtilities.CreateInstance(sp, type, channels, tags);
-            return logicet as ILogicet;
+            return (logicet as ILogicet, null);
         }
         // 吞掉任何异常，返回 null 以表示创建失败
-        catch
+        catch (Exception ex)
         {
-            return null;
+            return (null, ex);
         }
     }
 }

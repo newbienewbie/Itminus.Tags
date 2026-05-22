@@ -10,9 +10,9 @@ public static class TagProjectExtensions
     /// <param name="sp"></param>
     /// <returns></returns>
     public static bool TryAddLogicet<TLogicet>(this ITagsProject project, IServiceProvider sp)
-        where TLogicet : ILogicet
+        where TLogicet : class, ILogicet
     {
-        var logicet = LogicetProviderUtils.CreateLogicet(sp, typeof(TLogicet), project.Channels, project.Tags);
+        var (logicet, ex) = LogicetProviderUtils.CreateLogicet(sp, typeof(TLogicet), project.Channels, project.Tags);
         if(logicet is null)
         {
             return false;
