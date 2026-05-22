@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Itminus.Tags.ModbusTcp\Itminus.Tags.ModbusTcp.csproj" />
-    <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
   </ItemGroup>
 	<Import Project="..\.paket\Paket.Restore.targets" />
 

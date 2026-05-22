@@ -1,0 +1,205 @@
+﻿using System.Xml.Linq;
+
+namespace Itminus.Tags;
+
+public static class XElementExensions
+{
+
+    #region
+    /// <summary>
+    /// 如果子元素存在则设置其值，否则添加新的子元素
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="childName"></param>
+    /// <param name="v"></param>
+    /// <returns></returns>
+    public static XElement SetOrAddChild(this XElement parent, string childName, object v)
+    {
+        var child = parent.Element(childName);
+
+        if (child != null)
+        { 
+            child.SetValue(v);
+        }
+        else
+        {
+            parent.Add(new XElement(childName, v));
+        }
+        return parent;
+    }
+    #endregion
+
+    #region helpers
+    internal static string GetTagUnionName(this XElement e)
+    {
+        var tagName = (string?)e.Attribute("name") ?? throw new Exception($"Tag 未配置名称");
+        return tagName;
+    }
+
+    internal static bool GetTagUnionIsEntry(this XElement e, string tagName)
+    {
+        var isEntry = (bool?)e.Attribute("isEntry") ?? false;
+        return isEntry;
+    }
+
+    /// <summary>
+    /// 获取扫描间隔
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="tagName"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    internal static int? GetTagUnionScanInterval(this XElement e, string tagName)
+    {
+        var interval = (string?)e.Attribute("scanInterval");
+        if(string.IsNullOrEmpty(interval))
+        {
+            return null;
+        }
+        if(!int.TryParse(interval, out var parsed))
+        {
+            throw new ArgumentException($"{tagName}的扫描周期无法解析成整数，它应该是一个毫秒数量");
+        }
+        return parsed;
+    }
+
+    internal static string GetTagUnionAddress(this XElement e, string tagName)
+    {
+        var address = (string?)e.Attribute("address")?? "";// throw new Exception($"Tag(Name={tagName})未配置地址");
+        return address;
+    }
+
+    internal static string? GetTagUnionChannelName(this XElement e)
+    {
+        var channelName = (string?)e.Attribute("channel");
+        return channelName;
+    }
+
+    internal static ITagChannel? GetTagUnionChannel(this XElement e, IList<ITagChannel> channels)
+    {
+        var channelName = (string?)e.Attribute("channel");
+        var channel = string.IsNullOrEmpty(channelName) ?
+            null :
+            channels.FirstOrDefault(c => c.ChannelName == channelName);
+        return channel;
+    }
+
+    internal static TagKinds GetTagUnionTagKind(this XElement e, string tagName)
+    {
+        var type = (string?)e.Attribute("type");
+        if(string.IsNullOrEmpty(type))
+        {
+            return BuiltinTagKinds.Unknown;
+        }
+
+        return type;
+    }
+
+    internal static EndianKinds GetTagUnionEndian(this XElement e, string tagName)
+    {
+        var type = (string?)e.Attribute("endian");
+        if(string.IsNullOrEmpty(type))
+        {
+            return EndianKinds.LittleEndian;
+        }    
+        if (!Enum.TryParse<EndianKinds>(type, out var endian))
+        {
+            throw new Exception($"Tag(Name={tagName}) 配置了未知的字节序={type}");
+        }
+        return endian;
+    }
+
+
+    internal static TagAccessMode? GetTagUnionAccess(this XElement e, string tagName)
+    {
+        var modestr = (string?)e.Attribute("access");
+        if (string.IsNullOrEmpty(modestr))
+        {
+            return null;
+        }
+        if (!Enum.TryParse<TagAccessMode>(modestr, out var access))
+        {
+            throw new Exception($"Tag(Name={tagName}) 配置了未知的访问模式={modestr}");
+        }
+        return access;
+    }
+
+    internal static string? GetTagUnionNote(this XElement e, string tagName)
+    {
+        var note = (string?)e.Attribute("note");
+        return note;
+    }
+
+    internal static string? GetTagUnionDriver(this XElement e, string tagName)
+    {
+        var note = (string?)e.Attribute("driver");
+        return note;
+    }
+
+
+    internal static T MapTagUnion<T>(this XElement e, Func<XElement,T> mapTag, Func<XElement,T> mapTagCbnt, Func<XElement,T> mapTagGrp)
+    {
+        if (e.Name == "Tag")
+        {
+            return mapTag(e);
+        }
+        else if (e.Name == "TagCbnt")
+        {
+            return mapTagCbnt(e);
+        }
+        else if (e.Name == "TagGrp")
+        {
+            return mapTagGrp(e);
+        }
+        else
+        {
+            throw new Exception($"未知的测点配置元素:<{e.Name}/>");
+        }
+    }
+
+    public static bool IsTagUnion(this XElement e)
+    {
+        if (e.Name == "Tag")
+        {
+            return true;
+        }
+        else if (e.Name == "TagCbnt")
+        {
+            return true;
+        }
+        else if (e.Name == "TagGrp")
+        {
+            return true;
+        }
+
+        return false;
+    }
+    #endregion
+
+    #region
+    /// <summary>
+    /// 获取项目根节点下的所有测点组描述符
+    /// </summary>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static IEnumerable<TagGrpDescriptor> GetTagProjectGrpDescriptors(this XElement root)
+    {
+        var elements = root.Elements().Where(e => e.IsTagUnion()) ?? [];
+        return elements.Select(ele => ele.ToTagGrpDescriptor());
+    }
+
+    /// <summary>
+    /// 获取项目根节点下的所有通道描述符
+    /// </summary>
+    /// <param name="root"></param>
+    /// <returns></returns>
+    public static IEnumerable<TagChannelDescriptor> GetTagProjectChannelDescriptors(this XElement root)
+    {
+        var elements = root.Elements("Channel") ?? [];
+        var descriptors = elements.Select(e => e.ToTagChannelDescriptor());
+        return descriptors;
+    }
+    #endregion
+}
+
+

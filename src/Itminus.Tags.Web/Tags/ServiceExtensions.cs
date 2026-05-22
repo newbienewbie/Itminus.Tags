@@ -1,20 +1,12 @@
 ﻿
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Itminus.Tags;
 using Itminus.Tags.S7;
 using Itminus.Tags.ZLan;
 using Itminus.Tags.ModbusTcp;
 using Itminus.Tags.OpcUaClient;
 using Itminus.Tags.ComScanner;
 using Itminus.Tags.Hjzk;
+using System.Xml.Linq;
 
 namespace Itminus.Tags.Web.Tags;
 
@@ -35,7 +27,7 @@ public static class ServiceExtensions
         services.AddSingleton<TagsProjectCtrl>();
     }
 
-    public static ITagsProject MakeProject(this IServiceProvider sp, string? dir=null)
+    public static ITagsProject MakeProject(this IServiceProvider sp, string? dir=null, XElement? root=null)
     {
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
 
@@ -49,7 +41,7 @@ public static class ServiceExtensions
             dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
 
-        var proj = factory.Create(dir!);
+        var proj = factory.Create(dir!, root);
 
         proj.TurnStarted += (grp, ch) => {
             Console.WriteLine($"[Tags] 开始处理分组 {grp.Name}");
@@ -59,13 +51,6 @@ public static class ServiceExtensions
             Console.WriteLine("{0}: 轮次错误：{1}", grp.Name, ex.Message);
             return Task.CompletedTask;
         };
-
-
-        proj.Logicets.Clear();
-        //proj.TryAddLogicet<HandleSnap11>();
-        //proj.TryAddLogicet<HandleSnap12>();
-        //proj.TryAddLogicet<HandleSnap13>();
-        //proj.TryAddLogicet<HandleSnap14>();
 
 
         return proj;

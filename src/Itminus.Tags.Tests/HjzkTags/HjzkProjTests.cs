@@ -36,7 +36,7 @@ public class HjzkProjTests
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = System.IO.Path.GetDirectoryName(loc);
         dir = Path.Combine(dir!, "HjzkTags");
-        var proj = factory.Create(dir!);
+        using var proj = factory.Create(dir!);
 
         // Test Channels
         Assert.Single(proj.Channels);

@@ -60,7 +60,7 @@ public class TagUnionVisitTests
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = System.IO.Path.GetDirectoryName(loc);
         dir = Path.Combine(dir!, "TagUnions");
-        var proj = factory.Create(dir!);
+        using var proj = factory.Create(dir!);
 
         // Test Channels
         Assert.Equal(3, proj.Channels.Count);

@@ -35,7 +35,7 @@ public class S7ProjTests
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = System.IO.Path.GetDirectoryName(loc);
         dir = Path.Combine(dir!, "S7Tags");
-        var proj = factory.Create(dir!);
+        using var proj = factory.Create(dir!);
 
         // Test Channels
         Assert.Equal(2, proj.Channels.Count);

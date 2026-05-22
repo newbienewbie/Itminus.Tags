@@ -16,7 +16,7 @@ internal class HandleSnap11 : LogicetBase
     private ITagCbntor _mat;
     private ITagCbntor _prog;
 
-    public HandleSnap11(IList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
+    public HandleSnap11(IReadOnlyList<ITagChannel> channels, ITagGrp tags) : base(channels, tags)
     {
         this._cbnt1 = this.Tags.SelectCbnt("g1/拍照请求");
         this._reqTag = _cbnt1.SelectTag("拍照-请求-标志");

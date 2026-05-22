@@ -1,4 +1,9 @@
-﻿using Itminus.Tags.BlazorLib.Components.Tags.Editing;
+﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.OpcUa;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ZLan;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ComScanner;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Hjzk;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ModbusTcp;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.S7;
 using Itminus.Tags.BlazorLib.Components.Tags.Editors;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -6,23 +11,28 @@ namespace Itminus.Tags.BlazorLib;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddTagsBlazorLib(this IServiceCollection services)
+    public static IServiceCollection AddTagsBlazorLib(this IServiceCollection services, Action<TagsBlazorBuilder>? config = null)
     {
-        // Registry
-        services.AddScoped<TagValueEditorRegistry>();
+        var builder = new TagsBlazorBuilder(services);
+        // default tag value editors
+        builder.AddTagValueEditor<BoolTagValueEditor>()
+               .AddTagValueEditor<NumericTagValueEditor>()
+               .AddTagValueEditor<TextTagValueEditor>();
 
-        services.AddTagValueEditor<BoolTagValueEditor>()
-                .AddTagValueEditor<NumericTagValueEditor>()
-                .AddTagValueEditor<TextTagValueEditor>();
+        // Default channel descriptor viewers/editors
+        builder.AddS7ChannelDescriptorViewerAndEditor()
+               .AddModbusTcpChannelDescriptorViewerAndEditor()
+               .AddHjzkChannelDescriptorViewerAndEditor()
+               .AddComScannerChannelDescriptorViewerAndEditor()
+               .AddZLanChannelDescriptorViewerAndEditor()
+               .AddOpcUaChannelDescriptorViewerAndEditor();
 
-        return services;
+        // user configuration
+        config?.Invoke(builder);
+        builder.Build();
+        return builder.Services;
     }
 
 
-    public static IServiceCollection AddTagValueEditor<TTagValueEditor>(this IServiceCollection services)
-        where TTagValueEditor:class, ITagValueEditor
-    {
-        services.AddScoped<ITagValueEditor, TTagValueEditor>();
-        return services;
-    }
+
 }

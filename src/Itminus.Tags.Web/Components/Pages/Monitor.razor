@@ -1,9 +1,9 @@
-﻿@using Itminus.Tags.BlazorLib.Components.Channels
-@using Itminus.Tags.BlazorLib.Components.Tags
-@using System.Collections.ObjectModel
-@using Itminus.Tags
-@using Itminus.Tags.Web.Tags
+﻿@using System.Collections.ObjectModel
 @using System.Reactive.Linq
+@using Itminus.Tags
+@using Itminus.Tags.BlazorLib.Components.ChannelDescriptors
+@using Itminus.Tags.BlazorLib.Components.Tags
+@using Itminus.Tags.Web.Tags
 
 @page "/monitor"
 @implements IDisposable
@@ -14,7 +14,13 @@
 
 <MudButton OnClick="@(async e=>{
     _ = Task.Run(async () =>{
-        await this.projctrl.StartPoll( null);
+        if(string.IsNullOrEmpty(this.SelectedXml) )
+        {
+            Console.WriteLine("请选择xml文件");
+            
+            return;
+        }
+        await this.projctrl.StartPoll( null, this.SelectedXml);
     });
 })">启动</MudButton>
 
@@ -25,10 +31,15 @@
 <TagsView RootTag="@RootTag"></TagsView>
 
 
+<InputSelect  @bind-Value="@SelectedXml">
+    <option value="index-plugin.xml">index-plugin.xml</option>
+</InputSelect>
+
 @code {
     private IDisposable? _dispose;
 
-
+    [Parameter]
+    public string SelectedXml { get; set; } = "index-plugin.xml";
 
     protected override Task OnInitializedAsync()
     {
