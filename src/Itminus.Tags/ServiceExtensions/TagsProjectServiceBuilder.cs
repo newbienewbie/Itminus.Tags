@@ -1,6 +1,7 @@
 ﻿using Itminus.Tags.Core.Projects;
-using Itminus.Tags.Plugins;
+using Itminus.Tags.Logicets;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Itminus.Tags;
 
@@ -17,6 +18,7 @@ public class TagsProjectServiceBuilder
         this.TagsLoaders = new CompositeTagsLoader();
         this.TagsLoadersConfiguration = new List<Action<IServiceProvider, CompositeTagsLoader>>(); 
 
+        this.LogicetLoadOptionsBuilder = this.Services.AddOptions<LogicetLoadOptions>(); 
     }
 
     /// <summary>
@@ -24,6 +26,10 @@ public class TagsProjectServiceBuilder
     /// </summary>
     public IServiceCollection Services { get; }
 
+    /// <summary>
+    /// 使用默认加载器和工厂
+    /// </summary>
+    public bool UseDefaults { get; set; } = true;
 
     #region ChannelFactories
     /// <summary>
@@ -99,14 +105,24 @@ public class TagsProjectServiceBuilder
     #endregion
 
 
+    #region
+    public OptionsBuilder<LogicetLoadOptions> LogicetLoadOptionsBuilder { get; }
+    #endregion
 
-    public void Build()
+
+    private TagsProjectServiceBuilder AddDefaults()
     {
         this.Services.AddSingleton<ITagGrpRunnerFactory, TagGrpRunnerFactory>();
         this.Services.AddSingleton<ILogicetsLoader, LogicetLoader>();
-        this.Services.AddSingleton<ITagChannelsLoader, TagChannelsLoader>();
-        this.Services.AddScoped<ILogicetMaker, LogicetMaker>();
+        this.Services.AddScoped<ITagsProjectFactory, TagsProjectFactory>();
+        return this;
+    }
 
+
+    public void Build()
+    {
+        // channels/tags
+        this.Services.AddSingleton<ITagChannelsLoader, TagChannelsLoader>();
         this.Services.AddSingleton<ITagChannelFactory>(sp =>
         {
             this.ApplyChannelFactoriesConfiguration(sp);
@@ -118,8 +134,30 @@ public class TagsProjectServiceBuilder
             return this.TagsLoaders;
         });
 
-        this.Services.AddScoped<ITagsProjectFactory, TagsProjectFactory>();
+        
+        // defaults
+        if (this.UseDefaults)
+        {
+            this.AddDefaults();
+        }
     }
 
 
 }
+
+
+public class LogicetLoadOptions
+{
+    /// <summary>
+    /// 共享类型过滤器
+    /// </summary>
+    public LogicetSharedTypesFilter? SharedTypesFilter { get; set;} 
+}
+
+/// <summary>
+/// 共享类型过滤器，用于在加载 Logicet 插件时指定哪些类型需要在主程序和插件之间共享。
+/// 通过实现这个委托，用户可以动态地添加或修改共享类型列表
+/// </summary>
+/// <param name="dll">dll 文件路径</param>
+/// <param name="sharedTypes">共享类型列表</param>
+public delegate void LogicetSharedTypesFilter(string dll, List<Type> sharedTypes);

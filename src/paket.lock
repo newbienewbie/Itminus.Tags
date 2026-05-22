@@ -8,6 +8,7 @@ NUGET
     FSharp.Core (8.0.100)
     Itminus.Middleware (0.5)
       Microsoft.Extensions.DependencyInjection (>= 2.1)
+    McMaster.NETCore.Plugins (2.0)
     Microsoft.AspNetCore.Authorization (8.0.12)
       Microsoft.AspNetCore.Metadata (>= 8.0.12)
       Microsoft.Extensions.Logging.Abstractions (>= 8.0.2)

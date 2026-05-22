@@ -35,7 +35,7 @@ public class ModbusTcpProjTests
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = System.IO.Path.GetDirectoryName(loc);
         dir = Path.Combine(dir!, "ModbusTags");
-        var proj = factory.Create(dir!);
+        using var proj = factory.Create(dir!);
 
         // Test Channels
         Assert.Single(proj.Channels);

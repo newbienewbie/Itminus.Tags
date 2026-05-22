@@ -7,9 +7,8 @@
 	  <LangVersion>latest</LangVersion>
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
-  </ItemGroup>
 	<Import Project="..\.paket\Paket.Restore.targets" />
+	<ItemGroup>
+		<ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
+	</ItemGroup>
 </Project>

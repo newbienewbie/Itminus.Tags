@@ -37,7 +37,7 @@ public class ComScannerTcpProjTests
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
         dir = Path.Combine(dir!, "ComScannerTags");
-        var proj = factory.Create(dir!);
+        using var proj = factory.Create(dir!);
 
         // Test Channels
         Assert.Equal(2, proj.Channels.Count);

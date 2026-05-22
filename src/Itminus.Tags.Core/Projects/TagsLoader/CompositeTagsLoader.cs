@@ -104,7 +104,7 @@ public class CompositeTagsLoader : ITagsLoader
 
 
     #region 从 XElement 中加载 Tag|TagCbnt|TagGrp，并作为子节点追加到指定的父节点中
-    public virtual void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IList<ITagChannel> availableChannels)
+    public virtual void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         if(descriptor is TagGrpDescriptor grpDescriptor)
         {
@@ -125,7 +125,7 @@ public class CompositeTagsLoader : ITagsLoader
     }
 
     /// <inheritdoc/>
-    protected virtual void LoadTagGroup(ITagGrp parent, TagGrpDescriptor grpDescriptor, IList<ITagChannel> availableChannels)
+    protected virtual void LoadTagGroup(ITagGrp parent, TagGrpDescriptor grpDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         var thisTagName = grpDescriptor.Name;
         var thisIsEntry = grpDescriptor.IsEntry;
@@ -155,7 +155,7 @@ public class CompositeTagsLoader : ITagsLoader
         return;
     }
 
-    protected virtual void LoadTagCbnt(ITagGrp parent, TagCbntDescriptor cbntDescriptor, IList<ITagChannel> availableChannels)
+    protected virtual void LoadTagCbnt(ITagGrp parent, TagCbntDescriptor cbntDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         var channel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
             parent.GetRequiredChannel() :
@@ -173,7 +173,7 @@ public class CompositeTagsLoader : ITagsLoader
         return;
     }
 
-    protected virtual void LoadDirectTag(ITagGrp parent, TagDescriptor tagDescriptor, IList<ITagChannel> availableChannels)
+    protected virtual void LoadDirectTag(ITagGrp parent, TagDescriptor tagDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         // 优先使用自身指定的通道名，然后向上冒泡检索
         var channel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?

@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道，可以配置多个-->
+	<Channel name="S7-1" driver="S7" >
+		<IpAddr>localhost</IpAddr>
+		<Rack>0</Rack>
+		<Slot>1</Slot>
+	</Channel>
+
+	<!-- 测点配置，可以配置多个 -->
+
+	<TagGrp name="IoBox" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="10">
+		<TagCbnt name="输入" address="DB200.0" access="RO">
+
+			<Tag name="复位_执行键" address="DB200.0.0" type="BIT"></Tag>
+			<Tag name="放行_执行键" address="DB200.0.1" type="BIT"></Tag>
+		</TagCbnt>
+		<TagCbnt name="输出" address="DB300.0" access="R1W">
+			<Tag name="红灯" address="DB300.0.0" type="BIT"></Tag>
+
+			<Tag name="复位_提示灯" address="DB300.10.0" type="BIT"></Tag>
+		</TagCbnt>
+	</TagGrp>
+
+
+
+	<!-- 逻辑配置，可以配置0~N个 -->
+	<Logicet>Samples.Plugin1/Samples.Plugin1.dll</Logicet>
+</root>

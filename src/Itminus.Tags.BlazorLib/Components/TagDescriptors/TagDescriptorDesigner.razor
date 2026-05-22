@@ -49,7 +49,7 @@
         return ConfirmDelete();
     }
 
-    private async Task OnAddTagRequested(ITagsDescriptor? parent)
+    private Task OnAddTagRequested(ITagsDescriptor? parent)
     {
         if (parent is TagGrpDescriptor grp)
         {
@@ -76,6 +76,7 @@
             Selected = newTag;
         }
         StateHasChanged();
+        return Task.CompletedTask;
     }
 
     private Task OnAddCbntRequested(ITagsDescriptor? parent)

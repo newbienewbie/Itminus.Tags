@@ -14,7 +14,7 @@ public interface ILogicet
     /// <summary>
     /// 通道
     /// </summary>
-    IList<ITagChannel> Channels { get; }
+    IReadOnlyList<ITagChannel> Channels { get; }
 
     /// <summary>
     /// 测点

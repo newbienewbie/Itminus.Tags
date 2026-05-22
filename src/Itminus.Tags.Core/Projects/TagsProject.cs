@@ -1,25 +1,28 @@
 ﻿using Itminus.Tags.Core.Projects;
-using Itminus.Tags.Plugins;
 using System.Collections.Concurrent;
 using System.Xml.Linq;
 
 namespace Itminus.Tags;
 
+
+/// <summary>
+/// 默认的实现
+/// </summary>
 internal class TagsProject : ITagsProject
 {
     private readonly ITagChannelsLoader _channelsLoader;
     private readonly ITagsLoader _tagsLoader;
     private readonly ILogicetsLoader _logicetLoader;
-    private readonly ILogicetMaker _logicetMaker;
     private readonly ITagGrpRunnerFactory _tagGrpRunnerFactory;
     private readonly IServiceProvider _sp;
 
-    public TagsProject(ITagGrpRunnerFactory tagGrpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, ILogicetMaker logicetMaker,IServiceProvider sp)
+    private List<IDisposable> _disposables = new List<IDisposable>();
+
+    public TagsProject(ITagGrpRunnerFactory tagGrpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, IServiceProvider sp)
     {
         this._channelsLoader = channelsLoader;
         this._tagsLoader = tagsLoader;
         this._logicetLoader = logicetLoader;
-        this._logicetMaker = logicetMaker;
         this._tagGrpRunnerFactory = tagGrpRunnerFactory;
         this._sp = sp;
     }
@@ -69,29 +72,12 @@ internal class TagsProject : ITagsProject
             .Where(e => !string.IsNullOrEmpty( e.Value) )
             .Select(e => string.IsNullOrEmpty(this.ProjectRoot) ? e.Value : Path.Combine(this.ProjectRoot, e.Value));
         var logicets = this._logicetLoader.LoadLogicets(this._sp, dlls, this.Channels, this.Tags);
-        this.AddLogicets(logicets);
+        this.AddLogicets(logicets.Logicets);
+        this._disposables.AddRange(logicets.Disposables);
         return this;
     }
 
-    /// <inheritdoc/>
-    public virtual bool TryAddLogicet<TLogicet>(out TLogicet? logicet, out string? msg)
-        where TLogicet : class, ILogicet
-    {
-        logicet = this._logicetMaker.MakeLogicet<TLogicet>(this.Channels, this.Tags, out msg);
-        if(logicet is not null)
-        {
-            this.Logicets.Add(logicet);
-            return true;
-        }
-        return false;
-    }
 
-    /// <inheritdoc/>
-    public virtual bool TryAddLogicet<TLogicet>()
-        where TLogicet : class, ILogicet
-    {
-        return this.TryAddLogicet<TLogicet>(out _, out _);
-    }
 
     /// <inheritdoc/>
     public void Initialize(string projRoot, XElement? root=null)
@@ -124,7 +110,7 @@ internal class TagsProject : ITagsProject
     /// <summary>
     /// 通道
     /// </summary>
-    public virtual IList<ITagChannel> Channels => _channels;
+    public virtual IReadOnlyList<ITagChannel> Channels => _channels;
 
     /// <summary>
     /// 增加通道
@@ -158,7 +144,7 @@ internal class TagsProject : ITagsProject
     /// </summary>
     /// <param name="logicets"></param>
     /// <returns></returns>
-    protected TagsProject AddLogicets(IList<ILogicet> logicets)
+    protected TagsProject AddLogicets(IReadOnlyList<ILogicet> logicets)
     {
         this._logicets.AddRange(logicets);
         return this;
@@ -218,4 +204,45 @@ internal class TagsProject : ITagsProject
     public event TurnCrashed? TurnCrashed;
     /// <inheritdoc/>
     public event TurnStarted? TurnStarted;
+
+
+    #region
+    private bool _disposed;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                foreach (var d in this._disposables)
+                {
+                    try
+                    {
+                        d.Dispose();
+                    }
+                    catch {  /*  */  }
+                }
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            _disposed = true;
+        }
+    }
+
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~TagsProject()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion
 }

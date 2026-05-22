@@ -7,14 +7,11 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <PropertyGroup>
-	<XmlSerializerGeneration>GenerateSerializationAssembly</XmlSerializerGeneration>
+    <XmlSerializerGeneration>GenerateSerializationAssembly</XmlSerializerGeneration>
   </PropertyGroup>
-	
-  <Import Project="..\.paket\Paket.Restore.targets" />
-	
   <ItemGroup>
     <ProjectReference Include="..\Itminus.Tags.Core\Itminus.Tags.Core.csproj" />
   </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

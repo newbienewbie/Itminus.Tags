@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project IpAddress="127.0.0.1">
+  <AreaConfig>
+    <AreaKind>DB</AreaKind>
+    <BlockNumber>200</BlockNumber>
+    <BlockSize>100</BlockSize>
+  </AreaConfig>
+  <AreaConfig>
+    <AreaKind>DB</AreaKind>
+    <BlockNumber>300</BlockNumber>
+    <BlockSize>100</BlockSize>
+  </AreaConfig>
+  <SearchPath>$DEFAULT</SearchPath>
+  <SignalGroup Name="Defalut">
+    <Signal Name="BoolSignal" Address="DB200.0.0" Type="BoolSignal">
+      <Remark>复位_执行键</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB200.1.0" Type="BoolSignal">
+      <Remark>放行_执行键</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB200.10.0" Type="BoolSignal">
+      <Remark>套筒_输出1</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB200.10.1" Type="BoolSignal">
+      <Remark>套筒_输出2</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB200.10.2" Type="BoolSignal">
+      <Remark>套筒_输出3</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB300.0.0" Type="BoolSignal">
+      <Remark>红灯</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB300.0.1" Type="BoolSignal">
+      <Remark>绿灯</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB300.0.2" Type="BoolSignal">
+      <Remark>黄灯</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB300.0.3" Type="BoolSignal">
+      <Remark>警铃</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB300.10.0" Type="BoolSignal">
+      <Remark>复位_提示灯</Remark>
+    </Signal>
+    <Signal Name="BoolSignal" Address="DB300.10.1" Type="BoolSignal">
+      <Remark>放行_提示灯</Remark>
+    </Signal>
+  </SignalGroup>
+  <SignalGroup Name="1" />
+</Project>
