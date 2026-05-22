@@ -8,7 +8,7 @@ namespace Itminus.Tags;
 /// 一个测点项目，包含通道、测点、逻辑等信息。<br/>
 /// 测点项目往往由<see cref="ITagsProjectFactory"/>按需构建。
 /// </summary>
-public interface ITagsProject
+public interface ITagsProject: IDisposable
 {
     /// <summary>
     /// 通道

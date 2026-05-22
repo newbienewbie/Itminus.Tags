@@ -20,26 +20,26 @@ internal class LogicetLoader : ILogicetsLoader
 
 
     /// <inheritdoc/>
-    public IList<ILogicet> LoadLogicets(IServiceProvider sp, IEnumerable<string> dllLocations, IReadOnlyList<ITagChannel> channels, ITagGrp tags)
+    public LoadedLogicets LoadLogicets(IServiceProvider sp, IEnumerable<string> dllLocations, IReadOnlyList<ITagChannel> channels, ITagGrp tags)
     {
-        var results = dllLocations
-            .SelectMany(l =>
-            {
-                var loader = PluginLoader.CreateFromAssemblyFile(
-                    l,
-                    isUnloadable: true,
-                    sharedTypes: new[] { 
-                        typeof(ILogicet), 
-                        typeof(ITagChannel), 
-                        typeof(ITagGrp) 
-                    }
-                );
-                var plugin = loader.LoadDefaultAssembly();
-                var logicets = MakeLogicets(sp, plugin, channels, tags);
-                return logicets;
-            })
-            .ToList();
-        return results;
+        var disposables = new List<IDisposable>();
+        var logicets = new List<ILogicet>();
+        foreach (var dll in dllLocations)
+        {
+            var loader = PluginLoader.CreateFromAssemblyFile(
+                dll,
+                isUnloadable: true,
+                sharedTypes: new[] {
+                    typeof(ILogicet),
+                    typeof(ITagChannel),
+                    typeof(ITagGrp)
+                }
+            ); 
+            var plugin = loader.LoadDefaultAssembly();
+            var batch = MakeLogicets(sp, plugin, channels, tags);
+            logicets.AddRange(batch);
+        }
+        return new LoadedLogicets(logicets, disposables);
     }
 
 

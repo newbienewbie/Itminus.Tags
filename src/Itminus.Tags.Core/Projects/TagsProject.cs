@@ -16,6 +16,8 @@ internal class TagsProject : ITagsProject
     private readonly ITagGrpRunnerFactory _tagGrpRunnerFactory;
     private readonly IServiceProvider _sp;
 
+    private List<IDisposable> _disposables = new List<IDisposable>();
+
     public TagsProject(ITagGrpRunnerFactory tagGrpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, IServiceProvider sp)
     {
         this._channelsLoader = channelsLoader;
@@ -70,7 +72,8 @@ internal class TagsProject : ITagsProject
             .Where(e => !string.IsNullOrEmpty( e.Value) )
             .Select(e => string.IsNullOrEmpty(this.ProjectRoot) ? e.Value : Path.Combine(this.ProjectRoot, e.Value));
         var logicets = this._logicetLoader.LoadLogicets(this._sp, dlls, this.Channels, this.Tags);
-        this.AddLogicets(logicets.AsReadOnly());
+        this.AddLogicets(logicets.Logicets);
+        this._disposables.AddRange(logicets.Disposables);
         return this;
     }
 
@@ -201,4 +204,45 @@ internal class TagsProject : ITagsProject
     public event TurnCrashed? TurnCrashed;
     /// <inheritdoc/>
     public event TurnStarted? TurnStarted;
+
+
+    #region
+    private bool _disposed;
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                foreach (var d in this._disposables)
+                {
+                    try
+                    {
+                        d.Dispose();
+                    }
+                    catch {  /*  */  }
+                }
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+            _disposed = true;
+        }
+    }
+
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~TagsProject()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion
 }

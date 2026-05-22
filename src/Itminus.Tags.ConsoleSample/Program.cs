@@ -23,7 +23,7 @@ var sp = services.BuildServiceProvider();
 var factory = sp.GetRequiredService<ITagsProjectFactory>();
 var loc = Assembly.GetExecutingAssembly().Location;
 var dir = Path.GetDirectoryName(loc);
-var project = factory.Create(dir!);
+using var project = factory.Create(dir!);
 project.TurnCrashed += (grp, ch, ex) => {
 
     Console.WriteLine($"{ex.Message}");
