@@ -1,6 +1,7 @@
 ﻿using Itminus.Tags.Core.Projects;
 using Itminus.Tags.Logicets;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Itminus.Tags;
 
@@ -16,6 +17,8 @@ public class TagsProjectServiceBuilder
 
         this.TagsLoaders = new CompositeTagsLoader();
         this.TagsLoadersConfiguration = new List<Action<IServiceProvider, CompositeTagsLoader>>(); 
+
+        this.LogicetLoadOptionsBuilder = this.Services.AddOptions<LogicetLoadOptions>(); 
     }
 
     /// <summary>
@@ -102,6 +105,11 @@ public class TagsProjectServiceBuilder
     #endregion
 
 
+    #region
+    public OptionsBuilder<LogicetLoadOptions> LogicetLoadOptionsBuilder { get; }
+    #endregion
+
+
     private TagsProjectServiceBuilder AddDefaults()
     {
         this.Services.AddSingleton<ITagGrpRunnerFactory, TagGrpRunnerFactory>();
@@ -136,3 +144,20 @@ public class TagsProjectServiceBuilder
 
 
 }
+
+
+public class LogicetLoadOptions
+{
+    /// <summary>
+    /// 共享类型过滤器
+    /// </summary>
+    public LogicetSharedTypesFilter? SharedTypesFilter { get; set;} 
+}
+
+/// <summary>
+/// 共享类型过滤器，用于在加载 Logicet 插件时指定哪些类型需要在主程序和插件之间共享。
+/// 通过实现这个委托，用户可以动态地添加或修改共享类型列表
+/// </summary>
+/// <param name="dll">dll 文件路径</param>
+/// <param name="sharedTypes">共享类型列表</param>
+public delegate void LogicetSharedTypesFilter(string dll, List<Type> sharedTypes);

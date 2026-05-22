@@ -1,6 +1,8 @@
 ﻿using Itminus.Tags.Core.Projects;
 using McMaster.NETCore.Plugins;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Reflection;
 
 namespace Itminus.Tags.Logicets;
@@ -10,12 +12,13 @@ namespace Itminus.Tags.Logicets;
 /// </summary>
 internal class LogicetLoader : ILogicetsLoader
 {
-   
+    private readonly LogicetLoadOptions _options;
     private readonly ILogger<LogicetLoader> _logger;
 
-    public LogicetLoader(ILogger<LogicetLoader> logger)
+    public LogicetLoader(IOptions<LogicetLoadOptions> options, ILogger<LogicetLoader> logger)
     {
-        _logger = logger;
+        this._options = options.Value;
+        this._logger = logger;
     }
 
 
@@ -24,16 +27,24 @@ internal class LogicetLoader : ILogicetsLoader
     {
         var disposables = new List<IDisposable>();
         var logicets = new List<ILogicet>();
+
+
+
         foreach (var dll in dllLocations)
         {
+            List<Type> sharedTypes = new List<Type> {
+                typeof(ILogicet),
+                typeof(ITagChannel),
+                typeof(ITagGrp),
+                typeof(IServiceProvider),
+                typeof(IServiceCollection),
+                typeof(ILogger),
+            };
+            this._options.SharedTypesFilter?.Invoke(dll, sharedTypes);
             var loader = PluginLoader.CreateFromAssemblyFile(
                 dll,
                 isUnloadable: true,
-                sharedTypes: new[] {
-                    typeof(ILogicet),
-                    typeof(ITagChannel),
-                    typeof(ITagGrp)
-                }
+                sharedTypes: [.. sharedTypes]
             ); 
             var plugin = loader.LoadDefaultAssembly();
             var batch = MakeLogicets(sp, plugin, channels, tags);
