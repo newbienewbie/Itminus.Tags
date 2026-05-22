@@ -28,30 +28,60 @@ internal class LogicetLoader : ILogicetsLoader
         var disposables = new List<IDisposable>();
         var logicets = new List<ILogicet>();
 
-
-
         foreach (var dll in dllLocations)
         {
-            List<Type> sharedTypes = new List<Type> {
-                typeof(ILogicet),
-                typeof(ITagChannel),
-                typeof(ITagGrp),
-                typeof(IServiceProvider),
-                typeof(IServiceCollection),
-                typeof(ILogger),
-            };
-            this._options.SharedTypesFilter?.Invoke(dll, sharedTypes);
-            var loader = PluginLoader.CreateFromAssemblyFile(
-                dll,
-                isUnloadable: true,
-                sharedTypes: [.. sharedTypes]
-            ); 
-            var plugin = loader.LoadDefaultAssembly();
-            var batch = MakeLogicets(sp, plugin, channels, tags);
-            logicets.AddRange(batch);
-            disposables.Add(loader);
+
+            // 
+            IList<ILogicet> batch;
+            IDisposable? loader = null;
+            try
+            {
+                List<Type> sharedTypes = new List<Type> {
+                    typeof(ILogicet),
+                    typeof(ITagChannel),
+                    typeof(ITagGrp),
+                    typeof(IServiceProvider),
+                    typeof(IServiceCollection),
+                    typeof(ILogger),
+                };
+
+                (batch, loader) = MakeCore(sp, channels, tags, dll, sharedTypes);
+                logicets.AddRange(batch);
+                disposables.Add(loader);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError("加载Logicet失败：dll={dll}, ex={ex}, strace={strace}", dll, ex.Message, ex.StackTrace);
+                if(loader is not null)
+                {
+                    try
+                    {
+                        loader.Dispose();
+                    }
+                    catch
+                    {
+                        /* 有意忽略 */
+                    }
+                }
+            }
+
         }
         return new LoadedLogicets(logicets, disposables);
+    }
+
+    //
+    private (IList<ILogicet> batch, IDisposable loader) MakeCore(IServiceProvider sp, IReadOnlyList<ITagChannel> channels, ITagGrp tags,string dll, List<Type> sharedTypes)
+    {
+        this._options.SharedTypesFilter?.Invoke(dll, sharedTypes);
+        var loader = PluginLoader.CreateFromAssemblyFile(
+            dll,
+            isUnloadable: true,
+            sharedTypes: [.. sharedTypes]
+        );
+        var plugin = loader.LoadDefaultAssembly();
+        var batch = MakeLogicets(sp, plugin, channels, tags);
+
+        return (batch, loader);
     }
 
 
