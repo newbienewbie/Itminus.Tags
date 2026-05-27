@@ -58,6 +58,7 @@ public class S7StrTagCbntor : TagCbntor
             }
 
             var read = Encoding.ASCII.GetBytes(str, span.Slice(2));
+            span[0] = this.Maxlen;
             span[1] = (byte)read;
 
             Timestamp = DateTime.UtcNow;
