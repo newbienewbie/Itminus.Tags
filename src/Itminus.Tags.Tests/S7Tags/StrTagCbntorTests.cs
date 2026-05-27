@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Itminus.Tags.Tests.S7Tags
@@ -115,6 +117,47 @@ namespace Itminus.Tags.Tests.S7Tags
             Assert.NotNull(strTag);
             Assert.Equal(10, strTag.Strlen);
             Assert.Equal(10, strTag.Maxlen);
+        }
+
+        [Fact]
+        public void StrTag_PlcOverwritesMaxLen()
+        {
+            var builder = new S7TagCbntBuilder("cbnt1", "DB200.100");
+
+            byte maxLen = 10;
+            var descriptor = new TagDescriptor()
+            {
+                TagName = "str1",
+                Address = "DB200.102",
+                TagKind = BuiltinTagKinds.STR,
+            };
+            descriptor.Extras["maxlen"] = new System.Xml.Linq.XAttribute("maxlen", maxLen);
+
+            var cbnt = builder.AddTags([descriptor]).Build();
+            var tag = cbnt.SelectTag("str1");
+            var strTag = Assert.IsType<S7StrTagCbntor>(tag);
+
+            Span<byte> cache = stackalloc byte[]
+            {
+                0, 0,
+                0, 5,  // 模拟PLC把MaxLen改成了0
+                (byte)'A', (byte)'B', (byte)'C', (byte)'D', (byte)'E',
+                0, 0, 0, 0, 0,
+            };
+            cache.CopyTo(cbnt.Cache.Span);
+
+            // 读取不会崩溃
+            Assert.Equal("ABCDE", tag.Value);
+            Assert.Equal(10, strTag.Maxlen);
+            Assert.Equal(5, strTag.Strlen);
+            Assert.Equal(new byte[] { 0, 5 }, cbnt.Cache.Span.Slice(2, 2).ToArray());
+
+            // 写入时仍然使用自己的MaxLen
+            tag.Value = "WXYZ";
+            Assert.Equal("WXYZ", tag.Value);
+            Assert.Equal(10, strTag.Maxlen);
+            Assert.Equal(4, strTag.Strlen);
+            Assert.Equal(new byte[] { 10, 4 }, cbnt.Cache.Span.Slice(2, 2).ToArray());
         }
     }
 }

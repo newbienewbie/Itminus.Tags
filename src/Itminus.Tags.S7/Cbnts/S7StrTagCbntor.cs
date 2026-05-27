@@ -42,7 +42,6 @@ public class S7StrTagCbntor : TagCbntor
         {
             var cache = this.TagCbnt.Cache;
             var span = cache.Span.Slice(CacheOffset);
-            var total = span[0];
             var size = span[1];
             var str = Encoding.ASCII.GetString(span.Slice(2, size));
             return str;
@@ -53,14 +52,13 @@ public class S7StrTagCbntor : TagCbntor
             var cache = this.TagCbnt.Cache;
             var tagsize = this.TagSize();
             var span = cache.Span.Slice(CacheOffset, tagsize);
-            var total = span[0];
-            var size = span[1];
-            if(str.Length > total)
+            if(str.Length > this.Maxlen)
             {
-                throw new ArgumentException($"字符串长度超过限制，最大{total}，实际{str.Length}");
+                throw new ArgumentException($"字符串长度超过限制，最大{this.Maxlen}，实际{str.Length}");
             }
 
             var read = Encoding.ASCII.GetBytes(str, span.Slice(2));
+            span[0] = this.Maxlen;
             span[1] = (byte)read;
 
             Timestamp = DateTime.UtcNow;
