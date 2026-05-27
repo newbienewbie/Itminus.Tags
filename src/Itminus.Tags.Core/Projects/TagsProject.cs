@@ -1,5 +1,6 @@
 ﻿using Itminus.Tags.Core.Projects;
 using System.Collections.Concurrent;
+using System.Threading.Channels;
 using System.Xml.Linq;
 
 namespace Itminus.Tags;
@@ -15,6 +16,7 @@ internal class TagsProject : ITagsProject
     private readonly ILogicetsLoader _logicetLoader;
     private readonly ITagGrpRunnerFactory _tagGrpRunnerFactory;
     private readonly IServiceProvider _sp;
+    private readonly ConcurrentDictionary<ITagGrp, Channel<TagGrpWriteIntent>> _entryWriteIntentChannels = new();
 
     private List<IDisposable> _disposables = new List<IDisposable>();
 
@@ -99,6 +101,7 @@ internal class TagsProject : ITagsProject
         }
         this.LoadChannels(root);
         this.LoadTags(root);
+        this.RefreshIntentChannels();
         this.LoadLogicets(root);
     }
 
@@ -176,11 +179,12 @@ internal class TagsProject : ITagsProject
         var tasks = new ConcurrentBag<Task>();
         Parallel.ForEach(entries, entry =>
         {
+            var writeIntentChannel = this._entryWriteIntentChannels.GetOrAdd(entry, _ => this.CreateIntentChannel());
             var logicets = this.Logicets
                 .Where(l => l.MatchEntry(entry))
                 .OrderBy(l => l.Order)
                 .ToList();
-            var runner = this._tagGrpRunnerFactory.Create();
+            var runner = this._tagGrpRunnerFactory.Create(this);
             runner.TurnStarted += TurnStarted;
             runner.TurnProcess += async (entry, ch) => {
                 foreach (var l in logicets)
@@ -200,6 +204,70 @@ internal class TagsProject : ITagsProject
         return Task.WhenAll(tasks);
     }
 
+    #region Intent Mgmt
+    /// <inheritdoc/>
+    public bool WriteIntent(ITagGrp entry, TagGrpWriteIntent intent)
+    {
+        var intentChannel = GetRequiredEntryIntentChannel(entry);
+        var writer = intentChannel.Writer;
+        return writer.TryWrite(intent);
+    }
+
+    private Channel<TagGrpWriteIntent> GetRequiredEntryIntentChannel(ITagGrp entry)
+    {
+        if (!this._entryWriteIntentChannels.TryGetValue(entry, out var intentChannel))
+        {
+            throw new KeyNotFoundException($"未找到入口组 {entry.Name} 对应的意图通道");
+        }
+        return intentChannel;
+    }
+
+    protected virtual void RefreshIntentChannels()
+    {
+        this.CompleteIntentChannels();
+
+        if (this.Tags is null)
+        {
+            return;
+        }
+
+        foreach (var entry in this.Tags.ScanEntries())
+        {
+            this._entryWriteIntentChannels[entry] = this.CreateIntentChannel();
+        }
+    }
+
+    protected virtual Channel<TagGrpWriteIntent> CreateIntentChannel()
+    {
+        return Channel.CreateUnbounded<TagGrpWriteIntent>(new UnboundedChannelOptions
+        {
+            SingleReader = true,
+            SingleWriter = false,
+            AllowSynchronousContinuations = false,
+        });
+    }
+
+    protected virtual void CompleteIntentChannels()
+    {
+        foreach (var kvp in this._entryWriteIntentChannels)
+        {
+            kvp.Value.Writer.TryComplete();
+        }
+
+        this._entryWriteIntentChannels.Clear();
+    }
+
+    /// <inheritdoc/>
+    public ChannelReader<TagGrpWriteIntent>? GetIntentReader(ITagGrp entry)
+    {
+        if (!this._entryWriteIntentChannels.TryGetValue(entry, out var intentChannel))
+        {
+            return null;
+        }
+        return intentChannel.Reader;
+    }
+    #endregion
+
     /// <inheritdoc/>
     public event TurnCrashed? TurnCrashed;
     /// <inheritdoc/>
@@ -215,6 +283,7 @@ internal class TagsProject : ITagsProject
         {
             if (disposing)
             {
+                this.CompleteIntentChannels();
                 foreach (var d in this._disposables)
                 {
                     try

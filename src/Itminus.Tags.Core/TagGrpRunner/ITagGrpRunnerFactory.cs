@@ -10,5 +10,5 @@ public interface ITagGrpRunnerFactory
     /// 创建一个<see cref="ITagGrpRunner"/>实例
     /// </summary>
     /// <returns></returns>
-    ITagGrpRunner Create();
+    ITagGrpRunner Create(ITagsProject project);
 }
