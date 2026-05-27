@@ -52,7 +52,6 @@ public class S7StrTagCbntor : TagCbntor
             var cache = this.TagCbnt.Cache;
             var tagsize = this.TagSize();
             var span = cache.Span.Slice(CacheOffset, tagsize);
-            var size = span[1];
             if(str.Length > this.Maxlen)
             {
                 throw new ArgumentException($"字符串长度超过限制，最大{this.Maxlen}，实际{str.Length}");
