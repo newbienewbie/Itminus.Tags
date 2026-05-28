@@ -99,9 +99,10 @@ internal class TagsProject : ITagsProject
             }
             root = XElement.Load(rootxmlPath);
         }
+
+        this.CompleteIntentChannels();
         this.LoadChannels(root);
         this.LoadTags(root);
-        this.RefreshIntentChannels();
         this.LoadLogicets(root);
     }
 
@@ -205,6 +206,10 @@ internal class TagsProject : ITagsProject
     }
 
     #region Intent Mgmt
+
+    /// <inheritdoc/>
+    public int IntentCapacity { get; set; } = 5;
+
     /// <inheritdoc/>
     public bool WriteIntent(ITagGrp entry, TagGrpWriteIntent intent)
     {
@@ -222,28 +227,14 @@ internal class TagsProject : ITagsProject
         return intentChannel;
     }
 
-    protected virtual void RefreshIntentChannels()
-    {
-        this.CompleteIntentChannels();
-
-        if (this.Tags is null)
-        {
-            return;
-        }
-
-        foreach (var entry in this.Tags.ScanEntries())
-        {
-            this._entryWriteIntentChannels[entry] = this.CreateIntentChannel();
-        }
-    }
-
     protected virtual Channel<TagGrpWriteIntent> CreateIntentChannel()
     {
-        return Channel.CreateUnbounded<TagGrpWriteIntent>(new UnboundedChannelOptions
+        return Channel.CreateBounded<TagGrpWriteIntent>(new BoundedChannelOptions(capacity: this.IntentCapacity)
         {
             SingleReader = true,
             SingleWriter = false,
             AllowSynchronousContinuations = false,
+            FullMode = BoundedChannelFullMode.Wait,
         });
     }
 

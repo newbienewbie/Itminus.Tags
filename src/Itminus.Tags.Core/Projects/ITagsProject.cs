@@ -67,6 +67,15 @@ public interface ITagsProject: IDisposable
     Task RunAsync(CancellationToken ct);
 
 
+    #region
+
+    /// <summary>
+    /// 意图的容量。<br/>
+    /// 仅在运行之前有效，运行过程中不允许修改。
+    /// </summary>
+    int IntentCapacity { get; set; }
+
+
     /// <summary>
     /// 写入意图
     /// </summary>
@@ -80,4 +89,5 @@ public interface ITagsProject: IDisposable
     /// <param name="entry"></param>
     /// <returns></returns>
     ChannelReader<TagGrpWriteIntent>? GetIntentReader(ITagGrp entry);
+    #endregion
 }
