@@ -1,13 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 
+using System.Threading.Channels;
+
 namespace Itminus.Tags;
 
 internal class TagGrpRunner : ITagGrpRunner
 {
+    private readonly ITagsProject _project;
     private readonly ILogger<TagGrpRunner> _logger;
 
-    public TagGrpRunner(ILogger<TagGrpRunner> logger)
+    public TagGrpRunner(ITagsProject project, ILogger<TagGrpRunner> logger)
     {
+        this._project = project;
         this._logger = logger;
     }
 
@@ -48,7 +52,8 @@ internal class TagGrpRunner : ITagGrpRunner
                         await channel.EnsureConnectedAsync(force: false, ct);
                     }
 
-                    if(entry.IsDirty())
+                    await this.DrainWriteIntentsAsync(entry, ct);
+                    if (entry.IsDirty())
                     {
                         await entry.WriteAsync(ct);
                     }
@@ -100,6 +105,26 @@ internal class TagGrpRunner : ITagGrpRunner
             finally
             {
                 await Task.Delay(entry.ScanInterval, ct);
+            }
+        }
+    }
+
+    protected virtual async Task DrainWriteIntentsAsync(ITagGrp entry, CancellationToken ct)
+    {
+        var reader = this._project.GetIntentReader(entry.Name);
+        if(reader is null)
+        {
+            return;
+        }
+
+        var count = 0;
+        while (reader.TryRead(out var writeIntent))
+        {
+            await writeIntent(entry, ct);
+            count++;
+            if (count >= this._project.IntentCapacity)
+            {
+                break;
             }
         }
     }

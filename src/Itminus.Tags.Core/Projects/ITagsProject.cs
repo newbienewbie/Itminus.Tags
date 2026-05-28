@@ -1,7 +1,17 @@
 ﻿
+using System.Threading.Channels;
 using System.Xml.Linq;
 
 namespace Itminus.Tags;
+
+
+/// <summary>
+/// 外部写入入口组变更意图的委托。
+/// </summary>
+/// <param name="entry"></param>
+/// <param name="ct"></param>
+/// <returns></returns>
+public delegate ValueTask TagGrpWriteIntent(ITagGrp entry, CancellationToken ct);
 
 
 /// <summary>
@@ -40,6 +50,7 @@ public interface ITagsProject: IDisposable
     /// </summary>
     event TurnCrashed? TurnCrashed;
 
+
     /// <summary>
     /// 初始化，如果root为空，则默认取 projRoot下的index.xml文件
     /// </summary>
@@ -54,4 +65,29 @@ public interface ITagsProject: IDisposable
     /// <param name="ct"></param>
     /// <returns></returns>
     Task RunAsync(CancellationToken ct);
+
+
+    #region
+
+    /// <summary>
+    /// 意图的容量。<br/>
+    /// 仅在运行之前有效，运行过程中不允许修改。
+    /// </summary>
+    int IntentCapacity { get; set; }
+
+
+    /// <summary>
+    /// 写入意图
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <param name="intent"></param>
+    bool WriteIntent(string entry, TagGrpWriteIntent intent);
+
+    /// <summary>
+    /// 获取意图通道读取器。<br/>
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <returns></returns>
+    ChannelReader<TagGrpWriteIntent>? GetIntentReader(string entry);
+    #endregion
 }
