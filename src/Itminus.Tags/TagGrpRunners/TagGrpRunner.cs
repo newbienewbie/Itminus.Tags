@@ -111,7 +111,7 @@ internal class TagGrpRunner : ITagGrpRunner
 
     protected virtual async Task DrainWriteIntentsAsync(ITagGrp entry, CancellationToken ct)
     {
-        var reader = this._project.GetIntentReader(entry);
+        var reader = this._project.GetIntentReader(entry.Name);
         if(reader is null)
         {
             return;

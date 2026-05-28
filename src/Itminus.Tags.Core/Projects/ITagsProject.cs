@@ -81,13 +81,13 @@ public interface ITagsProject: IDisposable
     /// </summary>
     /// <param name="entry"></param>
     /// <param name="intent"></param>
-    bool WriteIntent(ITagGrp entry, TagGrpWriteIntent intent);
+    bool WriteIntent(string entry, TagGrpWriteIntent intent);
 
     /// <summary>
     /// 获取意图通道读取器。<br/>
     /// </summary>
     /// <param name="entry"></param>
     /// <returns></returns>
-    ChannelReader<TagGrpWriteIntent>? GetIntentReader(ITagGrp entry);
+    ChannelReader<TagGrpWriteIntent>? GetIntentReader(string entry);
     #endregion
 }

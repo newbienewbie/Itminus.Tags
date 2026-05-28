@@ -16,7 +16,7 @@ internal class TagsProject : ITagsProject
     private readonly ILogicetsLoader _logicetLoader;
     private readonly ITagGrpRunnerFactory _tagGrpRunnerFactory;
     private readonly IServiceProvider _sp;
-    private readonly ConcurrentDictionary<ITagGrp, Channel<TagGrpWriteIntent>> _entryWriteIntentChannels = new();
+    private readonly ConcurrentDictionary<string, Channel<TagGrpWriteIntent>> _entryWriteIntentChannels = new();
 
     private List<IDisposable> _disposables = new List<IDisposable>();
 
@@ -180,7 +180,7 @@ internal class TagsProject : ITagsProject
         var tasks = new ConcurrentBag<Task>();
         Parallel.ForEach(entries, entry =>
         {
-            var writeIntentChannel = this._entryWriteIntentChannels.GetOrAdd(entry, _ => this.CreateIntentChannel());
+            var writeIntentChannel = this._entryWriteIntentChannels.GetOrAdd(entry.Name, _ => this.CreateIntentChannel());
             var logicets = this.Logicets
                 .Where(l => l.MatchEntry(entry))
                 .OrderBy(l => l.Order)
@@ -211,18 +211,18 @@ internal class TagsProject : ITagsProject
     public int IntentCapacity { get; set; } = 5;
 
     /// <inheritdoc/>
-    public bool WriteIntent(ITagGrp entry, TagGrpWriteIntent intent)
+    public bool WriteIntent(string entry, TagGrpWriteIntent intent)
     {
         var intentChannel = GetRequiredEntryIntentChannel(entry);
         var writer = intentChannel.Writer;
         return writer.TryWrite(intent);
     }
 
-    private Channel<TagGrpWriteIntent> GetRequiredEntryIntentChannel(ITagGrp entry)
+    private Channel<TagGrpWriteIntent> GetRequiredEntryIntentChannel(string entry)
     {
         if (!this._entryWriteIntentChannels.TryGetValue(entry, out var intentChannel))
         {
-            throw new KeyNotFoundException($"未找到入口组 {entry.Name} 对应的意图通道");
+            throw new KeyNotFoundException($"未找到入口组 {entry} 对应的意图通道");
         }
         return intentChannel;
     }
@@ -254,7 +254,7 @@ internal class TagsProject : ITagsProject
     }
 
     /// <inheritdoc/>
-    public ChannelReader<TagGrpWriteIntent>? GetIntentReader(ITagGrp entry)
+    public ChannelReader<TagGrpWriteIntent>? GetIntentReader(string entry)
     {
         if (!this._entryWriteIntentChannels.TryGetValue(entry, out var intentChannel))
         {
