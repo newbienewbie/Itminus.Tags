@@ -229,6 +229,11 @@ internal class TagsProject : ITagsProject
 
     protected virtual Channel<TagGrpWriteIntent> CreateIntentChannel()
     {
+        if (this.IntentCapacity <= 0)
+        {
+            throw new Exception($"IntentCapacity 必须大于 0, 当前={this.IntentCapacity}");
+        }
+
         return Channel.CreateBounded<TagGrpWriteIntent>(new BoundedChannelOptions(capacity: this.IntentCapacity)
         {
             SingleReader = true,
