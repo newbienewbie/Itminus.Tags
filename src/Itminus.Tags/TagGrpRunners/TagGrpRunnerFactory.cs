@@ -13,10 +13,10 @@ internal class TagGrpRunnerFactory : ITagGrpRunnerFactory
     }
 
     /// <inheritdoc/>
-    public ITagGrpRunner Create()
+    public ITagGrpRunner Create(ITagsProject project)
     {
         var logger = this._sp.GetRequiredService<ILogger<TagGrpRunner>>();
-        var runner = new TagGrpRunner(logger);
+        var runner = new TagGrpRunner(project, logger);
         return runner;
     }
 }
