@@ -84,7 +84,7 @@ public interface ITagsProject: IDisposable
 
 
     /// <summary>
-    /// 写入意图
+    /// 写入意图，必须在 <see cref="Initialize(string, XElement?)"/> 之后调用
     /// </summary>
     /// <param name="entry"></param>
     /// <param name="intent"></param>

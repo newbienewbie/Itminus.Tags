@@ -85,7 +85,6 @@ internal class TagsProject : ITagsProject
     public void Initialize(string projRoot, XElement? root=null)
     {
         this.ProjectRoot = projRoot;
-
         this._channels.Clear();
         this.Tags = null!;
         this._logicets.Clear();
@@ -100,10 +99,12 @@ internal class TagsProject : ITagsProject
             root = XElement.Load(rootxmlPath);
         }
 
-        this.CompleteIntentChannels();
+        this.CompleteIntentChannels("项目正在初始化，未处理的意图已被丢弃");
         this.LoadChannels(root);
         this.LoadTags(root);
         this.LoadLogicets(root);
+
+        _ = this.GetEntries();
     }
 
 
@@ -157,20 +158,14 @@ internal class TagsProject : ITagsProject
 
 
     #region Entries;
-    private object _entriesLock = new object();
-    private IList<ITagGrp>? _entries;
-    public IList<ITagGrp> GetEntries(bool force=false)
+    private IList<ITagGrp>? _entries = null;
+    public IList<ITagGrp> GetEntries()
     {
-        if (this._entries != null && !force)
+        if(this._entries is not null)
         {
             return this._entries;
         }
-
-        lock (_entriesLock)
-        {
-            var entries = this.Tags.ScanEntries();
-            this._entries = entries;
-        }
+        this._entries = this.Tags.ScanEntries();
         return this._entries;
     }
     #endregion
@@ -190,7 +185,7 @@ internal class TagsProject : ITagsProject
             throw new Exception("逻辑组件集为空");
         }
 
-        var entries = this.GetEntries(force: true);
+        var entries = this.GetEntries();
         if (entries.Count == 0)
         {
             throw new Exception("未配置入口测点组");
@@ -274,11 +269,20 @@ internal class TagsProject : ITagsProject
         });
     }
 
-    protected virtual void CompleteIntentChannels()
+    protected virtual void CompleteIntentChannels(string disposeMsg)
     {
         foreach (var kvp in this._entryWriteIntentChannels)
         {
             kvp.Value.Writer.TryComplete();
+        }
+
+        foreach(var kvp in this._entryWriteIntentChannels)
+        {
+            var reader = kvp.Value.Reader;
+            while (reader.TryRead(out var item))
+            {
+                item.Completion.TrySetException(new IntentWrittenException(kvp.Key, disposeMsg));
+            }
         }
 
         this._entryWriteIntentChannels.Clear();
@@ -310,7 +314,7 @@ internal class TagsProject : ITagsProject
         {
             if (disposing)
             {
-                this.CompleteIntentChannels();
+                this.CompleteIntentChannels("项目正在释放，未处理的意图已被丢弃");
                 foreach (var d in this._disposables)
                 {
                     try
