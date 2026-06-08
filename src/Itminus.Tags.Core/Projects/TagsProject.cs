@@ -16,7 +16,7 @@ internal class TagsProject : ITagsProject
     private readonly ILogicetsLoader _logicetLoader;
     private readonly ITagGrpRunnerFactory _tagGrpRunnerFactory;
     private readonly IServiceProvider _sp;
-    private readonly ConcurrentDictionary<string, Channel<TagGrpWriteIntent>> _entryWriteIntentChannels = new();
+    private readonly ConcurrentDictionary<string, Channel<IntentCompletion>> _entryWriteIntentChannels = new();
 
     private List<IDisposable> _disposables = new List<IDisposable>();
 
@@ -213,28 +213,34 @@ internal class TagsProject : ITagsProject
     /// <inheritdoc/>
     public bool WriteIntent(string entry, TagGrpWriteIntent intent)
     {
-        var intentChannel = GetRequiredEntryIntentChannel(entry);
-        var writer = intentChannel.Writer;
-        return writer.TryWrite(intent);
+        return this.WriteIntent(entry, intent, out _);
     }
 
-    private Channel<TagGrpWriteIntent> GetRequiredEntryIntentChannel(string entry)
+    /// <inheritdoc/>
+    public bool WriteIntent(string entry, TagGrpWriteIntent intent, out Task task)
     {
-        if (!this._entryWriteIntentChannels.TryGetValue(entry, out var intentChannel))
+        var intentChannel = this._entryWriteIntentChannels.GetOrAdd(entry, _ => this.CreateIntentChannel());
+        var writer = intentChannel.Writer;
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var item = new IntentCompletion(intent, tcs);
+        task = tcs.Task;
+        var written= writer.TryWrite(item);
+        if (!written)
         {
-            throw new KeyNotFoundException($"未找到入口组 {entry} 对应的意图通道");
+            tcs.TrySetException(new IntentWrittenException(entry, "写入意图失败"));
         }
-        return intentChannel;
+        return written;
     }
 
-    protected virtual Channel<TagGrpWriteIntent> CreateIntentChannel()
+
+    protected virtual Channel<IntentCompletion> CreateIntentChannel()
     {
         if (this.IntentCapacity <= 0)
         {
             throw new Exception($"IntentCapacity 必须大于 0, 当前={this.IntentCapacity}");
         }
 
-        return Channel.CreateBounded<TagGrpWriteIntent>(new BoundedChannelOptions(capacity: this.IntentCapacity)
+        return Channel.CreateBounded<IntentCompletion>(new BoundedChannelOptions(capacity: this.IntentCapacity)
         {
             SingleReader = true,
             SingleWriter = false,
@@ -254,7 +260,7 @@ internal class TagsProject : ITagsProject
     }
 
     /// <inheritdoc/>
-    public ChannelReader<TagGrpWriteIntent>? GetIntentReader(string entry)
+    public ChannelReader<IntentCompletion>? GetIntentReader(string entry)
     {
         if (!this._entryWriteIntentChannels.TryGetValue(entry, out var intentChannel))
         {
@@ -310,4 +316,16 @@ internal class TagsProject : ITagsProject
         GC.SuppressFinalize(this);
     }
     #endregion
+}
+
+
+internal class IntentWrittenException : Exception
+{
+    public IntentWrittenException(string entry,string message)
+        : base(message)
+    {
+        this.Entry = entry;
+    }
+
+    public string Entry { get; }
 }

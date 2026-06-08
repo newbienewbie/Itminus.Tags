@@ -118,9 +118,20 @@ internal class TagGrpRunner : ITagGrpRunner
         }
 
         var count = 0;
-        while (reader.TryRead(out var writeIntent))
+        while (reader.TryRead(out var item))
         {
-            await writeIntent(entry, ct);
+            var intent = item.Intent;
+            var tcs = item.Completion;
+            try
+            {
+                await intent(entry, ct);
+                tcs.SetResult();
+            }
+            catch(Exception ex)
+            {
+                tcs.SetException(ex);
+            }
+
             count++;
             if (count >= this._project.IntentCapacity)
             {
