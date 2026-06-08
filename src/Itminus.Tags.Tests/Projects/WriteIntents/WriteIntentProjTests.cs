@@ -27,7 +27,7 @@ public class WriteIntentProjTests
     [Fact]
     public async Task TestWriteIntent()
     {
-        var scope = _root.CreateScope();
+        using var scope = _root.CreateScope();
         var sp = scope.ServiceProvider;
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -75,7 +75,7 @@ public class WriteIntentProjTests
     [Fact]
     public async Task TestWriteIntentException()
     {
-        var scope = _root.CreateScope();
+        using var scope = _root.CreateScope();
         var sp = scope.ServiceProvider;
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;

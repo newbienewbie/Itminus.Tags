@@ -156,6 +156,25 @@ internal class TagsProject : ITagsProject
     #endregion
 
 
+    #region Entries;
+    private object _entriesLock = new object();
+    private IList<ITagGrp>? _entries;
+    public IList<ITagGrp> GetEntries(bool force=false)
+    {
+        if (this._entries != null && !force)
+        {
+            return this._entries;
+        }
+
+        lock (_entriesLock)
+        {
+            var entries = this.Tags.ScanEntries();
+            this._entries = entries;
+        }
+        return this._entries;
+    }
+    #endregion
+
     public virtual Task RunAsync(CancellationToken ct)
     {
         if (this.Channels == null || this.Channels.Count == 0)
@@ -171,7 +190,7 @@ internal class TagsProject : ITagsProject
             throw new Exception("逻辑组件集为空");
         }
 
-        var entries = this.Tags.ScanEntries();
+        var entries = this.GetEntries(force: true);
         if (entries.Count == 0)
         {
             throw new Exception("未配置入口测点组");
@@ -219,6 +238,12 @@ internal class TagsProject : ITagsProject
     /// <inheritdoc/>
     public bool WriteIntent(string entry, TagGrpWriteIntent intent, out Task task)
     {
+        // 校验 entry 是否真的存在，只允许向合法的入口写入意图
+        var entries = this.GetEntries();
+        if(!entries.Any(e => e.Name == entry))
+        {
+            throw new Exception($"未找到指定的入口测点组: {entry}");
+        }
         var intentChannel = this._entryWriteIntentChannels.GetOrAdd(entry, _ => this.CreateIntentChannel());
         var writer = intentChannel.Writer;
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
