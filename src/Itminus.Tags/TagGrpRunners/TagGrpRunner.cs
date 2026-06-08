@@ -125,11 +125,15 @@ internal class TagGrpRunner : ITagGrpRunner
             try
             {
                 await intent(entry, ct);
-                tcs.SetResult();
+                tcs.TrySetResult();
             }
-            catch(Exception ex)
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
             {
-                tcs.SetException(ex);
+                tcs.TrySetCanceled(ct);
+            }
+            catch (Exception ex)
+            {
+                tcs.TrySetException(ex);
             }
 
             count++;
