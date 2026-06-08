@@ -242,7 +242,7 @@ internal class TagsProject : ITagsProject
         var entries = this.GetEntries();
         if(!entries.Any(e => e.Name == entry))
         {
-            throw new Exception($"未找到指定的入口测点组: {entry}");
+            throw new KeyNotFoundException($"未找到指定的入口测点组: {entry}");
         }
         var intentChannel = this._entryWriteIntentChannels.GetOrAdd(entry, _ => this.CreateIntentChannel());
         var writer = intentChannel.Writer;
