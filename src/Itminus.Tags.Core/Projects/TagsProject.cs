@@ -348,7 +348,7 @@ internal class TagsProject : ITagsProject
 }
 
 
-internal class IntentWrittenException : Exception
+public sealed class IntentWrittenException : Exception
 {
     public IntentWrittenException(string entry,string message)
         : base(message)
