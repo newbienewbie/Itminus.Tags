@@ -13,6 +13,13 @@ namespace Itminus.Tags;
 /// <returns></returns>
 public delegate ValueTask TagGrpWriteIntent(ITagGrp entry, CancellationToken ct);
 
+/// <summary>
+/// 外部写入入口组变更意图的委托 + 委托完成的TaskCompletionSource。
+/// </summary>
+/// <param name="Intent"></param>
+/// <param name="Completion"></param>
+public record IntentCompletion(TagGrpWriteIntent Intent, TaskCompletionSource Completion);
+
 
 /// <summary>
 /// 一个测点项目，包含通道、测点、逻辑等信息。<br/>
@@ -77,17 +84,27 @@ public interface ITagsProject: IDisposable
 
 
     /// <summary>
+    /// 写入意图，必须在 <see cref="Initialize(string, XElement?)"/> 之后调用
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <param name="intent"></param>
+    /// <param name="task">代表意图是否被执行，如果写入失败，则直接设为异常</param>
+    bool WriteIntent(string entry, TagGrpWriteIntent intent, out Task task);
+
+    /// <summary>
     /// 写入意图
     /// </summary>
     /// <param name="entry"></param>
     /// <param name="intent"></param>
+    [Obsolete("Use WriteIntent(string entry, TagGrpWriteIntent intent, out Task task) instead.")]
     bool WriteIntent(string entry, TagGrpWriteIntent intent);
+
 
     /// <summary>
     /// 获取意图通道读取器。<br/>
     /// </summary>
     /// <param name="entry"></param>
     /// <returns></returns>
-    ChannelReader<TagGrpWriteIntent>? GetIntentReader(string entry);
+    ChannelReader<IntentCompletion>? GetIntentReader(string entry);
     #endregion
 }
