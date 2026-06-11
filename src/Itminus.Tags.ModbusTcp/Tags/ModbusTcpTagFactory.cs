@@ -13,7 +13,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
 
     protected override int GetTagOffset(TagDescriptor tagDescriptor)
     {
-        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.Address);
+        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.NormalizedAddress);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
         var offset = tagAddr.StartPoint - groupAddr.StartPoint;
@@ -29,7 +29,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
 
-        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.Address);
+        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.NormalizedAddress);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
         if (tagAddr.Area != RegisterKinds.InputContacts)
@@ -49,7 +49,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
 
-        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.Address);
+        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.NormalizedAddress);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
         if (tagAddr.Area != RegisterKinds.OutputCoils)
@@ -68,7 +68,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 2;
         }
-        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.Address);
+        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.NormalizedAddress);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
         if (tagAddr.Area == RegisterKinds.InputRegisters || tagAddr.Area == RegisterKinds.HoldingRegisters)

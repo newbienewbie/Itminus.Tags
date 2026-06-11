@@ -19,8 +19,8 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 1;
         }
-        var tagAddr = PinAddrUtils.ParseDI(tagDescriptor.Address);
-        tagDescriptor.Address = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+        var tagAddr = PinAddrUtils.ParseDI(tagDescriptor.RawAddress);
+        tagDescriptor.NormalizedAddress = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
         return new DITag(tagDescriptor, TagCbnt, offset);
@@ -34,8 +34,8 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 1;
         }
-        var tagAddr = PinAddrUtils.ParseDO(tagDescriptor.Address);
-        tagDescriptor.Address = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+        var tagAddr = PinAddrUtils.ParseDO(tagDescriptor.RawAddress);
+        tagDescriptor.NormalizedAddress = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;
         return new DOTag(tagDescriptor, TagCbnt, offset);

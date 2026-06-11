@@ -15,10 +15,9 @@ internal class OpcUaClientTagCbntor : TagCbntor
     public OpcUaClientTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
         : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
     {
-        var address = tagDescriptor.Address;
         this._cbnt = this.TagCbnt as OpcUaClientTagCbnt
             ?? throw new InvalidOperationException("Cbnt is not an OpcUaTagCbnt");
-        this.NodeId = address;
+        this.NodeId = tagDescriptor.RawAddress;
     }
 
     public override object? Value {

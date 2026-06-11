@@ -79,7 +79,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         foreach (var kvp in this.TagCbnt.Children)
         {
             var tag = kvp.Value;
-            var addr = S7AddressParser.Parse(tag.TagAddress());
+            var addr = S7AddressParser.Parse(tag.RawAddress());
             if(addr.BlockSpecified)
             {
                 if(addr.Area != groupAddr.Area || addr.BlockNumber != groupAddr.BlockNumber)
@@ -94,7 +94,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
                 // fill in the area and block number from group address
                 addr.Area = groupAddr.Area;
                 addr.BlockNumber = groupAddr.BlockNumber;
-                tag.TagDescriptor.Address = addr.ToString();
+                tag.TagDescriptor.NormalizedAddress = addr.ToString();
             }
         }
     }

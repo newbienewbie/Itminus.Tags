@@ -91,16 +91,19 @@ public static class S7AddressParser
             throw new Exception($"S7地址格式错误:{addr}长度不足2");
         }
 
+        // $$开头表示引用TagCbnt的AreaKind和BlockNumber，地址字符串中不包含AreaKind和BlockNumber信息
         if (addrspan[0] == '$' && addrspan[1] == '$')
         {
             return ParseRelativeAddress(addrspan[2..]);
         }
 
+        // MB. 开头表示MB区地址，地址字符串中不包含AreaKind和BlockNumber信息
         if (addrspan.Length >= 3 && addrspan[0] == 'M' && addrspan[1] == 'B' && addrspan[2] == '.')
         {
             return ParseMBAddress(addrspan[3..]);
         }
 
+        // DB开头表示DB区地址，地址字符串中包含AreaKind和BlockNumber信息
         if (addrspan[0] == 'D' && addrspan[1] == 'B')
         {
             var q = ParseDBAddressWithNthBit(addr).OrElse(_ => ParseDBAddressWithoutNthBit(addr));

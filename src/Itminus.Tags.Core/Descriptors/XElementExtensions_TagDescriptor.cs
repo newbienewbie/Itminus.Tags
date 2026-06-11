@@ -34,7 +34,7 @@ public static class XElementExtensions_TagDescriptor
 
         var tagdescriptor = new TagDescriptor()
         {
-            Address = address,
+            RawAddress = address,
             TagName = tagName,
             TagKind = tagKind,
             EndianKind = tagEndian,
@@ -71,7 +71,7 @@ public static class XElementExtensions_TagDescriptor
     public static XElement ToXElement(this TagDescriptor descriptor)
     {
         var name = new XAttribute("name", descriptor.TagName);
-        var address = new XAttribute("address", descriptor.Address);
+        var address = new XAttribute("address", descriptor.RawAddress);
         var tagEndian = new XAttribute("endian", descriptor.EndianKind);
         var access = new XAttribute("access", descriptor.AccessMode);
 

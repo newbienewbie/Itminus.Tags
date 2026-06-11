@@ -19,7 +19,7 @@ public class TagDescriptor_Tests
     {
         var descriptor1 = new TagDescriptor 
         {
-            Address = "DB200.100.1",
+            RawAddress = "DB200.100.1",
             TagKind = BuiltinTagKinds.BIT,
             TagName = "拍照-请求-标志",
             EndianKind = EndianKinds.LittleEndian,
@@ -36,7 +36,7 @@ public class TagDescriptor_Tests
         Assert.Equal(xml1,xml2);
 
         Assert.Equal(descriptor1.TagName, descriptor2.TagName);
-        Assert.Equal(descriptor1.Address, descriptor2.Address);
+        Assert.Equal(descriptor1.RawAddress, descriptor2.RawAddress);
         Assert.Equal(descriptor1.TagKind, descriptor2.TagKind);
         Assert.Equal(descriptor1.EndianKind, descriptor2.EndianKind);
         Assert.Equal(descriptor1.TagSize, descriptor2.TagSize);
@@ -49,7 +49,7 @@ public class TagDescriptor_Tests
     {
         var descriptor1 = new TagDescriptor
         {
-            Address = "DB200.100.2",
+            RawAddress = "DB200.100.2",
             TagKind = BuiltinTagKinds.BYTE,
             TagName = "ExtraTest",
             EndianKind = EndianKinds.LittleEndian,

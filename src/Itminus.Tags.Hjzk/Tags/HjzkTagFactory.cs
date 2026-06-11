@@ -18,10 +18,10 @@ public class HjzkTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 1;
         }
-        var tagAddr = PinAddrUtils.TryParseDI(tagDescriptor.Address, out var addr) ?
+        var tagAddr = PinAddrUtils.TryParseDI(tagDescriptor.RawAddress, out var addr) ?
             addr : 
-            throw new ArgumentException($"Hjzk DI 地址非法({tagDescriptor.Address})");
-        tagDescriptor.Address = addr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+            throw new ArgumentException($"Hjzk DI 地址非法({tagDescriptor.RawAddress})");
+        tagDescriptor.NormalizedAddress = addr.ToModbusTcpAddr(this._cbntBuilder.Slave);
 
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
@@ -36,10 +36,10 @@ public class HjzkTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 1;
         }
-        var tagAddr = PinAddrUtils.TryParseDO(tagDescriptor.Address, out var addr) ?
+        var tagAddr = PinAddrUtils.TryParseDO(tagDescriptor.RawAddress, out var addr) ?
             addr:  
-            throw new ArgumentException($"Hjzk DO 地址非法({tagDescriptor.Address})");
-        tagDescriptor.Address = addr.ToModbusTcpAddr(this._cbntBuilder.Slave);
+            throw new ArgumentException($"Hjzk DO 地址非法({tagDescriptor.RawAddress})");
+        tagDescriptor.NormalizedAddress = addr.ToModbusTcpAddr(this._cbntBuilder.Slave);
 
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;

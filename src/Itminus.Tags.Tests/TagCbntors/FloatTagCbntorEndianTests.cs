@@ -21,7 +21,7 @@ public class FloatTagCbntorEndianTests
     public void Float_Roundtrip(EndianKinds endian)
     {
         var cbnt = CreateCbnt(8);
-        var d = new TagDescriptor { TagName = "f32", Address = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = endian };
+        var d = new TagDescriptor { TagName = "f32", RawAddress = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = endian };
         var tag = new FloatTagCbntor(d, cbnt, 0);
 
         tag.Value = 1.23456789f;
@@ -32,7 +32,7 @@ public class FloatTagCbntorEndianTests
     public void Float_BigEndian_WritesFourBytesInBigEndianOrder()
     {
         var cbnt = CreateCbnt(8);
-        var d = new TagDescriptor { TagName = "f32", Address = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.BigEndian };
+        var d = new TagDescriptor { TagName = "f32", RawAddress = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.BigEndian };
         var tag = new FloatTagCbntor(d, cbnt, 0);
 
         const float value = 1.0f; // 0x3F800000 => big-endian bytes: [0x3F, 0x80, 0x00, 0x00]
@@ -48,7 +48,7 @@ public class FloatTagCbntorEndianTests
     public void Float_LittleEndian_WritesFourBytesInLittleEndianOrder()
     {
         var cbnt = CreateCbnt(8);
-        var d = new TagDescriptor { TagName = "f32", Address = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.LittleEndian };
+        var d = new TagDescriptor { TagName = "f32", RawAddress = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.LittleEndian };
         var tag = new FloatTagCbntor(d, cbnt, 0);
 
         const float value = 1.0f; // 0x3F800000 => little-endian bytes: [0x00, 0x00, 0x80, 0x3F]
@@ -64,10 +64,10 @@ public class FloatTagCbntorEndianTests
     public void Float_BigEndian_CacheBytesReverseOfLittleEndian()
     {
         var cbnt = CreateCbnt(8);
-        var dBig = new TagDescriptor { TagName = "f32", Address = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.BigEndian };
+        var dBig = new TagDescriptor { TagName = "f32", RawAddress = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.BigEndian };
         new FloatTagCbntor(dBig, cbnt, 0).Value = 1.0f;
 
-        var dLittle = new TagDescriptor { TagName = "f32", Address = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.LittleEndian };
+        var dLittle = new TagDescriptor { TagName = "f32", RawAddress = "0", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4, EndianKind = EndianKinds.LittleEndian };
         new FloatTagCbntor(dLittle, cbnt, 4).Value = 2.0f;
 
         var actual1 = cbnt.Cache.Span.Slice(0, 4).ToArray();

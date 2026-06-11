@@ -11,7 +11,7 @@ public class S7TagFactory : TagCbntorFactoryBase
 
     protected override int GetTagOffset(TagDescriptor tagDescriptor)
     {
-        var tagAddr = S7AddressParser.Parse(tagDescriptor.Address);
+        var tagAddr = S7AddressParser.Parse(tagDescriptor.RawAddress);
         var groupAddr = S7AddressParser.Parse(this.TagCbnt.StartAddress);
 
         var offset = tagAddr.StartAddress - groupAddr.StartAddress;
@@ -33,7 +33,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
 
-        var tagAddr = S7AddressParser.Parse(tagDescriptor.Address);
+        var tagAddr = S7AddressParser.Parse(tagDescriptor.RawAddress);
         var groupAddr = S7AddressParser.Parse(this.TagCbnt.StartAddress);
 
         var offset = tagAddr.StartAddress -  groupAddr.StartAddress;

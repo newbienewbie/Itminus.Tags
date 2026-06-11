@@ -11,7 +11,7 @@ else
         @if (Model is TagDescriptor td)
         {
             <MudTextField Label="Name" @bind-Value="td.TagName" />
-            <MudTextField Label="Address" @bind-Value="td.Address" />
+            <MudTextField Label="Address" @bind-Value="td.RawAddress" />
             <MudTextField Label="Type" @bind-Value="td.TagKind" />
             <MudSelect T="string" Label="Channel" @bind-Value="td.ChannelName">
                 <MudSelectItem Value="@string.Empty"></MudSelectItem>
@@ -81,7 +81,7 @@ else
 
     private void AddChildToCbnt(TagCbntDescriptor cbnt)
     {
-        var t = new TagDescriptor { TagName = "NewTag", Address = "" };
+        var t = new TagDescriptor { TagName = "NewTag", RawAddress = "" };
         cbnt.Children.Add(t);
         StateHasChanged();
     }
@@ -94,7 +94,7 @@ else
 
     private void AddTagToGroup(TagGrpDescriptor grp)
     {
-        grp.Children.Add(new TagDescriptor { TagName = "NewTag", Address = "" });
+        grp.Children.Add(new TagDescriptor { TagName = "NewTag", RawAddress = "" });
         StateHasChanged();
     }
 

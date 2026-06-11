@@ -18,7 +18,7 @@ public class IntegralTagCbntorEndianTests
     public void Int16_Roundtrip(EndianKinds endian)
     {
         var cbnt = CreateCbnt(16);
-        var d = new TagDescriptor { TagName = "i16", Address = "0", TagKind = BuiltinTagKinds.INT16, TagSize = 2, EndianKind = endian };
+        var d = new TagDescriptor { TagName = "i16", RawAddress = "0", TagKind = BuiltinTagKinds.INT16, TagSize = 2, EndianKind = endian };
         var tag = new Int16TagCbntor(d, cbnt, 0);
 
         tag.Value = (short)-12345;
@@ -31,7 +31,7 @@ public class IntegralTagCbntorEndianTests
     public void UInt16_Roundtrip(EndianKinds endian)
     {
         var cbnt = CreateCbnt(16);
-        var d = new TagDescriptor { TagName = "u16", Address = "0", TagKind = BuiltinTagKinds.UINT16, TagSize = 2, EndianKind = endian };
+        var d = new TagDescriptor { TagName = "u16", RawAddress = "0", TagKind = BuiltinTagKinds.UINT16, TagSize = 2, EndianKind = endian };
         var tag = new UInt16TagCbntor(d, cbnt, 0);
 
         tag.Value = (ushort)54321;
@@ -44,7 +44,7 @@ public class IntegralTagCbntorEndianTests
     public void Int32_Roundtrip(EndianKinds endian)
     {
         var cbnt = CreateCbnt(16);
-        var d = new TagDescriptor { TagName = "i32", Address = "0", TagKind = BuiltinTagKinds.INT32, TagSize = 4, EndianKind = endian };
+        var d = new TagDescriptor { TagName = "i32", RawAddress = "0", TagKind = BuiltinTagKinds.INT32, TagSize = 4, EndianKind = endian };
         var tag = new Int32TagCbntor(d, cbnt, 0);
 
         tag.Value = -123456789;
@@ -57,7 +57,7 @@ public class IntegralTagCbntorEndianTests
     public void UInt32_Roundtrip(EndianKinds endian)
     {
         var cbnt = CreateCbnt(16);
-        var d = new TagDescriptor { TagName = "u32", Address = "0", TagKind = BuiltinTagKinds.UINT32, TagSize = 4, EndianKind = endian };
+        var d = new TagDescriptor { TagName = "u32", RawAddress = "0", TagKind = BuiltinTagKinds.UINT32, TagSize = 4, EndianKind = endian };
         var tag = new UInt32TagCbntor(d, cbnt, 0);
 
         tag.Value = 4000000000u;
@@ -70,7 +70,7 @@ public class IntegralTagCbntorEndianTests
     public void Int64_Roundtrip(EndianKinds endian)
     {
         var cbnt = CreateCbnt(32);
-        var d = new TagDescriptor { TagName = "i64", Address = "0", TagKind = BuiltinTagKinds.INT64, TagSize = 8, EndianKind = endian };
+        var d = new TagDescriptor { TagName = "i64", RawAddress = "0", TagKind = BuiltinTagKinds.INT64, TagSize = 8, EndianKind = endian };
         var tag = new Int64TagCbntor(d, cbnt, 0);
 
         tag.Value = -1234567890123456789L;
@@ -83,7 +83,7 @@ public class IntegralTagCbntorEndianTests
     public void UInt64_Roundtrip(EndianKinds endian)
     {
         var cbnt = CreateCbnt(32);
-        var d = new TagDescriptor { TagName = "u64", Address = "0", TagKind = BuiltinTagKinds.UINT64, TagSize = 8, EndianKind = endian };
+        var d = new TagDescriptor { TagName = "u64", RawAddress = "0", TagKind = BuiltinTagKinds.UINT64, TagSize = 8, EndianKind = endian };
         var tag = new UInt64TagCbntor(d, cbnt, 0);
 
         tag.Value = 12345678901234567890UL;

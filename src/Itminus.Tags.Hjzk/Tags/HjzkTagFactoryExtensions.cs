@@ -14,7 +14,8 @@ public static class HjzkTagFactoryExtensions
         return factory.CreateTag(new TagDescriptor()
         {
             TagName = tagName,
-            Address = pin.ToModbusTcpAddr(slave),
+            RawAddress = pin.ToString(),
+            NormalizedAddress = pin.ToModbusTcpAddr(slave),
             TagKind = BuiltinTagKinds.BIT,
             TagSize = 1,
         });
@@ -32,7 +33,8 @@ public static class HjzkTagFactoryExtensions
         return factory.CreateTag(new TagDescriptor()
         {
             TagName = tagName,
-            Address = pin.ToModbusTcpAddr(slave),
+            RawAddress = pin.ToString(),
+            NormalizedAddress = pin.ToModbusTcpAddr(slave),
             TagKind = BuiltinTagKinds.BIT,
             TagSize = 1,
         });
