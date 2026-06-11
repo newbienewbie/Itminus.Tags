@@ -44,9 +44,9 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         {
             var tag = kvp.Value;
             var occupied = tag.TagOffset + tag.TagDescriptor.TagSize;
-            if(tag is BitTagCbntor bitTag)
+            if (tag is BitTagCbntor bitTag)
             {
-                if(tag.CacheOffset != tag.TagOffset)
+                if (tag.CacheOffset != tag.TagOffset)
                 {
                     occupied = tag.CacheOffset + 1;
                 }
@@ -68,7 +68,35 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
                 this.InitializeStrTag(strTag);
             }
         }
+
+        NormalizeTagAddress();
         return this;
+    }
+
+    private void NormalizeTagAddress()
+    {
+        var groupAddr = S7AddressParser.Parse(this.TagCbnt.StartAddress);
+        foreach (var kvp in this.TagCbnt.Children)
+        {
+            var tag = kvp.Value;
+            var addr = S7AddressParser.Parse(tag.TagAddress());
+            if(addr.BlockSpecified)
+            {
+                if(addr.Area != groupAddr.Area || addr.BlockNumber != groupAddr.BlockNumber)
+                {
+                    var tagname = tag.TagName();
+                    throw new InvalidOperationException($"Tag & Cbnt start address doesn't match(Tag={tagname}, Grp={this.Name}).");
+                }
+            }
+            else {
+                // let's keep it false to indicate it was a relative address
+                addr.BlockSpecified = false;
+                // fill in the area and block number from group address
+                addr.Area = groupAddr.Area;
+                addr.BlockNumber = groupAddr.BlockNumber;
+                tag.TagDescriptor.Address = addr.ToString();
+            }
+        }
     }
 
     private void InitializeStrTag(S7StrTagCbntor tag)

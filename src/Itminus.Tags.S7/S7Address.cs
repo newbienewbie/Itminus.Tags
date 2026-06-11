@@ -1,4 +1,4 @@
-using Itminus.FSharpExtensions;
+﻿using Itminus.FSharpExtensions;
 using Microsoft.FSharp.Core;
 using System.Text.RegularExpressions;
 
@@ -7,6 +7,7 @@ namespace Itminus.Tags.S7;
 
 public enum AreaKinds
 { 
+    None,
     MB,
     DB,
 }
@@ -22,6 +23,11 @@ public struct S7Address
 
     public int BlockNumber = 0;
 
+    /// <summary>
+    /// Block已经指定
+    /// </summary>
+    public bool BlockSpecified = true;
+
     public int StartAddress = 0;
 
     public bool UseBit = false;
@@ -31,11 +37,42 @@ public struct S7Address
     /// </summary>
     public byte NthBit = 0;
 
+    /// <summary>
+    /// 转成 TagAdress 字符串
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public override string ToString()
     {
-        var str = this.Area switch { 
+        var str = this.Area switch
+        {
             AreaKinds.MB => $"MB.{StartAddress}",
             AreaKinds.DB => $"DB{BlockNumber}.{StartAddress}",
+            AreaKinds.None => $"$${StartAddress}",
+            _ => throw new Exception($"未预料的S7 Area类型={this.Area}")
+        };
+        if (!UseBit)
+        {
+            return str;
+        }
+        return $"{str}.{NthBit}";
+    }
+
+    /// <summary>
+    /// 展示格式化的地址字符串，
+    /// 格式化结果与输入的地址字符串格式相同，例如：
+    /// 如果输入的地址是"$$104.3"，则格式化结果也是"$$104.3";
+    /// 如果输入的地址是"DB200.100"，则格式化结果也是"DB200.100"
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public string Format()
+    {
+        var str = (this.BlockSpecified, this.Area) switch
+        {
+            (false, _) => $"$${StartAddress}",
+            (true, AreaKinds.MB) => $"MB.{StartAddress}",
+            (true, AreaKinds.DB) => $"DB{BlockNumber}.{StartAddress}",
             _ => throw new Exception($"未预料的S7 Area类型={this.Area}")
         };
         if (!UseBit)
@@ -51,12 +88,17 @@ public static class S7AddressParser
     public static S7Address Parse(string addr)
     {
         var addrspan = addr.AsSpan();
-        if (addrspan.Length < 3)
+        if (addrspan.Length < 2)
         {
-            throw new Exception($"S7地址格式错误:{addr}长度不足3");
+            throw new Exception($"S7地址格式错误:{addr}长度不足2");
         }
 
-        if (addrspan[0] == 'M' && addrspan[1] == 'B' && addrspan[2] == '.')
+        if (addrspan[0] == '$' && addrspan[1] == '$')
+        {
+            return ParseRelativeAddress(addrspan[2..]);
+        }
+
+        if (addrspan.Length >= 3 && addrspan[0] == 'M' && addrspan[1] == 'B' && addrspan[2] == '.')
         {
             return ParseMBAddress(addrspan[3..]);
         }
@@ -194,4 +236,52 @@ public static class S7AddressParser
         }
 
     }
+
+    private static S7Address ParseRelativeAddress(ReadOnlySpan<char> span)
+    {
+        var index = span.IndexOf('.');
+        var useBit = index > 0;
+        if (useBit)
+        {
+            var startSpan = span[..index];
+            if (!int.TryParse(startSpan, out var start))
+            {
+                throw new Exception($"S7地址不合法: 无法解析起始地址");
+            }
+
+            if (!byte.TryParse(span.Slice(index + 1), out var nthBit))
+            {
+                throw new Exception($"S7地址不合法: 无法解析位地址");
+            }
+            return new S7Address()
+            {
+                Area = AreaKinds.None,
+                BlockNumber = 0,
+                BlockSpecified = false,
+                StartAddress = start,
+                UseBit = true,
+                NthBit = nthBit,
+            };
+
+        }
+        else
+        {
+            if (!int.TryParse(span, out var start))
+            {
+                throw new Exception($"S7地址不合法: 无法解析起始地址");
+            }
+            return new S7Address()
+            {
+                Area = AreaKinds.None,
+                BlockNumber = 0,
+                BlockSpecified = false,
+                StartAddress = start,
+                UseBit = false,
+                NthBit = 0,
+            };
+        }
+
+    }
+
+
 }
