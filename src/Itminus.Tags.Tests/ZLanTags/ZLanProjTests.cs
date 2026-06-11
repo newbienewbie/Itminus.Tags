@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.ZLan;
+using Itminus.Tags.ModbusTcp;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -51,9 +52,19 @@ public class ZLanProjTests
         #region input group
         var btnLetGo = g2.SelectTag("输入/放行按钮闭合状态");
         Assert.Equal("放行按钮闭合状态", btnLetGo.TagName());
+        Assert.Equal("DI1", btnLetGo.RawAddress());
+        Assert.NotEqual(btnLetGo.RawAddress(), btnLetGo.NormalizedAddress());
+        Assert.Equal("1~10001", btnLetGo.NormalizedAddress());
+        var normalizedDi = ModBusTcpAddressParser.Parse(btnLetGo.NormalizedAddress());
+        Assert.Equal(RegisterKinds.InputContacts, normalizedDi.Area);
 
         var btnManual = g2.SelectTag("输入/手动");
         Assert.Equal("手动", btnManual.TagName());
+        Assert.Equal("DI2", btnManual.RawAddress());
+        Assert.NotEqual(btnManual.RawAddress(), btnManual.NormalizedAddress());
+        Assert.Equal("1~10002", btnManual.NormalizedAddress());
+        var normalizedDi2 = ModBusTcpAddressParser.Parse(btnManual.NormalizedAddress());
+        Assert.Equal(RegisterKinds.InputContacts, normalizedDi2.Area);
 
         // Verify Cache Size
         var input = g2.SelectCbnt("输入");
@@ -64,6 +75,11 @@ public class ZLanProjTests
         #region output group
         var ledGreen = g2.SelectTag("输出/绿灯");
         Assert.Equal("绿灯", ledGreen.TagName());
+        Assert.Equal("DO1", ledGreen.RawAddress());
+        Assert.NotEqual(ledGreen.RawAddress(), ledGreen.NormalizedAddress());
+        Assert.Equal("1~00017", ledGreen.NormalizedAddress());
+        var normalizedDo = ModBusTcpAddressParser.Parse(ledGreen.NormalizedAddress());
+        Assert.Equal(RegisterKinds.OutputCoils, normalizedDo.Area);
 
         var ledRed = g2.SelectTag("输出/红灯");
         Assert.Equal("红灯", ledRed.TagName());

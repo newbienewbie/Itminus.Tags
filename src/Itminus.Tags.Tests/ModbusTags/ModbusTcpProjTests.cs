@@ -54,9 +54,13 @@ public class ModbusTcpProjTests
 
         var btnLetGo = g3.SelectTag("输入/放行按钮闭合状态");
         Assert.Equal("放行按钮闭合状态", btnLetGo.TagName());
+        Assert.Equal("10001", btnLetGo.RawAddress());
+        Assert.Equal("10001", btnLetGo.NormalizedAddress());
 
         var btnManual = g3.SelectTag("输入/手动");
         Assert.Equal("手动", btnManual.TagName());
+        Assert.Equal("10002", btnManual.RawAddress());
+        Assert.Equal("10002", btnManual.NormalizedAddress());
 
         #endregion
 
@@ -68,6 +72,8 @@ public class ModbusTcpProjTests
 
         var ledGreen = g3.SelectTag("输出/绿灯");
         Assert.Equal("绿灯", ledGreen.TagName());
+        Assert.Equal("00020", ledGreen.RawAddress());
+        Assert.Equal("00020", ledGreen.NormalizedAddress());
 
         var ledRed = g3.SelectTag("输出/红灯");
         Assert.Equal("红灯", ledRed.TagName());
@@ -89,6 +95,7 @@ public class ModbusTcpProjTests
         var acq1 = acq.SelectTag("byte");
         Assert.Equal("byte", acq1.TagName());
         Assert.Equal("40020", acq1.TagDescriptor.NormalizedAddress);
+        Assert.Equal("40020", acq1.RawAddress());
         Assert.Equal(BuiltinTagKinds.BYTE, acq1.TagKind());
 
         var acq2 = acq.SelectTag("int16");

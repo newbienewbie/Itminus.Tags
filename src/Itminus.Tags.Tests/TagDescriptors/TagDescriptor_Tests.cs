@@ -15,6 +15,44 @@ public class TagDescriptor_Tests
     }
 
     [Fact]
+    public void Test_NormalizedAddress_DefaultsToRawAddress_WhenNotAssigned()
+    {
+        var descriptor = new TagDescriptor
+        {
+            RawAddress = "DB200.100.1",
+            TagName = "tag-1",
+            TagKind = BuiltinTagKinds.BIT,
+            TagSize = 1,
+        };
+
+        Assert.Equal("DB200.100.1", descriptor.NormalizedAddress);
+    }
+
+    [Fact]
+    public void Test_ConversionWithXElement_PersistsRawAddressOnly()
+    {
+        var descriptor1 = new TagDescriptor
+        {
+            RawAddress = "$$104.1",
+            TagName = "tag-raw-roundtrip",
+            TagKind = BuiltinTagKinds.BIT,
+            TagSize = 1,
+            EndianKind = EndianKinds.LittleEndian,
+            AccessMode = TagAccessMode.RW,
+        };
+
+        // simulate runtime normalization before write-back
+        descriptor1.NormalizedAddress = "DB200.104.1";
+
+        var element = descriptor1.ToXElement();
+        Assert.Equal("$$104.1", (string?)element.Attribute("address"));
+
+        var descriptor2 = element.ToTagDescriptor();
+        Assert.Equal("$$104.1", descriptor2.RawAddress);
+        Assert.Equal("$$104.1", descriptor2.NormalizedAddress);
+    }
+
+    [Fact]
     public void Test_ConversionWithXElement()
     {
         var descriptor1 = new TagDescriptor 
