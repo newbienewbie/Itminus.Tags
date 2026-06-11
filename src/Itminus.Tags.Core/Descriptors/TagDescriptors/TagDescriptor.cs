@@ -59,10 +59,17 @@ public class TagDescriptor: ITagsDescriptor
     /// </summary>
     public TagAddress RawAddress { get; set; } = string.Empty;
 
+    #region
     /// <summary>
     /// 测点地址
     /// </summary>
     private TagAddress? _normalizedAddress = null;
+
+    /// <summary>
+    /// 范化后的测点地址。<br/>
+    /// 这个不会被持久化到Xml中，
+    /// 而是会在运行之前，根据<see cref="RawAddress"/>和上下文进行动态解析。<br/>
+    /// </summary>
     public TagAddress NormalizedAddress {
         get => String.IsNullOrEmpty(_normalizedAddress) ? RawAddress : _normalizedAddress;
         set
@@ -70,6 +77,7 @@ public class TagDescriptor: ITagsDescriptor
             _normalizedAddress = value;
         }
     }
+    #endregion
 
     /// <summary>
     /// 大小尾
