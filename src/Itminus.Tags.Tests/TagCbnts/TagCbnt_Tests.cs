@@ -64,14 +64,14 @@ public class TagCbnt_Tests
         };
         cbnt.ResizeCache(4);
         var tag1 = new BitTagCbntor(
-            new TagDescriptor() { Address = "0.0", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点1" },
+            new TagDescriptor() { RawAddress = "0.0", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点1" },
             cbnt,
             0,
             0,
             0
             );
         var tag2 = new BitTagCbntor(
-            new TagDescriptor() { Address = "0.1", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点2" },
+            new TagDescriptor() { RawAddress = "0.1", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点2" },
             cbnt,
             0,
             0,
@@ -141,14 +141,14 @@ public class TagCbnt_Tests
         };
         cbnt.ResizeCache(4);
         var tag1 = new BitTagCbntor(
-            new TagDescriptor() { Address = "0.0", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点1" },
+            new TagDescriptor() { RawAddress = "0.0", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点1" },
             cbnt,
             0,
             0,
             0
             );
         var tag2 = new BitTagCbntor(
-            new TagDescriptor() { Address = "0.1", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点2" },
+            new TagDescriptor() { RawAddress = "0.1", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点2" },
             cbnt,
             tagOffset: 0,
             cacheOffset: 0,

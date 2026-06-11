@@ -36,7 +36,7 @@ public class TagGrpDescriptor_Tests
         cbnt1.Children.Add(new TagDescriptor
         {
             TagName = "Tag1",
-            Address = "DB100.100",
+            RawAddress = "DB100.100",
             TagKind = BuiltinTagKinds.INT16,
             EndianKind = EndianKinds.BigEndian,
             AccessMode = TagAccessMode.RW,
@@ -54,7 +54,7 @@ public class TagGrpDescriptor_Tests
         cbnt2.Children.Add(new TagDescriptor
         {
             TagName = "Tag3",
-            Address = "DB200.200",
+            RawAddress = "DB200.200",
             TagKind = BuiltinTagKinds.FLOAT,
             EndianKind = EndianKinds.LittleEndian,
             AccessMode = TagAccessMode.RO,

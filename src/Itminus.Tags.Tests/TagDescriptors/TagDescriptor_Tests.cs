@@ -15,11 +15,49 @@ public class TagDescriptor_Tests
     }
 
     [Fact]
+    public void Test_NormalizedAddress_DefaultsToRawAddress_WhenNotAssigned()
+    {
+        var descriptor = new TagDescriptor
+        {
+            RawAddress = "DB200.100.1",
+            TagName = "tag-1",
+            TagKind = BuiltinTagKinds.BIT,
+            TagSize = 1,
+        };
+
+        Assert.Equal("DB200.100.1", descriptor.NormalizedAddress);
+    }
+
+    [Fact]
+    public void Test_ConversionWithXElement_PersistsRawAddressOnly()
+    {
+        var descriptor1 = new TagDescriptor
+        {
+            RawAddress = "$$104.1",
+            TagName = "tag-raw-roundtrip",
+            TagKind = BuiltinTagKinds.BIT,
+            TagSize = 1,
+            EndianKind = EndianKinds.LittleEndian,
+            AccessMode = TagAccessMode.RW,
+        };
+
+        // simulate runtime normalization before write-back
+        descriptor1.NormalizedAddress = "DB200.104.1";
+
+        var element = descriptor1.ToXElement();
+        Assert.Equal("$$104.1", (string?)element.Attribute("address"));
+
+        var descriptor2 = element.ToTagDescriptor();
+        Assert.Equal("$$104.1", descriptor2.RawAddress);
+        Assert.Equal("$$104.1", descriptor2.NormalizedAddress);
+    }
+
+    [Fact]
     public void Test_ConversionWithXElement()
     {
         var descriptor1 = new TagDescriptor 
         {
-            Address = "DB200.100.1",
+            RawAddress = "DB200.100.1",
             TagKind = BuiltinTagKinds.BIT,
             TagName = "拍照-请求-标志",
             EndianKind = EndianKinds.LittleEndian,
@@ -36,7 +74,7 @@ public class TagDescriptor_Tests
         Assert.Equal(xml1,xml2);
 
         Assert.Equal(descriptor1.TagName, descriptor2.TagName);
-        Assert.Equal(descriptor1.Address, descriptor2.Address);
+        Assert.Equal(descriptor1.RawAddress, descriptor2.RawAddress);
         Assert.Equal(descriptor1.TagKind, descriptor2.TagKind);
         Assert.Equal(descriptor1.EndianKind, descriptor2.EndianKind);
         Assert.Equal(descriptor1.TagSize, descriptor2.TagSize);
@@ -49,7 +87,7 @@ public class TagDescriptor_Tests
     {
         var descriptor1 = new TagDescriptor
         {
-            Address = "DB200.100.2",
+            RawAddress = "DB200.100.2",
             TagKind = BuiltinTagKinds.BYTE,
             TagName = "ExtraTest",
             EndianKind = EndianKinds.LittleEndian,

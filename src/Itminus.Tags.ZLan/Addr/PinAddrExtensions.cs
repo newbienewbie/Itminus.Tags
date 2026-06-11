@@ -9,7 +9,7 @@ public static class PinAddrExtensions
     {
         var addr = ModbusTcpAddress.INPUT_CONTACTS_BASE + (ushort)pin;
         var repr = $"{slave}~{addr:d5}";
-        return addr.ToString();
+        return repr.ToString();
     }
 
     public static string ToModbusTcpAddr(this DOPinAddr pin, byte slave)

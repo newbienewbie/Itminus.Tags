@@ -16,9 +16,4 @@ public class OpcUaClientTagFactory : TagCbntorFactoryBase
         return tag;
     }
 
-
-    /// <summary>
-    /// OpcUaClient does not use tag offsets.
-    /// </summary>
-    protected override int GetTagOffset(TagDescriptor tagDescriptor) => throw new NotImplementedException();
 }

@@ -62,13 +62,13 @@ public class S7ProjTests
 
         var reqProg = g1.SelectTag("拍照请求/拍照-请求-程序号");
         Assert.Equal("拍照-请求-程序号", reqProg.TagName());
-        Assert.Equal("DB200.104", reqProg.TagAddress());
+        Assert.Equal("DB200.104", reqProg.NormalizedAddress());
         Assert.Equal(BuiltinTagKinds.INT16, reqProg.TagKind());
 
 
         var reqPN = g1.SelectTag("拍照请求/拍照-请求-PN");
         Assert.Equal("拍照-请求-PN", reqPN.TagName());
-        Assert.Equal("DB200.106", reqPN.TagAddress());
+        Assert.Equal("DB200.106", reqPN.NormalizedAddress());
         Assert.Equal(BuiltinTagKinds.STR, reqPN.TagKind());
         Assert.IsType<S7StrTagCbntor>(reqPN);
         var pnTag = reqPN as S7StrTagCbntor;
@@ -91,7 +91,7 @@ public class S7ProjTests
 
         var ackI2 = g1.SelectTag("拍照响应/拍照-响应-I2");
         Assert.Equal("拍照-响应-I2", ackI2.TagName());
-        Assert.Equal("DB200.400.8", ackI2.TagAddress());
+        Assert.Equal("DB200.400.8", ackI2.NormalizedAddress());
         Assert.Equal(BuiltinTagKinds.BIT, ackI2.TagKind());
         #endregion
     }

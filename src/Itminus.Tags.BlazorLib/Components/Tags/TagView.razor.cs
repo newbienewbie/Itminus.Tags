@@ -30,7 +30,7 @@ public partial class TagView : IDisposable
             if (tag is not null)
             {
                 TagName = tag.TagName();
-                TagAddress = tag.TagAddress();
+                TagAddress = tag.RawAddress();
                 TagKind = tag.TagKind();
                 TagSize = tag.TagDescriptor.TagSize;
                 IsReadOnly = tag.AccessMode() == TagAccessMode.RO;

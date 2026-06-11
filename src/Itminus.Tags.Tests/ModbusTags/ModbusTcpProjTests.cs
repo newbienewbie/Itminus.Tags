@@ -54,9 +54,13 @@ public class ModbusTcpProjTests
 
         var btnLetGo = g3.SelectTag("输入/放行按钮闭合状态");
         Assert.Equal("放行按钮闭合状态", btnLetGo.TagName());
+        Assert.Equal("10001", btnLetGo.RawAddress());
+        Assert.Equal("10001", btnLetGo.NormalizedAddress());
 
         var btnManual = g3.SelectTag("输入/手动");
         Assert.Equal("手动", btnManual.TagName());
+        Assert.Equal("10002", btnManual.RawAddress());
+        Assert.Equal("10002", btnManual.NormalizedAddress());
 
         #endregion
 
@@ -68,6 +72,8 @@ public class ModbusTcpProjTests
 
         var ledGreen = g3.SelectTag("输出/绿灯");
         Assert.Equal("绿灯", ledGreen.TagName());
+        Assert.Equal("00020", ledGreen.RawAddress());
+        Assert.Equal("00020", ledGreen.NormalizedAddress());
 
         var ledRed = g3.SelectTag("输出/红灯");
         Assert.Equal("红灯", ledRed.TagName());
@@ -88,22 +94,23 @@ public class ModbusTcpProjTests
 
         var acq1 = acq.SelectTag("byte");
         Assert.Equal("byte", acq1.TagName());
-        Assert.Equal("40020", acq1.TagDescriptor.Address);
+        Assert.Equal("40020", acq1.TagDescriptor.NormalizedAddress);
+        Assert.Equal("40020", acq1.RawAddress());
         Assert.Equal(BuiltinTagKinds.BYTE, acq1.TagKind());
 
         var acq2 = acq.SelectTag("int16");
         Assert.Equal("int16", acq2.TagName());
-        Assert.Equal("40021", acq2.TagDescriptor.Address);
+        Assert.Equal("40021", acq2.TagDescriptor.NormalizedAddress);
         Assert.Equal(BuiltinTagKinds.INT16, acq2.TagKind());
 
         var acq3 = acq.SelectTag("int32");
         Assert.Equal("int32", acq3.TagName());
-        Assert.Equal("40022", acq3.TagDescriptor.Address);
+        Assert.Equal("40022", acq3.TagDescriptor.NormalizedAddress);
         Assert.Equal(BuiltinTagKinds.INT32, acq3.TagKind());
 
         var acq4 = acq.SelectTag("float");
         Assert.Equal("float", acq4.TagName());
-        Assert.Equal("40024", acq4.TagDescriptor.Address);
+        Assert.Equal("40024", acq4.TagDescriptor.NormalizedAddress);
         Assert.Equal(BuiltinTagKinds.FLOAT, acq4.TagKind());
         #endregion
     }

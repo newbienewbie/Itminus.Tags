@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Itminus.Tags;
 
 namespace Itminus.Tags.ModbusTcp.Tags;
@@ -29,7 +29,7 @@ public class DITag : TagCbntor
             var flags = cache.Span[CacheOffset];
             return flags != 0;
         }
-        set => throw new Exception($"DI点({this.TagName}地址={this.TagAddress()})不可写入");
+        set => throw new Exception($"DI点({this.TagName}地址={this.RawAddress()})不可写入");
     }
 
 }

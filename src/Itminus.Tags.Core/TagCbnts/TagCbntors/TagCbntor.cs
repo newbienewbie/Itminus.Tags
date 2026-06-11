@@ -112,7 +112,7 @@ public abstract class TagCbntor : ITagCbntor
         }
 
         var cache = this.TagCbnt.Cache.Slice(this.CacheOffset, this.TagSize());
-        await channel.WriteAsync(this.TagAddress(), cache.ToArray(),ct);
+        await channel.WriteAsync(this.NormalizedAddress(), cache.ToArray(),ct);
         this.NotifyTagWritten();
         this.IsDirty = false;
     }
@@ -133,7 +133,7 @@ public abstract class TagCbntor : ITagCbntor
             throw new NotImplementedException($"通道组合子默认实现依赖于通道{nameof(IContinousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}。当前测点组合子名称={this.TagName()}");
         }
 
-        var bytes = await channel.ReadAsync(this.TagAddress(), this.TagSize(),ct);
+        var bytes = await channel.ReadAsync(this.NormalizedAddress(), this.TagSize(),ct);
         var cache = this.TagCbnt.Cache.Slice(this.CacheOffset, bytes.Length);
         bytes.CopyTo(cache);
         this.NotifyTagRead();

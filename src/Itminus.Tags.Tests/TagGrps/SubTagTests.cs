@@ -31,7 +31,7 @@ public class SubTagTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "拍照-请求-标志",
-                    Address = "DB200.100.1",
+                    RawAddress = "DB200.100.1",
                     TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
@@ -39,7 +39,7 @@ public class SubTagTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "拍照-请求-料号",
-                    Address = "DB200.102",
+                    RawAddress = "DB200.102",
                     TagKind = BuiltinTagKinds.BYTE,
                     TagSize = 1,
                 }));
@@ -47,7 +47,7 @@ public class SubTagTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "拍照-请求-程序号",
-                    Address = "DB200.104",
+                    RawAddress = "DB200.104",
                     TagKind = BuiltinTagKinds.INT16,
                     TagSize = 2,
                 }));
@@ -55,7 +55,7 @@ public class SubTagTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "拍照-响应-标志",
-                    Address = "DB200.400.0",
+                    RawAddress = "DB200.400.0",
                     TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
@@ -63,7 +63,7 @@ public class SubTagTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "拍照-响应-OK",
-                    Address = "DB200.400.1",
+                    RawAddress = "DB200.400.1",
                     TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
@@ -71,7 +71,7 @@ public class SubTagTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "拍照-响应-NG",
-                    Address = "DB200.400.2",
+                    RawAddress = "DB200.400.2",
                     TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));

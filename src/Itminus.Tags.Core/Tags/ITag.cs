@@ -91,9 +91,16 @@ public static class ITagExtensions
     public static string TagName(this ITag tag) => tag.TagDescriptor.TagName;
 
     /// <summary>
-    /// 测点地址
+    /// 规范化后的测点地址
     /// </summary>
-    public static TagAddress TagAddress(this ITag tag) => tag.TagDescriptor.Address;
+    public static TagAddress NormalizedAddress(this ITag tag) => tag.TagDescriptor.NormalizedAddress;
+
+    /// <summary>
+    /// 配置的原始测点地址
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
+    public static TagAddress RawAddress(this ITag tag) => tag.TagDescriptor.RawAddress;
 
     /// <summary>
     /// 所占据的字节多少

@@ -53,13 +53,13 @@
     {
         if (parent is TagGrpDescriptor grp)
         {
-            var t = new TagDescriptor { TagName = "NewTag", Address = "" };
+            var t = new TagDescriptor { TagName = "NewTag", RawAddress = "" };
             grp.Children.Add(t);
             Selected = t;
         }
         else if (parent is TagCbntDescriptor cbnt)
         {
-            var t = new TagDescriptor { TagName = "NewTag", Address = "" };
+            var t = new TagDescriptor { TagName = "NewTag", RawAddress = "" };
             cbnt.Children.Add(t);
             Selected = t;
         }
@@ -71,7 +71,7 @@
                 Grps.Add(root);
             }
             var parentRoot = Grps[0];
-            var newTag = new TagDescriptor { TagName = "NewTag", Address = "" };
+            var newTag = new TagDescriptor { TagName = "NewTag", RawAddress = "" };
             parentRoot.Children.Add(newTag);
             Selected = newTag;
         }
