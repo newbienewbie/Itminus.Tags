@@ -11,9 +11,9 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     }
 
 
-    protected override int GetTagOffset(TagDescriptor tagDescriptor)
+    protected int GetTagOffset(TagDescriptor tagDescriptor, out ModbusTcpAddress tagAddr)
     {
-        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.NormalizedAddress);
+        tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.RawAddress);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
         var offset = tagAddr.StartPoint - groupAddr.StartPoint;
@@ -29,7 +29,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
 
-        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.NormalizedAddress);
+        var tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.RawAddress);
         var groupAddr = ModBusTcpAddressParser.Parse(TagCbnt.StartAddress);
 
         if (tagAddr.Area != RegisterKinds.InputContacts)
@@ -106,7 +106,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 2;
         }
-        int offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new ByteTagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
@@ -122,7 +122,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 2;
         }
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new Int16TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
@@ -139,7 +139,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 2;
         }
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new UInt16TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
@@ -155,7 +155,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 4;
         }
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new Int32TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
@@ -171,7 +171,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 4;
         }
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new UInt32TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
@@ -183,7 +183,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 8;
         }
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new Int64TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
@@ -195,7 +195,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 8;
         }
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new UInt64TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
@@ -211,7 +211,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 4;
         }
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new FloatTagCbntor(tagDescriptor, TagCbnt, offset);
     }
 

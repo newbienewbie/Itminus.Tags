@@ -57,8 +57,4 @@ public class HjzkTagFactory : TagCbntorFactoryBase
         return tag;
     }
 
-    protected override int GetTagOffset(TagDescriptor tagDescriptor)
-    {
-        throw new NotImplementedException();
-    }
 }

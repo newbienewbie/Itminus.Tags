@@ -51,9 +51,4 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         };
         return tag;
     }
-
-    protected override int GetTagOffset(TagDescriptor tagDescriptor)
-    {
-        throw new NotImplementedException();
-    }
 }
