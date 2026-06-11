@@ -37,9 +37,7 @@ public struct S7Address
     /// </summary>
     public byte NthBit = 0;
 
-    /// <summary>
-    /// 转成 TagAdress 字符串
-    /// </summary>
+    /// 转成 TagAddress 字符串
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public override string ToString()
