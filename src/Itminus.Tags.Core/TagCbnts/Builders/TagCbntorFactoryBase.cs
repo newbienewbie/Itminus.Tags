@@ -1,4 +1,4 @@
-namespace Itminus.Tags;
+﻿namespace Itminus.Tags;
 
 
 /// <summary>
@@ -26,13 +26,6 @@ public abstract class TagCbntorFactoryBase
     /// </summary>
     public ITagCbnt TagCbnt => CbntBuilder.TagCbnt;
 
-
-    /// <summary>
-    /// 获取【测点首地址】相对于【测点组首地址】的地址偏移量，以字节为单位
-    /// </summary>
-    /// <param name="tagDescriptor"></param>
-    /// <returns></returns>
-    protected abstract int GetTagOffset(TagDescriptor tagDescriptor);
 
     /// <summary>
     /// 根据描述，创建Tag

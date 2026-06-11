@@ -16,7 +16,7 @@ public class S7TagCbntBuilderTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "byte-tag",
-                    Address = "$$104",
+                    RawAddress = "$$104",
                     TagKind = BuiltinTagKinds.BYTE,
                     TagSize = 1,
                 }));
@@ -24,7 +24,7 @@ public class S7TagCbntBuilderTests
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
                     TagName = "bit-tag",
-                    Address = "$$106.1",
+                    RawAddress = "$$106.1",
                     TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
@@ -34,8 +34,8 @@ public class S7TagCbntBuilderTests
         var byteTag = cbnt.SelectTag("byte-tag");
         var bitTag = cbnt.SelectTag("bit-tag");
 
-        Assert.Equal("DB200.104", byteTag.TagAddress());
-        Assert.Equal("DB200.106.1", bitTag.TagAddress());
+        Assert.Equal("DB200.104", byteTag.NormalizedAddress());
+        Assert.Equal("DB200.106.1", bitTag.NormalizedAddress());
         Assert.Equal(4, byteTag.TagOffset);
         Assert.Equal(6, bitTag.TagOffset);
         Assert.Equal(7, cbnt.CacheSize);

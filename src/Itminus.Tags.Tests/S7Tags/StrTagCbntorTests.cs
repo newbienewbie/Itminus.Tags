@@ -19,7 +19,7 @@ namespace Itminus.Tags.Tests.S7Tags
             var descriptor = new TagDescriptor()
             {
                 TagName = "str1",
-                Address = "DB200.102",
+                RawAddress = "DB200.102",
                 TagKind = BuiltinTagKinds.STR,
             };
 
@@ -40,7 +40,7 @@ namespace Itminus.Tags.Tests.S7Tags
             var descriptor = new TagDescriptor()
             {
                 TagName = "str1",
-                Address = "DB200.102",
+                RawAddress = "DB200.102",
                 TagKind = BuiltinTagKinds.STR,
             };
             descriptor.Extras["maxlen"] = new System.Xml.Linq.XAttribute("maxlen", maxLen);
@@ -83,7 +83,7 @@ namespace Itminus.Tags.Tests.S7Tags
             var descriptor = new TagDescriptor()
             {
                 TagName = "str1",
-                Address = "DB200.102",
+                RawAddress = "DB200.102",
                 TagKind = BuiltinTagKinds.STR,
             };
             descriptor.Extras["maxlen"] = new System.Xml.Linq.XAttribute("maxlen", maxLen);
@@ -103,7 +103,7 @@ namespace Itminus.Tags.Tests.S7Tags
             var descriptor = new TagDescriptor()
             {
                 TagName = "str1",
-                Address = "DB200.102",
+                RawAddress = "DB200.102",
                 TagKind = BuiltinTagKinds.STR,
             };
             descriptor.Extras["maxlen"] = new System.Xml.Linq.XAttribute("maxlen", maxLen);
@@ -128,7 +128,7 @@ namespace Itminus.Tags.Tests.S7Tags
             var descriptor = new TagDescriptor()
             {
                 TagName = "str1",
-                Address = "DB200.102",
+                RawAddress = "DB200.102",
                 TagKind = BuiltinTagKinds.STR,
             };
             descriptor.Extras["maxlen"] = new System.Xml.Linq.XAttribute("maxlen", maxLen);

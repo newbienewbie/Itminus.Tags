@@ -9,9 +9,9 @@ public class S7TagFactory : TagCbntorFactoryBase
     }
 
 
-    protected override int GetTagOffset(TagDescriptor tagDescriptor)
+    protected int GetTagOffset(TagDescriptor tagDescriptor, out S7Address tagAddr)
     {
-        var tagAddr = S7AddressParser.Parse(tagDescriptor.Address);
+        tagAddr = S7AddressParser.Parse(tagDescriptor.RawAddress);
         var groupAddr = S7AddressParser.Parse(this.TagCbnt.StartAddress);
 
         var offset = tagAddr.StartAddress - groupAddr.StartAddress;
@@ -33,7 +33,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
 
-        var tagAddr = S7AddressParser.Parse(tagDescriptor.Address);
+        var tagAddr = S7AddressParser.Parse(tagDescriptor.RawAddress);
         var groupAddr = S7AddressParser.Parse(this.TagCbnt.StartAddress);
 
         var offset = tagAddr.StartAddress -  groupAddr.StartAddress;
@@ -61,7 +61,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 1;
         }
 
-        int offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new ByteTagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -78,7 +78,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 2;
         }
 
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new Int16TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -95,7 +95,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 2;
         }
 
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new UInt16TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -111,8 +111,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         {
             tagDescriptor.TagSize = 4;
         }
-
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new Int32TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -129,7 +128,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 4;
         }
 
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new UInt32TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -146,7 +145,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 8;
         }
 
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new Int64TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -163,7 +162,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 8;
         }
 
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new UInt64TagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -180,7 +179,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 4;
         }
 
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new FloatTagCbntor(tagDescriptor, this.TagCbnt, offset);
     }
 
@@ -202,7 +201,7 @@ public class S7TagFactory : TagCbntorFactoryBase
 
         // normalize the tagsize
         tagDescriptor.TagSize = 2 + maxlen; // S7字符串的前2个字节是用来存储字符串的实际长度的，所以总长度=2+maxlen
-        var offset = GetTagOffset(tagDescriptor);
+        int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new S7StrTagCbntor(tagDescriptor, this.TagCbnt, offset, maxLen);
     }
     #endregion

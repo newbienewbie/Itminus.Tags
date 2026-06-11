@@ -52,12 +52,32 @@ public class TagDescriptor: ITagsDescriptor
     /// 1. 对于底层是连续<bold>Byte型</bold>存储，虽然对于普通的Bit、Byte、Int16等可以在编译时就知道类型大小，但是字符串型仍需要在运行时指定测点长度。<br/>
     /// 2. 对于底层是连续<bold>WORD型</bold>存储（比如Modbus的HoldingRegisters区域）, 即使是一个Bit数据点也会占据2个字节；而Float可能占据两个数据点（4个字节）<br/>
     /// </summary>
-    public int TagSize { get; set; } 
+    public int TagSize { get; set; }
 
+    /// <summary>
+    /// 配置的原始地址字符串<br/>
+    /// </summary>
+    public TagAddress RawAddress { get; set; } = string.Empty;
+
+    #region
     /// <summary>
     /// 测点地址
     /// </summary>
-    public TagAddress Address { set; get; } = null!;
+    private TagAddress? _normalizedAddress = null;
+
+    /// <summary>
+    /// 范化后的测点地址。<br/>
+    /// 这个不会被持久化到Xml中，
+    /// 而是会在运行之前，根据<see cref="RawAddress"/>和上下文进行动态解析。<br/>
+    /// </summary>
+    public TagAddress NormalizedAddress {
+        get => String.IsNullOrEmpty(_normalizedAddress) ? RawAddress : _normalizedAddress;
+        set
+        {
+            _normalizedAddress = value;
+        }
+    }
+    #endregion
 
     /// <summary>
     /// 大小尾

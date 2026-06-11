@@ -21,51 +21,51 @@ public class ModbusTcpTagCombinationBuilderTests
         builder.AddTags(new List<TagDescriptor> {
             new TagDescriptor{
                 TagName ="Float1",
-                Address = "40001",
+                RawAddress = "40001",
                 TagKind = BuiltinTagKinds.FLOAT,
                 TagSize = 4,
             },
             new TagDescriptor{
                 TagName ="Float2",
-                Address = "40003",
+                RawAddress = "40003",
                 TagKind = BuiltinTagKinds.FLOAT,
                 TagSize = 4,
             },
             // leave 40005 empty
             new TagDescriptor{
                 TagName ="Bit1",
-                Address = "40006.1",
+                RawAddress = "40006.1",
                 TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="Bit2",
-                Address = "40006.2",
+                RawAddress = "40006.2",
                 TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="Bit3",
-                Address = "40006.15",
+                RawAddress = "40006.15",
                 TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="UInt1",
-                Address = "40007",
+                RawAddress = "40007",
                 TagKind = BuiltinTagKinds.UINT16,
                 TagSize = 2,
             },
             // leave 40008 empty
             new TagDescriptor{
                 TagName ="UInt2",
-                Address = "40009",
+                RawAddress = "40009",
                 TagKind = BuiltinTagKinds.UINT16,
                 TagSize = 2,
             },
             new TagDescriptor{
                 TagName ="Bit4",
-                Address = "40010.15",
+                RawAddress = "40010.15",
                 TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
