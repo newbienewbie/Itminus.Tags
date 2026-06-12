@@ -25,7 +25,7 @@ public static class TagContainerExtensions
     /// <summary>
     /// 转成 <see cref="TagContainer"/>
     /// </summary>
-    /// <param name="cbnt"></param>
+    /// <param name="grp"></param>
     /// <returns></returns>
     public static TagContainer IntoTagContainer(this ITagGrp grp) => TagContainer.From(grp);
 }
