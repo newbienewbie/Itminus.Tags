@@ -165,10 +165,6 @@ public class CompositeTagsLoader : ITagsLoader
             throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
         }
         var channel = thisChannel ?? parent.GetRequiredChannel();
-        if(channel is null)
-        {
-            throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
-        }
 
         var builder = this.ChooseTagCbntBuilder(channel, cbntDescriptor) ??
             throw new Exception($"未注册相应的TagCbntBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={cbntDescriptor.Name}");
