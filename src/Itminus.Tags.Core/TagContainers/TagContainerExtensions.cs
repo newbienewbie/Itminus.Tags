@@ -12,4 +12,23 @@ public static class TagContainerExtensions
         handleTagCbnt: cbnt => cbnt.GetRequiredChannel(),
         handleTagGrp: grp => grp.GetRequiredChannel()
     );
+
+
+
+    /// <summary>
+    /// 转成 <see cref="TagContainer"/>
+    /// </summary>
+    /// <param name="cbnt"></param>
+    /// <returns></returns>
+    public static TagContainer IntoTagContainer(this ITagCbnt cbnt) => TagContainer.From(cbnt);
+
+    /// <summary>
+    /// 转成 <see cref="TagContainer"/>
+    /// </summary>
+    /// <param name="grp"></param>
+    /// <returns></returns>
+    public static TagContainer IntoTagContainer(this ITagGrp grp) => TagContainer.From(grp);
 }
+
+
+

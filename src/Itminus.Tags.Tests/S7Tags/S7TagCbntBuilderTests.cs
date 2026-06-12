@@ -1,4 +1,7 @@
 ﻿using Itminus.Tags.S7;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Itminus.Tags.Tests.S7Tags;
@@ -8,6 +11,12 @@ public class S7TagCbntBuilderTests
     [Fact]
     public void Build_ShouldNormalizeRelativeAddressesToCbntAreaAndBlock()
     {
+        var channelFactory = new S7TagChannelFactory(new LoggerFactory());
+        var channel = channelFactory.Create(new TagChannelDescriptor(){
+            Driver = "S7",
+            Name = "S7-1",
+            Extras = new Dictionary<string, XElement>(){ }
+        });
         var cbnt = new S7TagCbntBuilder("cbnt1", "DB200.100")
             .Configure(builder =>
             {
@@ -29,7 +38,7 @@ public class S7TagCbntBuilderTests
                     TagSize = 1,
                 }));
             })
-            .Build();
+            .Build(channel);
 
         var byteTag = cbnt.SelectTag("byte-tag");
         var bitTag = cbnt.SelectTag("bit-tag");

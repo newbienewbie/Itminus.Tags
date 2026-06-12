@@ -15,7 +15,7 @@ public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
         this.WithStartAddress(startAddress);
     }
 
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
+    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeOpcUaTagFactory();
         this.Configure(builder => {
@@ -28,7 +28,7 @@ public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-    public override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoResize()
     {
         return this;
     }

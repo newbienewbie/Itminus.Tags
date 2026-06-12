@@ -1,7 +1,9 @@
 ﻿using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Itminus.Tags.Tests.TagGrps;
@@ -27,14 +29,13 @@ public class SubTagTests
     [Fact]
     public void Test()
     {
-        var loggerFactory = new LoggerFactory();
-
-        var channel = new S7TagChannel(
-                "S7",
-                new StdUnit.Sharp7.Options.S7PlcItem() { IpAddr = "localhost", Rack = 0, Slot = 1 },
-                loggerFactory.CreateLogger<S7TagChannel>()
-            );
-        
+        var channelFactory = new S7TagChannelFactory(new LoggerFactory());
+        var channel = channelFactory.Create(new TagChannelDescriptor()
+        {
+            Driver = "S7",
+            Name = "S7-1",
+            Extras = new Dictionary<string, XElement>() { }
+        });
 
         var cbnt = new S7TagCbntBuilder("cbnt1", "DB200.100.1")
             .Configure(builder =>
@@ -89,7 +90,7 @@ public class SubTagTests
                     TagSize = 1,
                 }));
             })
-            .Build()
+            .Build(channel)
             ;
 
         var noChannelTag = new NoChannelTag(new TagDescriptor() { 
