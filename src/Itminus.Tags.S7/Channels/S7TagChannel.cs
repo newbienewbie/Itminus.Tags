@@ -109,12 +109,29 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     {
         var addr = S7AddressParser.Parse(address);
         var buffer = new byte[length];
-        var code = this.Client!.DBRead(addr.BlockNumber, addr.StartAddress, length, buffer);
-        if (code != 0)
+        if (addr.Area == AreaKinds.DB)
         {
-            var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
-            throw new Exception(err.Text);
+            var code = this.Client!.DBRead(addr.BlockNumber, addr.StartAddress, length, buffer);
+            if (code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
         }
+        else if (addr.Area == AreaKinds.MB) 
+        { 
+            var code = this.Client!.MBRead(addr.StartAddress, length, buffer);
+            if(code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
+        }
+        else
+        {
+            throw new NotImplementedException($"不支持的地址区域类型={addr.Area}");
+        }
+
         return Task.FromResult(buffer);
     }
 
@@ -128,11 +145,27 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     public Task WriteAsync(string address, byte[] buffer, CancellationToken ct)
     {
         var addr = S7AddressParser.Parse(address);
-        var code = this.Client!.DBWrite(addr.BlockNumber, addr.StartAddress, buffer.Length, buffer);
-        if (code != 0)
+        if(addr.Area == AreaKinds.DB)
         {
-            var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
-            throw new Exception(err.Text);
+            var code = this.Client!.DBWrite(addr.BlockNumber, addr.StartAddress, buffer.Length, buffer);
+            if (code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
+        }
+        else if(addr.Area == AreaKinds.MB)
+        {
+            var code = this.Client!.MBWrite(addr.StartAddress, buffer.Length, buffer);
+            if (code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
+        }
+        else
+        {
+            throw new NotImplementedException($"不支持的地址区域类型={addr.Area}");
         }
         return Task.CompletedTask;
     }

@@ -62,7 +62,7 @@ public class ComCodeScannerTag : Tag<string>
         {
             this._channel.Write(val);
         }
-        this.NotifyTagWritten(ct);
+        this.NotifyTagWritten(val);
         this.IsDirty = false;
         return Task.CompletedTask;
     }

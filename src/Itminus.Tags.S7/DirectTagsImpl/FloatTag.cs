@@ -1,0 +1,33 @@
+﻿using System.Buffers.Binary;
+
+namespace Itminus.Tags.S7;
+
+
+internal class FloatTag : ContinousBytesBasedDirectTag<float>
+{
+    public FloatTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
+        : base(descriptor, thisChannel, channel)
+    {
+    }
+
+    public override int BufferSize => 4;
+
+    protected override float ConvertFromBytes(Span<byte> bytes)
+    {
+        return this.TagEndian() == EndianKinds.BigEndian ?
+            BinaryPrimitives.ReadSingleBigEndian(bytes) :
+            BinaryPrimitives.ReadSingleLittleEndian(bytes);
+    }
+
+    protected override void FillBytes(Span<byte> bytes, float value)
+    {
+        if (this.TagEndian() == EndianKinds.BigEndian)
+        {
+            BinaryPrimitives.WriteSingleBigEndian(bytes, this.Value);
+        }
+        else
+        {
+            BinaryPrimitives.WriteSingleLittleEndian(bytes, this.Value);
+        }
+    }
+}

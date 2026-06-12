@@ -1,0 +1,35 @@
+﻿using System.Text;
+
+namespace Itminus.Tags.S7;
+
+internal class StrTag : ContinousBytesBasedDirectTag<string>
+{
+    /// <summary>
+    /// 字符串最大长度，ReadOnly
+    /// </summary>
+    public byte Maxlen { get; }
+
+    public StrTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel, byte maxLen)
+        : base(descriptor, thisChannel, channel)
+    {
+        this.Maxlen = maxLen;
+    }
+
+    public override int BufferSize => Maxlen + 2;
+
+    protected override string ConvertFromBytes(Span<byte> bytes)
+    {
+        var size = bytes[1];
+        var str = Encoding.ASCII.GetString(bytes.Slice(2, size));
+        return str;
+    }
+    protected override void FillBytes(Span<byte> bytes, string value)
+    {
+        var read = Encoding.ASCII.GetBytes(value, bytes.Slice(2));
+        bytes[0] = this.Maxlen;
+        bytes[1] = (byte) read;
+    }
+}
+
+
+
