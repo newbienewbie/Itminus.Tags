@@ -36,7 +36,6 @@ public class SubTagTests
             Name = "S7-1",
             Extras = new Dictionary<string, XElement>() { }
         });
-        var loggerFactory = new LoggerFactory();
 
         var cbnt = new S7TagCbntBuilder("cbnt1", "DB200.100.1")
             .Configure(builder =>
