@@ -160,6 +160,10 @@ public class CompositeTagsLoader : ITagsLoader
         var thisChannel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
             null:
             availableChannels.FirstOrDefault(c => c.ChannelName == cbntDescriptor.ChannelName);
+        if (!string.IsNullOrEmpty(cbntDescriptor.ChannelName) && thisChannel is null)
+        {
+            throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
+        }
         var channel = thisChannel ?? parent.GetRequiredChannel();
         if(channel is null)
         {
@@ -183,6 +187,10 @@ public class CompositeTagsLoader : ITagsLoader
         var thisChannel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
             null :
             availableChannels.FirstOrDefault(c => c.ChannelName == tagDescriptor.ChannelName);
+        if (!string.IsNullOrEmpty(tagDescriptor.ChannelName) && thisChannel is null)
+        {
+            throw new Exception($"未找到名称为 {tagDescriptor.ChannelName} 的通道");
+        }
         var channel = thisChannel ?? parent.GetRequiredChannel();
         if(channel is null)
         {
