@@ -28,7 +28,7 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
     }
 
 
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
+    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeHjzkTagFactory();
         this.Configure(builder => {

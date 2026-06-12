@@ -29,6 +29,12 @@ public abstract class TagCbntBuilderBase
     /// </summary>
     public virtual string StartAddress => TagCbnt.StartAddress;
 
+    /// <summary>
+    /// 设置测点组合描述符<br/>
+    /// 会被自动调用
+    /// </summary>
+    /// <param name="cbntDescriptor"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor cbntDescriptor)
     {
         this.WithName(cbntDescriptor.Name);
@@ -49,7 +55,7 @@ public abstract class TagCbntBuilderBase
         return this;
     }
 
-    public virtual TagCbntBuilderBase WithChannel(ITagChannel channel)
+    public virtual TagCbntBuilderBase WithChannel(ITagChannel? channel)
     {
         TagCbnt.Channel = channel;
         return this;
@@ -91,8 +97,9 @@ public abstract class TagCbntBuilderBase
     /// 实现应该构造<see cref="ITagCbntor"/>，并调用<see cref="AddTag(ITagCbntor)"/>添加到测点组合中。<br/>
     /// </summary>
     /// <param name="descriptors"></param>
+    /// <param name="channel">(冒泡式)获取的通道</param>
     /// <returns></returns>
-    public abstract TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors);
+    public abstract TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel);
 
 
     /// <summary>
@@ -102,7 +109,12 @@ public abstract class TagCbntBuilderBase
     /// <returns></returns>
     public abstract TagCbntBuilderBase AutoResize();
 
-    public virtual ITagCbnt Build()
+    /// <summary>
+    /// 构建测点组合，并返回构建好的测点组合。<br/>
+    /// </summary>
+    /// <param name="channel">(冒泡式)获取的通道</param>
+    /// <returns></returns>
+    public virtual ITagCbnt Build(ITagChannel channel)
     {
         this.AutoResize();
         return this.TagCbnt;

@@ -25,7 +25,7 @@ public abstract class ZLanCbntBuilderBase: ModbusTcpTagCbntBuilder
     }
 
 
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
+    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeZLanTagFactory();
         this.Configure(builder => {

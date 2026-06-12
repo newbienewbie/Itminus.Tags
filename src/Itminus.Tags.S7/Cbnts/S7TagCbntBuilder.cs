@@ -24,7 +24,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         this.WithStartAddress(startAddress);
     }
 
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
+    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeS7TagFactory();
         this.Configure(builder => {
