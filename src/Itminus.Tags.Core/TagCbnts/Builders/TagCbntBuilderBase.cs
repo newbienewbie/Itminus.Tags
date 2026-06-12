@@ -75,6 +75,7 @@ public abstract class TagCbntBuilderBase
 
     public virtual TagCbntBuilderBase AddTag(ITagCbntor tag)
     {
+        tag.Parent = TagContainer.From(this.TagCbnt);
         TagCbnt.Children.Add(tag.TagName(), tag);
         return this.WithAccessMode(tag.AccessMode());
     }
@@ -85,6 +86,12 @@ public abstract class TagCbntBuilderBase
         return this;
     }
 
+    /// <summary>
+    /// 批量添加测点。<br/>
+    /// 实现应该构造<see cref="ITagCbntor"/>，并调用<see cref="AddTag(ITagCbntor)"/>添加到测点组合中。<br/>
+    /// </summary>
+    /// <param name="descriptors"></param>
+    /// <returns></returns>
     public abstract TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors);
 
 

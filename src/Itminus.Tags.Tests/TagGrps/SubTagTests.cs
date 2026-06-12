@@ -1,9 +1,6 @@
 ﻿using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -11,6 +8,22 @@ namespace Itminus.Tags.Tests.TagGrps;
 
 public class SubTagTests
 {
+
+    class NoChannelTag : Tag<byte>
+    {
+        public NoChannelTag(TagDescriptor descriptor) : base(descriptor)
+        {
+            // 有意让这个Tag没有通道，测试冒泡式访问通道
+            this.Channel = null!;
+        }
+
+        public override ITagChannel? Channel { get; set; } 
+
+        public override Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
+
+        public override Task WriteAsync(CancellationToken ct) => Task.CompletedTask;
+    }
+
     [Fact]
     public void Test()
     {
@@ -79,12 +92,20 @@ public class SubTagTests
             .Build()
             ;
 
+        var noChannelTag = new NoChannelTag(new TagDescriptor() { 
+            TagName = "no-channel-tag",
+            TagSize = 1,
+            RawAddress = "some-address",
+            TagKind = BuiltinTagKinds.BYTE,
+        });
+
 
         var root = new TagGrp("root", true, channel);
         var grp1 = new TagGrp("sub1", false, null);
         var grp2 = new TagGrp("sub2", false, null);
         root.AddTag(grp1);
         grp2.AddTag(cbnt);
+        grp2.AddTag(noChannelTag);
         grp1.AddTag(grp2);
 
         // 测试层级式访问节点
@@ -95,5 +116,6 @@ public class SubTagTests
 
         // 测试冒泡式访问通道
         Assert.Equal(cbnt.GetRequiredChannel(), root.Channel);
+        Assert.Equal(root.Channel, noChannelTag.GetRequiredChannel());
     }
 }

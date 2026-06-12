@@ -18,7 +18,7 @@ public class ComCodeScannerTag : Tag<string>
     #region 通道
     protected ComScannerChannel _channel;
 
-    public override ITagChannel Channel { 
+    public override ITagChannel? Channel { 
         get => this._channel;
         set {
             if(this._channel is not ComScannerChannel channel)

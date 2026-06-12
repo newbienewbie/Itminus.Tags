@@ -21,16 +21,15 @@ public abstract class Tag<T> : ITag
     /// <summary>
     /// 读写通道
     /// </summary>
-    public abstract ITagChannel Channel { get; set; }
+    public abstract ITagChannel? Channel { get; set; }
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
+    public TagContainer? Parent { get; set; }
+
+    /// <inheritdoc/>
     public event TagSyncEventHandler? OnTagRead;
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public event TagSyncEventHandler? OnTagWritten;
 
     /// <inheritdoc/>
