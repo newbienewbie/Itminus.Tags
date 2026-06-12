@@ -21,7 +21,7 @@ public abstract class TagBuilderBase
     /// 测点自身的通道。<br/>
     /// 会被自动设置，通常不需要手动调用
     /// </summary>
-    public virtual ITagChannel? Channel { get; protected set; } = null!;
+    public virtual ITagChannel? Channel { get; protected set; } = null;
 
     public string Name => TagDescriptor.TagName;
 
