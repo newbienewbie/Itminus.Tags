@@ -21,7 +21,7 @@ public abstract class Tag<T> : ITag
     /// <summary>
     /// 读写通道
     /// </summary>
-    public abstract ITagChannel Channel { get; set; }
+    public abstract ITagChannel? Channel { get; set; }
 
     /// <inheritdoc/>
     public TagContainer? Parent { get; set; }

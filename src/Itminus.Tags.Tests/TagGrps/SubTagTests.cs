@@ -17,7 +17,7 @@ public class SubTagTests
             this.Channel = null!;
         }
 
-        public override ITagChannel Channel { get; set; } 
+        public override ITagChannel? Channel { get; set; } 
 
         public override Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
 
