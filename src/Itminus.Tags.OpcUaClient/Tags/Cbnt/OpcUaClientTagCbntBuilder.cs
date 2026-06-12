@@ -28,7 +28,7 @@ public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-    public override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoResize()
     {
         return this;
     }

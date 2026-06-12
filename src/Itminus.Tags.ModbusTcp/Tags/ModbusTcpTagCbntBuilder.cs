@@ -66,7 +66,7 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-    public override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoResize()
     {
         var cacheSize = 0;
         foreach (var kvp in this.TagCbnt.Children)

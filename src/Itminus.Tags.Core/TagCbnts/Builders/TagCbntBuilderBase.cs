@@ -107,7 +107,7 @@ public abstract class TagCbntBuilderBase
     /// 实现类需要根据自己实际情况，重写自己的布局算法。
     /// </summary>
     /// <returns></returns>
-    public abstract TagCbntBuilderBase AutoResize();
+    protected abstract TagCbntBuilderBase AutoResize();
 
     /// <summary>
     /// 构建测点组合，并返回构建好的测点组合。<br/>
