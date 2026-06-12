@@ -157,10 +157,10 @@ public class CompositeTagsLoader : ITagsLoader
 
     protected virtual void LoadTagCbnt(ITagGrp parent, TagCbntDescriptor cbntDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
-        var thisChannel = availableChannels.FirstOrDefault(c => c.ChannelName == cbntDescriptor.ChannelName);
-        var channel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
-            parent.GetRequiredChannel() :
-            thisChannel;
+        var thisChannel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
+            null:
+            availableChannels.FirstOrDefault(c => c.ChannelName == cbntDescriptor.ChannelName);
+        var channel = thisChannel ?? parent.GetRequiredChannel();
         if(channel is null)
         {
             throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
@@ -180,10 +180,10 @@ public class CompositeTagsLoader : ITagsLoader
 
     protected virtual void LoadDirectTag(ITagGrp parent, TagDescriptor tagDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
-        var thisChannel = availableChannels.FirstOrDefault(c => c.ChannelName == tagDescriptor.ChannelName);
-        var channel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
-            parent.GetRequiredChannel() :
-            thisChannel;
+        var thisChannel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
+            null :
+            availableChannels.FirstOrDefault(c => c.ChannelName == tagDescriptor.ChannelName);
+        var channel = thisChannel ?? parent.GetRequiredChannel();
         if(channel is null)
         {
             throw new Exception($"未找到名称为 {tagDescriptor.ChannelName} 的通道");
