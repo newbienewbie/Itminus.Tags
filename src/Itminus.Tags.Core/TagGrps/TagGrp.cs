@@ -57,6 +57,7 @@ public class TagGrp : ITagGrp
 
     public virtual ITagGrp AddTag(ITag tag)
     {
+        tag.Parent = TagContainer.From(this);
         this.Children.Add(tag.TagName(), new TagUnion.TagUnit(tag));
         return this;
     }

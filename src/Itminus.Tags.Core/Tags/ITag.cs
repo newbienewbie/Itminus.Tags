@@ -64,9 +64,15 @@ public interface ITag
     public bool IsDirty { get; set; }
 
     /// <summary>
-    /// 测点通道
+    /// 测点通道<br/>
+    /// 本属性可能为null，如果需要冒泡式获取，可以使用 .GetRequiredChannel() 扩展方法。<br/>
     /// </summary>
     public ITagChannel? Channel { get; }
+
+    /// <summary>
+    /// 父容器
+    /// </summary>
+    public TagContainer? Parent { get; set; }
 
     /// <summary>
     /// 从底层中读取测点值
@@ -158,4 +164,16 @@ public static class ITagExtensions
         TValue value = (TValue)tag.Value!;
         return value;
     }
+
+    /// <summary>
+    /// (冒泡式)获取测点通道。<br/>
+    /// 如果没有找到，则抛出异常。<br/>
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public static ITagChannel GetRequiredChannel(this ITag tag) =>
+        tag.Channel ??
+        tag.Parent?.GetRequiredChannel() ?? 
+        throw new Exception($"相关测点未配置通道 : Tag({tag.TagName()})");
 }

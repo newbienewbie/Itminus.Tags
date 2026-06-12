@@ -23,14 +23,13 @@ public abstract class Tag<T> : ITag
     /// </summary>
     public abstract ITagChannel Channel { get; set; }
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
+    public TagContainer? Parent { get; set; }
+
+    /// <inheritdoc/>
     public event TagSyncEventHandler? OnTagRead;
 
-    /// <summary>
     /// <inheritdoc/>
-    /// </summary>
     public event TagSyncEventHandler? OnTagWritten;
 
     /// <inheritdoc/>
