@@ -22,11 +22,11 @@ internal class Int64Tag : ContinousBytesBasedDirectTag<long>
     {
         if (this.TagEndian() == EndianKinds.BigEndian)
         {
-            BinaryPrimitives.WriteInt64BigEndian(bytes, this.Value);
+            BinaryPrimitives.WriteInt64BigEndian(bytes, value);
         }
         else
         {
-            BinaryPrimitives.WriteInt64LittleEndian(bytes, this.Value);
+            BinaryPrimitives.WriteInt64LittleEndian(bytes, value);
         }
     }
 }

@@ -22,11 +22,11 @@ internal class UInt64Tag : ContinousBytesBasedDirectTag<ulong>
     {
         if (this.TagEndian() == EndianKinds.BigEndian)
         {
-            BinaryPrimitives.WriteUInt64BigEndian(bytes, this.Value);
+            BinaryPrimitives.WriteUInt64BigEndian(bytes, value);
         }
         else
         {
-            BinaryPrimitives.WriteUInt64LittleEndian(bytes, this.Value);
+            BinaryPrimitives.WriteUInt64LittleEndian(bytes, value);
         }
     }
 }

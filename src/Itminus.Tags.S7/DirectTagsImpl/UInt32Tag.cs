@@ -23,11 +23,11 @@ internal class UInt32Tag : ContinousBytesBasedDirectTag<UInt32>
     {
         if (this.TagEndian() == EndianKinds.BigEndian)
         {
-            BinaryPrimitives.WriteUInt32BigEndian(bytes, this.Value);
+            BinaryPrimitives.WriteUInt32BigEndian(bytes, value);
         }
         else
         {
-            BinaryPrimitives.WriteUInt32LittleEndian(bytes, this.Value);
+            BinaryPrimitives.WriteUInt32LittleEndian(bytes, value);
         }
     }
 }

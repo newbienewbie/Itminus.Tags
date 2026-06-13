@@ -23,11 +23,11 @@ internal class FloatTag : ContinousBytesBasedDirectTag<float>
     {
         if (this.TagEndian() == EndianKinds.BigEndian)
         {
-            BinaryPrimitives.WriteSingleBigEndian(bytes, this.Value);
+            BinaryPrimitives.WriteSingleBigEndian(bytes, value);
         }
         else
         {
-            BinaryPrimitives.WriteSingleLittleEndian(bytes, this.Value);
+            BinaryPrimitives.WriteSingleLittleEndian(bytes, value);
         }
     }
 }

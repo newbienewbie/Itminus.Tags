@@ -51,6 +51,7 @@ public class ComCodeScannerTag : Tag<string>
         }
 
         this._value = str;
+        this.Timestamp = DateTime.Now;
         this.NotifyTagRead(str);
     }
 

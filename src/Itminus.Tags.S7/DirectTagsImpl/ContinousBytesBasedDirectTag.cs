@@ -38,7 +38,8 @@ internal abstract class ContinousBytesBasedDirectTag<T> : Tag<T>
     {
         var addr = this.NormalizedAddress();
         var bytes = await this._channel.ReadAsync(addr, BufferSize, ct);
-        this.Value = this.ConvertFromBytes(bytes.AsSpan());
+        this._value = this.ConvertFromBytes(bytes.AsSpan());
+        this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this.Value);
     }
 
