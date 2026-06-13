@@ -1,9 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Itminus.Tags.S7;
 
@@ -22,6 +17,7 @@ public static class TagsProject_Extensions
         // register S7 tags loader
         builder.ConfigTagsLoader((sp, composite) => { 
             composite.AddTagsCbntBuilder<S7TagCbntBuilder>(S7Names.DriverName);
+            composite.AddTagBuilder<S7DirectTagBuilder>(S7Names.DriverName);
         });
 
         return builder;

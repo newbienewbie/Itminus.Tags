@@ -39,7 +39,7 @@ public class BitTagCbntor : TagCbntor
                 oldFlags | 1 << this.NthBit :
                 oldFlags & ~(1 << this.NthBit);
             cache.Span[this.CacheOffset] = (byte) newFlags;
-            this.Timestamp = DateTime.UtcNow;
+            this.Timestamp = DateTime.Now;
             this.MarkDirty();
         } 
     }

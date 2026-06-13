@@ -30,6 +30,9 @@
     <None Update="S7Tags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="S7Tags\DirectTags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TagUnions\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

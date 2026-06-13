@@ -54,7 +54,7 @@ public abstract class Tag<T> : ITag
         set
         {
             _value = value;
-            Timestamp = DateTime.UtcNow;
+            Timestamp = DateTime.Now;
             IsDirty = true;
         }
     }
@@ -92,7 +92,8 @@ public abstract class Tag<T> : ITag
     public abstract Task WriteAsync(CancellationToken ct);
 
     /// <summary>
-    /// 从底层读取，子类的实现必须调用 <see cref="NotifyTagRead"/>
+    /// 从底层读取并更新内部的 <see cref="_value"/>字段+ <see cref="Timestamp" />属性。<br/>
+    /// 子类的实现必须调用 <see cref="NotifyTagRead"/>
     /// </summary>
     /// <returns></returns>
     public abstract Task ReadAsync(CancellationToken ct);

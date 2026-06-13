@@ -191,18 +191,9 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     protected virtual S7StrTagCbntor CreateStrTag(TagDescriptor tagDescriptor)
     {
-        var tagName = tagDescriptor.TagName;
-
-        var maxLen =
-            !tagDescriptor.Extras.TryGetValue("maxlen", out var maxlenAttr) ? throw new InvalidDataException($"字符串型测点必须指定字符串最大长度 maxlen。测点={tagName}") :
-            !byte.TryParse(maxlenAttr.Value, out var maxlen) ? throw new InvalidDataException($"字符串型测点 maxlen 属性必须可解析成正整数，当前 maxlen={maxlenAttr}, 测点={tagName}") :
-            maxlen < 1 ? throw new InvalidDataException($"字符串型测点 maxlen 属性必须大于0，当前 maxlen={maxlen}, 测点={tagName}") :
-            maxlen;
-
-        // normalize the tagsize
-        tagDescriptor.TagSize = 2 + maxlen; // S7字符串的前2个字节是用来存储字符串的实际长度的，所以总长度=2+maxlen
+        S7Utils.NormalizeS7StrTagSize(tagDescriptor, out var maxlen);
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new S7StrTagCbntor(tagDescriptor, this.TagCbnt, offset, maxLen);
+        return new S7StrTagCbntor(tagDescriptor, this.TagCbnt, offset, maxlen);
     }
     #endregion
 

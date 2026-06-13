@@ -41,7 +41,7 @@ public class UInt32TagCbntor : TagCbntor
                 BinaryPrimitives.WriteUInt32LittleEndian(dst, data);
             }
 
-            this.Timestamp = DateTime.UtcNow;
+            this.Timestamp = DateTime.Now;
             this.MarkDirty();
         }
     }
