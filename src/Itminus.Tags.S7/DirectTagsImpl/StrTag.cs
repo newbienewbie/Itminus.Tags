@@ -25,6 +25,11 @@ internal class StrTag : ContinousBytesBasedDirectTag<string>
     }
     protected override void FillBytes(Span<byte> bytes, string value)
     {
+        var len = value.Length;
+        if(len > Maxlen)
+        {
+            throw new ArgumentException($"String exceeds the maximum length(MaxLen={Maxlen}, attempts={value})");
+        }
         var read = Encoding.ASCII.GetBytes(value, bytes.Slice(2));
         bytes[0] = this.Maxlen;
         bytes[1] = (byte) read;

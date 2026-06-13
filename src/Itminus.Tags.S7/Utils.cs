@@ -8,7 +8,7 @@ internal static class S7Utils
 
         maxlen =
             !tagDescriptor.Extras.TryGetValue("maxlen", out var maxlenAttr) ? throw new InvalidDataException($"字符串型测点必须指定字符串最大长度 maxlen。测点={tagName}") :
-            !byte.TryParse(maxlenAttr.Value, out var prefer) ? throw new InvalidDataException($"字符串型测点 maxlen 属性必须可解析成正整数，当前 maxlen={maxlenAttr}, 测点={tagName}") :
+            !byte.TryParse(maxlenAttr.Value, out var prefer) ? throw new InvalidDataException($"字符串型测点 maxlen 属性必须可解析成正整数，当前 maxlen={maxlenAttr.Value}, 测点={tagName}") :
             prefer < 1 ? throw new InvalidDataException($"字符串型测点 maxlen 属性必须大于0，当前 maxlen={prefer}, 测点={tagName}") :
             prefer;
 
