@@ -1,18 +1,12 @@
 ﻿using Itminus.Tags.S7;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Xunit;
 
 namespace Itminus.Tags.Tests.S7Tags;
 
-public class S7DirectTagTests
+public class S7DirectTagBitTests
 {
 
     [Theory]
@@ -52,48 +46,35 @@ public class S7DirectTagTests
         Assert.Equal(expected, fake.LastWriteBuffer);
     }
 
+    #region 测试写操作时，其他位的值是否被正确保留
     [Fact]
-    public async Task DirectStrTag_ReadAsync_ReadsHeaderAndPayload()
+    public async Task DirectBitTag_WriteAsync_PreservesOtherBits_ClearOneBit()
     {
-        const byte maxLen = 10;
-        var payload = new byte[] { maxLen, 5, (byte)'H', (byte)'E', (byte)'L', (byte)'L', (byte)'O', 0, 0, 0, 0, 0 };
-        var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var initial = new byte[] { 0b11111111 };
+        var fake = new FakeContinousBytesChannel(initial);
+        var tag = CreateBitDirectTag(0, fake); // clear LSB
 
-        await tag.ReadAsync(CancellationToken.None);
-        Assert.Equal(maxLen, tag.Maxlen);
-        Assert.Equal(maxLen + 2, fake.LastReadLength);
-        Assert.Equal("HELLO", tag.Value);
-    }
-
-    [Fact]
-    public async Task DirectStrTag_WriteAsync_WritesHeaderAndAscii()
-    {
-        const byte maxLen = 6;
-        var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var tag = CreateStrDirectTag(maxLen, fake);
-
-        tag.Value = "ABC";
+        tag.Value = false;
         await tag.WriteAsync(CancellationToken.None);
 
         Assert.NotNull(fake.LastWriteBuffer);
-        Assert.Equal(maxLen, tag.Maxlen);
-        Assert.Equal(maxLen + 2, fake.LastWriteBuffer!.Length);
-        Assert.Equal(maxLen, fake.LastWriteBuffer[0]);
-        Assert.Equal(3, fake.LastWriteBuffer[1]);
-        Assert.Equal(new byte[] { (byte)'A', (byte)'B', (byte)'C' }, fake.LastWriteBuffer.AsSpan(2, 3).ToArray());
+        Assert.Equal(new byte[] { 0b11111110 }, fake.LastWriteBuffer);
     }
 
     [Fact]
-    public async Task DirectStrTag_WriteAsync_Throws_WhenInputExceedsMaxLen()
+    public async Task DirectBitTag_WriteAsync_PreservesOtherBits_SetOneBit()
     {
-        const byte maxLen = 4;
-        var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var initial = new byte[] { 0b11111110 };
+        var fake = new FakeContinousBytesChannel(initial);
+        var tag = CreateBitDirectTag(0, fake); // set LSB
 
-        tag.Value = "ABCDE";
-        await Assert.ThrowsAsync<ArgumentException>(() => tag.WriteAsync(CancellationToken.None));
+        tag.Value = true;
+        await tag.WriteAsync(CancellationToken.None);
+
+        Assert.NotNull(fake.LastWriteBuffer);
+        Assert.Equal(new byte[] { 0b11111111 }, fake.LastWriteBuffer);
     }
+    #endregion
 
     private static ITag CreateBitDirectTag(byte nthBit, IContinousBytesBasedTagChannel channel)
     {
@@ -108,30 +89,16 @@ public class S7DirectTagTests
         return tag;
     }
 
-    private static StrTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel)
-    {
-        var descriptor = new TagDescriptor()
-        {
-            TagName = "direct-str",
-            TagKind = BuiltinTagKinds.STR,
-            RawAddress = "DB1.300",
-        };
-
-        return new StrTag(descriptor, thisChannel: null, channel: channel, maxLen: maxLen);
-    }
-
     private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel
     {
         public FakeContinousBytesChannel(byte[] payload)
         {
-            this._payload = payload;
+            this.LastWriteBuffer = (byte[])payload.Clone();
         }
-
-        private readonly byte[] _payload;
 
         public int LastReadLength { get; private set; }
 
-        public byte[]? LastWriteBuffer { get; private set; }
+        public byte[] LastWriteBuffer { get; private set; }
 
         public string ChannelName => "fake";
 
@@ -143,12 +110,12 @@ public class S7DirectTagTests
 
         public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
         {
-            this.LastReadLength = count;
-            if (count != this._payload.Length)
+            if (count > this.LastWriteBuffer.Length)
             {
-                throw new InvalidOperationException($"Unexpected read length={count}, expected={this._payload.Length}");
+                throw new InvalidOperationException($"Unexpected read length={count}");
             }
-            return Task.FromResult(this._payload);
+            this.LastReadLength = count;
+            return Task.FromResult(this.LastWriteBuffer.AsSpan(0, count).ToArray());
         }
 
         public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)

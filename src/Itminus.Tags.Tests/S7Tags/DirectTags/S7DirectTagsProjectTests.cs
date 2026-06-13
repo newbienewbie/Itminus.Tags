@@ -1,14 +1,9 @@
 ﻿using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
-namespace Itminus.Tags.Tests.S7Tags.DirectTags;
+namespace Itminus.Tags.Tests.S7Tags;
 
 public class S7DirectTagsProjectTests
 {

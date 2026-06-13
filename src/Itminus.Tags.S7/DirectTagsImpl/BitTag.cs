@@ -44,7 +44,18 @@ internal class BitTag : ContinousBytesBasedDirectTag<bool>
         var newFlags = value ?
             oldFlags | 1 << nth :
             oldFlags & ~(1 << nth);
-        bytes[index] = (byte) newFlags;
+        bytes[index] = (byte)newFlags;
+    }
+
+
+    public override async Task WriteAsync(CancellationToken ct)
+    {
+        var addr = this.NormalizedAddress();
+        var bytes = await this._channel.ReadAsync(addr, BufferSize, ct);
+        this.FillBytes(bytes, this.Value);
+        await this._channel.WriteAsync(addr, bytes, ct);
+        this.NotifyTagWritten(this.Value);
+        this.IsDirty = false;
     }
 }
 
