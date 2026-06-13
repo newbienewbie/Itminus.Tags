@@ -54,7 +54,7 @@ public abstract class Tag<T> : ITag
         set
         {
             _value = value;
-            Timestamp = DateTime.UtcNow;
+            Timestamp = DateTime.Now;
             IsDirty = true;
         }
     }
