@@ -35,50 +35,86 @@ internal class S7DirectTagBuilder : TagBuilderBase
         private BitTag CreateBitTag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
             var tagAddr = S7AddressParser.Parse(descriptor.RawAddress);
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = tagAddr.NthBit / 8 + 1;
+            }
             return new BitTag(descriptor, thisChannel, channel, nthBit: tagAddr.NthBit);
         }
 
         private ByteTag CreateByteTag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if(descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 1;
+            }
             return new ByteTag(descriptor, thisChannel, channel);
         }
 
         private Int16Tag CreateInt16Tag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 2;
+            }
             return new Int16Tag(descriptor, thisChannel, channel);
         }
 
         private UInt16Tag CreateUInt16Tag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 2;
+            }
             return new UInt16Tag(descriptor, thisChannel, channel);
         }
 
 
         private Int32Tag CreateInt32Tag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 4;
+            }
             return new Int32Tag(descriptor, thisChannel, channel);
         }
 
         private UInt32Tag CreateUInt32Tag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 4;
+            }
             return new UInt32Tag(descriptor, thisChannel, channel);
         }
 
 
         private Int64Tag CreateInt64Tag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 8;
+            }
             return new Int64Tag(descriptor, thisChannel, channel);
         }
 
 
         private UInt64Tag CreateUInt64Tag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 8;
+            }
             return new UInt64Tag(descriptor, thisChannel, channel);
         }
 
 
         private FloatTag CreateFloatTag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
+            if (descriptor.TagSize == 0)
+            {
+                descriptor.TagSize = 4;
+            }
             return new FloatTag(descriptor, thisChannel, channel);
         }
 
