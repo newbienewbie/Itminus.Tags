@@ -23,7 +23,7 @@ public class ByteTagCbntor : TagCbntor
             var cache = this.TagCbnt.Cache;
             cache.Span[this.CacheOffset] = b;
 
-            this.Timestamp = DateTime.UtcNow;
+            this.Timestamp = DateTime.Now;
             this.MarkDirty();
         } 
     }

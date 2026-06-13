@@ -43,7 +43,7 @@ public class UInt64TagCbntor : TagCbntor
                 BinaryPrimitives.WriteUInt64LittleEndian(dst, data);
             }
 
-            Timestamp = DateTime.UtcNow;
+            Timestamp = DateTime.Now;
             MarkDirty();
         }
     }

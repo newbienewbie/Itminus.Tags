@@ -40,7 +40,7 @@ public class DOTag : TagCbntor
             }
 
 
-            Timestamp = DateTime.UtcNow;
+            Timestamp = DateTime.Now;
             MarkDirty();
         }
     }
