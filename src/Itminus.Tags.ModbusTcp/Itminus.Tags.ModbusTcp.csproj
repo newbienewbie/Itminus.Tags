@@ -11,4 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DirectTags\" />
+  </ItemGroup>
 </Project>

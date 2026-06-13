@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.ModbusTcp.Tags;
-
+﻿
 namespace Itminus.Tags.ModbusTcp;
 
 
@@ -21,7 +20,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     }
 
     #region
-    public virtual DITag CreateDITag(TagDescriptor tagDescriptor)
+    public virtual DITagCbntor CreateDITag(TagDescriptor tagDescriptor)
     {           
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -37,11 +36,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             throw new Exception($"地址区域{tagAddr.Area}不可作为DI测点");
         }
         var offset = tagAddr.StartPoint - groupAddr.StartPoint;
-        return new DITag(tagDescriptor, TagCbnt, offset);
+        return new DITagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
 
-    public virtual DOTag CreateDOTag(TagDescriptor tagDescriptor)
+    public virtual DOTagCbntor CreateDOTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -57,7 +56,7 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
             throw new Exception($"地址区域{tagAddr.Area}不可作为DO测点");
         }
         var offset = tagAddr.StartPoint - groupAddr.StartPoint;
-        return new DOTag(tagDescriptor, TagCbnt, offset);
+        return new DOTagCbntor(tagDescriptor, TagCbnt, offset);
     }
     #endregion
 
