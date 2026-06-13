@@ -29,7 +29,7 @@ public class DITagCbntor : TagCbntor
             var flags = cache.Span[CacheOffset];
             return flags != 0;
         }
-        set => throw new Exception($"DI点({this.TagName}地址={this.RawAddress()})不可写入");
+        set => throw new NotSupportedException($"DI点({this.TagName}地址={this.RawAddress()})不可写入");
     }
 
 }

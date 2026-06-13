@@ -24,7 +24,11 @@ internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
         this.BufferSize = bufferSize == 0 ? (this.NthBit / 8 + 1) : bufferSize;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// 缓存大小，每个字节表示一个flag。<br/>
+    /// 如果 <see cref="NthBit"/> 是[0,7],则可以取1；如果 <see cref="NthBit"/> 是[0,15], 则可以取2；
+    /// 默认自动计算
+    /// </summary>
     public override int BufferSize { get; }
 
     protected override bool ConvertFromBytes(Span<byte> bytes)
