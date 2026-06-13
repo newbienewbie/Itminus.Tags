@@ -121,7 +121,7 @@ internal class S7DirectTagBuilder : TagBuilderBase
 
         private StrTag CreateStrTag(TagDescriptor descriptor, ITagChannel? thisChannel, S7TagChannel channel)
         {
-            S7Utils.NormalizeS7StrTagTagSize(descriptor, out byte maxlen);
+            S7Utils.NormalizeS7StrTagSize(descriptor, out byte maxlen);
             return new StrTag(descriptor, thisChannel, channel, maxLen: maxlen);
         }
 

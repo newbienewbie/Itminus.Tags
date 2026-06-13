@@ -191,7 +191,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     protected virtual S7StrTagCbntor CreateStrTag(TagDescriptor tagDescriptor)
     {
-        S7Utils.NormalizeS7StrTagTagSize(tagDescriptor, out var maxlen);
+        S7Utils.NormalizeS7StrTagSize(tagDescriptor, out var maxlen);
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
         return new S7StrTagCbntor(tagDescriptor, this.TagCbnt, offset, maxlen);
     }

@@ -2,7 +2,7 @@
 
 internal static class S7Utils
 {
-    public static void NormalizeS7StrTagTagSize(TagDescriptor tagDescriptor, out byte maxlen)
+    public static void NormalizeS7StrTagSize(TagDescriptor tagDescriptor, out byte maxlen)
     {
         var tagName = tagDescriptor.TagName;
 
