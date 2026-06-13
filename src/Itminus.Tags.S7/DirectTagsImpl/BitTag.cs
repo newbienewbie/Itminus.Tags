@@ -5,8 +5,8 @@ internal class BitTag : ContinousBytesBasedDirectTag<bool>
 {
     /// <summary>
     /// 第Nth位比特: 取值范围 0~15。
-    public byte NthBit { get; set; }
-
+    /// </summary>
+    public byte NthBit { get; }
 
     /// <summary>
     /// c'tor
