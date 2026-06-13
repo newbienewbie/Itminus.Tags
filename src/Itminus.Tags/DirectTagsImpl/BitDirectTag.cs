@@ -1,7 +1,7 @@
-﻿namespace Itminus.Tags.S7;
+﻿namespace Itminus.Tags.DirectTags;
 
 
-internal class BitTag : ContinousBytesBasedDirectTag<bool>
+internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
 {
     /// <summary>
     /// 第Nth位比特: 取值范围 0~15。
@@ -17,7 +17,7 @@ internal class BitTag : ContinousBytesBasedDirectTag<bool>
     /// <param name="nthBit">比特位，通常取值范围[0,15]</param>
     /// <param name="bufferSize">缓存大小，如果比特位是[0,7],则可以取1；如果比特位是[0,15],则可以取2；默认自动计算</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public BitTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel, byte nthBit, int bufferSize=0) 
+    public BitDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel, byte nthBit, int bufferSize=0) 
         : base(descriptor, thisChannel, channel)
     {
         this.NthBit = nthBit;

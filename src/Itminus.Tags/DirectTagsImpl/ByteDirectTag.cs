@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Itminus.Tags.S7;
+namespace Itminus.Tags.DirectTags;
 
 
-internal class ByteTag : ContinousBytesBasedDirectTag<byte>
+internal class ByteDirectTag : ContinousBytesBasedDirectTag<byte>
 {
-    public ByteTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel) 
+    public ByteDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel) 
         : base(descriptor, thisChannel, channel)
     {
     }

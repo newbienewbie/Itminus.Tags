@@ -53,7 +53,7 @@ public class S7DirectTagStrTests
     }
 
 
-    private static StrTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel)
+    private static StrDirectTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel)
     {
         var descriptor = new TagDescriptor()
         {
@@ -62,7 +62,7 @@ public class S7DirectTagStrTests
             RawAddress = "DB1.300",
         };
 
-        return new StrTag(descriptor, thisChannel: null, channel: channel, maxLen: maxLen);
+        return new StrDirectTag(descriptor, thisChannel: null, channel: channel, maxLen: maxLen);
     }
 
     private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel

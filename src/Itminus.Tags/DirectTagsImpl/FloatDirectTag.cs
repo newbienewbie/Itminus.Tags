@@ -1,11 +1,11 @@
 ﻿using System.Buffers.Binary;
 
-namespace Itminus.Tags.S7;
+namespace Itminus.Tags.DirectTags;
 
 
-internal class FloatTag : ContinousBytesBasedDirectTag<float>
+internal class FloatDirectTag : ContinousBytesBasedDirectTag<float>
 {
-    public FloatTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
+    public FloatDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
         : base(descriptor, thisChannel, channel)
     {
     }

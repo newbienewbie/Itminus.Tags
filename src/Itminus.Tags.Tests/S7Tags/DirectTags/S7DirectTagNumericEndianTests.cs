@@ -1,3 +1,4 @@
+using Itminus.Tags.DirectTags;
 using Itminus.Tags.S7;
 using System;
 using System.Buffers.Binary;
@@ -226,7 +227,7 @@ public class S7DirectTagNumericEndianTests
         Assert.Equal(GetBytes(value, endian), fake.LastWriteBuffer);
     }
 
-    private static Int16Tag CreateInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
+    private static Int16DirectTag CreateInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
         => new(new TagDescriptor
         {
             TagName = "i16",
@@ -235,7 +236,7 @@ public class S7DirectTagNumericEndianTests
             EndianKind = endian,
         }, thisChannel: null, channel: channel);
 
-    private static UInt16Tag CreateUInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
+    private static UInt16DirectTag CreateUInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
         => new(new TagDescriptor
         {
             TagName = "u16",
@@ -244,7 +245,7 @@ public class S7DirectTagNumericEndianTests
             EndianKind = endian,
         }, thisChannel: null, channel: channel);
 
-    private static Int32Tag CreateInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
+    private static Int32DirectTag CreateInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
         => new(new TagDescriptor
         {
             TagName = "i32",
@@ -253,7 +254,7 @@ public class S7DirectTagNumericEndianTests
             EndianKind = endian,
         }, thisChannel: null, channel: channel);
 
-    private static UInt32Tag CreateUInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
+    private static UInt32DirectTag CreateUInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
         => new(new TagDescriptor
         {
             TagName = "u32",
@@ -262,7 +263,7 @@ public class S7DirectTagNumericEndianTests
             EndianKind = endian,
         }, thisChannel: null, channel: channel);
 
-    private static Int64Tag CreateInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
+    private static Int64DirectTag CreateInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
         => new(new TagDescriptor
         {
             TagName = "i64",
@@ -271,7 +272,7 @@ public class S7DirectTagNumericEndianTests
             EndianKind = endian,
         }, thisChannel: null, channel: channel);
 
-    private static UInt64Tag CreateUInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
+    private static UInt64DirectTag CreateUInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
         => new(new TagDescriptor
         {
             TagName = "u64",
@@ -280,7 +281,7 @@ public class S7DirectTagNumericEndianTests
             EndianKind = endian,
         }, thisChannel: null, channel: channel);
 
-    private static FloatTag CreateFloatTag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
+    private static FloatDirectTag CreateFloatTag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
         => new(new TagDescriptor
         {
             TagName = "f32",

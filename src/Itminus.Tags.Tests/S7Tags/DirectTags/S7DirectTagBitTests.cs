@@ -1,4 +1,5 @@
-﻿using Itminus.Tags.S7;
+﻿using Itminus.Tags.DirectTags;
+using Itminus.Tags.S7;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -85,7 +86,7 @@ public class S7DirectTagBitTests
             RawAddress = $"DB1.100.{nthBit}",
         };
 
-        var tag = new BitTag(descriptor, thisChannel: null, channel: channel,nthBit: nthBit, bufferSize: 0);
+        var tag = new BitDirectTag(descriptor, thisChannel: null, channel: channel,nthBit: nthBit, bufferSize: 0);
         return tag;
     }
 

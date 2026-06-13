@@ -1,10 +1,10 @@
 ﻿using System.Buffers.Binary;
 
-namespace Itminus.Tags.S7;
+namespace Itminus.Tags.DirectTags;
 
-internal class UInt16Tag : ContinousBytesBasedDirectTag<UInt16>
+internal class UInt16DirectTag : ContinousBytesBasedDirectTag<UInt16>
 {
-    public UInt16Tag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
+    public UInt16DirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
         : base(descriptor,thisChannel, channel)
     {
     }

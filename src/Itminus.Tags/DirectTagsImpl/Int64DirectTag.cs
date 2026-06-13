@@ -1,10 +1,10 @@
 ﻿using System.Buffers.Binary;
 
-namespace Itminus.Tags.S7;
+namespace Itminus.Tags.DirectTags;
 
-internal class Int64Tag : ContinousBytesBasedDirectTag<long>
+internal class Int64DirectTag : ContinousBytesBasedDirectTag<long>
 {
-    public Int64Tag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
+    public Int64DirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
         : base(descriptor, thisChannel, channel)
     {
     }

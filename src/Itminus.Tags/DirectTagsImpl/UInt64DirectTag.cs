@@ -1,10 +1,10 @@
 ﻿using System.Buffers.Binary;
 
-namespace Itminus.Tags.S7;
+namespace Itminus.Tags.DirectTags;
 
-internal class UInt64Tag : ContinousBytesBasedDirectTag<ulong>
+internal class UInt64DirectTag : ContinousBytesBasedDirectTag<ulong>
 {
-    public UInt64Tag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
+    public UInt64DirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
         : base(descriptor,thisChannel, channel)
     {
     }

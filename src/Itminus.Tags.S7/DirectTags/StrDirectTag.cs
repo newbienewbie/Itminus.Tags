@@ -1,15 +1,16 @@
-﻿using System.Text;
+﻿using Itminus.Tags.DirectTags;
+using System.Text;
 
 namespace Itminus.Tags.S7;
 
-internal class StrTag : ContinousBytesBasedDirectTag<string>
+internal class StrDirectTag : ContinousBytesBasedDirectTag<string>
 {
     /// <summary>
     /// 字符串最大长度，ReadOnly
     /// </summary>
     public byte Maxlen { get; }
 
-    public StrTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel, byte maxLen)
+    public StrDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel, byte maxLen)
         : base(descriptor, thisChannel, channel)
     {
         this.Maxlen = maxLen;
