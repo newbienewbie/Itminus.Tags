@@ -22,6 +22,7 @@ public static class TagsProject_Extensions
         // register tags loader
         builder.ConfigTagsLoader((sp, composite) => { 
             composite.AddTagsCbntBuilder<ModbusTcpTagCbntBuilder>(ModbusTcpNames.DriverName);
+            composite.AddTagBuilder<ModbusTcpDirectTagBuilder>(ModbusTcpNames.DriverName);
         });
 
         return builder;
