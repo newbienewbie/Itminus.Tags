@@ -23,16 +23,16 @@ internal class ModbusTcpDirectTagFactory
 
             BuiltinTagKinds.BYTE => CreateByteTag(descriptor, addr, channel),
 
-            //BuiltinTagKinds.INT16 => CreateInt16Tag(descriptor),
+            BuiltinTagKinds.INT16 => CreateShortTag(descriptor,addr, channel),
             BuiltinTagKinds.UINT16 => CreateUShortTag(descriptor, addr, channel),
 
-            //BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor),
-            //BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor),
+            BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor,addr, channel),
+            BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor,addr,channel),
 
-            //BuiltinTagKinds.INT64 => CreateInt64Tag(descriptor),
-            //BuiltinTagKinds.UINT64 => CreateUInt64Tag(descriptor),
+            BuiltinTagKinds.INT64 => CreateInt64Tag(descriptor,addr, channel),
+            BuiltinTagKinds.UINT64 => CreateUInt64Tag(descriptor,addr, channel),
 
-            //BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor)
+            BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor, addr, channel),
 
 
             _ => throw new Exception($"未预料到的测点种类={descriptor.TagKind}")
@@ -88,11 +88,38 @@ internal class ModbusTcpDirectTagFactory
 
     private ITag CreateUShortTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
-        // 目前仅支持保持寄存器，输入寄存器的直接测点留待以后实现
-        if (addr.Area != RegisterKinds.HoldingRegisters)
-        {
-            throw new NotImplementedException($"测点配置的寄存器类型暂不支持，请考虑使用连续测点。(Tag={descriptor.TagName})");
-        }
         return new UInt16DirectTag(descriptor, thisChannel, this._container);
     }
+    private ITag CreateShortTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
+    {
+        return new Int16DirectTag(descriptor, thisChannel, this._container);
+    }
+
+
+    private ITag CreateUInt32Tag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
+    {
+        return new UInt32DirectTag(descriptor, thisChannel, this._container);
+    }
+    private ITag CreateInt32Tag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
+    {
+        return new Int32DirectTag(descriptor, thisChannel, this._container);
+    }
+
+
+    private ITag CreateUInt64Tag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
+    {
+        return new UInt64DirectTag(descriptor, thisChannel, this._container);
+    }
+    private ITag CreateInt64Tag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
+    {
+        return new Int64DirectTag(descriptor, thisChannel, this._container);
+    }
+
+
+    private ITag CreateFloatTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
+    {
+        return new FloatDirectTag(descriptor, thisChannel, this._container);
+    }
+
+
 }
