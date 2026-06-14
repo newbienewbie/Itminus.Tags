@@ -39,7 +39,7 @@ public abstract class ZLanCbntBuilderBase: ModbusTcpTagCbntBuilder
         return this;
     }
 
-    protected override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;
         foreach (var kvp in this.TagCbnt.Children)

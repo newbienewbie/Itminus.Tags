@@ -125,7 +125,7 @@ public abstract class TagCbntBuilderBase
     /// 实现类需要根据自己实际情况，重写自己的布局算法。
     /// </summary>
     /// <returns></returns>
-    protected abstract TagCbntBuilderBase AutoResize();
+    protected abstract TagCbntBuilderBase AutoLayout();
 
     /// <summary>
     /// 构建测点组合，并返回构建好的测点组合。<br/>
@@ -134,7 +134,7 @@ public abstract class TagCbntBuilderBase
     /// <returns></returns>
     public virtual ITagCbnt Build(ITagChannel channel)
     {
-        this.AutoResize();
+        this.AutoLayout();
         return this.TagCbnt;
     }
 }
