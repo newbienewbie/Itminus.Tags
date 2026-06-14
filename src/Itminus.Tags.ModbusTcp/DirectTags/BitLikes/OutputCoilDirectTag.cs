@@ -11,9 +11,11 @@ public class OutputCoilDirectTag : Tag<bool>
     public OutputCoilDirectTag(TagDescriptor descriptor, TagContainer container)
         : base(descriptor, container)
     {
+        this._mbChannel = this.GetModbusTcpChannel();
     }
 
     public override ITagChannel? Channel { get; set; }
+    private readonly ModbusTcpChannel _mbChannel;
 
     #region 地址
     private ModbusTcpAddress? _addr;
@@ -36,9 +38,8 @@ public class OutputCoilDirectTag : Tag<bool>
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.GetModbusTcpChannel();
         var addr = this.GetAddress();
-        var flags = await channel.ModbusMaster!.ReadCoilsAsync(addr.SlaveAddress, addr.StartPoint, 1);
+        var flags = await this._mbChannel.ModbusMaster!.ReadCoilsAsync(addr.SlaveAddress, addr.StartPoint, 1);
         this._value = flags[0];
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this._value);
@@ -46,10 +47,9 @@ public class OutputCoilDirectTag : Tag<bool>
 
     public override async Task WriteAsync(CancellationToken ct)
     {
-        var channel = this.GetModbusTcpChannel();
         var addr = this.GetAddress();
         var flag = this._value;
-        await channel.ModbusMaster!.WriteSingleCoilAsync(addr.SlaveAddress, addr.StartPoint, flag);
+        await this._mbChannel.ModbusMaster!.WriteSingleCoilAsync(addr.SlaveAddress, addr.StartPoint, flag);
         this.IsDirty = false;
         this.NotifyTagWritten(flag);
     }

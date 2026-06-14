@@ -1,6 +1,4 @@
-﻿using Itminus.Tags.DirectTags;
-
-namespace Itminus.Tags.ModbusTcp;
+﻿namespace Itminus.Tags.ModbusTcp;
 
 internal class ModbusTcpDirectTagFactory
 {
@@ -11,7 +9,7 @@ internal class ModbusTcpDirectTagFactory
 
     private readonly TagContainer _container;
 
-    public ITag Create(TagDescriptor descriptor, ITagChannel? channel, ModbusTcpChannel modbusTcpChannel)
+    public ITag Create(TagDescriptor descriptor, ITagChannel? channel)
     {
         var tag = descriptor.TagKind switch
         {

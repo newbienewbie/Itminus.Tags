@@ -9,10 +9,12 @@ public class InputContactDirectTag : Tag<bool>
     public InputContactDirectTag(TagDescriptor descriptor, TagContainer container) 
         : base(descriptor, container)
     {
+        this._mbChannel = this.GetModbusTcpChannel();
     }
 
     public override ITagChannel? Channel { get; set; }
 
+    private readonly ModbusTcpChannel _mbChannel;
 
     #region 地址
     private ModbusTcpAddress? _addr;
@@ -33,9 +35,8 @@ public class InputContactDirectTag : Tag<bool>
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.GetModbusTcpChannel();
         var addr = this.GetAddress();
-        var flags = await channel.ModbusMaster!.ReadInputsAsync(addr.SlaveAddress, addr.StartPoint, 1);
+        var flags = await this._mbChannel.ModbusMaster!.ReadInputsAsync(addr.SlaveAddress, addr.StartPoint, 1);
         this._value = flags[0];
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this._value);

@@ -7,8 +7,12 @@ public class HoldingRegisterBitDirectTag : Tag<bool>
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;
+
+        this._mbChannel = this.GetModbusTcpChannel();
     }
     public override ITagChannel? Channel { get; set; }
+
+    private readonly ModbusTcpChannel _mbChannel;
 
     /// <summary>
     /// 第Nth位比特: 取值范围 0~15。
@@ -36,10 +40,9 @@ public class HoldingRegisterBitDirectTag : Tag<bool>
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.GetModbusTcpChannel();
         var addr = this.GetAddress();
         var count = this.GetBufferSize();
-        var bytes = await channel.ModbusMaster!.ReadHoldingRegistersAsync(
+        var bytes = await this._mbChannel.ModbusMaster!.ReadHoldingRegistersAsync(
             addr.SlaveAddress, 
             addr.StartPoint, 
             count
@@ -54,11 +57,10 @@ public class HoldingRegisterBitDirectTag : Tag<bool>
     }
     public override async Task WriteAsync(CancellationToken ct) 
     {
-        var channel = this.GetModbusTcpChannel();
         var addr = this.GetAddress();
         var count = this.GetBufferSize();
 
-        var bytes= await channel.ModbusMaster!.ReadHoldingRegistersAsync(
+        var bytes= await this._mbChannel.ModbusMaster!.ReadHoldingRegistersAsync(
             addr.SlaveAddress,
             addr.StartPoint,
             count
@@ -72,7 +74,7 @@ public class HoldingRegisterBitDirectTag : Tag<bool>
             oldFlags & ~(1 << nth);
         bytes[index] = (ushort) flag;
 
-        await channel.ModbusMaster!.WriteMultipleRegistersAsync(
+        await this._mbChannel.ModbusMaster!.WriteMultipleRegistersAsync(
             addr.SlaveAddress,
             addr.StartPoint,
             bytes

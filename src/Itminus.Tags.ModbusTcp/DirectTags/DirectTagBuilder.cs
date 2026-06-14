@@ -16,15 +16,7 @@ internal partial class ModbusTcpDirectTagBuilder : TagBuilderBase
         }
 
         var factory = new ModbusTcpDirectTagFactory( this.Parent.IntoTagContainer());
-       
-        // 这个时候 tag 尚未构造完成，尚未关联到 Parent，不可以使用 tag.GetRequiredChannel()，必须依赖外部传入的 channel 参数
-        var ch = channel as ModbusTcpChannel;
-        if(ch is null)
-        {
-            throw new Exception($"测点({this.Name})配置的通道不是{nameof(ModbusTcpChannel)}");
-        }
-        var tag = factory.Create(this.TagDescriptor, this.Channel, ch);
-
+        var tag = factory.Create(this.TagDescriptor, this.Channel);
         return tag;
     }
 }

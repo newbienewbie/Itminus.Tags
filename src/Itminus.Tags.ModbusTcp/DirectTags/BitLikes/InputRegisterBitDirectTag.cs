@@ -10,9 +10,10 @@ public class InputRegisterBitDirectTag: Tag<bool>
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;
+        this._mbChannel = this.GetModbusTcpChannel();
     }
     public override ITagChannel? Channel { get; set; }
-
+    private readonly ModbusTcpChannel _mbChannel;
     /// <summary>
     /// 第Nth位比特: 取值范围 0~15。
     /// </summary>
@@ -39,10 +40,9 @@ public class InputRegisterBitDirectTag: Tag<bool>
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.GetModbusTcpChannel();
         var addr = this.GetAddress();
         var count = this.GetBufferSize();
-        var bytes= await channel.ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, addr.StartPoint, count);
+        var bytes= await this._mbChannel.ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, addr.StartPoint, count);
         var index = this.NthBit / 8;
         var nth = this.NthBit % 8;
         var flags = bytes[index];

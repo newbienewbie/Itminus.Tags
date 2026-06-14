@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Itminus.Tags;
-
-namespace Itminus.Tags.ModbusTcp;
+﻿namespace Itminus.Tags.ModbusTcp;
 
 public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
 {
