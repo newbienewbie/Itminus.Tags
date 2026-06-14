@@ -1,4 +1,4 @@
-﻿namespace Itminus.Tags.DirectTags;
+﻿namespace Itminus.Tags.S7;
 
 /// <summary>
 /// 表示一个基于连续字节的直接测点。<br/>

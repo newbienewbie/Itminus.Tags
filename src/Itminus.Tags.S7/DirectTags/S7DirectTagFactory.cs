@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.DirectTags;
-
+﻿
 namespace Itminus.Tags.S7;
 
 internal class S7DirectTagFactory

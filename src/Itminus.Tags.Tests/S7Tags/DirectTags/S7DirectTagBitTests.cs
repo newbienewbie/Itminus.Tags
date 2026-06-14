@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.DirectTags;
-using Itminus.Tags.S7;
+﻿using Itminus.Tags.S7;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

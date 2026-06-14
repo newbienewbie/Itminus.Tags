@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.DirectTags;
-using Itminus.Tags.S7;
+﻿using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using Xunit;

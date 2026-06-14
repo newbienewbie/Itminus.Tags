@@ -1,6 +1,6 @@
 ﻿using System.Buffers.Binary;
 
-namespace Itminus.Tags.DirectTags;
+namespace Itminus.Tags.S7;
 
 internal class Int64DirectTag : ContinousBytesBasedDirectTag<long>
 {

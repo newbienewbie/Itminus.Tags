@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Itminus.Tags.DirectTags;
+namespace Itminus.Tags.S7;
 
 
 internal class ByteDirectTag : ContinousBytesBasedDirectTag<byte>

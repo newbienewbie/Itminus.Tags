@@ -1,4 +1,3 @@
-using Itminus.Tags.DirectTags;
 using Itminus.Tags.S7;
 using System;
 using System.Buffers.Binary;
