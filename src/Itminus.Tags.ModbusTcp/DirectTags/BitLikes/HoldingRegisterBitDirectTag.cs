@@ -7,12 +7,10 @@ public class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;
-
-        this._mbChannel = this.GetModbusTcpChannel();
     }
+
     public override ITagChannel? Channel { get; set; }
 
-    private readonly ModbusTcpChannel _mbChannel;
 
     /// <summary>
     /// 第Nth位比特: 取值范围 0~15。
@@ -42,7 +40,7 @@ public class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
     {
         var addr = this.GetAddress();
         var count = this.GetBufferSize();
-        var bytes = await this._mbChannel.ModbusMaster!.ReadHoldingRegistersAsync(
+        var bytes = await this._bubbleChannel.ModbusMaster!.ReadHoldingRegistersAsync(
             addr.SlaveAddress, 
             addr.StartPoint, 
             count
@@ -60,7 +58,7 @@ public class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
         var addr = this.GetAddress();
         var count = this.GetBufferSize();
 
-        var bytes= await this._mbChannel.ModbusMaster!.ReadHoldingRegistersAsync(
+        var bytes= await this._bubbleChannel.ModbusMaster!.ReadHoldingRegistersAsync(
             addr.SlaveAddress,
             addr.StartPoint,
             count
@@ -74,24 +72,12 @@ public class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
             oldFlags & ~(1 << nth);
         bytes[index] = (ushort) flag;
 
-        await this._mbChannel.ModbusMaster!.WriteMultipleRegistersAsync(
+        await this._bubbleChannel.ModbusMaster!.WriteMultipleRegistersAsync(
             addr.SlaveAddress,
             addr.StartPoint,
             bytes
         );
         this.IsDirty = false;
         this.NotifyTagWritten(this._value);
-    }
-
-    private ModbusTcpChannel GetModbusTcpChannel()
-    {
-        var channel = this.GetRequiredChannel() as ModbusTcpChannel;
-        if (channel is null)
-        {
-            var tagname = this.TagName();
-            throw new InvalidOperationException($"Tag {tagname} is not associated with a ModbusTcpChannel.");
-        }
-
-        return channel;
     }
 }

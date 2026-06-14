@@ -10,10 +10,9 @@ public class InputRegisterBitDirectTag: Tag<bool, ModbusTcpChannel>
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;
-        this._mbChannel = this.GetModbusTcpChannel();
     }
     public override ITagChannel? Channel { get; set; }
-    private readonly ModbusTcpChannel _mbChannel;
+
     /// <summary>
     /// 第Nth位比特: 取值范围 0~15。
     /// </summary>
@@ -42,7 +41,7 @@ public class InputRegisterBitDirectTag: Tag<bool, ModbusTcpChannel>
     {
         var addr = this.GetAddress();
         var count = this.GetBufferSize();
-        var bytes= await this._mbChannel.ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, addr.StartPoint, count);
+        var bytes= await this._bubbleChannel.ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, addr.StartPoint, count);
         var index = this.NthBit / 8;
         var nth = this.NthBit % 8;
         var flags = bytes[index];
@@ -53,16 +52,4 @@ public class InputRegisterBitDirectTag: Tag<bool, ModbusTcpChannel>
     }
     public override async Task WriteAsync(CancellationToken ct) =>
         throw new NotSupportedException($"输入寄存器点不可写入({this.TagName}");
-
-    private ModbusTcpChannel GetModbusTcpChannel()
-    {
-        var channel = this.GetRequiredChannel() as ModbusTcpChannel;
-        if (channel is null)
-        {
-            var tagname = this.TagName();
-            throw new InvalidOperationException($"Tag {tagname} is not associated with a ModbusTcpChannel.");
-        }
-
-        return channel;
-    }
 }

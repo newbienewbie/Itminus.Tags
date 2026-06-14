@@ -1,15 +1,12 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
-public class HoldingRegisterUInt16DirectTag : Tag<ushort, ModbusTcpChannel>
+public class UInt16DirectTag : Tag<ushort, ModbusTcpChannel>
 {
-    public HoldingRegisterUInt16DirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
+    public UInt16DirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
-        this._mbChannel = this.GetModbusTcpChannel();
     }
     public override ITagChannel? Channel { get; set; }
-
-    private readonly ModbusTcpChannel _mbChannel;
 
     #region 地址
     private ModbusTcpAddress? _addr;
@@ -31,11 +28,20 @@ public class HoldingRegisterUInt16DirectTag : Tag<ushort, ModbusTcpChannel>
     public override async Task ReadAsync(CancellationToken ct)
     {
         var addr = this.GetAddress();
-        var values= await this._mbChannel.ModbusMaster!.ReadHoldingRegistersAsync(
-            addr.SlaveAddress, 
-            addr.StartPoint, 
-            1
-        );
+        var values = addr.Area switch
+        {
+            RegisterKinds.HoldingRegisters => await this._bubbleChannel.ModbusMaster!.ReadHoldingRegistersAsync(
+                addr.SlaveAddress, 
+                addr.StartPoint, 
+                1
+            ),
+            RegisterKinds.InputRegisters => await this._bubbleChannel.ModbusMaster!.ReadInputRegistersAsync(
+                addr.SlaveAddress,
+                addr.StartPoint,
+                1
+            ),
+            _ => throw new InvalidOperationException($"按ushort读写，只支持 HoldingRegisters/InputRegisters，当前测点({this.TagName()}), 地址={addr.Area}")
+        };
         var value = values[0];
 
         if(this.TagDescriptor.EndianKind == EndianKinds.BigEndian)
@@ -52,6 +58,11 @@ public class HoldingRegisterUInt16DirectTag : Tag<ushort, ModbusTcpChannel>
     public override async Task WriteAsync(CancellationToken ct) 
     {
         var addr = this.GetAddress();
+        if (addr.Area != RegisterKinds.HoldingRegisters)
+        {
+            throw new InvalidOperationException($"按字节写入，只支持 HoldingRegisters，当前测点({this.TagName()}), 地址={addr.Area}");
+        }
+
         var value = this._value;
         if(this.TagDescriptor.EndianKind == EndianKinds.BigEndian)
         {
@@ -60,7 +71,7 @@ public class HoldingRegisterUInt16DirectTag : Tag<ushort, ModbusTcpChannel>
             value = (ushort)(loByte << 8 | hiByte);
         }
 
-        await this._mbChannel.ModbusMaster!.WriteMultipleRegistersAsync(
+        await this._bubbleChannel.ModbusMaster!.WriteMultipleRegistersAsync(
             addr.SlaveAddress,
             addr.StartPoint,
             new ushort[] { value }
@@ -69,15 +80,4 @@ public class HoldingRegisterUInt16DirectTag : Tag<ushort, ModbusTcpChannel>
         this.NotifyTagWritten(this._value);
     }
 
-    private ModbusTcpChannel GetModbusTcpChannel()
-    {
-        var channel = this.GetRequiredChannel() as ModbusTcpChannel;
-        if (channel is null)
-        {
-            var tagname = this.TagName();
-            throw new InvalidOperationException($"Tag {tagname} is not associated with a ModbusTcpChannel.");
-        }
-
-        return channel;
-    }
 }

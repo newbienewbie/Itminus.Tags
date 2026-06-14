@@ -83,7 +83,7 @@ internal class ModbusTcpDirectTagFactory
 
     private ITag CreateByteTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
-        return new HoldingRegisterByteDirectTag(descriptor, thisChannel, this._container );
+        return new ByteDirectTag(descriptor, thisChannel, this._container );
     }
 
     private ITag CreateUShortTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
@@ -93,6 +93,6 @@ internal class ModbusTcpDirectTagFactory
         {
             throw new NotImplementedException($"测点配置的寄存器类型暂不支持，请考虑使用连续测点。(Tag={descriptor.TagName})");
         }
-        return new HoldingRegisterUInt16DirectTag(descriptor, thisChannel, this._container);
+        return new UInt16DirectTag(descriptor, thisChannel, this._container);
     }
 }
