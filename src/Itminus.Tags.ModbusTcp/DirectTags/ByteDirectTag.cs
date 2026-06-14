@@ -1,9 +1,9 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
-public class HoldingRegisterByteDirectTag : Tag<byte>
+public class HoldingRegisterByteDirectTag : Tag<byte, ModbusTcpChannel>
 {
-    public HoldingRegisterByteDirectTag(TagDescriptor descriptor, TagContainer container)
-        : base(descriptor, container)
+    public HoldingRegisterByteDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
+        : base(descriptor, thisChannel, container)
     {
         this._mbChannel = this.GetModbusTcpChannel();
     }

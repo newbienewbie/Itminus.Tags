@@ -9,14 +9,22 @@ internal partial class S7DirectTagBuilder : TagBuilderBase
 
     public override ITag Build(ITagChannel channel)
     {
-
-        if (this.Channel is not null && this.Channel is not S7TagChannel)
+        S7TagChannel? s7ch;
+        if(this.Channel is null)
         {
-            throw new Exception($"测点({this.Name})配置了通道，但不是{nameof(S7TagChannel)}");
+            s7ch = null;
+        }
+        else if (this.Channel is not S7TagChannel)
+        {
+            throw new Exception($"测点({this.Name})配置了通道({this.Channel.ChannelName})，但不是{nameof(S7TagChannel)}");
+        }
+        else
+        {
+            s7ch= this.Channel as S7TagChannel;
         }
 
         var factory = new S7DirectTagFactory(this.Parent.IntoTagContainer());
-        var tag = factory.Create(this.TagDescriptor, this.Channel);
+        var tag = factory.Create(this.TagDescriptor, s7ch);
 
         return tag;
     }

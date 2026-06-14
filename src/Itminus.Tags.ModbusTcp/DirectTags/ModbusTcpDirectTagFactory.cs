@@ -9,22 +9,22 @@ internal class ModbusTcpDirectTagFactory
 
     private readonly TagContainer _container;
 
-    public ITag Create(TagDescriptor descriptor, ITagChannel? channel)
+    public ITag Create(TagDescriptor descriptor, ModbusTcpChannel? channel)
     {
         var addr = ModBusTcpAddressParser.Parse(descriptor.NormalizedAddress);
         var tag = descriptor.TagKind switch
         {
             // 1000x
-            BuiltinTagKinds.DI => CreateDITag(descriptor, addr),
+            BuiltinTagKinds.DI => CreateDITag(descriptor, addr, channel),
             // 0000x
-            BuiltinTagKinds.DO => CreateDOTag(descriptor, addr),
+            BuiltinTagKinds.DO => CreateDOTag(descriptor, addr, channel),
             // each part has 2-words
-            BuiltinTagKinds.BIT => CreateBitTag(descriptor, addr),
+            BuiltinTagKinds.BIT => CreateBitTag(descriptor, addr, channel),
 
-            BuiltinTagKinds.BYTE => CreateByteTag(descriptor, addr),
+            BuiltinTagKinds.BYTE => CreateByteTag(descriptor, addr, channel),
 
             //BuiltinTagKinds.INT16 => CreateInt16Tag(descriptor),
-            BuiltinTagKinds.UINT16 => CreateUShortTag(descriptor, addr),
+            BuiltinTagKinds.UINT16 => CreateUShortTag(descriptor, addr, channel),
 
             //BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor),
             //BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor),
@@ -41,17 +41,17 @@ internal class ModbusTcpDirectTagFactory
     }
 
     #region BitLikes
-    private ITag CreateDITag(TagDescriptor descriptor, ModbusTcpAddress addr)
+    private ITag CreateDITag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
-        return new InputContactDirectTag(descriptor, this._container);
+        return new InputContactDirectTag(descriptor, thisChannel, this._container);
     }
 
-    private ITag CreateDOTag(TagDescriptor descriptor, ModbusTcpAddress addr)
+    private ITag CreateDOTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
-        return new OutputCoilDirectTag(descriptor, this._container);
+        return new OutputCoilDirectTag(descriptor, thisChannel, this._container);
     }
 
-    public virtual ITag CreateBitTag(TagDescriptor descriptor, ModbusTcpAddress addr)
+    public virtual ITag CreateBitTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
         // normalize the tagsize
         if (descriptor.TagSize == 0)
@@ -61,19 +61,19 @@ internal class ModbusTcpDirectTagFactory
 
         if (addr.Area == RegisterKinds.InputRegisters)
         {
-            return new InputRegisterBitDirectTag(descriptor, this._container);
+            return new InputRegisterBitDirectTag(descriptor, thisChannel, this._container);
         }
         else if (addr.Area == RegisterKinds.HoldingRegisters)
         {
-            return new HoldingRegisterBitDirectTag(descriptor, this._container);
+            return new HoldingRegisterBitDirectTag(descriptor, thisChannel, this._container);
         }
         else if(addr.Area == RegisterKinds.InputContacts)
         {
-            return new InputContactDirectTag(descriptor, this._container);
+            return new InputContactDirectTag(descriptor, thisChannel, this._container);
         }
         else if (addr.Area == RegisterKinds.OutputCoils)
         {
-            return new OutputCoilDirectTag(descriptor, this._container);
+            return new OutputCoilDirectTag(descriptor, thisChannel, this._container);
         }
 
         throw new NotImplementedException();
@@ -81,18 +81,18 @@ internal class ModbusTcpDirectTagFactory
     #endregion
 
 
-    private ITag CreateByteTag(TagDescriptor descriptor, ModbusTcpAddress addr)
+    private ITag CreateByteTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
-        return new HoldingRegisterByteDirectTag(descriptor, this._container);
+        return new HoldingRegisterByteDirectTag(descriptor, thisChannel, this._container );
     }
 
-    private ITag CreateUShortTag(TagDescriptor descriptor, ModbusTcpAddress addr)
+    private ITag CreateUShortTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
         // 目前仅支持保持寄存器，输入寄存器的直接测点留待以后实现
         if (addr.Area != RegisterKinds.HoldingRegisters)
         {
             throw new NotImplementedException($"测点配置的寄存器类型暂不支持，请考虑使用连续测点。(Tag={descriptor.TagName})");
         }
-        return new HoldingRegisterUInt16DirectTag(descriptor, this._container);
+        return new HoldingRegisterUInt16DirectTag(descriptor, thisChannel, this._container);
     }
 }

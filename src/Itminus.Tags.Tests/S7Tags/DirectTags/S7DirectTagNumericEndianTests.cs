@@ -1,4 +1,6 @@
 using Itminus.Tags.S7;
+using Microsoft.Extensions.Logging;
+using StdUnit.Sharp7.Options;
 using System;
 using System.Buffers.Binary;
 using System.Threading;
@@ -240,7 +242,7 @@ public class S7DirectTagNumericEndianTests
         Assert.Equal(GetBytes(value, endian), fake.LastWriteBuffer);
     }
 
-    private static Int16DirectTag CreateInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel, ITagGrp grp) => new(
+    private static Int16DirectTag CreateInt16Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
             new TagDescriptor {
                 TagName = "i16",
                 TagKind = BuiltinTagKinds.INT16,
@@ -251,7 +253,7 @@ public class S7DirectTagNumericEndianTests
             parent: grp.IntoTagContainer()
         );
 
-    private static UInt16DirectTag CreateUInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel, ITagGrp grp) => new(
+    private static UInt16DirectTag CreateUInt16Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
         new TagDescriptor {
             TagName = "u16",
             TagKind = BuiltinTagKinds.UINT16,
@@ -262,7 +264,7 @@ public class S7DirectTagNumericEndianTests
         grp.IntoTagContainer()
     );
 
-    private static Int32DirectTag CreateInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel, ITagGrp grp) => new(
+    private static Int32DirectTag CreateInt32Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
         new TagDescriptor {
             TagName = "i32",
             TagKind = BuiltinTagKinds.INT32,
@@ -415,9 +417,14 @@ public class S7DirectTagNumericEndianTests
         return bytes;
     }
 
-    private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel
+    private sealed class FakeContinousBytesChannel : S7TagChannel
     {
         public FakeContinousBytesChannel(byte[] payload)
+            :base(
+                 "fake", 
+                 new S7PlcItem(), 
+                 new LoggerFactory().CreateLogger<S7TagChannel>()
+             )
         {
             this.LastWriteBuffer = (byte[])payload.Clone();
         }
@@ -426,15 +433,11 @@ public class S7DirectTagNumericEndianTests
 
         public byte[] LastWriteBuffer { get; private set; }
 
-        public string ChannelName => "fake";
+        public override Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
 
-        public string Driver => S7Names.DriverName;
+        public override Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
 
-        public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
-
-        public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
-
-        public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
+        public override Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
         {
             if (count > this.LastWriteBuffer.Length)
             {
@@ -444,14 +447,11 @@ public class S7DirectTagNumericEndianTests
             return Task.FromResult(this.LastWriteBuffer.AsSpan(0, count).ToArray());
         }
 
-        public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
+        public override Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
         {
             this.LastWriteBuffer = (byte[])bytes.Clone();
             return Task.CompletedTask;
         }
 
-        public void Dispose()
-        {
-        }
     }
 }

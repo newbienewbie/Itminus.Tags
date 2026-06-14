@@ -1,9 +1,9 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
-public class HoldingRegisterBitDirectTag : Tag<bool>
+public class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
 {
-    public HoldingRegisterBitDirectTag(TagDescriptor descriptor, TagContainer container)
-        : base(descriptor, container)
+    public HoldingRegisterBitDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
+        : base(descriptor, thisChannel, container)
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;

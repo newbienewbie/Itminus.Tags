@@ -4,12 +4,12 @@
 /// <summary>
 /// Modbus的DO点，地址范围00000~09999
 /// </summary>
-public class OutputCoilDirectTag : Tag<bool>
+public class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
 {
 
     /// <param name="descriptor"></param> 
-    public OutputCoilDirectTag(TagDescriptor descriptor, TagContainer container)
-        : base(descriptor, container)
+    public OutputCoilDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
+        : base(descriptor, thisChannel, container)
     {
         this._mbChannel = this.GetModbusTcpChannel();
     }

@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.S7;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,9 +69,14 @@ public class S7DirectTagStrTests
         return new StrDirectTag(descriptor, thisChannel: null, parent: container , maxLen: maxLen);
     }
 
-    private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel
+    private sealed class FakeContinousBytesChannel : S7TagChannel
     {
         public FakeContinousBytesChannel(byte[] payload)
+            :base(
+                 "fake", 
+                 new StdUnit.Sharp7.Options.S7PlcItem(), 
+                 new LoggerFactory().CreateLogger<FakeContinousBytesChannel>()
+            )
         {
             this.LastWriteBuffer = (byte[])payload.Clone();
         }
@@ -79,15 +85,13 @@ public class S7DirectTagStrTests
 
         public byte[] LastWriteBuffer { get; private set; }
 
-        public string ChannelName => "fake";
 
-        public string Driver => S7Names.DriverName;
 
-        public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
+        public override Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
 
-        public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
+        public override Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
 
-        public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
+        public override Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
         {
             if (count > this.LastWriteBuffer.Length)
             {
@@ -97,14 +101,11 @@ public class S7DirectTagStrTests
             return Task.FromResult(this.LastWriteBuffer.AsSpan(0, count).ToArray());
         }
 
-        public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
+        public override Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
         {
             this.LastWriteBuffer = (byte[])bytes.Clone();
             return Task.CompletedTask;
         }
 
-        public void Dispose()
-        {
-        }
     }
 }

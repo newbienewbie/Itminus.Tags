@@ -3,10 +3,10 @@
 /// <summary>
 /// Modbus的 InputRegister 的 bit 位，地址范围300000~399999
 /// </summary>
-public class InputRegisterBitDirectTag: Tag<bool>
+public class InputRegisterBitDirectTag: Tag<bool, ModbusTcpChannel>
 {
-    public InputRegisterBitDirectTag(TagDescriptor descriptor, TagContainer container)
-        : base(descriptor, container)
+    public InputRegisterBitDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
+        : base(descriptor, thisChannel, container)
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;

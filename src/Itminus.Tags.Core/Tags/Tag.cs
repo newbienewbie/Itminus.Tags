@@ -6,23 +6,40 @@ namespace Itminus.Tags;
 /// 规定了测点值类型的抽象基类。<br/>
 /// 注意：测点只需要实现<see cref="ITag"/>，并不一定要是这个基类的子类。比如<see cref="TagCbntor"/>就不是这个类的子类。<br/>
 /// </summary>
-/// <typeparam name="T"></typeparam>
-public abstract class Tag<T> : ITag
-    where T : IEquatable<T>
+/// <typeparam name="TValue"></typeparam>
+public abstract class Tag<TValue,TChannel> : ITag
+    where TValue : IEquatable<TValue>
+    where TChannel: class, ITagChannel
 {
 
-    protected Tag(TagDescriptor descriptor, TagContainer container)
+    protected Tag(TagDescriptor descriptor, TChannel? thisChannel, TagContainer container)
     {
-        TagDescriptor = descriptor;
-        Parent = container;
+        this.TagDescriptor = descriptor;
+        this.Channel = thisChannel;
+        this.Parent = container;
+
+        // init bubble channel
+        var requiredChannel = this.GetRequiredChannel();
+        if (requiredChannel is not TChannel ch)
+        {
+            var tagname = this.TagName();
+            throw new InvalidOperationException($"测点(冒泡式)通道类型不对(测点={tagname},通道={requiredChannel.ChannelName} {typeof(TChannel).Name})");
+        }
+        this._bubbleChannel = ch;
     }
 
+    /// <inheritdoc/>
     public TagDescriptor TagDescriptor { get; set; }
 
     /// <summary>
-    /// 读写通道
+    /// 自身的读写通道
     /// </summary>
-    public abstract ITagChannel? Channel { get; set; }
+    public virtual ITagChannel? Channel { get; set; }
+
+    /// <summary>
+    /// 冒泡式通道
+    /// </summary>
+    protected readonly TChannel _bubbleChannel;
 
     /// <inheritdoc/>
     public TagContainer? Parent { get; set; }
@@ -37,7 +54,7 @@ public abstract class Tag<T> : ITag
     public bool IsScaned { get; set; }
 
     #region 读写测点值
-    protected T? _value = default!;
+    protected TValue? _value = default!;
 
 
     object? ITag.Value
@@ -45,11 +62,11 @@ public abstract class Tag<T> : ITag
         get => Value;
         set
         {
-            Value = (T?)value;
+            Value = (TValue?)value;
         }
     }
 
-    public virtual T? Value
+    public virtual TValue? Value
     {
         get => _value;
         set

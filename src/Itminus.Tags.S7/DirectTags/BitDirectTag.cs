@@ -16,7 +16,7 @@ internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
     /// <param name="nthBit">比特位，通常取值范围[0,15]</param>
     /// <param name="bufferSize">缓存大小，如果比特位是[0,7],则可以取1；如果比特位是[0,15],则可以取2；默认自动计算</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public BitDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, TagContainer container, byte nthBit, int bufferSize=0) 
+    public BitDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer container, byte nthBit, int bufferSize=0) 
         : base(descriptor, thisChannel, container)
     {
         this.NthBit = nthBit;
@@ -54,9 +54,9 @@ internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
     public override async Task WriteAsync(CancellationToken ct)
     {
         var addr = this.NormalizedAddress();
-        var bytes = await this._ctChannel.ReadAsync(addr, BufferSize, ct);
+        var bytes = await this._bubbleChannel.ReadAsync(addr, BufferSize, ct);
         this.FillBytes(bytes, this.Value);
-        await this._ctChannel.WriteAsync(addr, bytes, ct);
+        await this._bubbleChannel.WriteAsync(addr, bytes, ct);
         this.NotifyTagWritten(this.Value);
         this.IsDirty = false;
     }
