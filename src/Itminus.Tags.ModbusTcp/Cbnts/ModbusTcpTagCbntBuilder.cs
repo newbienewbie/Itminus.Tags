@@ -1,4 +1,6 @@
-﻿namespace Itminus.Tags.ModbusTcp;
+﻿using Itminus.Tags.TagCbntors;
+
+namespace Itminus.Tags.ModbusTcp;
 
 public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
 {

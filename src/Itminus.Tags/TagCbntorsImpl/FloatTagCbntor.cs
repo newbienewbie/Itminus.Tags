@@ -1,6 +1,6 @@
 ﻿using System.Buffers.Binary;
 
-namespace Itminus.Tags;
+namespace Itminus.Tags.TagCbntors;
 
 public class FloatTagCbntor : TagCbntor
 {

@@ -1,4 +1,6 @@
 ﻿
+using Itminus.Tags.TagCbntors;
+
 namespace Itminus.Tags.ModbusTcp;
 
 

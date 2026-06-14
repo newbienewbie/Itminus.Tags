@@ -1,6 +1,7 @@
 ﻿using System.Buffers.Binary;
 
-namespace Itminus.Tags;
+namespace Itminus.Tags.TagCbntors;
+
 
 public class UInt32TagCbntor : TagCbntor
 {
