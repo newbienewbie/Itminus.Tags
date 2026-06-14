@@ -9,7 +9,8 @@ namespace Itminus.Tags.ComScanner.Tags;
 
 public class ComCodeScannerTag : Tag<string>
 {
-    public ComCodeScannerTag(TagDescriptor descriptor, ComScannerChannel channel) : base(descriptor)
+    public ComCodeScannerTag(TagDescriptor descriptor, ComScannerChannel channel, TagContainer container)
+        : base(descriptor, container)
     {
         this._channel = channel;
     }

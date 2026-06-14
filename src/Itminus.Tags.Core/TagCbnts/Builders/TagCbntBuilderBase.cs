@@ -21,9 +21,15 @@ public abstract class TagCbntBuilderBase
     public virtual ITagCbnt TagCbnt { get; protected set; }
 
     /// <summary>
+    /// 父级测点组
+    /// </summary>
+    public virtual ITagGrp? Parent => TagCbnt.Parent;
+
+    /// <summary>
     /// 组合名
     /// </summary>
     public virtual string Name => TagCbnt.Name;
+
     /// <summary>
     /// 起始地址
     /// </summary>
@@ -58,6 +64,18 @@ public abstract class TagCbntBuilderBase
     public virtual TagCbntBuilderBase WithChannel(ITagChannel? channel)
     {
         TagCbnt.Channel = channel;
+        return this;
+    }
+
+    /// <summary>
+    /// 设置父级测点组<br/>
+    /// 会被自动调用。
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <returns></returns>
+    public virtual TagCbntBuilderBase WithParent(ITagGrp? parent)
+    {
+        this.TagCbnt.Parent = parent;
         return this;
     }
 

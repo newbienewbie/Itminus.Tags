@@ -4,8 +4,8 @@ namespace Itminus.Tags.DirectTags;
 
 internal class UInt64DirectTag : ContinousBytesBasedDirectTag<ulong>
 {
-    public UInt64DirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
-        : base(descriptor,thisChannel, channel)
+    public UInt64DirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, TagContainer container)
+        : base(descriptor,thisChannel, container)
     {
     }
 

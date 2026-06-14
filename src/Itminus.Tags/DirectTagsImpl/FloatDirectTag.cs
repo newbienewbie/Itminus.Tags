@@ -5,8 +5,8 @@ namespace Itminus.Tags.DirectTags;
 
 internal class FloatDirectTag : ContinousBytesBasedDirectTag<float>
 {
-    public FloatDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
-        : base(descriptor, thisChannel, channel)
+    public FloatDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, TagContainer parent)
+        : base(descriptor, thisChannel, parent)
     {
     }
 

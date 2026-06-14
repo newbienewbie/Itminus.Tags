@@ -13,12 +13,11 @@ internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
     /// </summary>
     /// <param name="descriptor"></param>
     /// <param name="thisChannel">自身通道</param>
-    /// <param name="channel">冒泡式取得的通道</param>
     /// <param name="nthBit">比特位，通常取值范围[0,15]</param>
     /// <param name="bufferSize">缓存大小，如果比特位是[0,7],则可以取1；如果比特位是[0,15],则可以取2；默认自动计算</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public BitDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel, byte nthBit, int bufferSize=0) 
-        : base(descriptor, thisChannel, channel)
+    public BitDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, TagContainer container, byte nthBit, int bufferSize=0) 
+        : base(descriptor, thisChannel, container)
     {
         this.NthBit = nthBit;
         this.BufferSize = bufferSize == 0 ? (this.NthBit / 8 + 1) : bufferSize;
@@ -55,9 +54,9 @@ internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
     public override async Task WriteAsync(CancellationToken ct)
     {
         var addr = this.NormalizedAddress();
-        var bytes = await this._channel.ReadAsync(addr, BufferSize, ct);
+        var bytes = await this._ctChannel.ReadAsync(addr, BufferSize, ct);
         this.FillBytes(bytes, this.Value);
-        await this._channel.WriteAsync(addr, bytes, ct);
+        await this._ctChannel.WriteAsync(addr, bytes, ct);
         this.NotifyTagWritten(this.Value);
         this.IsDirty = false;
     }

@@ -8,8 +8,8 @@ public class OutputCoilDirectTag : Tag<bool>
 {
 
     /// <param name="descriptor"></param> 
-    public OutputCoilDirectTag(TagDescriptor descriptor)
-        : base(descriptor)
+    public OutputCoilDirectTag(TagDescriptor descriptor, TagContainer container)
+        : base(descriptor, container)
     {
     }
 

@@ -10,8 +10,8 @@ internal class StrDirectTag : ContinousBytesBasedDirectTag<string>
     /// </summary>
     public byte Maxlen { get; }
 
-    public StrDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel, byte maxLen)
-        : base(descriptor, thisChannel, channel)
+    public StrDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, TagContainer parent, byte maxLen)
+        : base(descriptor, thisChannel, parent)
     {
         this.Maxlen = maxLen;
     }

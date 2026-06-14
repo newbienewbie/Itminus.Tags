@@ -4,8 +4,8 @@ namespace Itminus.Tags.DirectTags;
 
 internal class Int16DirectTag : ContinousBytesBasedDirectTag<Int16>
 {
-    public Int16DirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
-        : base(descriptor, thisChannel, channel)
+    public Int16DirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, TagContainer parent)
+        : base(descriptor, thisChannel, parent)
     {
     }
 

@@ -4,10 +4,12 @@ namespace Itminus.Tags.ModbusTcp;
 
 internal class ModbusTcpDirectTagFactory
 {
-    public ModbusTcpDirectTagFactory()
+    public ModbusTcpDirectTagFactory(TagContainer container)
     {
+        this._container = container;
     }
 
+    private readonly TagContainer _container;
 
     public ITag Create(TagDescriptor descriptor, ITagChannel? channel, ModbusTcpChannel modbusTcpChannel)
     {
@@ -40,12 +42,12 @@ internal class ModbusTcpDirectTagFactory
 
     private ITag CreateDITag(TagDescriptor descriptor)
     {
-        return new InputContactDirectTag(descriptor);
+        return new InputContactDirectTag(descriptor, this._container);
     }
 
     private ITag CreateDOTag(TagDescriptor descriptor)
     {
-        return new OutputCoilDirectTag(descriptor);
+        return new OutputCoilDirectTag(descriptor, this._container);
     }
 
     public virtual ITag CreateBitTag(TagDescriptor descriptor)
@@ -59,19 +61,19 @@ internal class ModbusTcpDirectTagFactory
 
         if (tagAddr.Area == RegisterKinds.InputRegisters)
         {
-            return new InputRegisterBitDirectTag(descriptor);
+            return new InputRegisterBitDirectTag(descriptor, this._container);
         }
         else if (tagAddr.Area == RegisterKinds.HoldingRegisters)
         {
-            return new HoldingRegisterBitDirectTag(descriptor);
+            return new HoldingRegisterBitDirectTag(descriptor, this._container);
         }
         else if(tagAddr.Area == RegisterKinds.InputContacts)
         {
-            return new InputContactDirectTag(descriptor);
+            return new InputContactDirectTag(descriptor, this._container);
         }
         else if (tagAddr.Area == RegisterKinds.OutputCoils)
         {
-            return new OutputCoilDirectTag(descriptor);
+            return new OutputCoilDirectTag(descriptor, this._container);
         }
 
         throw new NotImplementedException();

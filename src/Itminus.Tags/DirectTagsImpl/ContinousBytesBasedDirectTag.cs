@@ -12,20 +12,20 @@ internal abstract class ContinousBytesBasedDirectTag<T> : Tag<T>
     /// </summary>
     /// <param name="descriptor"></param>
     /// <param name="thisChannel">对应于测点本身的通道</param>
-    /// <param name="channel">冒泡式获取的通道</param>
-    public ContinousBytesBasedDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel) 
-        : base(descriptor)
+    /// <param name="parent">父容器</param>
+    public ContinousBytesBasedDirectTag(TagDescriptor descriptor, ITagChannel? thisChannel, TagContainer parent) 
+        : base(descriptor, parent)
     {
         this.Channel = thisChannel;
-        this._channel = channel;
+        this._ctChannel = this.GetRequreidContinousBytesBasedTagChannel();
     }
-
-    protected readonly IContinousBytesBasedTagChannel _channel;
 
     /// <inheritdoc/>
     public override ITagChannel? Channel { get; set; }
 
-    /// <summary>
+    protected readonly IContinousBytesBasedTagChannel _ctChannel;
+
+      /// <summary>
     /// 对应一个测点需要读写的字节数。<br/>
     /// </summary>
     public abstract int BufferSize { get; }
@@ -37,11 +37,12 @@ internal abstract class ContinousBytesBasedDirectTag<T> : Tag<T>
     public override async Task ReadAsync(CancellationToken ct)
     {
         var addr = this.NormalizedAddress();
-        var bytes = await this._channel.ReadAsync(addr, BufferSize, ct);
+        var bytes = await this._ctChannel.ReadAsync(addr, BufferSize, ct);
         this._value = this.ConvertFromBytes(bytes.AsSpan());
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this.Value);
     }
+
 
     /// <inheritdoc/>
     public override async Task WriteAsync(CancellationToken ct)
@@ -50,8 +51,19 @@ internal abstract class ContinousBytesBasedDirectTag<T> : Tag<T>
         var bytes = new byte[BufferSize];
         var value = this.Value ?? throw new InvalidOperationException($"Tag({this.TagName()}) 在写入前 Value 不能为空");
         this.FillBytes(bytes, value);
-        await this._channel.WriteAsync(addr, bytes, ct);
+        await this._ctChannel.WriteAsync(addr, bytes, ct);
         this.NotifyTagWritten(this.Value);
         this.IsDirty = false;
+    }
+
+    private IContinousBytesBasedTagChannel GetRequreidContinousBytesBasedTagChannel()
+    {
+        var channel = this.GetRequiredChannel() as IContinousBytesBasedTagChannel;
+        if (channel is null)
+        {
+            throw new InvalidOperationException($"Tag({this.TagName()}) 的通道必须实现 {nameof(IContinousBytesBasedTagChannel)}");
+        }
+
+        return channel;
     }
 }

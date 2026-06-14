@@ -2,8 +2,8 @@
 
 public class HoldingRegisterBitDirectTag : Tag<bool>
 {
-    public HoldingRegisterBitDirectTag(TagDescriptor descriptor)
-        : base(descriptor)
+    public HoldingRegisterBitDirectTag(TagDescriptor descriptor, TagContainer container)
+        : base(descriptor, container)
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;

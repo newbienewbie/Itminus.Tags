@@ -13,7 +13,7 @@ public class SubTagTests
 
     class NoChannelTag : Tag<byte>
     {
-        public NoChannelTag(TagDescriptor descriptor) : base(descriptor)
+        public NoChannelTag(TagDescriptor descriptor, TagContainer parent) : base(descriptor, parent)
         {
             // 有意让这个Tag没有通道，测试冒泡式访问通道
             this.Channel = null!;
@@ -93,17 +93,20 @@ public class SubTagTests
             .Build(channel)
             ;
 
-        var noChannelTag = new NoChannelTag(new TagDescriptor() { 
-            TagName = "no-channel-tag",
-            TagSize = 1,
-            RawAddress = "some-address",
-            TagKind = BuiltinTagKinds.BYTE,
-        });
-
-
         var root = new TagGrp("root", true, channel);
         var grp1 = new TagGrp("sub1", false, null);
         var grp2 = new TagGrp("sub2", false, null);
+
+        var noChannelTag = new NoChannelTag(
+            new TagDescriptor() { 
+                TagName = "no-channel-tag",
+                TagSize = 1,
+                RawAddress = "some-address",
+                TagKind = BuiltinTagKinds.BYTE,
+            }, 
+            grp2.IntoTagContainer()
+        );
+
         root.AddTag(grp1);
         grp2.AddTag(cbnt);
         grp2.AddTag(noChannelTag);

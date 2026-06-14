@@ -15,7 +15,8 @@ public class S7DirectTagStrTests
         const byte maxLen = 10;
         var payload = new byte[] { maxLen, 5, (byte)'H', (byte)'E', (byte)'L', (byte)'L', (byte)'O', 0, 0, 0, 0, 0 };
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         await tag.ReadAsync(CancellationToken.None);
         Assert.Equal(maxLen, tag.Maxlen);
@@ -28,7 +29,8 @@ public class S7DirectTagStrTests
     {
         const byte maxLen = 6;
         var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         tag.Value = "ABC";
         await tag.WriteAsync(CancellationToken.None);
@@ -46,14 +48,15 @@ public class S7DirectTagStrTests
     {
         const byte maxLen = 4;
         var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         tag.Value = "ABCDE";
         await Assert.ThrowsAsync<ArgumentException>(() => tag.WriteAsync(CancellationToken.None));
     }
 
 
-    private static StrDirectTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel)
+    private static StrDirectTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel, TagContainer container)
     {
         var descriptor = new TagDescriptor()
         {
@@ -62,7 +65,7 @@ public class S7DirectTagStrTests
             RawAddress = "DB1.300",
         };
 
-        return new StrDirectTag(descriptor, thisChannel: null, channel: channel, maxLen: maxLen);
+        return new StrDirectTag(descriptor, thisChannel: null, parent: container , maxLen: maxLen);
     }
 
     private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel

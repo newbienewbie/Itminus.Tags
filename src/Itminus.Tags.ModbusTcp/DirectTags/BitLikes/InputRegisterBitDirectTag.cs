@@ -5,8 +5,8 @@
 /// </summary>
 public class InputRegisterBitDirectTag: Tag<bool>
 {
-    public InputRegisterBitDirectTag(TagDescriptor descriptor)
-        : base(descriptor)
+    public InputRegisterBitDirectTag(TagDescriptor descriptor, TagContainer container)
+        : base(descriptor, container)
     {
         var addr = this.GetAddress();
         this.NthBit = addr.NthBit;

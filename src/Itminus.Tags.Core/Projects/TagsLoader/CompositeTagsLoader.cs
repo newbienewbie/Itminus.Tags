@@ -170,6 +170,7 @@ public class CompositeTagsLoader : ITagsLoader
             throw new Exception($"未注册相应的TagCbntBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={cbntDescriptor.Name}");
         var cbntors = cbntDescriptor.Children.ToList();
         var cbntBuilder = builder
+            .WithParent(parent)
             .WithChannel(thisChannel)
             .WithAccessMode(cbntDescriptor.AccessMode)
             .AddTags(cbntors, channel);        
@@ -192,6 +193,7 @@ public class CompositeTagsLoader : ITagsLoader
         var builder = this.ChooseTagBuilder(channel, tagDescriptor) ??
             throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={tagDescriptor.TagName}");
         var tag = builder
+            .WithParent(parent)
             .WithChannel(thisChannel)
             .Build(channel);
         parent.AddTag(tag);

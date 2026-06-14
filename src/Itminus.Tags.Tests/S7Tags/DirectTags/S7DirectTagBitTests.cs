@@ -18,7 +18,8 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_AutoBufferSize_ReadsEnoughBytes(byte nthBit, int expectedLength, byte[] payload, bool expectedValue)
     {
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateBitDirectTag(nthBit, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(nthBit, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -37,7 +38,8 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_WriteAsync_WritesExpectedFlags(byte nthBit, bool val, byte[] expected)
     {
         var fake = new FakeContinousBytesChannel(new byte[expected.Length]);
-        var tag = CreateBitDirectTag(nthBit, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(nthBit, fake, grp);
 
         tag.Value = val;
         await tag.WriteAsync(CancellationToken.None);
@@ -53,7 +55,8 @@ public class S7DirectTagBitTests
     {
         var initial = new byte[] { 0b11111111 };
         var fake = new FakeContinousBytesChannel(initial);
-        var tag = CreateBitDirectTag(0, fake); // clear LSB
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(0, fake, grp); // clear LSB
 
         tag.Value = false;
         await tag.WriteAsync(CancellationToken.None);
@@ -67,7 +70,8 @@ public class S7DirectTagBitTests
     {
         var initial = new byte[] { 0b11111110 };
         var fake = new FakeContinousBytesChannel(initial);
-        var tag = CreateBitDirectTag(0, fake); // set LSB
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(0, fake, grp); // set LSB
 
         tag.Value = true;
         await tag.WriteAsync(CancellationToken.None);
@@ -77,7 +81,7 @@ public class S7DirectTagBitTests
     }
     #endregion
 
-    private static ITag CreateBitDirectTag(byte nthBit, IContinousBytesBasedTagChannel channel)
+    private static ITag CreateBitDirectTag(byte nthBit, IContinousBytesBasedTagChannel channel, ITagGrp grp)
     {
         var descriptor = new TagDescriptor()
         {
@@ -86,7 +90,7 @@ public class S7DirectTagBitTests
             RawAddress = $"DB1.100.{nthBit}",
         };
 
-        var tag = new BitDirectTag(descriptor, thisChannel: null, channel: channel,nthBit: nthBit, bufferSize: 0);
+        var tag = new BitDirectTag(descriptor, thisChannel: null, grp.IntoTagContainer(),nthBit: nthBit, bufferSize: 0);
         return tag;
     }
 

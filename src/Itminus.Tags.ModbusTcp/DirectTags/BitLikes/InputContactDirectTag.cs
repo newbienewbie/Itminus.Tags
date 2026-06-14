@@ -6,8 +6,8 @@
 /// </summary>
 public class InputContactDirectTag : Tag<bool>
 {
-    public InputContactDirectTag(TagDescriptor descriptor) 
-        : base(descriptor)
+    public InputContactDirectTag(TagDescriptor descriptor, TagContainer container) 
+        : base(descriptor, container)
     {
     }
 

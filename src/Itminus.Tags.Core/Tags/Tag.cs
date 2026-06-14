@@ -11,9 +11,10 @@ public abstract class Tag<T> : ITag
     where T : IEquatable<T>
 {
 
-    protected Tag(TagDescriptor descriptor)
+    protected Tag(TagDescriptor descriptor, TagContainer container)
     {
         TagDescriptor = descriptor;
+        Parent = container;
     }
 
     public TagDescriptor TagDescriptor { get; set; }
