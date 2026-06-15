@@ -1,9 +1,9 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
-internal abstract class MutipleBytesDirectTag<T> : Tag<T, ModbusTcpChannel>
+internal abstract class MultipleBytesDirectTag<T> : Tag<T, ModbusTcpChannel>
     where T: unmanaged, IEquatable<T>
 {
-    public MutipleBytesDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
+    public MultipleBytesDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }

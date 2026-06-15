@@ -3,7 +3,7 @@ using System.Buffers.Binary;
 
 namespace Itminus.Tags.ModbusTcp;
 
-internal class FloatDirectTag : MutipleBytesDirectTag<float>
+internal class FloatDirectTag : MultipleBytesDirectTag<float>
 {
     public FloatDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)

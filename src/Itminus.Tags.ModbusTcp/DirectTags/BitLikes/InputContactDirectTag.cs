@@ -42,7 +42,7 @@ internal class InputContactDirectTag : Tag<bool, ModbusTcpChannel>
 
 
     public override Task WriteAsync(CancellationToken ct) =>
-        throw new NotSupportedException($"DI点({this.TagName}地址={this.RawAddress()})不可写入");
+        throw new NotSupportedException($"DI点({this.TagName()}地址={this.RawAddress()})不可写入");
 
 
 }
