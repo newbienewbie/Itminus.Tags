@@ -1,6 +1,6 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
-public class ByteDirectTag : Tag<byte, ModbusTcpChannel>
+internal class ByteDirectTag : Tag<byte, ModbusTcpChannel>
 {
     public ByteDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)

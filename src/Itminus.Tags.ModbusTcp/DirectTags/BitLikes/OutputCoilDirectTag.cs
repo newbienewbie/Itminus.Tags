@@ -4,7 +4,7 @@
 /// <summary>
 /// Modbus的DO点，地址范围00000~09999
 /// </summary>
-public class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
+internal class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
 {
 
     /// <param name="descriptor"></param> 

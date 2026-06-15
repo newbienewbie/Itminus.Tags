@@ -1,6 +1,6 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
-public class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
+internal class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
 {
     public HoldingRegisterBitDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)

@@ -4,7 +4,7 @@
 /// <summary>
 /// ModBus的 DI 点，地址范围10000~19999
 /// </summary>
-public class InputContactDirectTag : Tag<bool, ModbusTcpChannel>
+internal class InputContactDirectTag : Tag<bool, ModbusTcpChannel>
 {
     public InputContactDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container) 
         : base(descriptor, thisChannel, container)
