@@ -1,27 +1,41 @@
 ﻿using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Itminus.Tags.Tests.TagGrps;
 
 public class SubTagTests
 {
+
+    // 有意让这个Tag没有自己的通道，测试冒泡式访问通道
+    class NoChannelTag : Tag<byte, S7TagChannel>
+    {
+        public NoChannelTag(TagDescriptor descriptor, TagContainer parent) 
+            : base(descriptor,null, parent)
+        {
+        }
+
+        public override ITagChannel? Channel { get; set; } 
+
+        public override Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
+
+        public override Task WriteAsync(CancellationToken ct) => Task.CompletedTask;
+    }
+
     [Fact]
     public void Test()
     {
-        var loggerFactory = new LoggerFactory();
-
-        var channel = new S7TagChannel(
-                "S7",
-                new StdUnit.Sharp7.Options.S7PlcItem() { IpAddr = "localhost", Rack = 0, Slot = 1 },
-                loggerFactory.CreateLogger<S7TagChannel>()
-            );
-        
+        var channelFactory = new S7TagChannelFactory(new LoggerFactory());
+        var channel = channelFactory.Create(new TagChannelDescriptor()
+        {
+            Driver = "S7",
+            Name = "S7-1",
+            Extras = new Dictionary<string, XElement>() { }
+        });
 
         var cbnt = new S7TagCbntBuilder("cbnt1", "DB200.100.1")
             .Configure(builder =>
@@ -76,16 +90,29 @@ public class SubTagTests
                     TagSize = 1,
                 }));
             })
-            .Build()
+            .Build(channel)
             ;
-
 
         var root = new TagGrp("root", true, channel);
         var grp1 = new TagGrp("sub1", false, null);
-        var grp2 = new TagGrp("sub2", false, null);
         root.AddTag(grp1);
-        grp2.AddTag(cbnt);
+        var grp2 = new TagGrp("sub2", false, null);
         grp1.AddTag(grp2);
+
+        var noChannelTag = new NoChannelTag(
+            new TagDescriptor() { 
+                TagName = "no-channel-tag",
+                TagSize = 1,
+                RawAddress = "some-address",
+                TagKind = BuiltinTagKinds.BYTE,
+            }, 
+            grp2.IntoTagContainer()
+        );
+
+        grp2.AddTag(cbnt);
+        grp2.AddTag(noChannelTag);
+
+
 
         // 测试层级式访问节点
         var tag1 = root.SelectTag("sub1/sub2/cbnt1/拍照-请求-标志");
@@ -95,5 +122,6 @@ public class SubTagTests
 
         // 测试冒泡式访问通道
         Assert.Equal(cbnt.GetRequiredChannel(), root.Channel);
+        Assert.Equal(root.Channel, noChannelTag.GetRequiredChannel());
     }
 }

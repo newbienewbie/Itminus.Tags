@@ -1,13 +1,7 @@
 ﻿using Opc.Ua;
-using Org.BouncyCastle.Asn1.Ocsp;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Itminus.Tags.OpcUaClient;
+namespace Itminus.Tags.OpcUaClient.Cbnts;
 
 internal class OpcUaClientTagCbnt : ITagCbnt
 {

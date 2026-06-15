@@ -1,5 +1,4 @@
 ﻿using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.ModbusTcp.Tags;
 
 namespace Itminus.Tags.ZLan;
 
@@ -12,7 +11,7 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         this._cbntBuilder = builder;
     }
 
-    public virtual DITag CreateDITag(TagDescriptor tagDescriptor)
+    public virtual DITagCbntor CreateDITag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -23,11 +22,11 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         tagDescriptor.NormalizedAddress = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
-        return new DITag(tagDescriptor, TagCbnt, offset);
+        return new DITagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
 
-    public virtual DOTag CreateDOTag(TagDescriptor tagDescriptor)
+    public virtual DOTagCbntor CreateDOTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -38,7 +37,7 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         tagDescriptor.NormalizedAddress = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;
-        return new DOTag(tagDescriptor, TagCbnt, offset);
+        return new DOTagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
     public override ITagCbntor CreateTag(TagDescriptor descriptor)

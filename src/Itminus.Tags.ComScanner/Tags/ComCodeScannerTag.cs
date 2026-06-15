@@ -7,28 +7,14 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.ComScanner.Tags;
 
-public class ComCodeScannerTag : Tag<string>
+public class ComCodeScannerTag : Tag<string, ComScannerChannel>
 {
-    public ComCodeScannerTag(TagDescriptor descriptor, ComScannerChannel channel) : base(descriptor)
+    public ComCodeScannerTag(TagDescriptor descriptor, ComScannerChannel? thisChannel, TagContainer container)
+        : base(descriptor, thisChannel, container)
     {
-        this._channel = channel;
     }
 
 
-    #region 通道
-    protected ComScannerChannel _channel;
-
-    public override ITagChannel Channel { 
-        get => this._channel;
-        set {
-            if(this._channel is not ComScannerChannel channel)
-            {
-                throw new ArgumentException($"{nameof(ComCodeScannerTag)}只接受{nameof(ComScannerChannel)}型通道");
-            }
-            this._channel = channel;
-        }
-    }
-    #endregion
 
     public override string? Value
     {
@@ -43,14 +29,15 @@ public class ComCodeScannerTag : Tag<string>
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        await this._channel.EnsureConnectedAsync(force: false, ct);
+        await this._bubbleChannel.EnsureConnectedAsync(force: false, ct);
 
-        if (!this._channel.TryDequeueInput(out var str))
+        if (!this._bubbleChannel.TryDequeueInput(out var str))
         {
             return;
         }
 
         this._value = str;
+        this.Timestamp = DateTime.Now;
         this.NotifyTagRead(str);
     }
 
@@ -60,9 +47,9 @@ public class ComCodeScannerTag : Tag<string>
         var val = this._value;
         if(val is not null)
         {
-            this._channel.Write(val);
+            this._bubbleChannel.Write(val);
         }
-        this.NotifyTagWritten(ct);
+        this.NotifyTagWritten(val);
         this.IsDirty = false;
         return Task.CompletedTask;
     }

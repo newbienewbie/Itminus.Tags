@@ -174,7 +174,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// </returns>
     /// <exception cref="Exception"></exception>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
+    public virtual async Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
     {
 
         var addr = ModBusTcpAddressParser.Parse(address);
@@ -232,7 +232,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     /// <exception cref="NotImplementedException"></exception>
-    public async Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
+    public virtual async Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
     {
         var addr = ModBusTcpAddressParser.Parse(address);
         if (addr.Area == RegisterKinds.HoldingRegisters)

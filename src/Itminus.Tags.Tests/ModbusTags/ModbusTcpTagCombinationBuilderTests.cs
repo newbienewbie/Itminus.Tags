@@ -1,9 +1,11 @@
 ﻿using Itminus.Tags.ModbusTcp;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Itminus.Tags.Tests.ModbusTags;
@@ -18,7 +20,15 @@ public class ModbusTcpTagCombinationBuilderTests
             .WithInterval(100)
             .WithIsEnabled(true);
 
-        builder.AddTags(new List<TagDescriptor> {
+        var channelFactory = new ModbusTcpChannelFactory(new LoggerFactory());
+        var channel = channelFactory.Create(new TagChannelDescriptor() { 
+            Driver = ModbusTcpNames.DriverName,
+            Name = "g1",
+            Extras = new Dictionary<string, XElement>() {
+                { "IpAddress", new XElement("IpAddress", "127.0.0.1") },
+            }
+        });
+        var tagDescriptors = new List<TagDescriptor> {
             new TagDescriptor{
                 TagName ="Float1",
                 RawAddress = "40001",
@@ -69,9 +79,10 @@ public class ModbusTcpTagCombinationBuilderTests
                 TagKind = BuiltinTagKinds.BIT,
                 TagSize = 2,
             },
-        });
+        };
+        builder.AddTags(tagDescriptors, channel);
 
-        var cbnt = builder.Build();
+        var cbnt = builder.Build(channel);
         Assert.Equal( 20 , cbnt.CacheSize);
     }
 

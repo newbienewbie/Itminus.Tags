@@ -57,6 +57,18 @@ public class TagGrp : ITagGrp
 
     public virtual ITagGrp AddTag(ITag tag)
     {
+        if(tag.Parent is null)
+        {
+            tag.Parent = TagContainer.From(this);
+        }
+        else
+        {
+            var parent = tag.Parent.Map(
+                cbnt => TagContainer.From(this),
+                grp => grp.Equals(this)? tag.Parent : TagContainer.From(this)
+                );
+            tag.Parent = parent;
+        }
         this.Children.Add(tag.TagName(), new TagUnion.TagUnit(tag));
         return this;
     }
@@ -68,7 +80,15 @@ public class TagGrp : ITagGrp
     /// <returns></returns>
     public virtual ITagGrp AddTag(ITagCbnt tagCbnt)
     {
-        tagCbnt.Parent = this;
+        if(tagCbnt.Parent is null)
+        {
+            tagCbnt.Parent = this;
+        }
+        else if(!tagCbnt.Parent.Equals(this))
+        {
+            tagCbnt.Parent = this;
+        }
+
         this.Children.Add(tagCbnt.Name, new TagUnion.TagCbnt(tagCbnt));
         return this;
     }

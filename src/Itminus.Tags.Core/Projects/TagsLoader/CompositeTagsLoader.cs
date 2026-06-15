@@ -157,33 +157,45 @@ public class CompositeTagsLoader : ITagsLoader
 
     protected virtual void LoadTagCbnt(ITagGrp parent, TagCbntDescriptor cbntDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
-        var channel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
-            parent.GetRequiredChannel() :
-            availableChannels.FirstOrDefault(c => c.ChannelName == cbntDescriptor.ChannelName) ??
-                throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
+        var thisChannel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
+            null:
+            availableChannels.FirstOrDefault(c => c.ChannelName == cbntDescriptor.ChannelName);
+        if (!string.IsNullOrEmpty(cbntDescriptor.ChannelName) && thisChannel is null)
+        {
+            throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
+        }
+        var channel = thisChannel ?? parent.GetRequiredChannel();
 
         var builder = this.ChooseTagCbntBuilder(channel, cbntDescriptor) ??
             throw new Exception($"未注册相应的TagCbntBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={cbntDescriptor.Name}");
         var cbntors = cbntDescriptor.Children.ToList();
         var cbntBuilder = builder
-            .AddTags(cbntors);
-        cbntBuilder.WithAccessMode(cbntDescriptor.AccessMode);
-        var cbnt = cbntBuilder.Build();
+            .WithParent(parent)
+            .WithChannel(thisChannel)
+            .WithAccessMode(cbntDescriptor.AccessMode)
+            .AddTags(cbntors, channel);        
+        var cbnt = cbntBuilder.Build(channel);
         parent.AddTag(cbnt);
         return;
     }
 
     protected virtual void LoadDirectTag(ITagGrp parent, TagDescriptor tagDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
-        // 优先使用自身指定的通道名，然后向上冒泡检索
-        var channel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
-            parent.GetRequiredChannel() :
-            availableChannels.FirstOrDefault(c => c.ChannelName == tagDescriptor.ChannelName) ??
+        var thisChannel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
+            null :
+            availableChannels.FirstOrDefault(c => c.ChannelName == tagDescriptor.ChannelName);
+        if (!string.IsNullOrEmpty(tagDescriptor.ChannelName) && thisChannel is null)
+        {
             throw new Exception($"未找到名称为 {tagDescriptor.ChannelName} 的通道");
+        }
+        var channel = thisChannel ?? parent.GetRequiredChannel();
 
         var builder = this.ChooseTagBuilder(channel, tagDescriptor) ??
             throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={tagDescriptor.TagName}");
-        var tag = builder.Build();
+        var tag = builder
+            .WithParent(parent)
+            .WithChannel(thisChannel)
+            .Build(channel);
         parent.AddTag(tag);
     }
 

@@ -4,30 +4,19 @@ namespace Itminus.Tags.ComScanner.Tags;
 
 public class CodeScannerTagBuilder : TagBuilderBase
 {
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    public CodeScannerTagBuilder()
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
-    {
-    }
 
-    public override TagDescriptor TagDescriptor { get; protected set ; }
-    public override ITagChannel Channel { get; protected set; }
-
-    public override ITag Build()
+    public override ITag Build(ITagChannel channel)
     {
-        if(this.Channel is null)
+        if(channel is null)
         {
             throw new Exception($"测点({this.Name})未配置通道({this.TagDescriptor.TagName})");
         }
-        if (this.Channel is not ComScannerChannel channel)
+        if (channel is not ComScannerChannel com)
         {
-            throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComScannerChannel)}！实际={this.Channel.GetType()}");
+            throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComScannerChannel)}！实际={channel.GetType()}");
         }
 
-        var tagkind = this.TagDescriptor.TagKind;
-        var tag = new ComCodeScannerTag(this.TagDescriptor, channel);
+        var tag = new ComCodeScannerTag(this.TagDescriptor, com, TagContainer.From(this.Parent));
         return tag;
-        
-        // throw new ArgumentException($"{nameof(CodeScannerTagBuilder)}目前只支持{BuiltinTagKinds.STR}型测点，但是当前测点的类型是{tagkind}(Tag={this.TagDescriptor.TagName})");
     }
 }

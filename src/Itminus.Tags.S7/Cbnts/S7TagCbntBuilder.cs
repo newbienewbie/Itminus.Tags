@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Itminus.Tags.TagCbntors;
 
 namespace Itminus.Tags.S7;
 
@@ -24,7 +19,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         this.WithStartAddress(startAddress);
     }
 
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
+    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeS7TagFactory();
         this.Configure(builder => {
@@ -37,7 +32,8 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-    public override TagCbntBuilderBase AutoResize()
+
+    protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;
         foreach (var kvp in this.TagCbnt.Children)

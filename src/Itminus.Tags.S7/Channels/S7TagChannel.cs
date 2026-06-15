@@ -23,7 +23,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
 
     private readonly ILogger<S7TagChannel> _logger;
 
-    protected S7Client? Client { get; set; }
+    internal S7Client? Client { get; set; }
     public string ChannelName { get; set; } = DRIVER;
     public S7PlcItem PlcItem { get; }
 
@@ -55,7 +55,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
         return tcs.Task;
     }
 
-    public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
+    public virtual async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
         //当前client存在并且连接有效
         if (!force && Client != null && Client.Connected)
@@ -105,16 +105,33 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     /// <param name="length">要读取的字节数量</param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public Task<byte[]> ReadAsync(string address, int length, CancellationToken ct)
+    public virtual Task<byte[]> ReadAsync(string address, int length, CancellationToken ct)
     {
         var addr = S7AddressParser.Parse(address);
         var buffer = new byte[length];
-        var code = this.Client!.DBRead(addr.BlockNumber, addr.StartAddress, length, buffer);
-        if (code != 0)
+        if (addr.Area == AreaKinds.DB)
         {
-            var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
-            throw new Exception(err.Text);
+            var code = this.Client!.DBRead(addr.BlockNumber, addr.StartAddress, length, buffer);
+            if (code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
         }
+        else if (addr.Area == AreaKinds.MB) 
+        { 
+            var code = this.Client!.MBRead(addr.StartAddress, length, buffer);
+            if(code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
+        }
+        else
+        {
+            throw new NotImplementedException($"不支持的地址区域类型={addr.Area}");
+        }
+
         return Task.FromResult(buffer);
     }
 
@@ -125,14 +142,30 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     /// <param name="buffer"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public Task WriteAsync(string address, byte[] buffer, CancellationToken ct)
+    public virtual Task WriteAsync(string address, byte[] buffer, CancellationToken ct)
     {
         var addr = S7AddressParser.Parse(address);
-        var code = this.Client!.DBWrite(addr.BlockNumber, addr.StartAddress, buffer.Length, buffer);
-        if (code != 0)
+        if(addr.Area == AreaKinds.DB)
         {
-            var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
-            throw new Exception(err.Text);
+            var code = this.Client!.DBWrite(addr.BlockNumber, addr.StartAddress, buffer.Length, buffer);
+            if (code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
+        }
+        else if(addr.Area == AreaKinds.MB)
+        {
+            var code = this.Client!.MBWrite(addr.StartAddress, buffer.Length, buffer);
+            if (code != 0)
+            {
+                var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                throw new Exception(err.Text);
+            }
+        }
+        else
+        {
+            throw new NotImplementedException($"不支持的地址区域类型={addr.Area}");
         }
         return Task.CompletedTask;
     }

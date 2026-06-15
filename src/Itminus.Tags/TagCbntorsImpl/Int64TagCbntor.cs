@@ -2,7 +2,8 @@
 
 
 
-namespace Itminus.Tags;
+namespace Itminus.Tags.TagCbntors;
+
 
 public class Int64TagCbntor : TagCbntor
 {
@@ -43,7 +44,7 @@ public class Int64TagCbntor : TagCbntor
                 BinaryPrimitives.WriteInt64LittleEndian(dst, data);
             }
 
-            Timestamp = DateTime.UtcNow;
+            Timestamp = DateTime.Now;
             MarkDirty();
         }
     }

@@ -35,6 +35,11 @@ public abstract class TagCbntor : ITagCbntor
     public ITagChannel? Channel => TagCbnt.GetChannel();
 
     /// <summary>
+    /// 父容器，指向所属的测点组合。<br/>
+    /// </summary>
+    public TagContainer? Parent { get; set; }
+
+    /// <summary>
     /// <inheritdoc />
     /// </summary>
     public int CacheOffset{ get; set; }

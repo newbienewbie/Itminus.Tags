@@ -1,7 +1,7 @@
 ﻿using System;
-namespace Itminus.Tags.OpcUaClient;
+namespace Itminus.Tags.OpcUaClient.Cbnts;
 
-public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
+internal class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
 {
     public OpcUaClientTagCbntBuilder() 
         :base(new OpcUaClientTagCbnt("unkown_opcua_cbnt_name", "unknown_opcua_cbnt_start_address"))
@@ -15,7 +15,7 @@ public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
         this.WithStartAddress(startAddress);
     }
 
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
+    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeOpcUaTagFactory();
         this.Configure(builder => {
@@ -28,7 +28,7 @@ public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-    public override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoLayout()
     {
         return this;
     }

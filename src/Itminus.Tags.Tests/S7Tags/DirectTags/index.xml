@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道 -->
+	<Channel name="S7-1" driver="S7" >
+		<IpAddr>localhost</IpAddr>
+		<Rack>0</Rack>
+		<Slot>1</Slot>
+	</Channel>
+
+	<!-- 直接挂在 TagGrp 下的 Tag（无 TagCbnt） -->
+	<TagGrp name="g-direct" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="10">
+		<Tag name="bit-flag" address="DB200.100.1" type="BIT" />
+		<Tag name="byte-v" address="DB200.102" type="BYTE" />
+		<Tag name="int16-v" address="DB200.104" type="INT16" />
+		<Tag name="str-v" address="DB200.106" type="STR" maxlen="8" />
+	</TagGrp>
+
+</root>

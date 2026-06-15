@@ -1,10 +1,5 @@
 ﻿using Itminus.Tags.ModbusTcp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using Itminus.Tags.TagCbntors;
 
 namespace Itminus.Tags.Hjzk;
 
@@ -28,7 +23,7 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
     }
 
 
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors)
+    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeHjzkTagFactory();
         this.Configure(builder => {
@@ -41,7 +36,7 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
         return this;
     }
 
-    public override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;
         foreach (var kvp in this.TagCbnt.Children)

@@ -1,8 +1,7 @@
 ﻿using System.Buffers.Binary;
 
 
-
-namespace Itminus.Tags;
+namespace Itminus.Tags.TagCbntors;
 
 public class UInt64TagCbntor : TagCbntor
 {
@@ -43,7 +42,7 @@ public class UInt64TagCbntor : TagCbntor
                 BinaryPrimitives.WriteUInt64LittleEndian(dst, data);
             }
 
-            Timestamp = DateTime.UtcNow;
+            Timestamp = DateTime.Now;
             MarkDirty();
         }
     }
