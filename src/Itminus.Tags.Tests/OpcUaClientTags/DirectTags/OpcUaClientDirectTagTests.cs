@@ -48,11 +48,13 @@ public class OpcUaClientDirectTagTests
         Assert.NotNull(grp);
 
         var v3 = grp.SelectTag("var3");
+        Assert.NotNull(v3);
         Assert.Equal("var3", v3.TagName());
         Assert.Equal("ns=4;s=|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var3", v3.NormalizedAddress());
         Assert.IsType<OpcUaClientDirectTag>(v3);
 
         var v4 = grp.SelectTag("var4");
+        Assert.NotNull(v4);
         Assert.Equal("var4", v4.TagName());
         Assert.Equal("ns=4;s=|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var4", v4.NormalizedAddress());
         Assert.IsType<OpcUaClientDirectTag>(v4);
