@@ -153,6 +153,10 @@ public class OpcUaClientTagChannel : ITagChannel
         {
             throw new InvalidOperationException("会话未创建");
         }
+        if (this._session.Connected == false)
+        {
+            throw new InvalidOperationException("会话未连接");
+        }
 
         var writeValues = new WriteValueCollection();
         foreach (var kvp in toBeWritten)
