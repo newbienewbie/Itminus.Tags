@@ -1,4 +1,4 @@
-namespace Itminus.Tags;
+namespace Itminus.Tags.TagCbntors;
 
 public class ByteTagCbntor : TagCbntor
 {

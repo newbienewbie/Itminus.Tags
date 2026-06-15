@@ -23,6 +23,15 @@ public abstract class TagBuilderBase
     /// </summary>
     public virtual ITagChannel? Channel { get; protected set; } = null;
 
+    /// <summary>
+    /// 测点所属的群组。
+    /// 会被自动设置，通常不需要手动调用
+    /// </summary>
+    public virtual ITagGrp Parent { get; protected set; } = null!;
+
+    /// <summary>
+    /// Tag's Name
+    /// </summary>
     public string Name => TagDescriptor.TagName;
 
 
@@ -45,6 +54,17 @@ public abstract class TagBuilderBase
     public virtual TagBuilderBase WithChannel(ITagChannel? channel)
     {
         this.Channel = channel;
+        return this;
+    }
+
+    /// <summary>
+    /// 会被自动调用以设置 <see cref="Parent"/> 属性，通常不需要手动调用
+    /// </summary>
+    /// <param name="grp"></param>
+    /// <returns></returns>
+    public virtual TagBuilderBase WithParent(ITagGrp grp)
+    {
+        this.Parent = grp;
         return this;
     }
 

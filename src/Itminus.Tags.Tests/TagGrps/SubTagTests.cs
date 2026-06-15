@@ -11,12 +11,12 @@ namespace Itminus.Tags.Tests.TagGrps;
 public class SubTagTests
 {
 
-    class NoChannelTag : Tag<byte>
+    // 有意让这个Tag没有自己的通道，测试冒泡式访问通道
+    class NoChannelTag : Tag<byte, S7TagChannel>
     {
-        public NoChannelTag(TagDescriptor descriptor) : base(descriptor)
+        public NoChannelTag(TagDescriptor descriptor, TagContainer parent) 
+            : base(descriptor,null, parent)
         {
-            // 有意让这个Tag没有通道，测试冒泡式访问通道
-            this.Channel = null!;
         }
 
         public override ITagChannel? Channel { get; set; } 
@@ -93,21 +93,26 @@ public class SubTagTests
             .Build(channel)
             ;
 
-        var noChannelTag = new NoChannelTag(new TagDescriptor() { 
-            TagName = "no-channel-tag",
-            TagSize = 1,
-            RawAddress = "some-address",
-            TagKind = BuiltinTagKinds.BYTE,
-        });
-
-
         var root = new TagGrp("root", true, channel);
         var grp1 = new TagGrp("sub1", false, null);
-        var grp2 = new TagGrp("sub2", false, null);
         root.AddTag(grp1);
+        var grp2 = new TagGrp("sub2", false, null);
+        grp1.AddTag(grp2);
+
+        var noChannelTag = new NoChannelTag(
+            new TagDescriptor() { 
+                TagName = "no-channel-tag",
+                TagSize = 1,
+                RawAddress = "some-address",
+                TagKind = BuiltinTagKinds.BYTE,
+            }, 
+            grp2.IntoTagContainer()
+        );
+
         grp2.AddTag(cbnt);
         grp2.AddTag(noChannelTag);
-        grp1.AddTag(grp2);
+
+
 
         // 测试层级式访问节点
         var tag1 = root.SelectTag("sub1/sub2/cbnt1/拍照-请求-标志");

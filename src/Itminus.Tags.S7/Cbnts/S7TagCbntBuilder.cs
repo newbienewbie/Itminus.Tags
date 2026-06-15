@@ -1,4 +1,6 @@
-﻿namespace Itminus.Tags.S7;
+﻿using Itminus.Tags.TagCbntors;
+
+namespace Itminus.Tags.S7;
 
 /// <summary>
 /// 针对S7的测点组合构建器
@@ -31,7 +33,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
     }
 
 
-    protected override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;
         foreach (var kvp in this.TagCbnt.Children)

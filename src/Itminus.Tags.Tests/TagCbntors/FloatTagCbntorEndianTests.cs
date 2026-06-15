@@ -2,6 +2,7 @@
 using System.Buffers.Binary;
 using System.Linq;
 using Itminus.Tags;
+using Itminus.Tags.TagCbntors;
 using Xunit;
 
 namespace Itminus.Tags.Tests.TagCbntors;

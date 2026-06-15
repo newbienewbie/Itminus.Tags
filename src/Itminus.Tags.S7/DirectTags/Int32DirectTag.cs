@@ -2,10 +2,10 @@
 
 namespace Itminus.Tags.S7;
 
-internal class Int32Tag : ContinousBytesBasedDirectTag<Int32>
+internal class Int32DirectTag : ContinousBytesBasedDirectTag<Int32>
 {
-    public Int32Tag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
-        : base(descriptor, thisChannel, channel)
+    public Int32DirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer parent)
+        : base(descriptor, thisChannel, parent)
     {
     }
 

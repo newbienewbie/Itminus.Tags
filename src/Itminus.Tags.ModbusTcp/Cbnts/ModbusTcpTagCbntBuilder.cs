@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Itminus.Tags;
+﻿using Itminus.Tags.TagCbntors;
 
 namespace Itminus.Tags.ModbusTcp;
 
@@ -66,7 +61,7 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-    protected override TagCbntBuilderBase AutoResize()
+    protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;
         foreach (var kvp in this.TagCbnt.Children)

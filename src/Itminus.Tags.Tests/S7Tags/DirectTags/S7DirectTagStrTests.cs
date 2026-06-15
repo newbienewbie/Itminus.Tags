@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.S7;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +16,8 @@ public class S7DirectTagStrTests
         const byte maxLen = 10;
         var payload = new byte[] { maxLen, 5, (byte)'H', (byte)'E', (byte)'L', (byte)'L', (byte)'O', 0, 0, 0, 0, 0 };
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         await tag.ReadAsync(CancellationToken.None);
         Assert.Equal(maxLen, tag.Maxlen);
@@ -28,7 +30,8 @@ public class S7DirectTagStrTests
     {
         const byte maxLen = 6;
         var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         tag.Value = "ABC";
         await tag.WriteAsync(CancellationToken.None);
@@ -46,14 +49,15 @@ public class S7DirectTagStrTests
     {
         const byte maxLen = 4;
         var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var tag = CreateStrDirectTag(maxLen, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         tag.Value = "ABCDE";
         await Assert.ThrowsAsync<ArgumentException>(() => tag.WriteAsync(CancellationToken.None));
     }
 
 
-    private static StrTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel)
+    private static StrDirectTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel, TagContainer container)
     {
         var descriptor = new TagDescriptor()
         {
@@ -62,12 +66,17 @@ public class S7DirectTagStrTests
             RawAddress = "DB1.300",
         };
 
-        return new StrTag(descriptor, thisChannel: null, channel: channel, maxLen: maxLen);
+        return new StrDirectTag(descriptor, thisChannel: null, parent: container , maxLen: maxLen);
     }
 
-    private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel
+    private sealed class FakeContinousBytesChannel : S7TagChannel
     {
         public FakeContinousBytesChannel(byte[] payload)
+            :base(
+                 "fake", 
+                 new StdUnit.Sharp7.Options.S7PlcItem(), 
+                 new LoggerFactory().CreateLogger<FakeContinousBytesChannel>()
+            )
         {
             this.LastWriteBuffer = (byte[])payload.Clone();
         }
@@ -76,15 +85,13 @@ public class S7DirectTagStrTests
 
         public byte[] LastWriteBuffer { get; private set; }
 
-        public string ChannelName => "fake";
 
-        public string Driver => S7Names.DriverName;
 
-        public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
+        public override Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
 
-        public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
+        public override Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
 
-        public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
+        public override Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
         {
             if (count > this.LastWriteBuffer.Length)
             {
@@ -94,14 +101,11 @@ public class S7DirectTagStrTests
             return Task.FromResult(this.LastWriteBuffer.AsSpan(0, count).ToArray());
         }
 
-        public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
+        public override Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
         {
             this.LastWriteBuffer = (byte[])bytes.Clone();
             return Task.CompletedTask;
         }
 
-        public void Dispose()
-        {
-        }
     }
 }

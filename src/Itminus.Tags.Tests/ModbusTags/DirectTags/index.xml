@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道 -->
+	<Channel name="ModbusTcp-2" driver="ModbusTcp">
+		<IpAddr>localhost</IpAddr>
+		<Port>502</Port>
+	</Channel>
+
+	<!-- 直接测点：TagGrp 下直接挂 Tag，不经过 TagCbnt -->
+	<TagGrp name="g-direct" isEntry="true" isEnabled="true" channel="ModbusTcp-2" scanInterval="10">
+		<Tag name="bit-v" address="1~40021.7" type="BIT" />
+		<Tag name="byte-v" address="1~40020" type="BYTE" />
+		<Tag name="u32-v" address="1~40022" type="UINT32" />
+		<Tag name="i16-v" address="1~40024" type="INT16" />
+	</TagGrp>
+
+</root>

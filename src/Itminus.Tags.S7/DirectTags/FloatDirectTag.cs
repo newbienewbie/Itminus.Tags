@@ -3,10 +3,10 @@
 namespace Itminus.Tags.S7;
 
 
-internal class FloatTag : ContinousBytesBasedDirectTag<float>
+internal class FloatDirectTag : ContinousBytesBasedDirectTag<float>
 {
-    public FloatTag(TagDescriptor descriptor, ITagChannel? thisChannel, IContinousBytesBasedTagChannel channel)
-        : base(descriptor, thisChannel, channel)
+    public FloatDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer parent)
+        : base(descriptor, thisChannel, parent)
     {
     }
 

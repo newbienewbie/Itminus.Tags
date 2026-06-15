@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.S7;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_AutoBufferSize_ReadsEnoughBytes(byte nthBit, int expectedLength, byte[] payload, bool expectedValue)
     {
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateBitDirectTag(nthBit, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(nthBit, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -36,7 +38,8 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_WriteAsync_WritesExpectedFlags(byte nthBit, bool val, byte[] expected)
     {
         var fake = new FakeContinousBytesChannel(new byte[expected.Length]);
-        var tag = CreateBitDirectTag(nthBit, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(nthBit, fake, grp);
 
         tag.Value = val;
         await tag.WriteAsync(CancellationToken.None);
@@ -52,7 +55,8 @@ public class S7DirectTagBitTests
     {
         var initial = new byte[] { 0b11111111 };
         var fake = new FakeContinousBytesChannel(initial);
-        var tag = CreateBitDirectTag(0, fake); // clear LSB
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(0, fake, grp); // clear LSB
 
         tag.Value = false;
         await tag.WriteAsync(CancellationToken.None);
@@ -66,7 +70,8 @@ public class S7DirectTagBitTests
     {
         var initial = new byte[] { 0b11111110 };
         var fake = new FakeContinousBytesChannel(initial);
-        var tag = CreateBitDirectTag(0, fake); // set LSB
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateBitDirectTag(0, fake, grp); // set LSB
 
         tag.Value = true;
         await tag.WriteAsync(CancellationToken.None);
@@ -76,7 +81,7 @@ public class S7DirectTagBitTests
     }
     #endregion
 
-    private static ITag CreateBitDirectTag(byte nthBit, IContinousBytesBasedTagChannel channel)
+    private static ITag CreateBitDirectTag(byte nthBit, IContinousBytesBasedTagChannel channel, ITagGrp grp)
     {
         var descriptor = new TagDescriptor()
         {
@@ -85,13 +90,18 @@ public class S7DirectTagBitTests
             RawAddress = $"DB1.100.{nthBit}",
         };
 
-        var tag = new BitTag(descriptor, thisChannel: null, channel: channel,nthBit: nthBit, bufferSize: 0);
+        var tag = new BitDirectTag(descriptor, thisChannel: null, grp.IntoTagContainer(),nthBit: nthBit, bufferSize: 0);
         return tag;
     }
 
-    private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel
+    private sealed class FakeContinousBytesChannel : S7TagChannel
     {
         public FakeContinousBytesChannel(byte[] payload)
+            :base(
+                 "fake", 
+                 new StdUnit.Sharp7.Options.S7PlcItem(), 
+                 new LoggerFactory().CreateLogger<S7TagChannel>()
+             )
         {
             this.LastWriteBuffer = (byte[])payload.Clone();
         }
@@ -100,15 +110,13 @@ public class S7DirectTagBitTests
 
         public byte[] LastWriteBuffer { get; private set; }
 
-        public string ChannelName => "fake";
 
-        public string Driver => S7Names.DriverName;
 
-        public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
+        public override Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
 
-        public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
+        public override Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
 
-        public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
+        public override Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
         {
             if (count > this.LastWriteBuffer.Length)
             {
@@ -118,14 +126,10 @@ public class S7DirectTagBitTests
             return Task.FromResult(this.LastWriteBuffer.AsSpan(0, count).ToArray());
         }
 
-        public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
+        public override Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
         {
             this.LastWriteBuffer = (byte[])bytes.Clone();
             return Task.CompletedTask;
-        }
-
-        public void Dispose()
-        {
         }
     }
 }

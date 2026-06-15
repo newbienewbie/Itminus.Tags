@@ -1,16 +1,16 @@
-﻿namespace Itminus.Tags.ModbusTcp.Tags;
+﻿namespace Itminus.Tags.ModbusTcp;
 
 
 /// <summary>
 /// Modbus的DO点，地址范围00000~09999
 /// </summary>
-public class DOTag : TagCbntor
+public class DOTagCbntor : TagCbntor
 {
 
     /// <param name="tagDescriptor"></param>
     /// <param name="tagCbnt"></param>
     /// <param name="cacheOffset"></param>
-    public DOTag(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset)
+    public DOTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset)
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {
     }

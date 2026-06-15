@@ -24,6 +24,9 @@
     <None Update="ModbusTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ModbusTags\DirectTags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="OpcUaClientTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

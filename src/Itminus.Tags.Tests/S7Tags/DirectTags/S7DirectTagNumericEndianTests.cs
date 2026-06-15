@@ -1,4 +1,6 @@
 using Itminus.Tags.S7;
+using Microsoft.Extensions.Logging;
+using StdUnit.Sharp7.Options;
 using System;
 using System.Buffers.Binary;
 using System.Threading;
@@ -17,7 +19,8 @@ public class S7DirectTagNumericEndianTests
         const short expected = unchecked((short)0x1234);
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateInt16Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateInt16Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -32,7 +35,8 @@ public class S7DirectTagNumericEndianTests
     {
         const short value = unchecked((short)0x1357);
         var fake = new FakeContinousBytesChannel(new byte[2]);
-        var tag = CreateInt16Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateInt16Tag(endian, fake, grp);
 
         tag.Value = value;
         await tag.WriteAsync(CancellationToken.None);
@@ -48,7 +52,8 @@ public class S7DirectTagNumericEndianTests
         const ushort expected = 0xABCD;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateUInt16Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateUInt16Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -63,7 +68,8 @@ public class S7DirectTagNumericEndianTests
     {
         const ushort value = 0x2468;
         var fake = new FakeContinousBytesChannel(new byte[2]);
-        var tag = CreateUInt16Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateUInt16Tag(endian, fake, grp);
 
         tag.Value = value;
         await tag.WriteAsync(CancellationToken.None);
@@ -79,7 +85,8 @@ public class S7DirectTagNumericEndianTests
         const int expected = unchecked((int)0x12345678);
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateInt32Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateInt32Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -94,7 +101,8 @@ public class S7DirectTagNumericEndianTests
     {
         const int value = unchecked((int)0x0BADF00D);
         var fake = new FakeContinousBytesChannel(new byte[4]);
-        var tag = CreateInt32Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateInt32Tag(endian, fake, grp);
 
         tag.Value = value;
         await tag.WriteAsync(CancellationToken.None);
@@ -110,7 +118,8 @@ public class S7DirectTagNumericEndianTests
         const uint expected = 0x89ABCDEF;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateUInt32Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateUInt32Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -125,7 +134,8 @@ public class S7DirectTagNumericEndianTests
     {
         const uint value = 0xCAFEBABE;
         var fake = new FakeContinousBytesChannel(new byte[4]);
-        var tag = CreateUInt32Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateUInt32Tag(endian, fake, grp);
 
         tag.Value = value;
         await tag.WriteAsync(CancellationToken.None);
@@ -141,7 +151,8 @@ public class S7DirectTagNumericEndianTests
         const long expected = unchecked((long)0x0123456789ABCDEFL);
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateInt64Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateInt64Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -156,7 +167,8 @@ public class S7DirectTagNumericEndianTests
     {
         const long value = unchecked((long)0x0F1E2D3C4B5A6978L);
         var fake = new FakeContinousBytesChannel(new byte[8]);
-        var tag = CreateInt64Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateInt64Tag(endian, fake, grp);
 
         tag.Value = value;
         await tag.WriteAsync(CancellationToken.None);
@@ -172,7 +184,8 @@ public class S7DirectTagNumericEndianTests
         const ulong expected = 0x0123456789ABCDEFUL;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateUInt64Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateUInt64Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -187,7 +200,8 @@ public class S7DirectTagNumericEndianTests
     {
         const ulong value = 0xF0E1D2C3B4A59687UL;
         var fake = new FakeContinousBytesChannel(new byte[8]);
-        var tag = CreateUInt64Tag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateUInt64Tag(endian, fake, grp);
 
         tag.Value = value;
         await tag.WriteAsync(CancellationToken.None);
@@ -203,7 +217,8 @@ public class S7DirectTagNumericEndianTests
         const float expected = 123.456f;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var tag = CreateFloatTag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var tag = CreateFloatTag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
 
@@ -218,7 +233,8 @@ public class S7DirectTagNumericEndianTests
     {
         const float value = -987.5f;
         var fake = new FakeContinousBytesChannel(new byte[4]);
-        var tag = CreateFloatTag(endian, fake);
+        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var tag = CreateFloatTag(endian, fake, grp);
 
         tag.Value = value;
         await tag.WriteAsync(CancellationToken.None);
@@ -226,68 +242,82 @@ public class S7DirectTagNumericEndianTests
         Assert.Equal(GetBytes(value, endian), fake.LastWriteBuffer);
     }
 
-    private static Int16Tag CreateInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
-        => new(new TagDescriptor
-        {
-            TagName = "i16",
-            TagKind = BuiltinTagKinds.INT16,
-            RawAddress = "DB1.200",
-            EndianKind = endian,
-        }, thisChannel: null, channel: channel);
+    private static Int16DirectTag CreateInt16Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
+            new TagDescriptor {
+                TagName = "i16",
+                TagKind = BuiltinTagKinds.INT16,
+                RawAddress = "DB1.200",
+                EndianKind = endian,
+            }, 
+            thisChannel: null, 
+            parent: grp.IntoTagContainer()
+        );
 
-    private static UInt16Tag CreateUInt16Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
-        => new(new TagDescriptor
-        {
+    private static UInt16DirectTag CreateUInt16Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
+        new TagDescriptor {
             TagName = "u16",
             TagKind = BuiltinTagKinds.UINT16,
             RawAddress = "DB1.202",
             EndianKind = endian,
-        }, thisChannel: null, channel: channel);
+        }, 
+        thisChannel: null,
+        grp.IntoTagContainer()
+    );
 
-    private static Int32Tag CreateInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
-        => new(new TagDescriptor
-        {
+    private static Int32DirectTag CreateInt32Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
+        new TagDescriptor {
             TagName = "i32",
             TagKind = BuiltinTagKinds.INT32,
             RawAddress = "DB1.204",
             EndianKind = endian,
-        }, thisChannel: null, channel: channel);
+        }, 
+        thisChannel: null, 
+        grp.IntoTagContainer()
+    );
 
-    private static UInt32Tag CreateUInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
-        => new(new TagDescriptor
-        {
+    private static UInt32DirectTag CreateUInt32Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel, ITagGrp grp) => new(
+        new TagDescriptor {
             TagName = "u32",
             TagKind = BuiltinTagKinds.UINT32,
             RawAddress = "DB1.208",
             EndianKind = endian,
-        }, thisChannel: null, channel: channel);
+        }, 
+        thisChannel: null, 
+        grp.IntoTagContainer()
+    );
 
-    private static Int64Tag CreateInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
-        => new(new TagDescriptor
-        {
+    private static Int64DirectTag CreateInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel, ITagGrp grp) => new(
+        new TagDescriptor {
             TagName = "i64",
             TagKind = BuiltinTagKinds.INT64,
             RawAddress = "DB1.212",
             EndianKind = endian,
-        }, thisChannel: null, channel: channel);
+        }, 
+        thisChannel: null, 
+        grp.IntoTagContainer()
+    );
 
-    private static UInt64Tag CreateUInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
-        => new(new TagDescriptor
-        {
+    private static UInt64DirectTag CreateUInt64Tag(EndianKinds endian, IContinousBytesBasedTagChannel channel, ITagGrp grp) => new(
+        new TagDescriptor {
             TagName = "u64",
             TagKind = BuiltinTagKinds.UINT64,
             RawAddress = "DB1.220",
             EndianKind = endian,
-        }, thisChannel: null, channel: channel);
+        }, 
+        thisChannel: null, 
+        grp.IntoTagContainer()
+    );
 
-    private static FloatTag CreateFloatTag(EndianKinds endian, IContinousBytesBasedTagChannel channel)
-        => new(new TagDescriptor
-        {
+    private static FloatDirectTag CreateFloatTag(EndianKinds endian, IContinousBytesBasedTagChannel channel, ITagGrp grp) => new(
+        new TagDescriptor {
             TagName = "f32",
             TagKind = BuiltinTagKinds.FLOAT,
             RawAddress = "DB1.228",
             EndianKind = endian,
-        }, thisChannel: null, channel: channel);
+        }, 
+        thisChannel: null, 
+        parent: grp.IntoTagContainer()
+    );
 
     private static byte[] GetBytes(short value, EndianKinds endian)
     {
@@ -387,9 +417,14 @@ public class S7DirectTagNumericEndianTests
         return bytes;
     }
 
-    private sealed class FakeContinousBytesChannel : IContinousBytesBasedTagChannel
+    private sealed class FakeContinousBytesChannel : S7TagChannel
     {
         public FakeContinousBytesChannel(byte[] payload)
+            :base(
+                 "fake", 
+                 new S7PlcItem(), 
+                 new LoggerFactory().CreateLogger<S7TagChannel>()
+             )
         {
             this.LastWriteBuffer = (byte[])payload.Clone();
         }
@@ -398,15 +433,11 @@ public class S7DirectTagNumericEndianTests
 
         public byte[] LastWriteBuffer { get; private set; }
 
-        public string ChannelName => "fake";
+        public override Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
 
-        public string Driver => S7Names.DriverName;
+        public override Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
 
-        public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
-
-        public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
-
-        public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
+        public override Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
         {
             if (count > this.LastWriteBuffer.Length)
             {
@@ -416,14 +447,11 @@ public class S7DirectTagNumericEndianTests
             return Task.FromResult(this.LastWriteBuffer.AsSpan(0, count).ToArray());
         }
 
-        public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
+        public override Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
         {
             this.LastWriteBuffer = (byte[])bytes.Clone();
             return Task.CompletedTask;
         }
 
-        public void Dispose()
-        {
-        }
     }
 }
