@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.OpcUaClient;
+using Itminus.Tags.OpcUaClient.Cbnts;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;

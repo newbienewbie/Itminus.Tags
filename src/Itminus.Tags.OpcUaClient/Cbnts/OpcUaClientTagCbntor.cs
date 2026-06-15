@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Itminus.Tags.OpcUaClient;
+namespace Itminus.Tags.OpcUaClient.Cbnts;
 
 internal class OpcUaClientTagCbntor : TagCbntor
 {

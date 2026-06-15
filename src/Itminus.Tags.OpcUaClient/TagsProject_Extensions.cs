@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Itminus.Tags.OpcUaClient.Cbnts;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags.OpcUaClient;
 

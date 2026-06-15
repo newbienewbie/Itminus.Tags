@@ -1,8 +1,8 @@
-﻿namespace Itminus.Tags.OpcUaClient;
+﻿namespace Itminus.Tags.OpcUaClient.Cbnts;
 
 
 
-public class OpcUaClientTagFactory : TagCbntorFactoryBase
+internal class OpcUaClientTagFactory : TagCbntorFactoryBase
 {
     public OpcUaClientTagFactory(TagCbntBuilderBase builder) 
         : base(builder)
@@ -12,7 +12,7 @@ public class OpcUaClientTagFactory : TagCbntorFactoryBase
 
     public override ITagCbntor CreateTag(TagDescriptor descriptor)
     {
-        var tag = new OpcUaClientTagCbntor(descriptor, this.CbntBuilder.TagCbnt, 0, 0);
+        var tag = new OpcUaClientTagCbntor(descriptor, CbntBuilder.TagCbnt, 0, 0);
         return tag;
     }
 
