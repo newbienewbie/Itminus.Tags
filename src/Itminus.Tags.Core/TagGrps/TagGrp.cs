@@ -67,7 +67,7 @@ public class TagGrp : ITagGrp
                 cbnt => TagContainer.From(this),
                 grp => grp.Equals(this)? tag.Parent : TagContainer.From(this)
                 );
-            tag.Parent = TagContainer.From(this);
+            tag.Parent = parent;
         }
         this.Children.Add(tag.TagName(), new TagUnion.TagUnit(tag));
         return this;

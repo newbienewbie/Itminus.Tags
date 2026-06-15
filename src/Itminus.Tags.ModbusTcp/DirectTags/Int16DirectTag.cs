@@ -3,7 +3,7 @@ using System.Buffers.Binary;
 
 namespace Itminus.Tags.ModbusTcp;
 
-public class UInt16DirectTag : MutileBytesDirectTag<ushort>
+public class UInt16DirectTag : MutipleBytesDirectTag<ushort>
 {
     public UInt16DirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
@@ -39,7 +39,7 @@ public class UInt16DirectTag : MutileBytesDirectTag<ushort>
 }
 
 
-public class Int16DirectTag : MutileBytesDirectTag<short>
+public class Int16DirectTag : MutipleBytesDirectTag<short>
 {
     public Int16DirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)

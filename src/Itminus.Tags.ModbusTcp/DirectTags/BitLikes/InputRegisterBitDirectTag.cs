@@ -51,5 +51,5 @@ public class InputRegisterBitDirectTag: Tag<bool, ModbusTcpChannel>
         this.NotifyTagRead(this._value);
     }
     public override Task WriteAsync(CancellationToken ct) =>
-        throw new NotSupportedException($"输入寄存器点不可写入({this.TagName}");
+        throw new NotSupportedException($"输入寄存器点不可写入({this.TagName()}");
 }
