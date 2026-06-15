@@ -69,7 +69,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
 
         var value = values[0];
         cbnt.Bag[this.NodeId] = value;
-
+        this.Timestamp = DateTime.Now;
         this.NotifyTagRead();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.OpcUaClient.Cbnts;
+using Itminus.Tags.OpcUaClient.DirectTags;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags.OpcUaClient;
@@ -16,6 +17,7 @@ public static class TagsProject_Extensions
 
         builder.ConfigTagsLoader((sp, composite)=> {
             composite.AddTagsCbntBuilder<OpcUaClientTagCbntBuilder>(OpcUaClientNames.DriverName);
+            composite.AddTagBuilder<OpcUaClientTagBuilder>(OpcUaClientNames.DriverName);
         });
 
         return builder;

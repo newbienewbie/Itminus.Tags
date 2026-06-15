@@ -8,7 +8,7 @@ namespace Itminus.Tags;
 /// </summary>
 /// <typeparam name="TValue"></typeparam>
 public abstract class Tag<TValue,TChannel> : ITag
-    where TValue : IEquatable<TValue>
+    //where TValue : IEquatable<TValue>
     where TChannel: class, ITagChannel
 {
 

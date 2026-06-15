@@ -30,6 +30,9 @@
     <None Update="OpcUaClientTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="OpcUaClientTags\DirectTags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="S7Tags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

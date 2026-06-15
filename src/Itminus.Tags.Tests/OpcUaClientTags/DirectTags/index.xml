@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<Channel name="OpcUaClient-2" driver="OpcUaClient">
+		<ClientName>client-name-1</ClientName>
+		<ServerOpt>
+			<DiscoveryUrl>192.168.10.68</DiscoveryUrl>
+			<UsePassword>true</UsePassword>
+			<UserName>user-1</UserName>
+			<Password>pass-1</Password>
+		</ServerOpt>
+	</Channel>
+
+	<TagGrp name="g-direct" isEntry="true" isEnabled="true" channel="OpcUaClient-2" scanInterval="10">
+		<Tag name="var3" address="ns=4;s=|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var3" />
+		<Tag name="var4" address="ns=4;s=|var|CODESYS Control Win V3 x64.Application.PLC_PRG.var4" />
+	</TagGrp>
+
+</root>

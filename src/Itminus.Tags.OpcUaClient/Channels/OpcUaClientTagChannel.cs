@@ -131,33 +131,6 @@ public class OpcUaClientTagChannel : ITagChannel
     #endregion
 
 
-
-    #region 读写
-
-    /// <summary>
-    /// OpcUA 不支持按字节读取，这个方法未实现
-    /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    /// <summary>
-    /// OpcUA 不支持按字节写入，这个方法未实现
-    /// </summary>
-    /// <param name="address"></param>
-    /// <param name="bytes"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    /// <exception cref="NotImplementedException"></exception>
-    public Task WriteAsync(string address, byte[] bytes, CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
-    #endregion
-
     #region
     public async Task<(DataValueCollection values, IList<ServiceResult> errs)> ReadAsync(IList<NodeId> nodeIds, CancellationToken ct)
     {
@@ -209,6 +182,31 @@ public class OpcUaClientTagChannel : ITagChannel
                 .ToList();
             throw new Exception($"通道写入失败:通道={this.ChannelName}。异常={string.Join(";", notgoods)}。");
         }
+    }
+
+
+    public virtual async Task<DataValue> ReadValueAsync(NodeId nodeId, CancellationToken ct)
+    {
+        if (this._session is null)
+        {
+            throw new InvalidOperationException("会话未创建");
+        }
+        if (this._session.Connected == false)
+        {
+            throw new InvalidOperationException("会话未连接");
+        }
+
+        var value = await this._session.ReadValueAsync(nodeId, ct);
+        return value;
+    }
+
+    public virtual async Task WriteValueAsync(NodeId nodeId, DataValue value, CancellationToken ct)
+    {
+        var toBeWritten = new Dictionary<NodeId, DataValue>
+        {
+            [nodeId] = value
+        };
+        await this.WriteAsync(toBeWritten, ct);
     }
     #endregion
 
