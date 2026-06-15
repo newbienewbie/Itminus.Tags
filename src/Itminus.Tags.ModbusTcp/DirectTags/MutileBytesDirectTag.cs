@@ -52,7 +52,7 @@ public abstract class MutileBytesDirectTag<T> : Tag<T, ModbusTcpChannel>
         var buffer = new byte[this.BufferSize];
         this.FillBytes(value, buffer);
         
-        this._bubbleChannel.WriteAsync(this.NormalizedAddress(), buffer, ct).Wait(ct);
+        await this._bubbleChannel.WriteAsync(this.NormalizedAddress(), buffer, ct);
         this.IsDirty = false;
         this.NotifyTagWritten(this._value);
     }
