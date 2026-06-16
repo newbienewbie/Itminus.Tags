@@ -24,7 +24,7 @@
         _text = Tag.Value?.ToString();
     }
 
-    private async void Write()
+    private async Task Write()
     {
         try
         {
@@ -79,13 +79,12 @@
                             throw new InvalidOperationException($"不支持的数值测点类型: {kind}");
                     }
 
-                    SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_text</span>);
                     return ValueTask.CompletedTask;
                 }, 
                 out var task
             );
             await task;
-
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @s</span>);
 
         }
         catch (Exception ex)

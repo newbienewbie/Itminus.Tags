@@ -37,7 +37,7 @@
         _text = Tag.Value?.ToString();
     }
 
-    private async void Write()
+    private async Task Write()
     {
         try
         {
@@ -53,16 +53,18 @@
                 SnackbarService.Add(@<span>未找到标签的入口信息，无法写入。</span>, Severity.Error);
                 return;
             }
+            var newvalue = _text;
             _ = this.Project.WriteIntent(
                 entry.Name, 
                 (entry,ct) => {
-                    Tag.Value = _text;
-                    SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_text</span>);
+                    Tag.Value = newvalue;
                     return ValueTask.CompletedTask;
                 }, 
                 out var task
             );
             await task;
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @newvalue</span>);
+
         }
         catch(Exception ex)
         {

@@ -26,7 +26,7 @@
             _checked = false;
     }
 
-    private async void Write()
+    private async Task Write()
     {
         try
         {
@@ -41,17 +41,18 @@
                 SnackbarService.Add(@<span>当前项目为空，无法写入。</span>, Severity.Error);
                 return;
             }
+            var newvalue = _checked;
             _ = this.Project.WriteIntent(
                 entry.Name, 
                 (entry,ct) => {
-                    Tag.Value = _checked;
+                    Tag.Value = newvalue;
                     return ValueTask.CompletedTask;
                 }, 
                 out var task
             );
             await task;
 
-            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_checked</span>);
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @newvalue</span>);
         }
         catch(Exception ex)
         {
