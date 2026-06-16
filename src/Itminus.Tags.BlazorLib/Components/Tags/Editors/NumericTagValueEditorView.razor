@@ -10,7 +10,7 @@
 @code {
 
     [Parameter, EditorRequired]
-    public ITagsProject Project { get; set; } = null!;
+    public ITagsProject? Project { get; set; }
 
     [Parameter, EditorRequired]
     public ITag Tag { get; set; } = null!;
@@ -24,45 +24,69 @@
         _text = Tag.Value?.ToString();
     }
 
-    private void Write()
+    private async void Write()
     {
         try
         {
             var kind = Tag.TagKind();
             var s = _text ?? "0";
 
-            // Assign the correctly-typed value directly.
-            switch (kind)
+
+            var entry = this.Tag.SearchEntry();
+            if(entry is null)
             {
-                case BuiltinTagKinds.BYTE:
-                    Tag.Value = byte.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                    break;
-                case BuiltinTagKinds.INT16:
-                    Tag.Value = short.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                    break;
-                case BuiltinTagKinds.UINT16:
-                    Tag.Value = ushort.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                    break;
-                case BuiltinTagKinds.INT32:
-                    Tag.Value = int.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                    break;
-                case BuiltinTagKinds.UINT32:
-                    Tag.Value = uint.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                    break;
-                case BuiltinTagKinds.INT64:
-                    Tag.Value = long.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                    break;
-                case BuiltinTagKinds.UINT64:
-                    Tag.Value = ulong.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
-                    break;
-                case BuiltinTagKinds.FLOAT:
-                    Tag.Value = float.Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
-                    break;
-                default:
-                    throw new InvalidOperationException($"不支持的数值测点类型: {kind}");
+                SnackbarService.Add(@<span>未找到标签的入口信息，无法写入。</span>, Severity.Error);
+                return;
             }
 
-            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_text</span>);
+            if (Project is null)
+            {
+                SnackbarService.Add(@<span>当前项目为空，无法写入。</span>, Severity.Error);
+                return;
+            }
+            _ = this.Project.WriteIntent(
+                entry.Name, 
+                (entry,ct) => {
+
+                    // Assign the correctly-typed value directly.
+                    switch (kind)
+                    {
+                        case BuiltinTagKinds.BYTE:
+                            Tag.Value = byte.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case BuiltinTagKinds.INT16:
+                            Tag.Value = short.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case BuiltinTagKinds.UINT16:
+                            Tag.Value = ushort.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case BuiltinTagKinds.INT32:
+                            Tag.Value = int.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case BuiltinTagKinds.UINT32:
+                            Tag.Value = uint.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case BuiltinTagKinds.INT64:
+                            Tag.Value = long.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case BuiltinTagKinds.UINT64:
+                            Tag.Value = ulong.Parse(s, NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            break;
+                        case BuiltinTagKinds.FLOAT:
+                            Tag.Value = float.Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                            break;
+                        default:
+                            throw new InvalidOperationException($"不支持的数值测点类型: {kind}");
+                    }
+
+                    SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_text</span>);
+                    return ValueTask.CompletedTask;
+                }, 
+                out var task
+            );
+            await task;
+
+
         }
         catch (Exception ex)
         {
