@@ -176,4 +176,33 @@ public static class ITagExtensions
         tag.Channel ??
         tag.Parent?.GetRequiredChannel() ?? 
         throw new Exception($"相关测点未配置通道 : Tag({tag.TagName()})");
+
+    /// <summary>
+    /// 向上冒泡检索入口
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns>null代表未找到入口</returns>
+    public static ITagGrp? SearchEntry(this ITag tag)
+    {
+        var container = tag.Parent;
+        return container?.Map(
+            cbnt => cbnt.Parent is null ? null : GetEntryForGrp(cbnt.Parent),
+            grp => GetEntryForGrp(grp)
+            );
+
+        ITagGrp? GetEntryForGrp(ITagGrp grp)
+        {
+            if(grp.IsEntry)
+            {
+                return grp;
+            }
+            if(grp.Parent is null)
+            {
+                return null;
+            }
+            return GetEntryForGrp(grp.Parent);
+        }
+    }
+
+
 }

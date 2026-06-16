@@ -15,6 +15,10 @@
 </MudPopover>
 
 @code {
+
+    [Parameter, EditorRequired]
+    public ITagsProject Project { get; set; } = null!;
+
     [Parameter, EditorRequired]
     public ITag Tag { get; set; } = null!;
 

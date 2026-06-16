@@ -28,8 +28,7 @@
     await this.projctrl.StopAsync();
 })">停止</MudButton>
 
-<TagsView RootTag="@RootTag"></TagsView>
-
+<TagsView Project=@Project></TagsView>
 
 <InputSelect  @bind-Value="@SelectedXml">
     <option value="index-plugin.xml">index-plugin.xml</option>
@@ -41,9 +40,20 @@
     [Parameter]
     public string SelectedXml { get; set; } = "index-plugin.xml";
 
+
+    private ITagsProject? _project;
+    public ITagsProject? Project
+    {
+        get => _project;
+        set
+        {
+            _project = value;
+        }
+    }
+
     protected override Task OnInitializedAsync()
     {
-        this.RootTag = this.projctrl.Project?.Tags;
+        this._project = this.projctrl.Project;
 
         var startorstopped = Observable.FromEventPattern<TagsProjectStartedOrStopped, TagsProjectEventArgs>(
             h => this.projctrl.StartedOrStopped += h,
@@ -54,14 +64,8 @@
             {
                 var sender = ep.Sender;
                 var args = ep.EventArgs;
-                if (args.IsStarted)
-                {
-                    this.RootTag = this.projctrl.Project?.Tags;
-                }
-                else
-                {
-                    this.RootTag = null;
-                }
+                this._project = args.IsStarted ? this.projctrl.Project : null;
+                this.InvokeAsync(StateHasChanged);
             });
 
 
@@ -69,14 +73,7 @@
     }
 
 
-    private ITagGrp? _rootTag;
-    public ITagGrp? RootTag { 
-        get => _rootTag; 
-        set {
-            this._rootTag = value;
-            this.InvokeAsync(this.StateHasChanged);
-        }
-    }
+
 
 
     public void Dispose()

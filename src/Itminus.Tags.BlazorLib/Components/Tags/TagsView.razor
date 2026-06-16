@@ -1,42 +1,42 @@
-﻿
+﻿@using System.Reactive.Linq
+
 <MudTreeView T="TagUnion" Items="@_treeItems" AutoExpand="true" ExpandOnClick="true">
-    <ItemTemplate>
-        @{
-            var tagunion = context.Value;
-        }
-
-        @if(tagunion is not null)
-        {
-            @if (tagunion.IsTagUnit()) {
-                var tag = tagunion.AsTag();
-                <MudTreeViewItem
-                    Value="@context.Value"
-                    Icon="@context.Icon"
-                    EndTextTypo="@Typo.caption" >
-                    <BodyContent Context="X">
-                        <TagView Tag="@tag"></TagView>
-                    </BodyContent>
-                </MudTreeViewItem>
+        <ItemTemplate>
+            @{
+                var tagunion = context.Value;
             }
-            else{
-                <MudTreeViewItem 
-                    Items="@context.Children"
-                    Value="@context.Value"
-                    Icon="@context.Icon"
-                    Text="@context.Text"
-                    EndTextTypo="@Typo.caption" >
-                </MudTreeViewItem>
-            } 
-        }
 
-    </ItemTemplate>
-</MudTreeView>
+            @if(tagunion is not null)
+            {
+                @if (tagunion.IsTagUnit()) {
+                    var tag = tagunion.AsTag();
+                    <MudTreeViewItem
+                        Value="@context.Value"
+                        Icon="@context.Icon"
+                        EndTextTypo="@Typo.caption" >
+                        <BodyContent Context="X">
+                            <TagView Project="@Project" Tag="@tag"></TagView>
+                        </BodyContent>
+                    </MudTreeViewItem>
+                }
+                else{
+                    <MudTreeViewItem 
+                        Items="@context.Children"
+                        Value="@context.Value"
+                        Icon="@context.Icon"
+                        Text="@context.Text"
+                        EndTextTypo="@Typo.caption" >
+                    </MudTreeViewItem>
+                } 
+            }
+
+        </ItemTemplate>
+    </MudTreeView>
 
 @code {
 
-
     [Parameter]
-    public ITagGrp? RootTag { get; set; }
+    public ITagsProject? Project { get; set; }
 
     private IReadOnlyList<TreeItemData<TagUnion>>? _treeItems;
 
@@ -44,8 +44,9 @@
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
-        if (parameters.TryGetValue<ITagGrp>(nameof(RootTag), out var root))
+        if (parameters.TryGetValue<ITagsProject>(nameof(Project), out var project))
         {
+            var root = project?.Tags;
             _treeItems = root is null ? [ ] : [ConvertToTreeItems(root)];
         }
 
@@ -121,4 +122,5 @@
         }
         return root;
     }
+
 }

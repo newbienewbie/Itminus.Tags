@@ -22,7 +22,7 @@
         }
         else
         {
-            @_editor.Render(Tag)
+            @_editor.Render(Project,Tag)
         }
     </DialogContent>
     <DialogActions>
@@ -33,6 +33,9 @@
 @code {
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public ITagsProject? Project { get; set; } = null!;
 
     [Parameter, EditorRequired]
     public ITag Tag { get; set; } = null!;

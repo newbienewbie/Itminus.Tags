@@ -20,10 +20,11 @@ sealed class BoolTagValueEditor : ITagValueEditor
             || tag.TagKind() == BuiltinTagKinds.DO;
     }
 
-    public RenderFragment Render(ITag tag) => builder =>
+    public RenderFragment Render(ITagsProject? project, ITag tag) => builder =>
     {
         builder.OpenComponent(0, typeof(BoolTagValueEditorView));
-        builder.AddAttribute(1, "Tag", tag);
+        builder.AddAttribute(1, "Project", project);
+        builder.AddAttribute(2, "Tag", tag);
         builder.CloseComponent();
     };
 }
