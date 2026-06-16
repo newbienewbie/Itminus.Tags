@@ -1,4 +1,5 @@
-﻿@inject ISnackbar SnackbarService
+﻿
+@inject ISnackbar SnackbarService
 
 
 <div style="display:flex; gap:12px; align-items:center;">
@@ -7,6 +8,9 @@
 </div>
 
 @code {
+    [Parameter, EditorRequired]
+    public ITagsProject? Project { get; set; } = null!;
+
     [Parameter, EditorRequired]
     public ITag Tag { get; set; } = null!;
 
@@ -22,12 +26,33 @@
             _checked = false;
     }
 
-    private void Write()
+    private async Task Write()
     {
         try
         {
-            Tag.Value = _checked;
-            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_checked</span>);
+            var entry = this.Tag.SearchEntry();
+            if(entry is null)
+            {
+                SnackbarService.Add(@<span>未找到标签的入口信息，无法写入。</span>, Severity.Error);
+                return;
+            }
+            if (Project is null)
+            {
+                SnackbarService.Add(@<span>当前项目为空，无法写入。</span>, Severity.Error);
+                return;
+            }
+            var newvalue = _checked;
+            _ = this.Project.WriteIntent(
+                entry.Name, 
+                (entry,ct) => {
+                    Tag.Value = newvalue;
+                    return ValueTask.CompletedTask;
+                }, 
+                out var task
+            );
+            await task;
+
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @newvalue</span>);
         }
         catch(Exception ex)
         {

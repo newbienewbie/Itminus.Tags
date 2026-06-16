@@ -2,12 +2,16 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 
 namespace Itminus.Tags.BlazorLib.Components.Tags;
 
 public partial class TagView : IDisposable
 {
+    [Parameter]
+    public ITagsProject? Project { get; set; }
+
     [Parameter]
     public ITag? Tag { get; set; }
 
@@ -19,6 +23,7 @@ public partial class TagView : IDisposable
     private DateTime Timestamp { get; set; }
 
     public bool IsReadOnly { get; private set; } = true;
+
 
     public override Task SetParametersAsync(ParameterView parameters)
     {
@@ -37,18 +42,46 @@ public partial class TagView : IDisposable
 
                 // Throttle updates and avoid re-rendering if nothing actually changed.
                 _disposable = tag.Watch()
+                    .TakeUntil(_destroySignal)
                     .Sample(TimeSpan.FromMilliseconds(50))
                     .Subscribe(ev =>
                     {
+                        if (disposedValue)
+                            return;
                         var val = ev.EventArgs.NewValue;
                         var ts = ev.EventArgs.Timestamp;
 
                         if (IsSame(Value, val) && ts == Timestamp)
                             return;
 
-                        Value = val;
-                        Timestamp = ts;
-                        _ = InvokeAsync(StateHasChanged);
+                        _ = InvokeAsync(() =>
+                        {
+                            if(this.disposedValue)
+                            {
+                                return;
+                            }
+
+                            Value = val;
+                            Timestamp = ts;
+                            StateHasChanged();
+                        }).ContinueWith(t =>
+                        {
+                            if (t.Exception != null)
+                            {
+                                // 记录日志或忽略（组件已释放时的异常）
+                                foreach (var ex in t.Exception.InnerExceptions)
+                                {
+                                    if (ex is ObjectDisposedException or InvalidOperationException)
+                                    {
+                                        ; // 安全忽略
+                                    }
+                                    else
+                                    {
+                                        throw ex; // 其他异常不应吞没
+                                    }
+                                }
+                            }
+                        }, TaskScheduler.Default);
                     });
             }
         }
@@ -72,17 +105,18 @@ public partial class TagView : IDisposable
 
         var parameters = new DialogParameters<TagEditDialog>
         {
-            { x => x.Tag, Tag }
+            { x => x.Project, this.Project },
+            { x => x.Tag, Tag },
         };
 
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraSmall };
         await DialogService.ShowAsync<TagEditDialog>("编辑测点", parameters, options);
     }
 
-    #region
+    #region IDisposable Support
     private IDisposable? _disposable;
     private bool disposedValue;
-
+    private readonly Subject<System.Reactive.Unit> _destroySignal = new Subject<System.Reactive.Unit>();
     protected virtual void Dispose(bool disposing)
     {
         if (!disposedValue)
@@ -91,11 +125,21 @@ public partial class TagView : IDisposable
             {
                 try
                 {
+                    this._destroySignal.OnNext(System.Reactive.Unit.Default);
+                }
+                catch{ }
+
+                try
+                {
+                    this._destroySignal.OnCompleted();
+                }
+                catch { }
+
+                try
+                {
                     _disposable?.Dispose();
                 }
-                catch
-                {
-                }
+                catch { }
             }
             disposedValue = true;
         }

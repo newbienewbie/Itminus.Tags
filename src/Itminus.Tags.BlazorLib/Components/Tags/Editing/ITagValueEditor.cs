@@ -8,5 +8,5 @@ public interface ITagValueEditor
 
     bool CanEdit(ITag tag);
 
-    RenderFragment Render(ITag tag);
+    RenderFragment Render(ITagsProject? project, ITag tag);
 }
