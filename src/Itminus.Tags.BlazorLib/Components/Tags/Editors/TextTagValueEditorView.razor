@@ -15,6 +15,10 @@
 </MudPopover>
 
 @code {
+
+    [Parameter, EditorRequired]
+    public ITagsProject? Project { get; set; } 
+
     [Parameter, EditorRequired]
     public ITag Tag { get; set; } = null!;
 
@@ -33,12 +37,34 @@
         _text = Tag.Value?.ToString();
     }
 
-    private void Write()
+    private async Task Write()
     {
         try
         {
-            Tag.Value = _text;
-            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @_text</span>);
+            if (Project is null)
+            {
+                SnackbarService.Add(@<span>当前项目为空，无法写入。</span>, Severity.Error);
+                return;
+            }
+
+            var entry = this.Tag.SearchEntry();
+            if(entry is null)
+            {
+                SnackbarService.Add(@<span>未找到标签的入口信息，无法写入。</span>, Severity.Error);
+                return;
+            }
+            var newvalue = _text;
+            _ = this.Project.WriteIntent(
+                entry.Name, 
+                (entry,ct) => {
+                    Tag.Value = newvalue;
+                    return ValueTask.CompletedTask;
+                }, 
+                out var task
+            );
+            await task;
+            SnackbarService.Add(@<span>@Tag.TagName() &lt;- @newvalue</span>);
+
         }
         catch(Exception ex)
         {
