@@ -1,6 +1,6 @@
 
-Remove-Item ".vs" -Recurse -Force
-Remove-Item "paket-files" -Recurse -Force
+Remove-Item ".vs" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item "paket-files" -Recurse -Force -ErrorAction SilentlyContinue
 
-Get-ChildItem "bin" -Recurse | Remove-Item -Recurse -Force 
-Get-ChildItem "obj" -Recurse | Remove-Item -Recurse -Force 
+Get-ChildItem "bin" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+Get-ChildItem "obj" -Recurse -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
