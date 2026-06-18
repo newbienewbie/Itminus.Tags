@@ -1,13 +1,7 @@
 ﻿using Itminus.Tags.ComScanner;
 using Itminus.Tags.ComScanner.Channels;
-using Itminus.Tags.ModbusTcp;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Itminus.Tags.Tests.ComTags;
