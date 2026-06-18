@@ -94,7 +94,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <returns></returns>
     public async Task DisconnectAsync(CancellationToken ct)
     {
-        await this._sema.WaitAsync();
+        await this._sema.WaitAsync(ct);
         try
         {
             this.SerialPort?.Close();
