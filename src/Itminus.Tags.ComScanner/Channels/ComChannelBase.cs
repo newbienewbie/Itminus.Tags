@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.IO.Ports;
-using System.Reactive.Disposables.Fluent;
 using System.Threading.Channels;
 
 
@@ -62,7 +61,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         await this._connSema.WaitAsync(ct);
         try
         {
-            if (this.SerialPort != null)
+            if (this.SerialPort != null && !force)
             {
                 return;
             }
@@ -114,10 +113,6 @@ public abstract class ComChannelBase<T> :ITagChannel
 
     public void Dispose()
     {
-        if (this.SerialPort is null)
-        {
-            return;
-        }
         this._channel.Writer.TryComplete();
         this.SerialPort?.Dispose();
         this.SerialPort = null;
@@ -136,8 +131,6 @@ public abstract class ComChannelBase<T> :ITagChannel
         {
             throw new InvalidOperationException($"通道({this.ChannelName})的串口为null, 无法Poll");
         }
-        var stream = this.SerialPort.BaseStream;
-        using var reader = new StreamReader(stream);
         try
         {
             while (!ct.IsCancellationRequested)

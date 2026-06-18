@@ -31,7 +31,6 @@ nuget System.Diagnostics.DiagnosticSource >= 8.0 lowest_matching: true
 
 nuget OPCFoundation.NetStandard.Opc.Ua >= 1.5.374.126 lowest_matching: true
 
-nuget Microsoft.PowerShell.SDK >= 7.4.0 lowest_matching: true
 nuget Microsoft.CodeAnalysis.CSharp.Scripting >= 5.3.0 lowest_matching: true
 
 nuget xunit >= 2.5.3 lowest_matching: true
