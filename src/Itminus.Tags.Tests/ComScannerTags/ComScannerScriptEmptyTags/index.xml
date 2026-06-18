@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<Channel name="COM-EMPTY-SCRIPT" driver="ComScanner">
+		<ReadScript> </ReadScript>
+		<Port>COM1</Port>
+		<BaundRate>9600</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+		<ChannelCapacity>1</ChannelCapacity>
+	</Channel>
+
+	<TagGrp name="g" isEntry="true" isEnabled="true" scanInterval="10">
+		<Tag name="空脚本串口测点" channel="COM-EMPTY-SCRIPT" type="STR"></Tag>
+	</TagGrp>
+
+</root>

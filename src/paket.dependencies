@@ -22,14 +22,17 @@ nuget StdUnit.Sharp7.Options >= 0.6.4 lowest_matching: true
 nuget McMaster.NETCore.Plugins >= 2.0.0 lowest_matching: true
 
 nuget System.Reactive >= 6.1.0 lowest_matching: true
-nuget System.IO.Ports >= 6.0 lowest_matching: true
-nuget System.IO.Pipelines >= 6.0.0 lowest_matching: true
+nuget System.IO.Ports >= 8.0.0 lowest_matching: true
+nuget System.IO.Pipelines >= 8.0.0 lowest_matching: true
 
 nuget Microsoft.AspNetCore.Components.Web >= 8.0.12 lowest_matching: true
 nuget MudBlazor >= 9.2.0 lowest_matching: true
 nuget System.Diagnostics.DiagnosticSource >= 8.0 lowest_matching: true
 
 nuget OPCFoundation.NetStandard.Opc.Ua >= 1.5.374.126 lowest_matching: true
+
+nuget Microsoft.PowerShell.SDK >= 7.4.0 lowest_matching: true
+nuget Microsoft.CodeAnalysis.CSharp.Scripting >= 5.3.0 lowest_matching: true
 
 nuget xunit >= 2.5.3 lowest_matching: true
 nuget xunit.runner.visualstudio >= 2.5.3 lowest_matching: true

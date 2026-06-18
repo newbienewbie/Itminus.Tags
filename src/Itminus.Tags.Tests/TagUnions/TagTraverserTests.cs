@@ -45,14 +45,14 @@ public class TagTraverserTests
         Assert.Equal(3, proj.Channels.Count);
         Assert.IsType<S7TagChannel>(proj.Channels[0]);
         Assert.IsType<S7TagChannel>(proj.Channels[1]);
-        Assert.IsType<ComLineScannerChannel>(proj.Channels[2]);
+        Assert.IsType<LineBasedComChannel>(proj.Channels[2]);
 
         // Test Tags
         var g1 = proj.Tags.SelectGrp("扫码枪");
         var union = new TagUnion.TagGrp(g1!); 
         var tags = new List<ITag>();
         var visitor = new TagTraverser(t => { 
-            if(t is ComCodeScannerTag tag)
+            if(t is ComStrTag tag)
             {
                 tags.Add(tag);
             }

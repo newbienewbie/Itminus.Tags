@@ -1,3 +1,4 @@
 ﻿System.IO.Ports
 System.Reactive
 System.IO.Pipelines
+Microsoft.CodeAnalysis.CSharp.Scripting

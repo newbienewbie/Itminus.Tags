@@ -66,7 +66,7 @@ public class TagUnionVisitTests
         Assert.Equal(3, proj.Channels.Count);
         Assert.IsType<S7TagChannel>(proj.Channels[0]);
         Assert.IsType<S7TagChannel>(proj.Channels[1]);
-        Assert.IsType<ComLineScannerChannel>(proj.Channels[2]);
+        Assert.IsType<LineBasedComChannel>(proj.Channels[2]);
 
         // Test Tags
         var groups = new List<ITagGrp>();

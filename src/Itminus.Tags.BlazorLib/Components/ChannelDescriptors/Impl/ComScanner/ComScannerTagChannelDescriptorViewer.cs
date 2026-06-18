@@ -13,7 +13,7 @@ sealed class ComScannerTagChannelDescriptorViewer : ITagChannelDescriptorViewer
 
     public RenderFragment View(TagChannelDescriptor descriptor)
     {
-        var d = descriptor.ToComScannerTagChannelDescriptor();
+        var d = descriptor.ToComChannelDescriptor();
         return builder =>
         {
             builder.OpenComponent<ComScannerTagChannelDescriptorViewerView>(0);

@@ -21,6 +21,12 @@
     <None Update="ComScannerTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ComScannerTags\ComScannerScriptTags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="ComScannerTags\ComScannerScriptEmptyTags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ModbusTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

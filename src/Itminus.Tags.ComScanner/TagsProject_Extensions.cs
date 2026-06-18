@@ -14,7 +14,7 @@ public static class TagsProject_Extensions
     public static TagsProjectServiceBuilder AddComScannerSupport(this TagsProjectServiceBuilder builder)
     {
         // register channel factory
-        builder.Services.AddKeyedSingleton<ITagChannelFactory, ComScannerChannelFactory>(ComScannerNames.DriverName);
+        builder.Services.AddKeyedSingleton<ITagChannelFactory, ComChannelFactory>(ComScannerNames.DriverName);
         builder.ConfigChannelsFactory((sp, composite) =>
         {
             var factory = sp.GetRequiredKeyedService<ITagChannelFactory>(ComScannerNames.DriverName);
@@ -23,7 +23,7 @@ public static class TagsProject_Extensions
 
         // register tags loader
         builder.ConfigTagsLoader((sp, composite) => { 
-            composite.AddTagBuilder<CodeScannerTagBuilder>(ComScannerNames.DriverName);
+            composite.AddTagBuilder<ComTagBuilder>(ComScannerNames.DriverName);
         });
 
         return builder;

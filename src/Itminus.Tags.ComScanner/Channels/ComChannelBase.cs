@@ -6,15 +6,15 @@ using System.Threading.Channels;
 namespace Itminus.Tags.ComScanner.Channels;
 
 /// <summary>
-/// 基于串口的Tag通道。<br/>
+/// 抽象基类，表示基于串口的Tag通道。<br/>
 /// 每一次读取一个数据包（读取方法由子类定义）放入待处理的队列中，并触发DataReceived事件。
 /// 外部可以通过<see cref="TryDequeueInput(out T?)"/> 方法从队列中读取数据包进行处理。
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public abstract class ComChannel<T> :ITagChannel
+public abstract class ComChannelBase<T> :ITagChannel
 {
-    protected readonly ComScannerOption _opt;
-    protected readonly ILogger<ComChannel<T>> _logger;
+    protected readonly ComChannelOption _opt;
+    protected readonly ILogger<ComChannelBase<T>> _logger;
 
     public string? NewLine { get; }
 
@@ -36,7 +36,7 @@ public abstract class ComChannel<T> :ITagChannel
     public SerialPort? SerialPort { get; private set; }
     protected readonly SemaphoreSlim _sema = new SemaphoreSlim(1);
 
-    protected ComChannel(string channelName, ComScannerOption opt, ILogger<ComChannel<T>> logger)
+    protected ComChannelBase(string channelName, ComChannelOption opt, ILogger<ComChannelBase<T>> logger)
     {
         this.ChannelName = channelName;
         this._opt = opt;
@@ -116,7 +116,7 @@ public abstract class ComChannel<T> :ITagChannel
     }
 
 
-    protected abstract Task<T> ParseDataAsync(SerialPort sport);
+    protected abstract Task<T> ParseDataAsync(SerialPort sport, CancellationToken ct);
 
     private async Task PollDataAsync(CancellationToken ct)
     {
@@ -136,7 +136,7 @@ public abstract class ComChannel<T> :ITagChannel
                 try
                 {
                     read = true;
-                    data = await ParseDataAsync(this.SerialPort);
+                    data = await ParseDataAsync(this.SerialPort,ct);
                 }
                 finally
                 {
@@ -213,7 +213,7 @@ public abstract class ComChannel<T> :ITagChannel
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <exception cref="InvalidOperationException"></exception>
-    public async Task Write(byte[] response,int offset, int count)
+    public async Task WriteAsync(byte[] response,int offset, int count)
     {
         if (this.SerialPort is null)
         {

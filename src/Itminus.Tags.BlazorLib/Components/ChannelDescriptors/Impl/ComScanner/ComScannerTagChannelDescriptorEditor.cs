@@ -13,7 +13,7 @@ sealed class ComScannerTagChannelDescriptorEditor : ITagChannelDescriptorEditor
 
     public RenderFragment Edit(TagChannelDescriptor descriptor, Action<TagChannelDescriptor> descriptorChanged)
     {
-        var d = descriptor.ToComScannerTagChannelDescriptor();
+        var d = descriptor.ToComChannelDescriptor();
         if (!ReferenceEquals(d, descriptor))
         {
             descriptorChanged(d);
