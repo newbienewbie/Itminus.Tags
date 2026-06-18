@@ -1,12 +1,11 @@
 ﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Editing;
-using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ComScanner;
 using Itminus.Tags.ComScanner;
 using Itminus.Tags.ComScanner.Channels;
 using Microsoft.AspNetCore.Components;
 
-namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ComScanner;
+namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Com;
 
-sealed class ComScannerTagChannelDescriptorViewer : ITagChannelDescriptorViewer
+sealed class ComChannelDescriptorViewer : ITagChannelDescriptorViewer
 {
     public int Priority => 100;
     public bool CanView(TagChannelDescriptor descriptor) => descriptor.Driver == ComScannerNames.DriverName;
@@ -16,8 +15,8 @@ sealed class ComScannerTagChannelDescriptorViewer : ITagChannelDescriptorViewer
         var d = descriptor.ToComChannelDescriptor();
         return builder =>
         {
-            builder.OpenComponent<ComScannerTagChannelDescriptorViewerView>(0);
-            builder.AddAttribute(1, nameof(ComScannerTagChannelDescriptorViewerView.Descriptor), d);
+            builder.OpenComponent<ComChannelDescriptorViewerView>(0);
+            builder.AddAttribute(1, nameof(ComChannelDescriptorViewerView.Descriptor), d);
             builder.CloseComponent();
         };
     }
