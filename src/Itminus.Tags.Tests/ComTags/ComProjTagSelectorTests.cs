@@ -10,13 +10,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Itminus.Tags.Tests.ComScanner;
+namespace Itminus.Tags.Tests.ComTags;
 
-public class ComScannerTcpProjTests
+public class ComProjTagSelectorTests
 {
     private readonly ServiceProvider _root;
 
-    public ComScannerTcpProjTests()
+    public ComProjTagSelectorTests()
     {
         var services = new ServiceCollection();
         services.AddLogging();
@@ -36,7 +36,7 @@ public class ComScannerTcpProjTests
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!, "ComScannerTags");
+        dir = Path.Combine(dir!, "ComTags");
         using var proj = factory.Create(dir!);
 
         // Test Channels

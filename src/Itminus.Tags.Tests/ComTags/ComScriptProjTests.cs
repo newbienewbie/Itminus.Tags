@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Xunit;
 
-namespace Itminus.Tags.Tests.ComScanner;
+namespace Itminus.Tags.Tests.ComTags;
 
-public class ComScannerScriptProjTests
+public class ComScriptProjTests
 {
     private readonly ServiceProvider _root;
 
-    public ComScannerScriptProjTests()
+    public ComScriptProjTests()
     {
         var services = new ServiceCollection();
         services.AddLogging();
@@ -38,7 +38,7 @@ public class ComScannerScriptProjTests
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!, "ComScannerTags", "ComScannerScriptTags");
+        dir = Path.Combine(dir!, "ComTags", "ComScriptTags");
         using var proj = factory.Create(dir!);
 
         Assert.Single(proj.Channels);
@@ -121,7 +121,7 @@ public class ComScannerScriptProjTests
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!, "ComScannerTags", "ComScannerScriptEmptyTags");
+        dir = Path.Combine(dir!, "ComTags", "ComScriptEmptyTags");
         using var proj = factory.Create(dir!);
 
         Assert.Single(proj.Channels);
