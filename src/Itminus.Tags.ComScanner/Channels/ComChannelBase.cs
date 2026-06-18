@@ -65,6 +65,10 @@ public abstract class ComChannelBase<T> :ITagChannel
 
             // 打开串口
             this.SerialPort = new SerialPort(this._opt.Port, this._opt.BaundRate, this._opt.Parity, this._opt.DataBits, this._opt.StopBits);
+            if (!string.IsNullOrEmpty(this.NewLine))
+            {
+                this.SerialPort.NewLine = this.NewLine;
+            }
             this.SerialPort.Open();
 
             // 清空缓存
