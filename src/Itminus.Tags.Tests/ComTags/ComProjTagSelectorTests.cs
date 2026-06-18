@@ -10,13 +10,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Itminus.Tags.Tests.ComScanner;
+namespace Itminus.Tags.Tests.ComTags;
 
-public class ComScannerTcpProjTests
+public class ComProjTagSelectorTests
 {
     private readonly ServiceProvider _root;
 
-    public ComScannerTcpProjTests()
+    public ComProjTagSelectorTests()
     {
         var services = new ServiceCollection();
         services.AddLogging();
@@ -36,13 +36,13 @@ public class ComScannerTcpProjTests
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!, "ComScannerTags");
+        dir = Path.Combine(dir!, "ComTags");
         using var proj = factory.Create(dir!);
 
         // Test Channels
         Assert.Equal(2, proj.Channels.Count);
-        Assert.IsType<ComScannerChannel>(proj.Channels[0]);
-        Assert.IsType<ComScannerChannel>(proj.Channels[1]);
+        Assert.IsType<LineBasedComChannel>(proj.Channels[0]);
+        Assert.IsType<LineBasedComChannel>(proj.Channels[1]);
 
         // Test Tags
         var g = proj.Tags.SelectGrp("g");
@@ -53,18 +53,18 @@ public class ComScannerTcpProjTests
         var gun1 = g.SelectTag("1#扫码枪");
         Assert.Equal("1#扫码枪", gun1.TagName());
         Assert.Equal(BuiltinTagKinds.STR, gun1.TagKind());
-        Assert.IsType<ComScannerChannel>(gun1.Channel);
+        Assert.IsType<LineBasedComChannel>(gun1.Channel);
         Assert.Equal(proj.Channels[0], gun1.Channel);
-        var channel1 = (ComScannerChannel) gun1.Channel;
+        var channel1 = (LineBasedComChannel) gun1.Channel;
         Assert.Null(channel1.NewLine);
         Assert.Equal(1, channel1.Capacity);
 
         var gun2 = g.SelectTag("2#扫码枪");
         Assert.Equal("2#扫码枪", gun2.TagName());
         Assert.Equal(BuiltinTagKinds.STR, gun2.TagKind());
-        Assert.IsType<ComScannerChannel>(gun2.Channel);
+        Assert.IsType<LineBasedComChannel>(gun2.Channel);
         Assert.Equal(proj.Channels[1], gun2.Channel);
-        var channel2 = (ComScannerChannel)gun2.Channel;
+        var channel2 = (LineBasedComChannel)gun2.Channel;
         Assert.Equal("\r\n",channel2.NewLine);
         Assert.Equal(42, channel2.Capacity);
         #endregion

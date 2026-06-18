@@ -2,7 +2,7 @@
 
 namespace Itminus.Tags.ComScanner.Channels;
 
-public class ComScannerOption
+public class ComChannelOption
 {
     /// <summary>
     /// 换行符。null表示使用系统默认的换行符。<br/>
@@ -18,4 +18,9 @@ public class ComScannerOption
     /// 通道元素数量
     /// </summary>
     public int ChannelCapacity { get; set; } =1;
+
+    /// <summary>
+    /// 脚本
+    /// </summary>
+    public string? ReadScript { get; set; }
 }

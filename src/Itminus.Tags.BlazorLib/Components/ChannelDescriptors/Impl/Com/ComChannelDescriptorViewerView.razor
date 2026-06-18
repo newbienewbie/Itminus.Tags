@@ -29,7 +29,7 @@
 </MudGrid>
 
 @code {
-    [Parameter, EditorRequired] public ComScannerTagChannelDescriptor Descriptor { get; set; } = default!;
+    [Parameter, EditorRequired] public ComChannelDescriptor Descriptor { get; set; } = default!;
 
     private static string? Escape(string? s)
     {

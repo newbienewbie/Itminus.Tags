@@ -2,21 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Itminus.Tags.ComScanner.Tags;
 
-public class ComCodeScannerTag : Tag<string, ComScannerChannel>
+/// <summary>
+/// 抽象基类，表示一个COM测点。<br/>
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public abstract class ComTagBase<T> : Tag<T, ComChannelBase<T>>
 {
-    public ComCodeScannerTag(TagDescriptor descriptor, ComScannerChannel? thisChannel, TagContainer container)
+    public ComTagBase(TagDescriptor descriptor, ComChannelBase<T>? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }
 
 
 
-    public override string? Value
+    public override T? Value
     {
         get => _value;
         set
@@ -42,15 +45,23 @@ public class ComCodeScannerTag : Tag<string, ComScannerChannel>
     }
 
 
-    public override Task WriteAsync(CancellationToken ct)
+    public override async Task WriteAsync(CancellationToken ct)
     {
         var val = this._value;
-        if(val is not null)
+        if (val is not null)
         {
-            this._bubbleChannel.Write(val);
+            var bytes = ConvertValueToBytes(val);
+            await this._bubbleChannel.WriteAsync(bytes,0, bytes.Length);
         }
         this.NotifyTagWritten(val);
         this.IsDirty = false;
-        return Task.CompletedTask;
     }
+
+    /// <summary>
+    /// 把TValue转成字节数组，以便写入COM通道。<br/>
+    /// </summary>
+    /// <param name="val"></param>
+    /// <returns></returns>
+    protected abstract byte[] ConvertValueToBytes(T val);
+
 }

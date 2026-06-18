@@ -10,10 +10,10 @@ using System.Text.RegularExpressions;
 namespace Itminus.Tags.ComScanner.Channels;
 
 
-public class ComScannerTagChannelDescriptor : TagChannelDescriptor
+public class ComChannelDescriptor : TagChannelDescriptor
 {
 
-    public ComScannerOption Option { get;set;} = new ComScannerOption();
+    public ComChannelOption Option { get;set;} = new ComChannelOption();
 
 
     public override XElement ToXElement()
@@ -22,6 +22,10 @@ public class ComScannerTagChannelDescriptor : TagChannelDescriptor
         if(!string.IsNullOrEmpty(this.Option.NewLine))
         {
             ele.SetOrAddChild(nameof(Option.NewLine), this.Option.NewLine);
+        }
+        if(!string.IsNullOrEmpty(this.Option.ReadScript))
+        {
+            ele.SetOrAddChild(nameof(Option.ReadScript), this.Option.ReadScript);
         }
         ele.SetOrAddChild(nameof(Option.Port), this.Option.Port);
         ele.SetOrAddChild(nameof(Option.BaundRate), this.Option.BaundRate);
@@ -33,15 +37,15 @@ public class ComScannerTagChannelDescriptor : TagChannelDescriptor
     }
 }
 
-public static class TagChannelDescriptor_ComScannerExtensions
+public static class TagChannelDescriptor_ComExtensions
 {
-    public static ComScannerTagChannelDescriptor ToComScannerTagChannelDescriptor(this TagChannelDescriptor descriptor)
+    public static ComChannelDescriptor ToComChannelDescriptor(this TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != ComScannerNames.DriverName)
         {
             throw new InvalidOperationException($"通道驱动错误：期望 {ComScannerNames.DriverName}，而当前为{descriptor.Driver}");
         }
-        if (descriptor is ComScannerTagChannelDescriptor d)
+        if (descriptor is ComChannelDescriptor d)
         {
             return d;
         }
@@ -53,7 +57,7 @@ public static class TagChannelDescriptor_ComScannerExtensions
         int defaultChannelCapacity = 1;
 
         string? newline = null;
-        if (descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.NewLine), out var newLine))
+        if (descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.NewLine), out var newLine))
         {
             var raw = newLine.Value ?? string.Empty;
             // If XML contains literal escape sequences like "\\r\\n", unescape them to actual control chars
@@ -64,35 +68,40 @@ public static class TagChannelDescriptor_ComScannerExtensions
             newline = raw;
         }
 
-        var port = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.Port), out var comPort) ?
+        var readscript = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadScript), out var readScript) ?
+                 null :
+                 readScript.Value;
+
+        var port = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.Port), out var comPort) ?
                     "COM1" :
                     comPort.Value;
         var baundRate =
-                    !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.BaundRate), out var baundRateStr) ? defaultBaundRate :
+                    !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.BaundRate), out var baundRateStr) ? defaultBaundRate :
                     int.TryParse(baundRateStr.Value, out var baundRateVal) ? baundRateVal :
                     throw new Exception($"串口波特率非法，无法解析成整数({baundRateStr.Value})");
-        var parity = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.Parity), out var parityStr) ? defaultParity :
+        var parity = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.Parity), out var parityStr) ? defaultParity :
                     Enum.TryParse<Parity>(parityStr.Value, out var parityVal) ? parityVal :
                     throw new Exception($"串口极性非法，无法解析成Parity({parityStr.Value})");
         var databits =
-                    !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.DataBits), out var databitsStr) ? defaultDataBits :
+                    !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.DataBits), out var databitsStr) ? defaultDataBits :
                     int.TryParse(databitsStr.Value, out var databitsVal) ? databitsVal :
                     throw new Exception($"串口数据位非法，无法解析成整数({databitsStr.Value})");
-        var stopbits = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.StopBits), out var stopbitsStr) ? defaultStopBits :
+        var stopbits = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.StopBits), out var stopbitsStr) ? defaultStopBits :
                     Enum.TryParse<StopBits>(stopbitsStr.Value, out var stopbitsVal) ? stopbitsVal :
                     throw new Exception($"串口停止位非法，无法解析成StopBits({stopbitsStr.Value})");
 
-        var channelCapacity = !descriptor.Extras.TryGetValue(nameof(ComScannerTagChannelDescriptor.Option.ChannelCapacity), out var channelCapacityStr) ? defaultChannelCapacity :
+        var channelCapacity = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ChannelCapacity), out var channelCapacityStr) ? defaultChannelCapacity :
                    int.TryParse(channelCapacityStr.Value, out var channelCapacityVal) ? channelCapacityVal :
                     throw new Exception($"通道容量非法，无法解析成正整数({channelCapacityStr.Value})");
 
-        var res = new ComScannerTagChannelDescriptor
+        var res = new ComChannelDescriptor
         {
             Name = descriptor.Name,
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
-            Option = new ComScannerOption {
+            Option = new ComChannelOption {
                 NewLine = newline,
+                ReadScript = readscript,
                 Port = port,
                 BaundRate = baundRate,
                 Parity = parity,

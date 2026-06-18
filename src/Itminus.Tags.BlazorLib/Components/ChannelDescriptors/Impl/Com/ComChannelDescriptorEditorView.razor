@@ -46,10 +46,16 @@
                       ValueChanged="@(raw => OnNewLineChanged(raw))"
                       Immediate="true" />
     </MudItem>
+
+    <MudItem xs="12" sm="6" md="8">
+        <MudTextField T="string" Label="Script" HelperText="脚本" Variant="Variant.Filled" Lines="4"
+                      @bind-Value="Descriptor.Option.ReadScript"
+                      Immediate="true" />
+    </MudItem>
 </MudGrid>
 
 @code {
-    [Parameter, EditorRequired] public ComScannerTagChannelDescriptor Descriptor { get; set; } = default!;
+    [Parameter, EditorRequired] public ComChannelDescriptor Descriptor { get; set; } = default!;
 
     private string? _newline;
 
