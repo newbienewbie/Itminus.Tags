@@ -45,7 +45,7 @@ public class TagTraverserTests
         Assert.Equal(3, proj.Channels.Count);
         Assert.IsType<S7TagChannel>(proj.Channels[0]);
         Assert.IsType<S7TagChannel>(proj.Channels[1]);
-        Assert.IsType<ComScannerChannel>(proj.Channels[2]);
+        Assert.IsType<ComLineScannerChannel>(proj.Channels[2]);
 
         // Test Tags
         var g1 = proj.Tags.SelectGrp("扫码枪");

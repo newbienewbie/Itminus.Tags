@@ -11,9 +11,9 @@ public class CodeScannerTagBuilder : TagBuilderBase
         {
             throw new Exception($"测点({this.Name})未配置通道({this.TagDescriptor.TagName})");
         }
-        if (channel is not ComScannerChannel com)
+        if (channel is not ComLineScannerChannel com)
         {
-            throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComScannerChannel)}！实际={channel.GetType()}");
+            throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComLineScannerChannel)}！实际={channel.GetType()}");
         }
 
         var tag = new ComCodeScannerTag(this.TagDescriptor, com, TagContainer.From(this.Parent));

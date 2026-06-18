@@ -51,7 +51,7 @@ public class TagsProjectCtrl
                     ep =>
                     {
                         var tag = ep.Sender ?? throw new Exception($"COM 测点不可为空");
-                        var ch = tag.GetRequiredChannel() as ComScannerChannel ?? throw new Exception("COM通道不可为空");
+                        var ch = tag.GetRequiredChannel() as ComLineScannerChannel ?? throw new Exception("COM通道不可为空");
                         var chname = ch.ChannelName;
                         var code = ep.EventArgs.NewValue as string ?? "";
                         Console.WriteLine($"-------------{chname}---------------模拟处理扫描事件={code}");

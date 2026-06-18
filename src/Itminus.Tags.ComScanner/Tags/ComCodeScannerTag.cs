@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.ComScanner.Tags;
 
-public class ComCodeScannerTag : Tag<string, ComScannerChannel>
+public class ComCodeScannerTag : Tag<string, ComLineScannerChannel>
 {
-    public ComCodeScannerTag(TagDescriptor descriptor, ComScannerChannel? thisChannel, TagContainer container)
+    public ComCodeScannerTag(TagDescriptor descriptor, ComLineScannerChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }
@@ -42,15 +42,14 @@ public class ComCodeScannerTag : Tag<string, ComScannerChannel>
     }
 
 
-    public override Task WriteAsync(CancellationToken ct)
+    public override async Task WriteAsync(CancellationToken ct)
     {
         var val = this._value;
         if(val is not null)
         {
-            this._bubbleChannel.Write(val);
+            await this._bubbleChannel.WriteAsync(val);
         }
         this.NotifyTagWritten(val);
         this.IsDirty = false;
-        return Task.CompletedTask;
     }
 }

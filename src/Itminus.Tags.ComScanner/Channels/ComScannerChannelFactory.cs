@@ -16,8 +16,8 @@ internal class ComScannerChannelFactory : ITagChannelFactory
     {
         var descriptor = chDescriptor.ToComScannerTagChannelDescriptor();
 
-        var logger = _loggerFactory.CreateLogger<ComScannerChannel>();
-        return new ComScannerChannel(
+        var logger = _loggerFactory.CreateLogger<ComLineScannerChannel>();
+        return new ComLineScannerChannel(
             descriptor.Name,
             descriptor.Option,
             logger
