@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.IO.Ports;
+using System.Reactive.Disposables.Fluent;
 using System.Threading.Channels;
 
 
@@ -34,7 +35,10 @@ public abstract class ComChannelBase<T> :ITagChannel
     public abstract string Driver { get; }
 
     public SerialPort? SerialPort { get; private set; }
-    protected readonly SemaphoreSlim _sema = new SemaphoreSlim(1);
+    protected readonly SemaphoreSlim _connSema = new SemaphoreSlim(1);
+    protected readonly SemaphoreSlim _readSema = new SemaphoreSlim(1);
+    protected readonly SemaphoreSlim _writeSema = new SemaphoreSlim(1);
+
 
     protected ComChannelBase(string channelName, ComChannelOption opt, ILogger<ComChannelBase<T>> logger)
     {
@@ -55,7 +59,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <returns></returns>
     public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
-        await this._sema.WaitAsync(ct);
+        await this._connSema.WaitAsync(ct);
         try
         {
             if (this.SerialPort != null)
@@ -83,7 +87,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         }
         finally
         {
-            this._sema.Release();
+            this._connSema.Release();
         }
     }
 
@@ -94,7 +98,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <returns></returns>
     public async Task DisconnectAsync(CancellationToken ct)
     {
-        await this._sema.WaitAsync(ct);
+        await this._connSema.WaitAsync(ct);
         try
         {
             this.SerialPort?.Close();
@@ -104,7 +108,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         finally
         {
             this.SerialPort = null;
-            this._sema.Release();
+            this._connSema.Release();
         }
     }
 
@@ -117,6 +121,10 @@ public abstract class ComChannelBase<T> :ITagChannel
         this._channel.Writer.TryComplete();
         this.SerialPort?.Dispose();
         this.SerialPort = null;
+
+        this._connSema.Dispose();
+        this._readSema.Dispose();
+        this._writeSema.Dispose();
     }
 
 
@@ -136,7 +144,7 @@ public abstract class ComChannelBase<T> :ITagChannel
             {
                 T? data;
                 var read = false;
-                await this._sema.WaitAsync(ct);
+                await this._readSema.WaitAsync(ct);
                 try
                 {
                     read = true;
@@ -144,7 +152,7 @@ public abstract class ComChannelBase<T> :ITagChannel
                 }
                 finally
                 {
-                    this._sema.Release();
+                    this._readSema.Release();
                 }
 
                 if(read)
@@ -199,14 +207,14 @@ public abstract class ComChannelBase<T> :ITagChannel
         {
             throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
         }
-        await this._sema.WaitAsync();
+        await this._writeSema.WaitAsync();
         try
         {
             this.SerialPort.Write(response);
         }
         finally
         {
-            this._sema.Release();
+            this._writeSema.Release();
         }
     }
 
@@ -223,14 +231,14 @@ public abstract class ComChannelBase<T> :ITagChannel
         {
             throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
         }
-        await this._sema.WaitAsync();
+        await this._writeSema.WaitAsync();
         try
         {
             this.SerialPort.Write(response, offset, count);
         }
         finally
         {
-            this._sema.Release();
+            this._writeSema.Release();
         }
     }
 
