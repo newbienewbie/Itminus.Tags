@@ -23,7 +23,7 @@ public class ComTagBuilder : TagBuilderBase
                 throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComChannelBase<string>)}！实际={channel.GetType()}");
             }
 
-            var tag = new ComTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent));
+            var tag = new ComReadTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent));
             return tag;
         }
 

@@ -52,7 +52,7 @@ public class TagTraverserTests
         var union = new TagUnion.TagGrp(g1!); 
         var tags = new List<ITag>();
         var visitor = new TagTraverser(t => { 
-            if(t is ComTag<string> tag)
+            if(t is ComReadTag<string> tag)
             {
                 tags.Add(tag);
             }

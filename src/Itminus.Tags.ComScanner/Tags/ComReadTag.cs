@@ -6,12 +6,12 @@ namespace Itminus.Tags.ComScanner.Tags;
 
 /// <summary>
 /// 表示一个有值为T类型的COM测点。
-/// 通常COM型测点应该配置为只读。回复消息应该通过<see cref="TagGrpWriteIntent"/>完成 <br/>
+/// 目前的设计 <br/>
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class ComTag<T> : Tag<T, ComChannelBase<T>>
+public class ComReadTag<T> : Tag<T, ComChannelBase<T>>
 {
-    public ComTag(TagDescriptor descriptor, ComChannelBase<T>? thisChannel, TagContainer container)
+    public ComReadTag(TagDescriptor descriptor, ComChannelBase<T>? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }
@@ -59,7 +59,7 @@ public class ComTag<T> : Tag<T, ComChannelBase<T>>
     /// <param name="ct"></param>
     /// <returns></returns>
 #pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
-    [Obsolete("外部开发者不应该使用串口Tag的setter, 而是应该使用“TagGrpWriteIntent”的方式")]
+    [Obsolete("串口型Tag的setter/Write语义尚不清晰，外部开发不宜使用")]
     public override Task WriteAsync(CancellationToken ct)
 #pragma warning restore CS0809 // Obsolete member overrides non-obsolete member
     {
@@ -73,4 +73,15 @@ public class ComTag<T> : Tag<T, ComChannelBase<T>>
     /// </summary>
     public ComChannelBase<T> ComChannel => this._bubbleChannel;
 
+
+    public virtual Task SendAsync(byte[] bytes)
+    {
+        var serialport = this.ComChannel.SerialPort;
+        if(serialport is null)
+        {
+            throw new InvalidOperationException($"测点({this.TagName()})串口通道为null，无法发送消息！");
+        }
+        serialport.Write(bytes,0, bytes.Length);
+        return Task.CompletedTask;
+    }
 }
