@@ -28,6 +28,11 @@
 		<Tag name="2#扫码枪" channel="COM-2" type="STR" access="RO"></Tag>
 	</TagGrp>
 
+	<TagGrp name="称重仪" isEntry="true" isEnabled="true" scanInterval="10">
+	    <!-- 注意这个测点没有指定 access -->
+		<Tag name="1#" type="AnyLoad" channel="COM-2" ></Tag>
+	</TagGrp>
+
 	<!-- 逻辑配置，可以配置0~N个 -->
 	<!--<Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>-->
 </root>

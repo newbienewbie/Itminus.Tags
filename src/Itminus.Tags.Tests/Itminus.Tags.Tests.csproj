@@ -18,13 +18,13 @@
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="ComTags\index.xml">
+    <None Update="ComTags\ComProjTests\ComProjSelectorTests.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ComTags\ComScriptTags\index.xml">
+    <None Update="ComTags\ComScriptTests\ComScriptTags.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="ComTags\ComScriptEmptyTags\index.xml">
+    <None Update="ComTags\ComScriptTests\ComScriptEmptyTags.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ModbusTags\index.xml">
