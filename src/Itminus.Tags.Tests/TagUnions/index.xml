@@ -40,6 +40,6 @@
 		</TagGrp>
 	</TagGrp>
 	<TagGrp name="扫码枪" isEntry="true" isEnabled="true" channel="COM-1" scanInterval="10">
-		<Tag name="输入" type="STR"></Tag>
+		<Tag name="输入" type="STR" access="RO"></Tag>
 	</TagGrp>
 </root>

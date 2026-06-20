@@ -24,8 +24,8 @@
 
 	<!-- 测点 配置 -->
 	<TagGrp name="g" isEntry="true" isEnabled="true" scanInterval="10">
-		<Tag name="1#扫码枪" channel="COM-1" type="STR"></Tag>
-		<Tag name="2#扫码枪" channel="COM-2" type="STR"></Tag>
+		<Tag name="1#扫码枪" channel="COM-1" type="STR" access="RO"></Tag>
+		<Tag name="2#扫码枪" channel="COM-2" type="STR" access="RO"></Tag>
 	</TagGrp>
 
 	<!-- 逻辑配置，可以配置0~N个 -->

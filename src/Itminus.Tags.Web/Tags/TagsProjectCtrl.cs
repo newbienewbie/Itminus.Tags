@@ -86,10 +86,10 @@ public class TagsProjectCtrl
     }
     protected virtual IObservable<EventPattern<ITag, TagSyncEventArgs>> ObserveOnComPorts(ITagGrp grp)
     {
-        var comtags = new List<ComReadTag<string>>();
+        var comtags = new List<ComReadOnlyTag<string>>();
         var visitor = new TagTraverser(tag =>
         {
-            if (tag is ComReadTag<string> t)
+            if (tag is ComReadOnlyTag<string> t)
             {
                 comtags.Add(t);
             }

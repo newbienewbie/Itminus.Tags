@@ -51,7 +51,7 @@ public class ComScriptProjTests
         Assert.NotNull(g);
 
         var tag = g.SelectTag("脚本串口测点");
-        Assert.IsType<ComReadTag<string>>(tag);
+        Assert.IsType<ComReadOnlyTag<string>>(tag);
         Assert.Same(channel, tag.Channel);
     }
 

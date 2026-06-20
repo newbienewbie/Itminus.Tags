@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags.ComScanner.Channels;
+using System.Text;
 
 namespace Itminus.Tags.ComScanner.Tags;
 
@@ -23,7 +24,13 @@ public class ComTagBuilder : TagBuilderBase
                 throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComChannelBase<string>)}！实际={channel.GetType()}");
             }
 
-            var tag = new ComReadTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent));
+            var accessMode = this.TagDescriptor.AccessMode;
+
+            ITag tag = accessMode switch {
+                TagAccessMode.RO => new ComReadOnlyTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent)),
+                TagAccessMode.WO => new ComWriteOnlyTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent), converter: str => Encoding.UTF8.GetBytes(str)),
+                _ => throw new InvalidOperationException($"串口型测点({this.Name})只支持(RO|RW)访问，当前模式={accessMode}！")
+            };
             return tag;
         }
 

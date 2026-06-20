@@ -59,7 +59,8 @@ public class ComTagWriteIntentTests
                 new XElement("Tag",
                     new XAttribute("name", "扫码值"),
                     new XAttribute("channel", "ch1"),
-                    new XAttribute("type", "STR")
+                    new XAttribute("type", "STR"),
+                    new XAttribute("access", "RO")
                 )
             )
         );
@@ -68,7 +69,7 @@ public class ComTagWriteIntentTests
         var dir = Path.GetDirectoryName(loc)!;
         using var proj = projectFactory.Create(dir, rootEle);
 
-        var tag = Assert.IsType<ComReadTag<string>>(proj.Tags.SelectTag("g/扫码值"));
+        var tag = Assert.IsType<ComReadOnlyTag<string>>(proj.Tags.SelectTag("g/扫码值"));
         var ch = Assert.IsType<FakeComIntentChannel>(tag.ComChannel);
 
         ch.EnqueueIncoming("REQ-001");
@@ -81,7 +82,7 @@ public class ComTagWriteIntentTests
 
         var written = proj.WriteIntent("g", async (entry, ct) =>
         {
-            var t = Assert.IsType<ComReadTag<string>>(entry.SelectTag("扫码值"));
+            var t = Assert.IsType<ComReadOnlyTag<string>>(entry.SelectTag("扫码值"));
             var c = Assert.IsType<FakeComIntentChannel>(t.ComChannel);
             await c.WriteMessageForTestAsync($"ACK:{t.Value}");
         }, out var intentTask);

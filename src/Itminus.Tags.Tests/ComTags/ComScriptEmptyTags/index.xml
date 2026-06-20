@@ -12,7 +12,7 @@
 	</Channel>
 
 	<TagGrp name="g" isEntry="true" isEnabled="true" scanInterval="10">
-		<Tag name="空脚本串口测点" channel="COM-EMPTY-SCRIPT" type="STR"></Tag>
+		<Tag name="空脚本串口测点" channel="COM-EMPTY-SCRIPT" type="STR" access="RO"></Tag>
 	</TagGrp>
 
 </root>
