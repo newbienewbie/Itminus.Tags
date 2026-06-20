@@ -30,7 +30,7 @@
 
     private string? _text;
 
-    private bool IsReadOnly => Tag.TagDescriptor.AccessMode == TagAccessMode.RO;
+    private bool IsReadOnly => Tag.IsReadOnly();
 
     protected override void OnParametersSet()
     {

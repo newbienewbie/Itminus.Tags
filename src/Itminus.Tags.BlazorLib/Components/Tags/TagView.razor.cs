@@ -38,7 +38,7 @@ public partial class TagView : IDisposable
                 TagAddress = tag.NormalizedAddress();
                 TagKind = tag.TagKind();
                 TagSize = tag.TagDescriptor.TagSize;
-                IsReadOnly = tag.AccessMode() == TagAccessMode.RO;
+                IsReadOnly = tag.IsReadOnly();
 
                 // Throttle updates and avoid re-rendering if nothing actually changed.
                 _disposable = tag.Watch()

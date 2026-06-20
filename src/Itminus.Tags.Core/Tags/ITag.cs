@@ -137,6 +137,20 @@ public static class ITagExtensions
     public static TagAccessMode AccessMode(this ITag tag) => tag.TagDescriptor.AccessMode;
 
     /// <summary>
+    /// 只读？
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
+    public static bool IsReadOnly(this ITag tag) => tag.AccessMode() == TagAccessMode.RO;
+
+    /// <summary>
+    /// 只写？
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
+    public static bool IsWriteOnly(this ITag tag) => tag.AccessMode() == TagAccessMode.WO;
+
+    /// <summary>
     /// 把当前测点转成具体类型
     /// </summary>
     /// <typeparam name="TTag"></typeparam>

@@ -11,7 +11,7 @@ sealed class BoolTagValueEditor : ITagValueEditor
     {
         if (tag is null) 
             return false;
-        if (tag.TagDescriptor.AccessMode == TagAccessMode.RO) 
+        if (tag.IsReadOnly()) 
             return false;
 
         return tag.Value is bool 
