@@ -1,13 +1,5 @@
 ﻿using Itminus.Tags.ComScanner;
 using Itminus.Tags.ComScanner.Channels;
-using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.OpcUaClient;
-using Itminus.Tags.S7;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using Xunit;
 
