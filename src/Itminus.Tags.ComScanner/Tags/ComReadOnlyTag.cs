@@ -1,5 +1,4 @@
 ﻿using Itminus.Tags.ComScanner.Channels;
-using System.IO.Ports;
 
 
 namespace Itminus.Tags.ComScanner.Tags;

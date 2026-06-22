@@ -42,7 +42,7 @@ public class ComProjTagSelectorTests
     [InlineData("ComProjSelectorTests.xml")]
     public void TestLoad(string xmlpath)
     {
-        var scope = this._root.CreateScope();
+        using var scope = this._root.CreateScope();
         var sp = scope.ServiceProvider;
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
