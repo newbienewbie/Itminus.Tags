@@ -4,6 +4,7 @@
 	<Channel name="COM-SCRIPT-1" driver="COM">
 		<NewLine>\r\n</NewLine>
 		<ReadScript>return "script-value";</ReadScript>
+		<ReadScriptDebugInformationEnabled>true</ReadScriptDebugInformationEnabled>
 		<Port>COM9</Port>
 		<BaundRate>9600</BaundRate>
 		<Parity>None</Parity>

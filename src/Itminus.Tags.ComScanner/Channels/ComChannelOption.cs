@@ -23,4 +23,9 @@ public class ComChannelOption
     /// 脚本
     /// </summary>
     public string? ReadScript { get; set; }
+
+    /// <summary>
+    /// 脚本调试开关，开启后会将脚本内容写入临时文件，并在编译时附加调试信息，以便在调试器中查看脚本代码
+    /// </summary>
+    public bool ReadScriptDebugInformationEnabled { get; set; } = false;
 }

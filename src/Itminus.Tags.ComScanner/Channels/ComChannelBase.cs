@@ -111,7 +111,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         }
     }
 
-    public void Dispose()
+    public virtual void Dispose()
     {
         this._channel.Writer.TryComplete();
         this.SerialPort?.Dispose();

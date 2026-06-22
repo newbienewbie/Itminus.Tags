@@ -26,6 +26,12 @@
     <MudItem xs="12" sm="6" md="8">
         <MudTextField Label="NewLine" Variant="Variant.Filled" Value="@Escape(Descriptor.Option.NewLine)" ReadOnly="true" />
     </MudItem>
+    <MudItem xs="12" sm="6" md="8">
+        <MudTextField Label="脚本" Variant="Variant.Filled" Value="@Descriptor.Option.ReadScript" ReadOnly="true" />
+    </MudItem>
+    <MudItem xs="12" sm="6" md="8">
+        <MudTextField Label="脚本调试信息" Variant="Variant.Filled" Value="@Descriptor.Option.ReadScriptDebugInformationEnabled" ReadOnly="true" />
+    </MudItem>
 </MudGrid>
 
 @code {

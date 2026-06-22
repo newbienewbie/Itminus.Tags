@@ -193,7 +193,7 @@ public class ComScriptProjTests
         public FakeScriptBasedComChannel(string script)
             : base(
                 "FAKE-COM",
-                new ComChannelOption { ReadScript = script },
+                new ComChannelOption { ReadScript = script, ReadScriptDebugInformationEnabled= true },
                 NullLogger<ComChannelBase<string>>.Instance
             )
         {
