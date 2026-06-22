@@ -27,6 +27,10 @@ public class ComChannelDescriptor : TagChannelDescriptor
         {
             ele.SetOrAddChild(nameof(Option.ReadScript), this.Option.ReadScript);
         }
+        if(this.Option.ReadScriptDebugInformationEnabled)
+        {
+            ele.SetOrAddChild(nameof(Option.ReadScriptDebugInformationEnabled), this.Option.ReadScriptDebugInformationEnabled);
+        }
         ele.SetOrAddChild(nameof(Option.Port), this.Option.Port);
         ele.SetOrAddChild(nameof(Option.BaundRate), this.Option.BaundRate);
         ele.SetOrAddChild(nameof(Option.Parity), this.Option.Parity);
@@ -71,6 +75,10 @@ public static class TagChannelDescriptor_ComExtensions
         var readscript = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadScript), out var readScript) ?
                  null :
                  readScript.Value;
+        var readScriptDebugInformationEnabled = 
+                 !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadScriptDebugInformationEnabled), out var readScriptDebugInformationEnabledStr) ?false :
+                 bool.TryParse(readScriptDebugInformationEnabledStr.Value, out var readScriptDebugInformationEnabledVal) ? readScriptDebugInformationEnabledVal :
+                 throw new Exception($"串口读取脚本调试信息开关非法，无法解析成布尔值({readScriptDebugInformationEnabledStr.Value})");
 
         var port = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.Port), out var comPort) ?
                     "COM1" :
@@ -102,6 +110,7 @@ public static class TagChannelDescriptor_ComExtensions
             Option = new ComChannelOption {
                 NewLine = newline,
                 ReadScript = readscript,
+                ReadScriptDebugInformationEnabled = readScriptDebugInformationEnabled,
                 Port = port,
                 BaundRate = baundRate,
                 Parity = parity,

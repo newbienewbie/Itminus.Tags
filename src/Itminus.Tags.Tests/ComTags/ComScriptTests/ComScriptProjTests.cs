@@ -95,7 +95,7 @@ public class ComScriptProjTests
     [Fact]
     public void ScriptBasedComChannel_DefaultScript_ShouldUseGlobalsName()
     {
-        var channel = new ScriptBasedComChannel(
+        using var channel = new ScriptBasedComChannel(
             "COM-9",
             new ComChannelOption(),
             NullLogger<ComChannelBase<string>>.Instance
@@ -107,7 +107,7 @@ public class ComScriptProjTests
     [Fact]
     public void ScriptBasedComChannel_EmptyScript_ShouldFallBackToDefaultScript()
     {
-        var channel = new ScriptBasedComChannel(
+        using var channel = new ScriptBasedComChannel(
             "COM-9",
             new ComChannelOption { ReadScript = "   " },
             NullLogger<ComChannelBase<string>>.Instance
@@ -137,7 +137,7 @@ public class ComScriptProjTests
     [Fact]
     public async Task FakeScriptChannel_ShouldExecuteSyncScript()
     {
-        var ch = new FakeScriptBasedComChannel("return \"sync-ok\";");
+        using var ch = new FakeScriptBasedComChannel("return \"sync-ok\";");
 
         var result = await ch.ExecuteScriptAsync();
 
@@ -147,7 +147,7 @@ public class ComScriptProjTests
     [Fact]
     public async Task FakeScriptChannel_ShouldExecuteAsyncScript()
     {
-        var ch = new FakeScriptBasedComChannel(
+        using var ch = new FakeScriptBasedComChannel(
             "return await System.Threading.Tasks.Task.FromResult(\"async-ok\");"
         );
 
@@ -159,7 +159,7 @@ public class ComScriptProjTests
     [Fact]
     public async Task FakeScriptChannel_ShouldPropagateScriptException()
     {
-        var ch = new FakeScriptBasedComChannel(
+        using var ch = new FakeScriptBasedComChannel(
             "throw new System.InvalidOperationException(\"script-failed\");"
         );
 
@@ -171,7 +171,7 @@ public class ComScriptProjTests
     [Fact]
     public async Task FakeScriptChannel_CanceledToken_ShouldCancelExecution()
     {
-        var ch = new FakeScriptBasedComChannel("return \"never\";");
+        using var ch = new FakeScriptBasedComChannel("return \"never\";");
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -181,7 +181,7 @@ public class ComScriptProjTests
     [Fact]
     public async Task FakeScriptChannel_ShouldBindSerialPortGlobal()
     {
-        var ch = new FakeScriptBasedComChannel("return SerialPort.GetType().Name;");
+        using var ch = new FakeScriptBasedComChannel("return SerialPort.GetType().Name;");
 
         var result = await ch.ExecuteScriptAsync();
 
@@ -193,7 +193,7 @@ public class ComScriptProjTests
         public FakeScriptBasedComChannel(string script)
             : base(
                 "FAKE-COM",
-                new ComChannelOption { ReadScript = script },
+                new ComChannelOption { ReadScript = script, ReadScriptDebugInformationEnabled= true },
                 NullLogger<ComChannelBase<string>>.Instance
             )
         {
