@@ -29,7 +29,7 @@ public class ComTagBuilder : TagBuilderBase
             ITag tag = accessMode switch {
                 TagAccessMode.RO => new ComReadOnlyTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent)),
                 TagAccessMode.WO => new ComWriteOnlyTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent), converter: str => Encoding.UTF8.GetBytes(str)),
-                _ => throw new InvalidOperationException($"串口型测点({this.Name})只支持(RO|RW)访问，当前模式={accessMode}！")
+                _ => throw new InvalidOperationException($"串口型测点({this.Name})只支持(RO|WO)访问，当前模式={accessMode}！")
             };
             return tag;
         }
