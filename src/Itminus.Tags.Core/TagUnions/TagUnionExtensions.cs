@@ -42,6 +42,10 @@ public static class TagUnionExtensions
     {
         await tagunion.Map(
             async tag => {
+                if (tag.IsReadOnly())
+                {
+                    return;
+                }
                 if (tag.IsDirty)
                 {
                     await tag.WriteAsync(ct);
