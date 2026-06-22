@@ -41,9 +41,9 @@ public static class TagChannelDescriptor_ComExtensions
 {
     public static ComChannelDescriptor ToComChannelDescriptor(this TagChannelDescriptor descriptor)
     {
-        if (descriptor.Driver != ComScannerNames.DriverName)
+        if (descriptor.Driver != ComDriverNames.DriverName)
         {
-            throw new InvalidOperationException($"通道驱动错误：期望 {ComScannerNames.DriverName}，而当前为{descriptor.Driver}");
+            throw new InvalidOperationException($"通道驱动错误：期望 {ComDriverNames.DriverName}，而当前为{descriptor.Driver}");
         }
         if (descriptor is ComChannelDescriptor d)
         {

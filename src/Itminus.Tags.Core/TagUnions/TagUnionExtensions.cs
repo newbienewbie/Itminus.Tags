@@ -11,12 +11,20 @@ public static class TagUnionExtensions
                 {
                     return;
                 }
+                if(tag.IsWriteOnly())
+                {
+                    return;
+                }
                 await tag.ReadAsync(ct);
                 tag.IsScaned = true;
             },
             async cbnt =>
             {
                 if(cbnt.AcessMode == TagAccessMode.R1W && cbnt.IsScaned)
+                {
+                    return;
+                }
+                if(cbnt.IsWriteOnly())
                 {
                     return;
                 }
@@ -34,6 +42,10 @@ public static class TagUnionExtensions
     {
         await tagunion.Map(
             async tag => {
+                if (tag.IsReadOnly())
+                {
+                    return;
+                }
                 if (tag.IsDirty)
                 {
                     await tag.WriteAsync(ct);
@@ -41,6 +53,11 @@ public static class TagUnionExtensions
             },
             async cbnt =>
             {
+                if(cbnt.IsReadOnly())
+                {
+                    return;
+                }
+
                 if(cbnt.IsDirty) 
                 {
                     await cbnt.WriteAsync(ct);

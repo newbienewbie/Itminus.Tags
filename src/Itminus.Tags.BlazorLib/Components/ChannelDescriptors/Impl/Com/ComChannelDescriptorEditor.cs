@@ -8,7 +8,7 @@ namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Com;
 sealed class ComChannelDescriptorEditor : ITagChannelDescriptorEditor
 {
     public int Priority => 100;
-    public bool CanEdit(TagChannelDescriptor descriptor) => descriptor.Driver == ComScannerNames.DriverName;
+    public bool CanEdit(TagChannelDescriptor descriptor) => descriptor.Driver == ComDriverNames.DriverName;
 
     public RenderFragment Edit(TagChannelDescriptor descriptor, Action<TagChannelDescriptor> descriptorChanged)
     {

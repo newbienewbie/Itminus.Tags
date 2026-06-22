@@ -33,7 +33,7 @@ public class CompositeTagsLoader : ITagsLoader
     protected List<MakeTagBuilder> _tagFactories = new();
 
     /// <summary>
-    /// 注册 <see cref="TagBuilder"/>的构建器
+    /// 注册 <see cref="TTagBuilder"/>的构建器
     /// </summary>
     /// <param name="factory"></param>
     /// <returns></returns>

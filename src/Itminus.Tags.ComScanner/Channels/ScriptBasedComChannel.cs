@@ -20,7 +20,7 @@ public class ScriptBasedComChannel : ComChannelBase<string>
 
     public string? ReadScript { get; } = "return SerialPort.ReadLine();";
 
-    public override string Driver => ComScannerNames.DriverName;
+    public override string Driver => ComDriverNames.DriverName;
 
     ScriptRunner<string>? _runner;
 

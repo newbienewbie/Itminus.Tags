@@ -56,7 +56,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <param name="force"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
+    public async virtual Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
         await this._connSema.WaitAsync(ct);
         try
@@ -95,7 +95,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// </summary>
     /// <param name="ct"></param>
     /// <returns></returns>
-    public async Task DisconnectAsync(CancellationToken ct)
+    public async virtual Task DisconnectAsync(CancellationToken ct)
     {
         await this._connSema.WaitAsync(ct);
         try
@@ -174,7 +174,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <param name="input"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public bool TryDequeueInput(out T? input)
+    public virtual bool TryDequeueInput(out T? input)
     {
         if (this.SerialPort is null)
         {
@@ -194,7 +194,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// </summary>
     /// <param name="response"></param>
     /// <exception cref="InvalidOperationException"></exception>
-    public async Task WriteAsync(string response)
+    public async virtual Task WriteAsync(string response)
     {
         if (this.SerialPort is null)
         {
@@ -218,7 +218,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <exception cref="InvalidOperationException"></exception>
-    public async Task WriteAsync(byte[] response,int offset, int count)
+    public async virtual Task WriteAsync(byte[] response,int offset, int count)
     {
         if (this.SerialPort is null)
         {
@@ -234,5 +234,7 @@ public abstract class ComChannelBase<T> :ITagChannel
             this._writeSema.Release();
         }
     }
+
+
 
 }

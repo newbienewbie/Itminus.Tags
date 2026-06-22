@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Xunit;
 
-namespace Itminus.Tags.Tests.ComTags;
+namespace Itminus.Tags.Tests.ComTags.ComScriptTests;
 
 public class ComScriptProjTests
 {
@@ -30,16 +30,19 @@ public class ComScriptProjTests
         this._root = services.BuildServiceProvider();
     }
 
-    [Fact]
-    public void TestLoadScriptBasedChannel()
+    [Theory]
+    [InlineData("ComScriptTags.xml")]
+    public void TestLoadScriptBasedChannel(string xmlpath)
     {
         using var scope = this._root.CreateScope();
         var sp = scope.ServiceProvider;
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!, "ComTags", "ComScriptTags");
-        using var proj = factory.Create(dir!);
+        dir = Path.Combine(dir!, "ComTags", "ComScriptTests");
+        xmlpath = Path.Combine(dir, xmlpath);
+        var root = XElement.Load(xmlpath);
+        using var proj = factory.Create(dir!, root);
 
         Assert.Single(proj.Channels);
 
@@ -51,7 +54,7 @@ public class ComScriptProjTests
         Assert.NotNull(g);
 
         var tag = g.SelectTag("脚本串口测点");
-        Assert.IsType<ComStrTag>(tag);
+        Assert.IsType<ComReadOnlyTag<string>>(tag);
         Assert.Same(channel, tag.Channel);
     }
 
@@ -61,7 +64,7 @@ public class ComScriptProjTests
         var descriptor = new TagChannelDescriptor
         {
             Name = "COM-1",
-            Driver = ComScannerNames.DriverName,
+            Driver = ComDriverNames.DriverName,
             Extras = new Dictionary<string, XElement>
             {
                 [nameof(ComChannelDescriptor.Option.NewLine)] = new XElement(nameof(ComChannelDescriptor.Option.NewLine), "\\r\\n"),
@@ -78,7 +81,7 @@ public class ComScriptProjTests
         var res = descriptor.ToComChannelDescriptor();
 
         Assert.Equal("COM-1", res.Name);
-        Assert.Equal(ComScannerNames.DriverName, res.Driver);
+        Assert.Equal(ComDriverNames.DriverName, res.Driver);
         Assert.Equal("\r\n", res.Option.NewLine);
         Assert.Equal("return \"ok\";", res.Option.ReadScript);
         Assert.Equal("COM3", res.Option.Port);
@@ -113,16 +116,19 @@ public class ComScriptProjTests
         Assert.Contains("SerialPort.ReadLine", channel.ReadScript);
     }
 
-    [Fact]
-    public void EmptyReadScript_ShouldCreateLineChannel()
+    [Theory]
+    [InlineData("ComScriptEmptyTags.xml")]
+    public void EmptyReadScript_ShouldCreateLineChannel(string xmlpath)
     {
         using var scope = this._root.CreateScope();
         var sp = scope.ServiceProvider;
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!, "ComTags", "ComScriptEmptyTags");
-        using var proj = factory.Create(dir!);
+        dir = Path.Combine(dir!, "ComTags", "ComScriptTests");
+        xmlpath = Path.Combine(dir, xmlpath);
+        var root = XElement.Load(xmlpath);
+        using var proj = factory.Create(dir!, root);
 
         Assert.Single(proj.Channels);
         Assert.IsType<LineBasedComChannel>(proj.Channels[0]);

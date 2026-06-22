@@ -5,7 +5,9 @@ namespace Itminus.Tags;
 public static class TagsLoaderExtensions
 {
     /// <summary>
-    /// 注册特定驱动的 Tag Loader
+    /// 注册特定驱动的 Tag Loader: <br/>
+    ///     如果将来被送入加载器的Tag的channel与这里指定的驱动相同，则会尝试构建一个测点；<br/>
+    ///     如果配置了predicate且 predicate调用后给出true，则还会再尝试一次过滤<br/>
     /// </summary>
     /// <typeparam name="TTagBuilder"></typeparam>
     /// <param name="loader"></param>

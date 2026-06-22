@@ -21,6 +21,12 @@ public enum TagAccessMode
     /// ReadOnce and then WriteOnly
     /// </summary>
     R1W = 1,
+
+
+    /// <summary>
+    /// WriteOnly
+    /// </summary>
+    WO = 3,
 }
 
 /// <summary>

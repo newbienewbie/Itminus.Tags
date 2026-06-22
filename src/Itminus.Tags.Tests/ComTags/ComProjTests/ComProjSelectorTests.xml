@@ -2,14 +2,14 @@
 <root>
 
 	<!-- 通道，可以配置多个-->
-	<Channel name="COM-1" driver="ComScanner">
+	<Channel name="COM-1" driver="COM">
 		<Port>COM1</Port>
 		<BaundRate>9600</BaundRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
-	<Channel name="COM-2" driver="ComScanner">
+	<Channel name="COM-2" driver="COM">
 		<NewLine>\r\n</NewLine>
 		<ChannelCapacity>42</ChannelCapacity>
 		<Port>COM2</Port>
@@ -24,8 +24,13 @@
 
 	<!-- 测点 配置 -->
 	<TagGrp name="g" isEntry="true" isEnabled="true" scanInterval="10">
-		<Tag name="1#扫码枪" channel="COM-1" type="STR"></Tag>
-		<Tag name="2#扫码枪" channel="COM-2" type="STR"></Tag>
+		<Tag name="1#扫码枪" channel="COM-1" type="STR" access="RO"></Tag>
+		<Tag name="2#扫码枪" channel="COM-2" type="STR" access="RO"></Tag>
+	</TagGrp>
+
+	<TagGrp name="称重仪" isEntry="true" isEnabled="true" scanInterval="10">
+	    <!-- 注意这个测点没有指定 access -->
+		<Tag name="1#" type="AnyLoad" channel="COM-2" ></Tag>
 	</TagGrp>
 
 	<!-- 逻辑配置，可以配置0~N个 -->

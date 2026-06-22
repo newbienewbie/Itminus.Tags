@@ -36,7 +36,9 @@ internal class ComChannelFactory : ITagChannelFactory
     }
 
 
-    private static IReadOnlyList<string> _drivers = new List<string>() { ComScannerNames.DriverName };
+    private static IReadOnlyList<string> _drivers = new List<string>() { 
+        ComDriverNames.DriverName,
+    };
 
 
     /// <summary>

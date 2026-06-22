@@ -14,4 +14,23 @@ public static class ITagCbntExtensions
     public static ITagChannel? GetChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.GetRequiredChannel();
 
     public static ITagChannel GetRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.GetChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.Name})");
+
+    /// <summary>
+    /// 获取测点读写访问模式
+    /// </summary>
+    /// <param name="tagcbnt"></param>
+    /// <returns></returns>
+    internal static TagAccessMode AccessMode(this ITagCbnt tagcbnt) => tagcbnt.AcessMode;
+    /// <summary>
+    /// 只读？
+    /// </summary>
+    /// <param name="tagcbnt"></param>
+    /// <returns></returns>
+    public static bool IsReadOnly(this ITagCbnt tagcbnt) => tagcbnt.AccessMode() == TagAccessMode.RO;
+    /// <summary>
+    /// 只写？
+    /// </summary>
+    /// <param name="tagcbnt"></param>
+    /// <returns></returns>
+    public static bool IsWriteOnly(this ITagCbnt tagcbnt) => tagcbnt.AccessMode() == TagAccessMode.WO;
 }

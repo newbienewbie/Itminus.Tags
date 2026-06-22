@@ -12,7 +12,7 @@ sealed class NumericTagValueEditor : ITagValueEditor
     {
         if (tag is null)
             return false;
-        if (tag.TagDescriptor.AccessMode == TagAccessMode.RO)
+        if (tag.IsReadOnly())
             return false;
 
         var kind = tag.TagKind();

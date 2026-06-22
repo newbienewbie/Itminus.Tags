@@ -12,7 +12,7 @@
 		<Rack>0</Rack>
 		<Slot>3</Slot>
 	</Channel>
-	<Channel name="COM-1" driver="ComScanner">
+	<Channel name="COM-1" driver="COM">
 		<Port>COM1</Port>
 		<BaundRate>115200</BaundRate>
 		<Parity>None</Parity>
@@ -40,6 +40,6 @@
 		</TagGrp>
 	</TagGrp>
 	<TagGrp name="扫码枪" isEntry="true" isEnabled="true" channel="COM-1" scanInterval="10">
-		<Tag name="输入" type="STR"></Tag>
+		<Tag name="输入" type="STR" access="RO"></Tag>
 	</TagGrp>
 </root>
