@@ -64,7 +64,7 @@ public class ComScriptProjTests
         var descriptor = new TagChannelDescriptor
         {
             Name = "COM-1",
-            Driver = ComScannerNames.DriverName,
+            Driver = ComDriverNames.DriverName,
             Extras = new Dictionary<string, XElement>
             {
                 [nameof(ComChannelDescriptor.Option.NewLine)] = new XElement(nameof(ComChannelDescriptor.Option.NewLine), "\\r\\n"),
@@ -81,7 +81,7 @@ public class ComScriptProjTests
         var res = descriptor.ToComChannelDescriptor();
 
         Assert.Equal("COM-1", res.Name);
-        Assert.Equal(ComScannerNames.DriverName, res.Driver);
+        Assert.Equal(ComDriverNames.DriverName, res.Driver);
         Assert.Equal("\r\n", res.Option.NewLine);
         Assert.Equal("return \"ok\";", res.Option.ReadScript);
         Assert.Equal("COM3", res.Option.Port);

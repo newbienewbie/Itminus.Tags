@@ -15,7 +15,7 @@
 		<IpAddr>172.16.10.140</IpAddr>
 		<Port>502</Port>
 	</Channel>
-	<Channel name="COM-1#" driver="ComScanner">
+	<Channel name="COM-1#" driver="COM">
 		<Port>COM1</Port>
 		<BaundRate>115200</BaundRate>
 		<Parity>None</Parity>
@@ -23,14 +23,14 @@
 		<StopBits>One</StopBits>
 	</Channel>
 
-	<Channel name="COM-2#" driver="ComScanner">
+	<Channel name="COM-2#" driver="COM">
 		<Port>COM2</Port>
 		<BaundRate>115200</BaundRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
-	<Channel name="COM-3#" driver="ComScanner">
+	<Channel name="COM-3#" driver="COM">
 		<Port>COM3</Port>
 		<BaundRate>115200</BaundRate>
 		<Parity>None</Parity>
@@ -38,7 +38,7 @@
 		<StopBits>One</StopBits>
 		<NewLine>\n</NewLine>
 	</Channel>
-	<Channel name="COM-90#" driver="ComScanner">
+	<Channel name="COM-90#" driver="COM">
 		<Port>COM90</Port>
 		<BaundRate>115200</BaundRate>
 		<Parity>None</Parity>

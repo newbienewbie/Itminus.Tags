@@ -33,14 +33,14 @@
 			<Password>1</Password>
 		</ServerOpt>
 	</Channel>
-	<Channel name="COM-1" driver="ComScanner">
+	<Channel name="COM-1" driver="COM">
 		<Port>COM1</Port>
 		<BaundRate>115200</BaundRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
-	<Channel name="COM-2" driver="ComScanner">
+	<Channel name="COM-2" driver="COM">
 		<Port>COM2</Port>
 		<BaundRate>115200</BaundRate>
 		<Parity>None</Parity>

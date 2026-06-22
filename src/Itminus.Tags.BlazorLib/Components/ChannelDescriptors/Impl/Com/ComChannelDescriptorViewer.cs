@@ -8,7 +8,7 @@ namespace Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Com;
 sealed class ComChannelDescriptorViewer : ITagChannelDescriptorViewer
 {
     public int Priority => 100;
-    public bool CanView(TagChannelDescriptor descriptor) => descriptor.Driver == ComScannerNames.DriverName;
+    public bool CanView(TagChannelDescriptor descriptor) => descriptor.Driver == ComDriverNames.DriverName;
 
     public RenderFragment View(TagChannelDescriptor descriptor)
     {

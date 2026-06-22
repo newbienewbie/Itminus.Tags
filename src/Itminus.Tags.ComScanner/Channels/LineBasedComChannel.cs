@@ -15,7 +15,7 @@ public class LineBasedComChannel : ComChannelBase<string>
     {
     }
 
-    public override string Driver => ComScannerNames.DriverName;
+    public override string Driver => ComDriverNames.DriverName;
 
     protected override Task<string> ParseDataAsync(SerialPort sport, CancellationToken ct)
     {

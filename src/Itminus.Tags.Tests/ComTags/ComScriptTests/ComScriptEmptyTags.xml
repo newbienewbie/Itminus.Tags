@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
 
-	<Channel name="COM-EMPTY-SCRIPT" driver="ComScanner">
+	<Channel name="COM-EMPTY-SCRIPT" driver="COM">
 		<ReadScript> </ReadScript>
 		<Port>COM1</Port>
 		<BaundRate>9600</BaundRate>

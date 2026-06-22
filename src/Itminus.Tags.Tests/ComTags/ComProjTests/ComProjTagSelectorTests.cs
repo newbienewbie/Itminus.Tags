@@ -26,6 +26,10 @@ public class ComProjTagSelectorTests
                     "ComScanner",
                     b => b.TagDescriptor.TagKind == "AnyLoad"
                 );
+                loader.AddTagBuilder<AnyLoadComTagBuilder>(
+                    "COM",
+                    b => b.TagDescriptor.TagKind == "AnyLoad"
+                );
             });
 
             b.AddComScannerSupport();

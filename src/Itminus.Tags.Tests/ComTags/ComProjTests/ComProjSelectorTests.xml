@@ -2,14 +2,14 @@
 <root>
 
 	<!-- 通道，可以配置多个-->
-	<Channel name="COM-1" driver="ComScanner">
+	<Channel name="COM-1" driver="COM">
 		<Port>COM1</Port>
 		<BaundRate>9600</BaundRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
-	<Channel name="COM-2" driver="ComScanner">
+	<Channel name="COM-2" driver="COM">
 		<NewLine>\r\n</NewLine>
 		<ChannelCapacity>42</ChannelCapacity>
 		<Port>COM2</Port>

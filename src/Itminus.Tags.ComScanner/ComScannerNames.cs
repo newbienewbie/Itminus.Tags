@@ -1,6 +1,7 @@
 ﻿namespace Itminus.Tags.ComScanner;
 
-public static class ComScannerNames
+
+public static class ComDriverNames
 {
-    public const string DriverName = "ComScanner";
+    public const string DriverName = "COM";
 }
