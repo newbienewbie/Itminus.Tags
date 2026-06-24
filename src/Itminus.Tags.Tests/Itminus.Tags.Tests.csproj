@@ -21,6 +21,9 @@
     <None Update="ComTags\ComProjTests\ComProjSelectorTests.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="ComTags\ComScriptTests\ComScriptTags2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ComTags\ComScriptTests\ComScriptTags.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

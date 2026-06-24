@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<Channel name="COM-SCRIPT-1" driver="COM">
+		<NewLine>\r\n</NewLine>
+		<ReadScript>
+	<![CDATA[
+	if(1 > 3){ return "<script-value/>"; } else {return "</script-value>";}
+	]]>
+		</ReadScript>
+		<ReadScriptDebugInformationEnabled>true</ReadScriptDebugInformationEnabled>
+		<Port>COM9</Port>
+		<BaundRate>9600</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+		<ChannelCapacity>2</ChannelCapacity>
+	</Channel>
+
+	<TagGrp name="g" isEntry="true" isEnabled="true" scanInterval="10">
+		<Tag name="脚本串口测点" channel="COM-SCRIPT-1" type="STR" access="RO"></Tag>
+	</TagGrp>
+
+</root>
