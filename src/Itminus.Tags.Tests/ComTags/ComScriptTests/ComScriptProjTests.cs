@@ -101,7 +101,7 @@ public class ComScriptProjTests
             NullLogger<ComChannelBase<string>>.Instance
         );
 
-        Assert.Contains("SerialPort.ReadLine", channel.ReadScript);
+        Assert.Contains("serial.ReadLine", channel.ReadScript);
     }
 
     [Fact]
@@ -113,7 +113,7 @@ public class ComScriptProjTests
             NullLogger<ComChannelBase<string>>.Instance
         );
 
-        Assert.Contains("SerialPort.ReadLine", channel.ReadScript);
+        Assert.Contains("serial.ReadLine", channel.ReadScript);
     }
 
     [Theory]
@@ -181,11 +181,40 @@ public class ComScriptProjTests
     [Fact]
     public async Task FakeScriptChannel_ShouldBindSerialPortGlobal()
     {
-        using var ch = new FakeScriptBasedComChannel("return SerialPort.GetType().Name;");
+        using var ch = new FakeScriptBasedComChannel("var name= serial.GetType().Name; return name;");
 
         var result = await ch.ExecuteScriptAsync();
 
         Assert.Equal("SerialPort", result);
+    }
+
+
+    [Theory]
+    [InlineData("ComScriptTags2.xml")]
+    public void TestLoadComplexScriptBasedChannel(string xmlpath)
+    {
+        using var scope = this._root.CreateScope();
+        var sp = scope.ServiceProvider;
+        var factory = sp.GetRequiredService<ITagsProjectFactory>();
+        var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+        var dir = Path.GetDirectoryName(loc);
+        dir = Path.Combine(dir!, "ComTags", "ComScriptTests");
+        xmlpath = Path.Combine(dir, xmlpath);
+        var root = XElement.Load(xmlpath);
+        using var proj = factory.Create(dir!, root);
+
+        Assert.Single(proj.Channels);
+
+        var channel = Assert.IsType<ScriptBasedComChannel>(proj.Channels[0]);
+        Assert.Equal(@"if(1 > 3){ return ""<script-value/>""; } else {return ""</script-value>"";}", channel.ReadScript?.Trim());
+        Assert.Equal("\r\n", channel.NewLine);
+
+        var g = proj.Tags.SelectGrp("g");
+        Assert.NotNull(g);
+
+        var tag = g.SelectTag("脚本串口测点");
+        Assert.IsType<ComReadOnlyTag<string>>(tag);
+        Assert.Same(channel, tag.Channel);
     }
 
     private sealed class FakeScriptBasedComChannel : ScriptBasedComChannel
