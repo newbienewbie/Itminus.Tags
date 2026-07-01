@@ -32,7 +32,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
         set
         {
             this._cbnt.Bag.AddOrUpdate(this.NodeId, new DataValue() { Value = value }, (nid, v) => {
-                v.Value = v;
+                v.Value = value;
                 return v;
             });
             this.MarkDirty();

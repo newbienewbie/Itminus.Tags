@@ -1,5 +1,6 @@
 ﻿using Itminus.Tags.ComScanner.Channels;
 using Itminus.Tags.ComScanner.Tags;
+using Itminus.Tags.Logicets;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Xml.Linq;
@@ -40,6 +41,7 @@ public class TagsProjectCtrl
             {
                 this._cts = new CancellationTokenSource();
                 this.Project = sp.MakeProject(dir, root);
+                this.Project.TryAddLogicet<HandleSnap11>(sp);
             });
             var proj = this.Project!;
             var ct = _cts!.Token;
