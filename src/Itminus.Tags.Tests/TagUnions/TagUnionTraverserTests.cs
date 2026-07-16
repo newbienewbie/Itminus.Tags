@@ -1,0 +1,69 @@
+using Itminus.Tags;
+using Itminus.Tags.ComScanner;
+using Itminus.Tags.ComScanner.Channels;
+using Itminus.Tags.ComScanner.Tags;
+using Itminus.Tags.S7;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace Itminus.Tags.Tests.TagUnions
+{
+    public class TagUnionTraverserTests
+    {
+        public TagUnionTraverserTests()
+        {
+            var services = new ServiceCollection();
+            services.AddLogging();
+            services.AddTagsProjectServices(b =>
+            {
+                b.AddS7Support();
+                b.AddComScannerSupport();
+            });
+
+            this._root = services.BuildServiceProvider();
+        }
+
+        private readonly IServiceProvider _root;
+
+        [Fact]
+        public void Traverser_Visits_All_Node_Types_In_Order()
+        {
+            using var scope = this._root.CreateScope();
+            var sp = scope.ServiceProvider;
+            var factory = sp.GetRequiredService<ITagsProjectFactory>();
+            var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            var dir = System.IO.Path.GetDirectoryName(loc);
+            dir = Path.Combine(dir!, "TagUnions");
+            var proj = factory.Create(dir);
+
+            var groups = new List<string>();
+            var cbnts = new List<string>();
+            var units = new List<string>();
+
+            var traverser = new TagUnionTraverser(
+                grp => groups.Add(grp.Name),
+                cb => cbnts.Add(cb.Name),
+                tag => units.Add(tag.TagName())
+            );
+
+            // act
+            var union = new TagUnion.TagGrp(proj.Tags);
+            union.Accept(traverser);
+
+            // assert
+            Assert.Equal(new[] { "__main__", "g1", "g11", "g12", "扫码枪" }, groups);
+            Assert.Equal(new[] { "拍照请求", "拍照响应" }, cbnts);
+            // units: t1, c1, t2 in traversal order
+            Assert.Equal(new[] { 
+                "拍照-请求-标志", "拍照-请求-料号", "拍照-请求-程序号",
+                "拍照-响应-标志", "拍照-响应-B1", "拍照-响应-I2",
+                "输入"
+            }, units);
+        }
+    }
+}
