@@ -44,13 +44,13 @@ public class ComProjTagSelectorTests
     {
         using var scope = this._root.CreateScope();
         var sp = scope.ServiceProvider;
-        var factory = sp.GetRequiredService<ITagsProjectFactory>();
+        //var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
         dir = Path.Combine(dir!,"ComTags","ComProjTests");
         xmlpath = Path.Combine(dir, xmlpath);
         var root = XElement.Load(xmlpath);
-        using var proj = factory.Create(dir!, root);
+        using var proj = sp.MakeProject(dir!, root);
 
         // Test Channels
         Assert.Equal(2, proj.Channels.Count);
