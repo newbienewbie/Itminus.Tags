@@ -42,6 +42,15 @@ public class TagsProjectCtrl
                 this._cts = new CancellationTokenSource();
                 this.Project = sp.MakeProject(dir, root);
                 this.Project.TryAddLogicet<HandleSnap11>(sp);
+
+                this.Project.TurnStarted += (grp, ch) => {
+                    Console.WriteLine($"[Tags] 开始处理分组 {grp.Name}");
+                    return Task.CompletedTask;
+                };
+                this.Project.TurnCrashed += (grp, ch, ex) => {
+                    Console.WriteLine("{0}: 轮次错误：{1}", grp.Name, ex.Message);
+                    return Task.CompletedTask;
+                };
             });
             var proj = this.Project!;
             var ct = _cts!.Token;

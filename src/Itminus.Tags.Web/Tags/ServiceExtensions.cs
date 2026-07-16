@@ -27,32 +27,4 @@ public static class ServiceExtensions
         services.AddSingleton<TagsProjectCtrl>();
     }
 
-    public static ITagsProject MakeProject(this IServiceProvider sp, string? dir=null, XElement? root=null)
-    {
-        var factory = sp.GetRequiredService<ITagsProjectFactory>();
-
-        if (string.IsNullOrEmpty(dir)) 
-        {
-            var loc = Assembly.GetExecutingAssembly().Location;
-            dir = Path.GetDirectoryName(loc);
-        }
-        if (string.IsNullOrEmpty(dir))
-        {
-            dir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        }
-
-        var proj = factory.Create(dir!, root);
-
-        proj.TurnStarted += (grp, ch) => {
-            Console.WriteLine($"[Tags] 开始处理分组 {grp.Name}");
-            return Task.CompletedTask;
-        };
-        proj.TurnCrashed += (grp, ch, ex) => {
-            Console.WriteLine("{0}: 轮次错误：{1}", grp.Name, ex.Message);
-            return Task.CompletedTask;
-        };
-
-
-        return proj;
-    }
 }
