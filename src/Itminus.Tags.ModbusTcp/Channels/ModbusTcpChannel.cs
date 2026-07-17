@@ -152,6 +152,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
                 tcs.SetException(ex);
             }
         });
+        th.IsBackground = true;
         th.Start();
         return tcs.Task;
     }

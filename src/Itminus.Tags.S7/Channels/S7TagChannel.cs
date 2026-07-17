@@ -58,6 +58,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                         tcs.SetException(ex);
                     }
                 });
+                th.IsBackground = true;
                 th.Start();
                 await tcs.Task;
             },
@@ -130,6 +131,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                 tcs.SetException(ex);
             }
         });
+        th.IsBackground = true;
         th.Start();
         return tcs.Task;
     }

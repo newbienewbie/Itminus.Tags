@@ -82,6 +82,7 @@ public abstract class ComChannelBase<T> :ITagChannel
             this._channel = Channel.CreateBounded<T>(Capacity);
             // 启动轮询
             var t = new Thread(async () => await PollDataAsync(ct));
+            t.IsBackground = true;
             t.Start();
         }
         finally
