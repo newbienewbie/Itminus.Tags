@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Itminus.Tags.Core\Itminus.Tags.Core.csproj" />
+    <ProjectReference Include="..\..\src\Itminus.Tags.RxExtensions\Itminus.Tags.RxExtensions.csproj" />
+    <ProjectReference Include="..\..\src\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
+    <ProjectReference Include="..\..\src\Itminus.Tags\Itminus.Tags.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Tags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

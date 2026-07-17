@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道，可以配置多个-->
+	<Channel name="S7-1" driver="S7" >
+		<IpAddr>172.16.10.20</IpAddr>
+		<Rack>0</Rack>
+		<Slot>1</Slot>
+	</Channel>
+
+	<!-- 测点配置，可以配置多个 -->
+	<TagGrp name="IoBox" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="0">
+		<TagGrp name="通用状态">
+			<TagCbnt name="PLC" address="DB200.100" access="RO">
+				<Tag name="心跳请求" address="$$100.0" type="BIT" access="RO"></Tag>
+			</TagCbnt>
+			<TagCbnt name="MST" address="DB201.100" access="R1W">
+				<Tag name="心跳响应" address="$$100.0" type="BIT" access="R1W"></Tag>
+				<Tag name="扫描周期" address="$$102.0" type="FLOAT" access="R1W"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+	</TagGrp>
+
+
+	<!-- 逻辑配置，可以配置0~N个 -->
+	<!--<Logicet>Samples.Plugin1.dll</Logicet>-->
+</root>

@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道，可以配置多个 -->
+	<Channel name="S7-1" driver="S7" >
+		<IpAddr>172.16.10.20</IpAddr>
+		<Rack>0</Rack>
+		<Slot>1</Slot>
+	</Channel>
+
+	<TagGrp name="IoBox" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="0">
+		<TagGrp name="通用状态">
+			<TagCbnt name="PLC" address="DB200.100" access="RO">
+				<Tag name="心跳请求" address="$$100.0" type="BIT"></Tag>
+
+				<Tag name="自动模式" address="$$102.0" type="BIT"></Tag>
+				<Tag name="手动模式" address="$$102.1" type="BIT"></Tag>
+				<Tag name="风扇" address="$$102.2" type="BIT"></Tag>
+
+				<Tag name="复位请求" address="$$103.0" type="BIT"></Tag>
+				<Tag name="放行请求" address="$$103.1" type="BIT"></Tag>
+				<Tag name="初始化确认" address="$$103.2" type="BIT"></Tag>
+			</TagCbnt>
+			<TagCbnt name="MST" address="DB201.100" access="RW">
+				<Tag name="心跳响应" address="$$100.0" type="BIT"></Tag>
+
+				<Tag name="报警" address="$$102.0" type="BIT"></Tag>
+				<Tag name="可放行" address="$$102.1" type="BIT"></Tag>
+				<Tag name="超时报警" address="$$102.2" type="BIT"></Tag>
+
+				<Tag name="复位确认" address="$$103.0" type="BIT"></Tag>
+				<Tag name="放行确认" address="$$103.1" type="BIT"></Tag>
+				<Tag name="初始化请求" address="$$103.2" type="BIT"></Tag>
+				<Tag name="扫描周期" address="$$104.0" type="FLOAT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagGrp name="拧紧枪">
+			<TagGrp name="1#">
+				<TagGrp name="拧紧开始">
+					<TagCbnt name="PLC" address="DB200.114" access="RO">
+						<Tag name="拧紧开始确认" address="$$114.0" type="BIT"></Tag>
+						<Tag name="拧紧开始OK" address="$$114.1" type="BIT"></Tag>
+						<Tag name="拧紧开始NG" address="$$114.2" type="BIT"></Tag>
+
+						<Tag name="上使能失败" address="$$116.0" type="BIT"></Tag>
+					</TagCbnt>
+					<TagCbnt name="MST" address="DB201.114" access="RW">
+						<Tag name="拧紧开始请求" address="$$114.0" type="BIT"></Tag>
+						<Tag name="枪品牌" address="$$116" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="程序号" address="$$118" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="拧紧序号" address="$$120" type="UINT16" endian="BigEndian"></Tag>
+					</TagCbnt>
+				</TagGrp>
+
+				<TagGrp name="拧紧完成">
+					<TagCbnt name="PLC" address="DB200.218.0" access="RO">
+						<Tag name="拧紧完成请求" address="$$218.0" type="BIT"></Tag>
+						<Tag name="枪品牌" address="$$220" type="UINT16" endian="BigEndian"></Tag>
+
+						<!--拧紧结果-->
+						<Tag name="拧紧OK" address="$$222.0" type="BIT"></Tag>
+						<Tag name="拧紧NG" address="$$222.1" type="BIT"></Tag>
+						<Tag name="准备就绪" address="$$222.3" type="BIT"></Tag>
+						<Tag name="拧紧中" address="$$222.4" type="BIT"></Tag>
+						<Tag name="程序号" address="$$224" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="最终扭矩" address="$$226" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="常数1反馈" address="$$230" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="扭矩结果反馈" address="$$232" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="最终角度" address="$$234" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="常数2反馈" address="$$238" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="角度结果反馈" address="$$240" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="最小扭矩" address="$$242" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="目标扭矩" address="$$246" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="最大扭矩" address="$$250" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="最小角度" address="$$254" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="目标角度" address="$$258" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="最大角度" address="$$262" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈1-扭矩" address="$$266" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈1-角度" address="$$270" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈2-扭矩" address="$$274" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈2-角度" address="$$278" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈3-扭矩" address="$$282" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈3-角度" address="$$286" type="FLOAT" endian="BigEndian"></Tag>
+					</TagCbnt>
+					<TagCbnt name="MST" address="DB201.220" access="RW">
+						<Tag name="拧紧完成确认" address="$$220.0" type="BIT"></Tag>
+					</TagCbnt>
+				</TagGrp>
+			</TagGrp>
+			<TagGrp name="2#">
+				<TagGrp name="拧紧开始">
+					<TagCbnt name="PLC" address="DB200.390" access="RO">
+						<Tag name="拧紧开始确认" address="$$390.0" type="BIT"></Tag>
+						<Tag name="拧紧开始OK" address="$$390.1" type="BIT"></Tag>
+						<Tag name="拧紧开始NG" address="$$390.2" type="BIT"></Tag>
+
+						<Tag name="上使能失败" address="$$392.0" type="BIT"></Tag>
+					</TagCbnt>
+					<TagCbnt name="MST" address="DB201.322" access="RW">
+						<Tag name="拧紧开始请求" address="$$322.0" type="BIT"></Tag>
+						<Tag name="枪品牌" address="$$324" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="程序号" address="$$326" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="拧紧序号" address="$$328" type="UINT16" endian="BigEndian"></Tag>
+					</TagCbnt>
+				</TagGrp>
+
+				<TagGrp name="拧紧完成">
+					<TagCbnt name="PLC" address="DB200.494.0" access="RO">
+						<Tag name="拧紧完成请求" address="$$494.0" type="BIT"></Tag>
+						<Tag name="枪品牌" address="$$496" type="UINT16" endian="BigEndian"></Tag>
+
+						<!--拧紧结果-->
+						<Tag name="拧紧OK" address="$$498.0" type="BIT"></Tag>
+						<Tag name="拧紧NG" address="$$498.1" type="BIT"></Tag>
+						<Tag name="准备就绪" address="$$498.3" type="BIT"></Tag>
+						<Tag name="拧紧中" address="$$498.4" type="BIT"></Tag>
+						<Tag name="程序号" address="$$500" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="最终扭矩" address="$$502" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="常数1反馈" address="$$506" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="扭矩结果反馈" address="$$508" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="最终角度" address="$$510" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="常数2反馈" address="$$514" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="角度结果反馈" address="$$516" type="UINT16" endian="BigEndian"></Tag>
+						<Tag name="最小扭矩" address="$$518" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="目标扭矩" address="$$522" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="最大扭矩" address="$$526" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="最小角度" address="$$530" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="目标角度" address="$$534" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="最大角度" address="$$538" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈1-扭矩" address="$$542" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈1-角度" address="$$546" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈2-扭矩" address="$$550" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈2-角度" address="$$554" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈3-扭矩" address="$$558" type="FLOAT" endian="BigEndian"></Tag>
+						<Tag name="分段结果反馈3-角度" address="$$562" type="FLOAT" endian="BigEndian"></Tag>
+					</TagCbnt>
+					<TagCbnt name="MST" address="DB201.428" access="RW">
+						<Tag name="拧紧完成确认" address="$$428.0" type="BIT"></Tag>
+					</TagCbnt>
+
+				</TagGrp>
+			</TagGrp>
+		</TagGrp>
+
+		<TagGrp name="AGV进站">
+			<TagCbnt name="PLC" address="DB200.666" access="RO">
+				<Tag name="AGV进站通知" address="$$666.0" type="BIT"></Tag>
+
+				<Tag name="AGV车号" address="$$668" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="SN1" address="$$670" type="STR" maxlen="40"></Tag>
+				<Tag name="出货码1" address="$$712" type="STR" maxlen="40"></Tag>
+				<Tag name="SN2" address="$$754" type="STR" maxlen="40"></Tag>
+				<Tag name="出货码2" address="$$796" type="STR" maxlen="40"></Tag>
+				<Tag name="工位编号" address="$$838" type="STR" maxlen="40"></Tag>
+			</TagCbnt>
+			<TagCbnt name="MST" address="DB201.530" access="RW">
+				<Tag name="AGV进站通知确认" address="$$530.0" type="BIT"></Tag>
+				<Tag name="AGV进站通知OK" address="$$530.1" type="BIT"></Tag>
+				<Tag name="AGV进站通知NG" address="$$530.2" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagGrp name="AGV离站">
+			<TagCbnt name="PLC" address="DB200.980" access="RO">
+				<Tag name="AGV离站通知" address="$$980.0" type="BIT"></Tag>
+
+				<Tag name="AGV车号" address="$$982" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="工位编号" address="$$984" type="STR" maxlen="40"></Tag>
+			</TagCbnt>
+			<TagCbnt name="MST" address="DB201.632" access="RW">
+				<Tag name="AGV离站通知确认" address="$$632.0" type="BIT"></Tag>
+				<Tag name="AGV离站通知OK" address="$$632.1" type="BIT"></Tag>
+				<Tag name="AGV离站通知NG" address="$$632.2" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagGrp name="AGV绑定条码">
+			<!-- 0 表示 0 位置号-->
+			<TagGrp name="0">
+				<TagCbnt name="PLC" address="DB200.1126" access="RO">
+					<Tag name="AGV绑定条码确认" address="$$1126.0" type="BIT"></Tag>
+					<Tag name="AGV绑定条码OK" address="$$1126.1" type="BIT"></Tag>
+					<Tag name="AGV绑定条码NG" address="$$1126.2" type="BIT"></Tag>
+				</TagCbnt>
+				<TagCbnt name="MST" address="DB201.734" access="RW">
+					<Tag name="AGV绑定条码请求" address="$$734.0" type="BIT"></Tag>
+
+					<Tag name="操作行为" address="$$736" type="UINT16" endian="BigEndian"></Tag>
+					<Tag name="AGV车号" address="$$738" type="UINT16" endian="BigEndian"></Tag>
+					<Tag name="SN" address="$$740" type="STR" maxlen="40"></Tag>
+					<Tag name="出货码" address="$$782" type="STR" maxlen="40"></Tag>
+					<Tag name="工位编号" address="$$824" type="STR" maxlen="40"></Tag>
+				</TagCbnt>
+			</TagGrp>
+			<!-- 1 表示 1 位置号-->
+			<TagGrp name="1">
+				<TagCbnt name="PLC" address="DB200.1228" access="RO">
+					<Tag name="AGV绑定条码确认" address="$$1228.0" type="BIT"></Tag>
+					<Tag name="AGV绑定条码OK" address="$$1228.1" type="BIT"></Tag>
+					<Tag name="AGV绑定条码NG" address="$$1228.2" type="BIT"></Tag>
+				</TagCbnt>
+				<TagCbnt name="MST" address="DB201.966" access="RW">
+					<Tag name="AGV绑定条码请求" address="$$966.0" type="BIT"></Tag>
+
+					<Tag name="操作行为" address="$$968" type="UINT16" endian="BigEndian"></Tag>
+					<Tag name="AGV车号" address="$$970" type="UINT16" endian="BigEndian"></Tag>
+					<Tag name="SN" address="$$972" type="STR" maxlen="40"></Tag>
+					<Tag name="出货码" address="$$1014" type="STR" maxlen="40"></Tag>
+					<Tag name="工位编号" address="$$1056" type="STR" maxlen="40"></Tag>
+				</TagCbnt>
+			</TagGrp>
+		</TagGrp>
+
+		<TagGrp name="AGV放行">
+			<TagCbnt name="PLC" address="DB200.1330" access="RO">
+				<Tag name="放行AGV确认" address="$$1330.0" type="BIT"></Tag>
+			</TagCbnt>
+			<TagCbnt name="MST" address="DB201.1198" access="RW">
+				<Tag name="放行AGV请求" address="$$1198.0" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagCbnt name="AGV状态" address="DB200.1432" access="RO">
+			<Tag name="AGV允许进入" address="$$1432.0" type="BIT"></Tag>
+			<Tag name="AGV允许离开" address="$$1432.1" type="BIT"></Tag>
+			<Tag name="AGV在位" address="$$1432.2" type="BIT"></Tag>
+			<Tag name="AGV正在进入" address="$$1432.3" type="BIT"></Tag>
+			<Tag name="AGV正在离开" address="$$1432.4" type="BIT"></Tag>
+			<Tag name="AGV请求写码" address="$$1432.5" type="BIT"></Tag>
+			<Tag name="AGV写码完成" address="$$1432.6" type="BIT"></Tag>
+		</TagCbnt>
+
+		<TagGrp name="拧紧状态">
+			<TagCbnt name="1#" address="DB200.1444" access="RO">
+				<Tag name="拧紧枪就绪" address="$$1444.0" type="BIT"></Tag>
+				<Tag name="拧紧枪使能" address="$$1444.1" type="BIT"></Tag>
+				<Tag name="拧紧中" address="$$1444.2" type="BIT"></Tag>
+				<Tag name="拧紧报警" address="$$1444.3" type="BIT"></Tag>
+			</TagCbnt>
+			<TagCbnt name="2#" address="DB200.1456" access="RO">
+				<Tag name="拧紧枪就绪" address="$$1456.0" type="BIT"></Tag>
+				<Tag name="拧紧枪使能" address="$$1456.1" type="BIT"></Tag>
+				<Tag name="拧紧中" address="$$1456.2" type="BIT"></Tag>
+				<Tag name="拧紧报警" address="$$1456.3" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagGrp name="充气开始">
+			<TagCbnt name="PLC" address="DB200.1558" access="RO">
+				<Tag name="充气开始确认" address="$$1558.0" type="BIT"></Tag>
+				<Tag name="充气开始OK" address="$$1558.1" type="BIT"></Tag>
+				<Tag name="充气开始NG" address="$$1558.2" type="BIT"></Tag>
+			</TagCbnt>
+			<TagCbnt name="MST" address="DB201.1300" access="RW">
+				<Tag name="充气开始请求" address="$$1300.0" type="BIT"></Tag>
+				<!-- 分钟数 -->
+				<Tag name="充气时长" address="$$1302" type="UINT16" endian="BigEndian"></Tag>
+				<!-- 分钟数 -->
+				<Tag name="保压时长" address="$$1304" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气压力" address="$$1306" type="FLOAT" endian="BigEndian"></Tag>
+				<Tag name="保压压力" address="$$1310" type="FLOAT" endian="BigEndian"></Tag>
+			</TagCbnt>
+		</TagGrp>
+
+		<TagGrp name="充气完成">
+			<TagCbnt name="PLC" address="DB200.1660" access="RO">
+				<Tag name="充气完成请求" address="$$1660.0" type="BIT"></Tag>
+
+				<Tag name="充气开始时间-年" address="$$1662" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气开始时间-月" address="$$1664" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气开始时间-日" address="$$1666" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气开始时间-时" address="$$1668" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气开始时间-分" address="$$1670" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气开始时间-秒" address="$$1672" type="UINT16" endian="BigEndian"></Tag>
+
+				<Tag name="充气完成时间-年" address="$$1674" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气完成时间-月" address="$$1676" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气完成时间-日" address="$$1678" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气完成时间-时" address="$$1680" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气完成时间-分" address="$$1682" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气完成时间-秒" address="$$1684" type="UINT16" endian="BigEndian"></Tag>
+
+				<Tag name="总气压力" address="$$1686" type="FLOAT" endian="BigEndian"></Tag>
+				<Tag name="比例阀当前压力" address="$$1690" type="FLOAT" endian="BigEndian"></Tag>
+				<Tag name="亚德客当前压力" address="$$1694" type="FLOAT" endian="BigEndian"></Tag>
+				<!-- 分钟数 -->
+				<Tag name="充气时长" address="$$1698" type="UINT16" endian="BigEndian"></Tag>
+				<!-- 分钟数 -->
+				<Tag name="保压时长" address="$$1700" type="UINT16" endian="BigEndian"></Tag>
+				<Tag name="充气压力" address="$$1702" type="FLOAT" endian="BigEndian"></Tag>
+				<Tag name="保压压力" address="$$1706" type="FLOAT" endian="BigEndian"></Tag>
+				<Tag name="实时充气时长" address="$$1710" type="UINT16" endian="BigEndian"></Tag>
+			</TagCbnt>
+			<TagCbnt name="MST" address="DB201.1414" access="RW">
+				<Tag name="充气完成确认" address="$$1414.0" type="BIT"></Tag>
+			</TagCbnt>
+		</TagGrp>
+	</TagGrp>
+
+</root>
+
