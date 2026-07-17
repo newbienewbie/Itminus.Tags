@@ -9,8 +9,16 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.ComScanner;
 
+/// <summary>
+/// extensions for TagsProjectServiceBuilder to add COM scanner support
+/// </summary>
 public static class TagsProject_Extensions
 {
+    /// <summary>
+    /// 注册COM支持
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static TagsProjectServiceBuilder AddComScannerSupport(this TagsProjectServiceBuilder builder)
     {
         // register channel factory

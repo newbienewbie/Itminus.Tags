@@ -1,5 +1,8 @@
 ﻿namespace Itminus.Tags;
 
+/// <summary>
+/// <see cref="TagUnion"/> 的遍历器<br/>
+/// </summary>
 public class TagUnionTraverser : ITagUnionVisitor
 {
     private Action<ITagGrp>? _procGrp;

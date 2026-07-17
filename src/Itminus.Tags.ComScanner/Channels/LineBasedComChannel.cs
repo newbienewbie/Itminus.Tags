@@ -9,14 +9,18 @@ namespace Itminus.Tags.ComScanner.Channels;
 public class LineBasedComChannel : ComChannelBase<string>
 {
 
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public LineBasedComChannel(string channelName, ComChannelOption opt, ILogger<LineBasedComChannel> logger)
         :base(channelName, opt, logger)
     {
     }
 
+    /// <inheritdoc/>
     public override string Driver => ComDriverNames.DriverName;
 
+    /// <inheritdoc/>
     protected override Task<string> ParseDataAsync(SerialPort sport, CancellationToken ct)
     {
         var str = sport.ReadLine();

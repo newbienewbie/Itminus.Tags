@@ -28,7 +28,10 @@ public class TagChannelDescriptor
     /// </summary>
     public virtual IDictionary<string, XElement> Extras { get; set; } = new Dictionary<string, XElement>();
 
-
+    /// <summary>
+    /// 拷贝一个新的实例
+    /// </summary>
+    /// <returns></returns>
     public virtual TagChannelDescriptor Copy()
     {
         var xml = this.ToXElement();

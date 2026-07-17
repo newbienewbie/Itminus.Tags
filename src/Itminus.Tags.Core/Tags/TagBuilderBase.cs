@@ -68,6 +68,11 @@ public abstract class TagBuilderBase
         return this;
     }
 
+    /// <summary>
+    /// 配置当前构建器。<br/>
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
     public virtual TagBuilderBase Configure(Action<TagBuilderBase> action)
     {
         action?.Invoke(this);

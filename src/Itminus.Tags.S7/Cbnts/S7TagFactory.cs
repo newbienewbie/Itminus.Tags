@@ -3,14 +3,21 @@
 namespace Itminus.Tags.S7;
 
 
-
+/// <summary>
+/// S7 测点工厂
+/// </summary>
 public class S7TagFactory : TagCbntorFactoryBase
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public S7TagFactory(TagCbntBuilderBase builder) : base(builder)
     { 
     }
 
-
+    /// <summary>
+    /// 获取测点偏移
+    /// </summary>
     protected int GetTagOffset(TagDescriptor tagDescriptor, out S7Address tagAddr)
     {
         tagAddr = S7AddressParser.Parse(tagDescriptor.RawAddress);
@@ -199,6 +206,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     }
     #endregion
 
+    /// <inheritdoc/>
     public override ITagCbntor CreateTag(TagDescriptor descriptor)
     {
         ITagCbntor tag = descriptor.TagKind switch

@@ -13,6 +13,7 @@ internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
     /// </summary>
     /// <param name="descriptor"></param>
     /// <param name="thisChannel">自身通道</param>
+    /// <param name="container">容器</param>
     /// <param name="nthBit">比特位，通常取值范围[0,15]</param>
     /// <param name="bufferSize">缓存大小，如果比特位是[0,7],则可以取1；如果比特位是[0,15],则可以取2；默认自动计算</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>

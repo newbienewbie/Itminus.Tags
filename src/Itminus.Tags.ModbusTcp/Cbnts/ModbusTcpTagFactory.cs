@@ -4,14 +4,24 @@ using Itminus.Tags.TagCbntors;
 namespace Itminus.Tags.ModbusTcp;
 
 
-
+/// <summary>
+/// ModbusTcp 测点工厂
+/// </summary>
 public class ModbusTcpTagFactory : TagCbntorFactoryBase
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ModbusTcpTagFactory(TagCbntBuilderBase builder) : base(builder)
     {
     }
 
-
+    /// <summary>
+    /// 获取测点偏移量
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <param name="tagAddr"></param>
+    /// <returns></returns>
     protected int GetTagOffset(TagDescriptor tagDescriptor, out ModbusTcpAddress tagAddr)
     {
         tagAddr = ModBusTcpAddressParser.Parse(tagDescriptor.RawAddress);
@@ -22,6 +32,12 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     }
 
     #region
+    /// <summary>
+    /// 创建DI测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public virtual DITagCbntor CreateDITag(TagDescriptor tagDescriptor)
     {           
         // normalize the tagsize
@@ -41,7 +57,12 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         return new DITagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
-
+    /// <summary>
+    /// 创建DO测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public virtual DOTagCbntor CreateDOTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
@@ -62,6 +83,12 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
     }
     #endregion
 
+    /// <summary>
+    /// 创建 Bit型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public virtual BitTagCbntor CreateBitTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
@@ -176,7 +203,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         return new UInt32TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
-
+    /// <summary>
+    /// 创建 Int64 型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
     public virtual Int64TagCbntor CreateInt64Tag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
@@ -188,7 +219,11 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         return new Int64TagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
-
+    /// <summary>
+    /// 创建 UInt64 型测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
     public virtual UInt64TagCbntor CreateUInt64Tag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
@@ -216,6 +251,8 @@ public class ModbusTcpTagFactory : TagCbntorFactoryBase
         return new FloatTagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
+
+    /// <inheritdoc/>
     public override ITagCbntor CreateTag(TagDescriptor descriptor)
     {
         var tag = descriptor.TagKind switch

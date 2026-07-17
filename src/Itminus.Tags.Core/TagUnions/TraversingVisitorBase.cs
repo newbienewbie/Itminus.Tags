@@ -5,6 +5,7 @@
 /// </summary>
 public abstract class TraversingVisitorBase : ITagUnionVisitor
 {
+    /// <inheritdoc/>
     public void Visit(TagUnion.TagGrp grp)
     {
         this.Process(grp.Value);
@@ -15,6 +16,7 @@ public abstract class TraversingVisitorBase : ITagUnionVisitor
         }
     }
 
+    /// <inheritdoc/>
     public void Visit(TagUnion.TagCbnt cbnt)
     {
         this.Process(cbnt.Value);
@@ -27,6 +29,7 @@ public abstract class TraversingVisitorBase : ITagUnionVisitor
         }
     }
 
+    /// <inheritdoc/>
     public void Visit(TagUnion.TagUnit tag)
     {
         this.Process(tag.Value);

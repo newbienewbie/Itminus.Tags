@@ -2,6 +2,12 @@
 
 internal static class S7Utils
 {
+    /// <summary>
+    /// 规范化S7字符串型测点大小（最大值+2）
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <param name="maxlen"></param>
+    /// <exception cref="InvalidDataException"></exception>
     public static void NormalizeS7StrTagSize(TagDescriptor tagDescriptor, out byte maxlen)
     {
         var tagName = tagDescriptor.TagName;

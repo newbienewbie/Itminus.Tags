@@ -2,10 +2,16 @@
 
 namespace Itminus.Tags.OpcUaClient;
 
+/// <summary>
+/// 工厂类，用于创建 <see cref="OpcUaClientTagChannel"/> 实例
+/// </summary>
 public class OpcUaClientTagChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public OpcUaClientTagChannelFactory(ILoggerFactory loggerFactory)
     {
 

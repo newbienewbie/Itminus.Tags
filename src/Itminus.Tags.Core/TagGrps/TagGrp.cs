@@ -6,6 +6,12 @@
 /// </summary>
 public class TagGrp : ITagGrp
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="isEntry"></param>
+    /// <param name="channel"></param>
     public TagGrp(string name, bool isEntry, ITagChannel? channel)
     {
         this.Name = name;
@@ -37,6 +43,12 @@ public class TagGrp : ITagGrp
         tag :
         throw new Exception($"TagGrp({this.Name}) has no child who's name={tagName}");
 
+    /// <summary>
+    /// 获取子节点，支持路径访问，例如：`"tagGrp1/tagGrp2/tagCbnt1"`<br/>
+    /// </summary>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public virtual TagUnion Descendant(string path)
     {
         var segments = path.Split('/');
@@ -54,7 +66,11 @@ public class TagGrp : ITagGrp
     }
 
 
-
+    /// <summary>
+    /// 增加测点
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
     public virtual ITagGrp AddTag(ITag tag)
     {
         if(tag.Parent is null)

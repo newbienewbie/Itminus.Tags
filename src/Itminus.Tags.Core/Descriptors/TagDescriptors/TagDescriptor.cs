@@ -2,11 +2,13 @@
 
 namespace Itminus.Tags;
 
-
+/// <summary>
+/// 访问模式
+/// </summary>
 public enum TagAccessMode
 {
     /// <summary>
-    /// R & W
+    /// Read and Write
     /// </summary>
     RW = 0,
 

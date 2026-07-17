@@ -4,6 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// extensions for <see cref="ITagGrp"/>
+/// </summary>
 public static class ITagGrpExtensions
 {
     #region 获取子孙节点
@@ -48,6 +51,11 @@ public static class ITagGrpExtensions
     #endregion
 
     #region
+    /// <summary>
+    /// 扫描入口节点
+    /// </summary>
+    /// <param name="grp"></param>
+    /// <returns></returns>
     public static IList<ITagGrp> ScanEntries(this ITagGrp grp)
     {
         if(grp.IsEntry)

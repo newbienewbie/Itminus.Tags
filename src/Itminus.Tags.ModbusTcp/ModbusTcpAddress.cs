@@ -1,4 +1,4 @@
-using Itminus.FSharpExtensions;
+﻿using Itminus.FSharpExtensions;
 using Microsoft.FSharp.Core;
 using System.Text.RegularExpressions;
 
@@ -59,7 +59,9 @@ public struct ModbusTcpAddress
     public const ushort HOLDING_REGISTERS_BASE = 40001;
 
 
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ModbusTcpAddress()
     {
     }
@@ -89,6 +91,8 @@ public struct ModbusTcpAddress
     /// </summary>
     public byte NthBit = 0;
 
+
+    /// <inheritdoc/>
     public override string ToString()
     {
         if (Area == RegisterKinds.HoldingRegisters)
@@ -127,12 +131,21 @@ public struct ModbusTcpAddress
     }
 }
 
-
+/// <summary>
+/// ModbusTcp地址解析器
+/// </summary>
 public static class ModBusTcpAddressParser
 {
     static readonly Regex RegexPattern_WithNthBit = new Regex(@"^((?<slave>[0-9]{1,})~)?(?<area>[0134])(?<start>[0-9]{1,5})\.(?<nth>[0-9]+)$");
     static readonly Regex RegexPattern_WithoutNthBit = new Regex(@"^((?<slave>[0-9]{1,})~)?(?<area>[0134])(?<start>[0-9]{1,5})$");
 
+
+    /// <summary>
+    /// 解析Modbus地址
+    /// </summary>
+    /// <param name="address"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public static ModbusTcpAddress Parse(string address)
     {
         var q = ParseWithNthBit(address).OrElse(_ => ParseWithoutNthBit(address));
@@ -143,6 +156,11 @@ public static class ModBusTcpAddressParser
         return q.ResultValue;
     }
 
+    /// <summary>
+    /// 解析带位地址的Modbus地址
+    /// </summary>
+    /// <param name="address"></param>
+    /// <returns></returns>
     public static FSharpResult<ModbusTcpAddress, string> ParseWithNthBit(string address)
     {
         var match = RegexPattern_WithNthBit.Match(address);
@@ -198,7 +216,11 @@ public static class ModBusTcpAddressParser
         return ok.ToOkResult<ModbusTcpAddress, string>();
     }
 
-
+    /// <summary>
+    /// 解析不带位地址的Modbus地址
+    /// </summary>
+    /// <param name="address"></param>
+    /// <returns></returns>
     public static FSharpResult<ModbusTcpAddress, string> ParseWithoutNthBit(string address)
     {
         var match = RegexPattern_WithoutNthBit.Match(address);

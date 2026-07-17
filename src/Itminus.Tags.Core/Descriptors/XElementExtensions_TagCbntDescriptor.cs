@@ -1,6 +1,10 @@
 ﻿using System.Xml.Linq;
 
 namespace Itminus.Tags;
+
+/// <summary>
+/// extensions for conversions between <see cref="XElement"/> and <see cref="TagCbntDescriptor"/>
+/// </summary>
 public static class XElementExtensions_TagCbntDescriptor
 {
     #region TagCbntDescriptors

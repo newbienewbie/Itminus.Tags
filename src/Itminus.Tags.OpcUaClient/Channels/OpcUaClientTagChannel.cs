@@ -3,6 +3,10 @@ using Opc.Ua;
 using Opc.Ua.Client;
 
 namespace Itminus.Tags.OpcUaClient;
+
+/// <summary>
+/// OpcUa 通道实现
+/// </summary>
 public class OpcUaClientTagChannel : ITagChannel
 {
     private readonly ILogger<OpcUaClientTagChannel> _logger;
@@ -13,15 +17,26 @@ public class OpcUaClientTagChannel : ITagChannel
     #region 配置
     private readonly OpcUaClientTagChannelOpt _channelOpt;
 
+    /// <summary>
+    /// 通道名称
+    /// </summary>
     public string ClientName => _channelOpt.ClientName;
+    /// <summary>
+    /// 服务器选项
+    /// </summary>
     public OpcUaServerOpt ServerOpt => _channelOpt.ServerOpt;
     #endregion
 
 
-
+    /// <inheritdoc/>
     public string ChannelName { get; }
+
+    /// <inheritdoc/>
     public virtual string Driver => OpcUaClientNames.DriverName;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public OpcUaClientTagChannel(string channelName, OpcUaClientTagChannelOpt uaChannelOpt, ILogger<OpcUaClientTagChannel> logger)
     {
         ChannelName = channelName;
@@ -30,7 +45,10 @@ public class OpcUaClientTagChannel : ITagChannel
         _appConfig = PrepareOpcUaAppConfig();
     }
 
-
+    /// <summary>
+    /// 准备OpcUa的 <see cref="ApplicationConfiguration"/>
+    /// </summary>
+    /// <returns></returns>
     protected virtual ApplicationConfiguration PrepareOpcUaAppConfig()
     {
         var config = new ApplicationConfiguration()
@@ -65,6 +83,10 @@ public class OpcUaClientTagChannel : ITagChannel
         return config;
     }
 
+    /// <summary>
+    /// 创建一个新的 OPC UA 会话对象
+    /// </summary>
+    /// <returns></returns>
     protected virtual async Task<Session> CreateSessionAsync()
     {
         // 验证应用配置对象
@@ -132,6 +154,14 @@ public class OpcUaClientTagChannel : ITagChannel
 
 
     #region
+
+    /// <summary>
+    /// 读取指定节点的值
+    /// </summary>
+    /// <param name="nodeIds"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task<(DataValueCollection values, IList<ServiceResult> errs)> ReadAsync(IList<NodeId> nodeIds, CancellationToken ct)
     {
         if(this._session is null)
@@ -147,6 +177,14 @@ public class OpcUaClientTagChannel : ITagChannel
         return (values, errs);
     }
 
+    /// <summary>
+    /// 写入指定节点的值
+    /// </summary>
+    /// <param name="toBeWritten"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="Exception"></exception>
     public async Task WriteAsync(IDictionary<NodeId, DataValue> toBeWritten, CancellationToken ct)
     {
         if (this._session is null)
@@ -188,7 +226,13 @@ public class OpcUaClientTagChannel : ITagChannel
         }
     }
 
-
+    /// <summary>
+    /// 读取指定节点的值
+    /// </summary>
+    /// <param name="nodeId"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public virtual async Task<DataValue> ReadValueAsync(NodeId nodeId, CancellationToken ct)
     {
         if (this._session is null)
@@ -204,6 +248,13 @@ public class OpcUaClientTagChannel : ITagChannel
         return value;
     }
 
+    /// <summary>
+    /// 写入指定节点的值
+    /// </summary>
+    /// <param name="nodeId"></param>
+    /// <param name="value"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     public virtual async Task WriteValueAsync(NodeId nodeId, DataValue value, CancellationToken ct)
     {
         var toBeWritten = new Dictionary<NodeId, DataValue>
@@ -214,7 +265,7 @@ public class OpcUaClientTagChannel : ITagChannel
     }
     #endregion
 
-
+    /// <inheritdoc/>
     public void Dispose()
     {
         if (_session != null && _session.Connected)
@@ -237,8 +288,18 @@ public class OpcUaClientTagChannel : ITagChannel
     }
 }
 
+/// <summary>
+/// 写入值错误
+/// </summary>
+/// <param name="NodeId"></param>
+/// <param name="StatusCode"></param>
 public record WriteValueErr(NodeId NodeId, StatusCode StatusCode)
 {
+    /// <summary>
+    /// 转成字符串表示
+    /// </summary>
+    /// <param name="erritems"></param>
+    /// <returns></returns>
     public static string ErrsToMsg(IList<WriteValueErr> erritems)
     {
         return string.Join("。", erritems.Select(e => $"{e.NodeId}={e.StatusCode}"));

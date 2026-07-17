@@ -13,7 +13,10 @@ public abstract record TagUnion
     /// <param name="visitor"></param>
     public abstract void Accept(ITagUnionVisitor visitor);
 
-
+    /// <summary>
+    /// TagUnit
+    /// </summary>
+    /// <param name="Value"></param>
     public record TagUnit(ITag Value) : TagUnion 
     {
         /// <inheritdoc/>
@@ -23,7 +26,10 @@ public abstract record TagUnion
         }
     };
 
-
+    /// <summary>
+    /// TagCbnt
+    /// </summary>
+    /// <param name="Value"></param>
     public record TagCbnt(ITagCbnt Value) : TagUnion
     {
         /// <inheritdoc/>
@@ -33,6 +39,10 @@ public abstract record TagUnion
         }
     }
 
+    /// <summary>
+    /// TagGrp
+    /// </summary>
+    /// <param name="Value"></param>
     public record TagGrp(ITagGrp Value): TagUnion
     {
         /// <inheritdoc/>
@@ -42,6 +52,15 @@ public abstract record TagUnion
         }
     }
 
+    /// <summary>
+    /// 把自身映射到类型T
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="handleTagUnit"></param>
+    /// <param name="handleTagCbnt"></param>
+    /// <param name="handleTagGrp"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public T Map<T>(Func<ITag, T> handleTagUnit, Func<ITagCbnt, T> handleTagCbnt, Func<ITagGrp, T> handleTagGrp) => this switch
     {
         TagUnit(ITag Value) => handleTagUnit(Value),

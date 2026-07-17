@@ -12,6 +12,10 @@ public class ComWriteOnlyTag<T> : Tag<T, ComChannelBase<T>>
 {
     private readonly Func<T, byte[]> _converter;
 
+
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ComWriteOnlyTag(TagDescriptor descriptor, ComChannelBase<T>? thisChannel, TagContainer container, Func<T, byte[]> converter)
         : base(descriptor, thisChannel, container)
     {
@@ -19,6 +23,7 @@ public class ComWriteOnlyTag<T> : Tag<T, ComChannelBase<T>>
     }
 
 
+    /// <inheritdoc/>
     public override T? Value
     {
         get => _value;
@@ -41,6 +46,7 @@ public class ComWriteOnlyTag<T> : Tag<T, ComChannelBase<T>>
     public override Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
 
 
+    /// <inheritdoc/>
     public override async Task WriteAsync(CancellationToken ct)
     {
         var value = this._value;

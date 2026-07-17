@@ -11,6 +11,9 @@ public class S7TagChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public S7TagChannelFactory(ILoggerFactory loggerFactory)
     {
 

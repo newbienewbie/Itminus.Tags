@@ -1,7 +1,13 @@
-namespace Itminus.Tags.TagCbntors;
+﻿namespace Itminus.Tags.TagCbntors;
 
+/// <summary>
+/// 表示一个字节型的 <see cref="TagCbntor"/>
+/// </summary>
 public class ByteTagCbntor : TagCbntor
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ByteTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagGroup, int cacheOffset) 
         : base(tagDescriptor, tagGroup, cacheOffset, cacheOffset)
     {

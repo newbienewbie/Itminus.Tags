@@ -14,6 +14,14 @@ public class TagsProjectFactory : ITagsProjectFactory
     private readonly ILogicetsLoader _logicetLoader;
     private readonly IServiceProvider _sp;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="grpRunnerFactory"></param>
+    /// <param name="channelsLoader"></param>
+    /// <param name="tagsLoader"></param>
+    /// <param name="logicetLoader"></param>
+    /// <param name="sp"></param>
     public TagsProjectFactory(ITagGrpRunnerFactory grpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, IServiceProvider sp)
     {
         this._grpRunnerFactory = grpRunnerFactory;
@@ -23,6 +31,7 @@ public class TagsProjectFactory : ITagsProjectFactory
         this._sp = sp;
     }
 
+    /// <inheritdoc/>
     public virtual ITagsProject Create(string projRoot, XElement? root = null)
     {
         var project = new TagsProject(this._grpRunnerFactory, _channelsLoader, _tagsLoader, _logicetLoader, this._sp);

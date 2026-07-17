@@ -1,5 +1,4 @@
-﻿using Itminus.Tags.BlazorLib.Components.Tags.Editing;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -7,6 +6,9 @@ using System.Reactive.Subjects;
 
 namespace Itminus.Tags.BlazorLib.Components.Tags;
 
+/// <summary>
+/// 测点视图组件，显示测点的基本信息和当前值，并提供编辑功能。
+/// </summary>
 public partial class TagView : IDisposable
 {
     [Parameter]

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using Itminus.Tags;
-
-namespace Itminus.Tags.ModbusTcp;
+﻿namespace Itminus.Tags.ModbusTcp;
 
 
 /// <summary>

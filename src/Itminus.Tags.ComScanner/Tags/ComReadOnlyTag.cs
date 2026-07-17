@@ -10,6 +10,9 @@ namespace Itminus.Tags.ComScanner.Tags;
 /// <typeparam name="T"></typeparam>
 public class ComReadOnlyTag<T> : Tag<T, ComChannelBase<T>>
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ComReadOnlyTag(TagDescriptor descriptor, ComChannelBase<T>? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
@@ -29,7 +32,7 @@ public class ComReadOnlyTag<T> : Tag<T, ComChannelBase<T>>
         }
     }
 
-
+    /// <inheritdoc/>
     public override async Task ReadAsync(CancellationToken ct)
     {
         await this._bubbleChannel.EnsureConnectedAsync(force: false, ct);

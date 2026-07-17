@@ -10,9 +10,15 @@ public class HjzkDOCbntBuilder : HjzkCbntBuilderBase
     const ushort u_DO_START_ADDRESS = HjzkAddrDefines.BASE_DO + 1;
     static string DO_START_ADDR = $"{u_DO_START_ADDRESS:d5}";
 
+
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public HjzkDOCbntBuilder() : base()
     {
     }
+
+    /// <inheritdoc/>
     public override string AreaStartAddr => DO_START_ADDR;
 }
 

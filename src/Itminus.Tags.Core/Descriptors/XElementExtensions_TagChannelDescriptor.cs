@@ -2,6 +2,9 @@
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// extensions for conversions between <see cref="XElement"/> and <see cref="TagChannelDescriptor"/>
+/// </summary>
 public static class XElementExtensions_TagChannelDescriptor
 {
     /// <summary>

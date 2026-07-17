@@ -7,8 +7,16 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.ModbusTcp;
 
+/// <summary>
+/// extensions for DependencyInjection
+/// </summary>
 public static class TagsProject_Extensions
 {
+    /// <summary>
+    /// 添加 ModbusTcp 支持
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static TagsProjectServiceBuilder AddModbusTcpSupport(this TagsProjectServiceBuilder builder)
     {
         // register channel factory

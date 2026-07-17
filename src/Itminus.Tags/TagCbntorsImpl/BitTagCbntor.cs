@@ -1,7 +1,13 @@
 ﻿namespace Itminus.Tags.TagCbntors;
 
+/// <summary>
+/// 表示单个比特型的 TagCbntor
+/// </summary>
 public class BitTagCbntor : TagCbntor
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public BitTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset, byte nthBit)
         : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
     {
@@ -12,7 +18,7 @@ public class BitTagCbntor : TagCbntor
     /// 第Nth位比特: 取值范围 0~7。
     /// 注意，尽管测点经常会表示成0~15之间的位地址，这里都会被统一规整化到 0~7。
     /// 当 8~15 被规则化到 0~7，会导致 tagOffset 与 cacheOffset 相差1。
-    /// 如果要知道用户层面指定的“视地址”，可以使用<see cref="ITagExtensions.TagAddress(ITag)"/>
+    /// 如果要知道用户层面指定的“视地址”，可以使用 tag.TagAddress(ITag) 
     /// </summary>
     public byte NthBit { get; set; }
 

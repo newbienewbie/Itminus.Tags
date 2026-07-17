@@ -4,6 +4,9 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// extensions for DependencyInjection
+/// </summary>
 public static class TagsProjectServiceCollection
 {
 

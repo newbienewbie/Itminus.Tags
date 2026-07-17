@@ -7,6 +7,9 @@ internal class TagGrpRunner : ITagGrpRunner
     private readonly ITagsProject _project;
     private readonly ILogger<TagGrpRunner> _logger;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public TagGrpRunner(ITagsProject project, ILogger<TagGrpRunner> logger)
     {
         this._project = project;
@@ -107,6 +110,12 @@ internal class TagGrpRunner : ITagGrpRunner
         }
     }
 
+    /// <summary>
+    /// 处理写入意图队列，直到队列为空或者达到容量上限。<br/>
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     protected virtual async Task DrainWriteIntentsAsync(ITagGrp entry, CancellationToken ct)
     {
         var reader = this._project.GetIntentReader(entry.Name);

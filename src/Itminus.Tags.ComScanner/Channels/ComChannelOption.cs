@@ -2,16 +2,38 @@
 
 namespace Itminus.Tags.ComScanner.Channels;
 
+/// <summary>
+/// 串口通道选项
+/// </summary>
 public class ComChannelOption
 {
     /// <summary>
     /// 换行符。null表示使用系统默认的换行符。<br/>
     /// </summary>
-    public string? NewLine { get; set; } 
+    public string? NewLine { get; set; }
+    /// <summary>
+    /// 串口号。默认值为 COM1。<br/>
+    /// </summary>
     public string Port { get; set; } = "COM1";
+
+    /// <summary>
+    /// 波特率
+    /// </summary>
     public int BaundRate { get; set; }
+
+    /// <summary>
+    /// Parity
+    /// </summary>
     public Parity Parity { get; set; }
+
+    /// <summary>
+    /// 数据位
+    /// </summary>
     public int DataBits { get; set; }
+
+    /// <summary>
+    /// 停止位
+    /// </summary>
     public StopBits StopBits { get; set; }
 
     /// <summary>

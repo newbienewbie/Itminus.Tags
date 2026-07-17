@@ -10,6 +10,13 @@
 /// </summary>
 public abstract class TagCbntor : ITagCbntor
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <param name="tagCbnt"></param>
+    /// <param name="tagOffset"></param>
+    /// <param name="cacheOffset"></param>
     public TagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset)
     {
         TagDescriptor = tagDescriptor;

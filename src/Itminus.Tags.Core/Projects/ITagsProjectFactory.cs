@@ -2,6 +2,9 @@
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// 测点项目工厂接口
+/// </summary>
 public interface ITagsProjectFactory
 {
     /// <summary>

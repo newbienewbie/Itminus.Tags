@@ -11,6 +11,9 @@ public class ModbusTcpChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ModbusTcpChannelFactory(ILoggerFactory loggerFactory)
     {
 

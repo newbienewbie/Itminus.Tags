@@ -12,6 +12,9 @@ public class HjzkChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public HjzkChannelFactory(ILoggerFactory loggerFactory)
     {
 

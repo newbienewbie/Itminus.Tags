@@ -13,7 +13,9 @@ namespace Itminus.Tags.ComScanner.Channels;
 public class ScriptBasedComChannel<T> : ComChannelBase<T>
 {
 
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ScriptBasedComChannel(string channelName, ComChannelOption opt, ILogger<ComChannelBase<T>> logger)
         : base(channelName, opt, logger)
     {
@@ -24,16 +26,26 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
         this.ReadScriptEmitDebugInformationEnabled = opt.ReadScriptDebugInformationEnabled;
     }
 
+    /// <summary>
+    /// 读数据的脚本，返回值必须是类型为T的对象。可以使用 serial 变量来访问串口。
+    /// </summary>
     public string? ReadScript { get; } = "return serial.ReadLine();";
 
+    /// <summary>
+    /// 驱动名
+    /// </summary>
     public override string Driver => ComDriverNames.DriverName;
 
     ScriptRunner<T>? _runner;
 
+    /// <summary>
+    /// 启用调试信息输出？
+    /// </summary>
     public bool ReadScriptEmitDebugInformationEnabled { get; } 
 
     private string? _oldScriptPath;
 
+    /// <inheritdoc/>
     protected override async Task<T> ParseDataAsync(SerialPort serial, CancellationToken ct)
     {
         if(this._runner is null)
@@ -100,7 +112,7 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
         }
     }
 
-
+    /// <inheritdoc/>
     public override void Dispose()
     {
         this.TryClearOldScriptPath();

@@ -10,7 +10,9 @@ public class HjzkDICbntBuilder : HjzkCbntBuilderBase
     const ushort u_DI_START_ADDRESS = 10000 + HjzkAddrDefines.BASE_DI + 1;
     static string DI_START_ADDR = $"{u_DI_START_ADDRESS:d5}";
 
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public HjzkDICbntBuilder():base()
     {
     }

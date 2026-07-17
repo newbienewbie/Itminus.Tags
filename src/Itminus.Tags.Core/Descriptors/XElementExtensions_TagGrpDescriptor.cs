@@ -1,6 +1,10 @@
 ﻿using System.Xml.Linq;
 
 namespace Itminus.Tags;
+
+/// <summary>
+/// extensions for <see cref="XElement"/> to convert to/from <see cref="TagGrpDescriptor"/>
+/// </summary>
 public static class XElementExtensions_TagGrpDescriptor
 {
 

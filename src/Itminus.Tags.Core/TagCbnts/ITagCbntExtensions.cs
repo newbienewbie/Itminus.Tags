@@ -1,5 +1,8 @@
 ﻿namespace Itminus.Tags;
 
+/// <summary>
+/// extensions for <see cref="ITagCbnt"/>
+/// </summary>
 public static class ITagCbntExtensions
 {
     /// <summary>
@@ -10,9 +13,19 @@ public static class ITagCbntExtensions
     /// <returns></returns>
     public static ITagCbntor SelectTag(this ITagCbnt tagcbnt, string path) => tagcbnt[path];
 
+    /// <summary>
+    /// 冒泡式获取测点的通道
+    /// </summary>
+    /// <param name="tagcbnt"></param>
+    /// <returns></returns>
+    public static ITagChannel? GetChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.GetChannel();
 
-    public static ITagChannel? GetChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.GetRequiredChannel();
-
+    /// <summary>
+    /// 冒泡式获取测点的通道。如果没有配置通道，则抛出异常
+    /// </summary>
+    /// <param name="tagcbnt"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public static ITagChannel GetRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.GetChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.Name})");
 
     /// <summary>

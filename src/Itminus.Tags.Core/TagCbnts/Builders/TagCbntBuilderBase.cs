@@ -48,19 +48,33 @@ public abstract class TagCbntBuilderBase
         return this;
     }
 
-
+    /// <summary>
+    /// 设置测点组合名，返回自身。<br/>
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase WithName(string name)
     {
         TagCbnt.Name = name;
         return this;
     }
 
+    /// <summary>
+    /// 设置测点组合起始地址，返回自身。<br/>
+    /// </summary>
+    /// <param name="startAddress"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase WithStartAddress(string startAddress)
     {
         TagCbnt.StartAddress = startAddress;
         return this;
     }
 
+    /// <summary>
+    /// 设置通道，返回自身。<br/>
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase WithChannel(ITagChannel? channel)
     {
         TagCbnt.Channel = channel;
@@ -79,24 +93,44 @@ public abstract class TagCbntBuilderBase
         return this;
     }
 
+    /// <summary>
+    /// 设置访问模式，返回自身。<br/>
+    /// </summary>
+    /// <param name="accessMode"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase WithAccessMode(TagAccessMode accessMode)
     {
         TagCbnt.AcessMode = accessMode;
         return this;
     }
 
+    /// <summary>
+    /// 设置扫描间隔，返回自身。<br/>
+    /// </summary>
+    /// <param name="interval"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase WithInterval(int interval)
     {
         TagCbnt.ScanInterval = interval;
         return this;
     }
 
+    /// <summary>
+    /// 设置是否启用，返回自身。<br/>
+    /// </summary>
+    /// <param name="enabled"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase WithIsEnabled(bool enabled)
     {
         TagCbnt.IsEnabled = enabled;
         return this;
     }
 
+    /// <summary>
+    /// 增加测点
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase AddTag(ITagCbntor tag)
     {
         tag.Parent = TagContainer.From(this.TagCbnt);
@@ -104,6 +138,11 @@ public abstract class TagCbntBuilderBase
         return this.WithAccessMode(tag.AccessMode());
     }
 
+    /// <summary>
+    /// 配置测点组合构建器，返回自身。<br/>
+    /// </summary>
+    /// <param name="action"></param>
+    /// <returns></returns>
     public virtual TagCbntBuilderBase Configure(Action<TagCbntBuilderBase> action)
     {
         action?.Invoke(this);

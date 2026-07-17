@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.S7;
 
+/// <summary>
+/// S7 相关的常量
+/// </summary>
 public static class S7Names
 {
+    /// <summary>
+    /// 驱动名称
+    /// </summary>
     public const string DriverName = "S7";
 }

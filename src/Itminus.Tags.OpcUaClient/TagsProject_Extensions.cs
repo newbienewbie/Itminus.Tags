@@ -4,8 +4,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags.OpcUaClient;
 
+/// <summary>
+/// extensions for DependencyInjection
+/// </summary>
 public static class TagsProject_Extensions
 {
+    /// <summary>
+    /// 添加 OpcUaClient 支持
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static TagsProjectServiceBuilder AddOpcUaClientSupport(this TagsProjectServiceBuilder builder)
     {
         builder.Services.AddKeyedSingleton<ITagChannelFactory, OpcUaClientTagChannelFactory>(OpcUaClientNames.DriverName);

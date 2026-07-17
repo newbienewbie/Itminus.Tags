@@ -5,6 +5,9 @@ using System.Net.Sockets;
 
 namespace Itminus.Tags.ModbusTcp;
 
+/// <summary>
+/// ModbusTcp通道
+/// </summary>
 public class ModbusTcpChannel : IContinousBytesBasedTagChannel
 {
     private readonly ILogger<ModbusTcpChannel> _logger;
@@ -40,10 +43,14 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     #endregion
 
 
-
+    /// <inheritdoc/>
     public string ChannelName { get; }
+    /// <inheritdoc/>
     public virtual string Driver => ModbusTcpNames.DriverName;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ModbusTcpChannel(string channelName, ModbusTcpItem modbusItem, ILogger<ModbusTcpChannel> logger)
     {
         ChannelName = channelName;
@@ -52,8 +59,14 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     }
 
     #region 连接
-
+    /// <summary>
+    /// 底层 TCP 客户端
+    /// </summary>
     protected TcpClient? _tcpClient;
+
+    /// <summary>
+    /// 底层 Modbus 主站对象
+    /// </summary>
     public IModbusMaster? ModbusMaster { get; private set; }
 
     /// <summary>
@@ -112,7 +125,6 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// <summary>
     /// 确保已经建立连接
     /// </summary>
-    /// <param name="timeout"></param>
     /// <returns></returns>
     public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
@@ -167,6 +179,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// </summary>
     /// <param name="address"></param>
     /// <param name="count"> 代表要读取的字节数。
+    /// <param name="ct"></param>
     /// </param>
     /// <returns> 
     ///     
@@ -230,6 +243,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// </summary>
     /// <param name="address"></param>
     /// <param name="bytes"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     /// <exception cref="NotImplementedException"></exception>
@@ -272,7 +286,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     }
     #endregion
 
-
+    /// <inheritdoc/>
     public void Dispose()
     {
         if (_tcpClient != null && _tcpClient.Connected)
