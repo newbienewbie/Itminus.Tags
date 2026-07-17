@@ -13,9 +13,19 @@ namespace Itminus.Tags.ComScanner.Channels;
 /// <typeparam name="T"></typeparam>
 public abstract class ComChannelBase<T> :ITagChannel
 {
+    /// <summary>
+    /// 通道选项
+    /// </summary>
     protected readonly ComChannelOption _opt;
+
+    /// <summary>
+    /// 日志记录器
+    /// </summary>
     protected readonly ILogger<ComChannelBase<T>> _logger;
 
+    /// <summary>
+    /// 换行符
+    /// </summary>
     public string? NewLine { get; }
 
     /// <summary>
@@ -23,6 +33,9 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// </summary>
     public int Capacity { get; }
 
+    /// <summary>
+    /// 内部的消息通道，用于存储从串口读取的数据包
+    /// </summary>
     protected Channel<T> _channel;
 
     /// <inheritdoc/>
@@ -33,12 +46,31 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// </summary>
     public abstract string Driver { get; }
 
+    /// <summary>
+    /// 底层串口对象。
+    /// 如果未连接，则为null
+    /// </summary>
     public SerialPort? SerialPort { get; private set; }
+
+    /// <summary>
+    /// 连接信号量，用于确保连接操作的线程安全。
+    /// </summary>
     protected readonly SemaphoreSlim _connSema = new SemaphoreSlim(1);
+
+    /// <summary>
+    /// 读取信号量，用于确保读取操作的线程安全。
+    /// </summary>
     protected readonly SemaphoreSlim _readSema = new SemaphoreSlim(1);
+
+    /// <summary>
+    /// 写入信号量，用于确保写入操作的线程安全。
+    /// </summary>
     protected readonly SemaphoreSlim _writeSema = new SemaphoreSlim(1);
 
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     protected ComChannelBase(string channelName, ComChannelOption opt, ILogger<ComChannelBase<T>> logger)
     {
         this.ChannelName = channelName;
@@ -112,6 +144,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         }
     }
 
+    /// <inheritdoc/>
     public virtual void Dispose()
     {
         this._channel.Writer.TryComplete();
@@ -123,7 +156,12 @@ public abstract class ComChannelBase<T> :ITagChannel
         this._writeSema.Dispose();
     }
 
-
+    /// <summary>
+    /// 解析数据包的抽象方法，由子类实现。
+    /// </summary>
+    /// <param name="sport"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     protected abstract Task<T> ParseDataAsync(SerialPort sport, CancellationToken ct);
 
     private async Task PollDataAsync(CancellationToken ct)

@@ -1,20 +1,23 @@
-﻿using Itminus.Tags.Hjzk;
-using Itminus.Tags.ModbusTcp;
+﻿using Itminus.Tags.ModbusTcp;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Itminus.Tags.Hjzk;
 
+/// <summary>
+/// HJZK 通道
+/// </summary>
 public class HjzkChannel : ModbusTcpChannel
 {
+
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public HjzkChannel(string channelName, ModbusTcpItem modbusItem, ILogger<HjzkChannel> logger) 
         : base(channelName, modbusItem, logger)
     {
     }
 
+    /// <inheritdoc/>
     public override string Driver => HjzkNames.DriverName;
 }

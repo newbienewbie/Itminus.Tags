@@ -7,11 +7,17 @@ namespace Itminus.Tags.S7;
 /// </summary>
 public class S7TagCbntBuilder : TagCbntBuilderBase
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public S7TagCbntBuilder() 
         : base(new TagCbnt("unkown_s7_cbnt_name", "unknown_s7_cbnt_start_address"))
     {
     }
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public S7TagCbntBuilder(string cbntName, string startAddress)
         :base(new TagCbnt(cbntName, startAddress))
     {
@@ -19,6 +25,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         this.WithStartAddress(startAddress);
     }
 
+    /// <inheritdoc/>
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeS7TagFactory();
@@ -32,7 +39,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-
+    /// <inheritdoc/>
     protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;

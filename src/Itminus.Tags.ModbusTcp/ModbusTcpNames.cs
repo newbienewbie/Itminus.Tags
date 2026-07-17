@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.ModbusTcp;
 
+/// <summary>
+/// ModbusTcp 常量
+/// </summary>
 public static class ModbusTcpNames
 {
+    /// <summary>
+    /// 驱动名称
+    /// </summary>
     public const string DriverName = "ModbusTcp";
 }

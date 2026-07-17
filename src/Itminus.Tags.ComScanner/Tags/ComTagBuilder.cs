@@ -8,7 +8,7 @@ namespace Itminus.Tags.ComScanner.Tags;
 /// </summary>
 public class ComTagBuilder : TagBuilderBase
 {
-
+    /// <inheritdoc/>
     public override ITag Build(ITagChannel channel)
     {
         if(channel is null)

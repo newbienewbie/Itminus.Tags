@@ -1,13 +1,35 @@
 ﻿namespace Itminus.Tags;
 
+/// <summary>
+/// 同步事件参数
+/// </summary>
 public class TagSyncEventArgs : EventArgs 
 {
+    /// <summary>
+    /// 同步类型
+    /// </summary>
     public enum Kinds 
     {
+        /// <summary>
+        /// 空
+        /// </summary>
         None    = 0,
+        /// <summary>
+        /// 读取
+        /// </summary>
         Read    = 1,
+        /// <summary>
+        /// 写入
+        /// </summary>
         Written = 2,
     }
+
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="newValue"></param>
+    /// <param name="timestamp"></param>
+    /// <param name="kind"></param>
     public TagSyncEventArgs(object? newValue, DateTime timestamp, Kinds kind)
     {
         this.NewValue = newValue;
@@ -15,12 +37,26 @@ public class TagSyncEventArgs : EventArgs
         Kind = kind;
     }
 
+    /// <summary>
+    /// 新值
+    /// </summary>
     public object? NewValue { get; set; }
+    /// <summary>
+    /// 时间戳
+    /// </summary>
     public DateTime Timestamp { get; set; }
-
+    /// <summary>
+    /// 种类
+    /// </summary>
     public Kinds Kind { get; set; }
 }
 
+
+/// <summary>
+/// 测点同步事件委托
+/// </summary>
+/// <param name="sender"></param>
+/// <param name="e"></param>
 public delegate void TagSyncEventHandler(ITag sender, TagSyncEventArgs e);
 
 /// <summary>
@@ -87,6 +123,9 @@ public interface ITag
     public Task WriteAsync(CancellationToken ct);
 }
 
+/// <summary>
+/// 测点扩展方法
+/// </summary>
 public static class ITagExtensions
 {
     /// <summary>

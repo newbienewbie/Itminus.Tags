@@ -3,6 +3,9 @@ using System.Reactive;
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// Rx extensions for ITag
+/// </summary>
 public static class TagRxExtensions
 {
     /// <summary>

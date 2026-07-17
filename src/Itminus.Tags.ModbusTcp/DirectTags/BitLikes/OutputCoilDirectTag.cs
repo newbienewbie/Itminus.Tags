@@ -7,18 +7,24 @@
 internal class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
 {
 
-    /// <param name="descriptor"></param> 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public OutputCoilDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }
 
+    /// <inheritdoc/>
     public override ITagChannel? Channel { get; set; }
 
     #region 地址
     private ModbusTcpAddress? _addr;
 
-
+    /// <summary>
+    /// 获取地址
+    /// </summary>
+    /// <returns></returns>
     protected ModbusTcpAddress GetAddress()
     {
         if (_addr.HasValue)
@@ -34,6 +40,7 @@ internal class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
     #endregion
 
 
+    /// <inheritdoc/>
     public override async Task ReadAsync(CancellationToken ct)
     {
         var addr = this.GetAddress();
@@ -43,6 +50,7 @@ internal class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
         this.NotifyTagRead(this._value);
     }
 
+    /// <inheritdoc/>
     public override async Task WriteAsync(CancellationToken ct)
     {
         var addr = this.GetAddress();

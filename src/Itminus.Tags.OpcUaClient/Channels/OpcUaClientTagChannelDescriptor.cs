@@ -3,14 +3,23 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags.OpcUaClient;
 
+
+/// <summary>
+/// OpcUa Client Tag Channel Descriptor
+/// </summary>
 public class OpcUaClientTagChannelDescriptor : TagChannelDescriptor
 {
-
+    /// <summary>
+    /// 通道选项
+    /// </summary>
     public OpcUaClientTagChannelOpt OpcUaTagChannelOpt { get; set; } = new();
 
 
 
-
+    /// <summary>
+    /// 转成 <see cref="XElement"/> 对象
+    /// </summary>
+    /// <returns></returns>
     public override XElement ToXElement()
     {
         var ele = base.ToXElement();
@@ -35,10 +44,18 @@ public class OpcUaClientTagChannelDescriptor : TagChannelDescriptor
     }
 }
 
+/// <summary>
+/// conversions between <see cref="TagChannelDescriptor"/> and <see cref="OpcUaClientTagChannelDescriptor"/>
+/// </summary>
 public static class TagChannelDescriptor_OpcUaClientExtensions
 {
     const string DefaultClientName = "ItminusTagsOpcUaClient";
 
+    /// <summary>
+    /// 解析 <see cref="XElement"/> 对象为 <see cref="OpcUaServerOpt"/>
+    /// </summary>
+    /// <param name="serverOptEle"></param>
+    /// <returns></returns>
     private static OpcUaServerOpt ParseSreverOpt(XElement serverOptEle)
     {
         var discoveryUrl =
@@ -70,7 +87,12 @@ public static class TagChannelDescriptor_OpcUaClientExtensions
         return serverOpt;
     }
 
-
+    /// <summary>
+    /// 转成 <see cref="OpcUaClientTagChannelDescriptor"/> 对象
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public static OpcUaClientTagChannelDescriptor ToOpcUaClientTagChannelDescriptor(this TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != OpcUaClientNames.DriverName)

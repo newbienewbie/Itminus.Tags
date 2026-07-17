@@ -1,5 +1,8 @@
 ﻿namespace Itminus.Tags.Logicets;
 
+/// <summary>
+/// extensions for <see cref="ITagsProject"/>
+/// </summary>
 public static class TagProjectExtensions
 {
     /// <summary>

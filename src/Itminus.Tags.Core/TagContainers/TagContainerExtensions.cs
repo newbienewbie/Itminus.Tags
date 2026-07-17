@@ -1,5 +1,8 @@
 ﻿namespace Itminus.Tags;
 
+/// <summary>
+/// extensions for <see cref="TagContainer"/>
+/// </summary>
 public static class TagContainerExtensions
 {
     /// <summary>

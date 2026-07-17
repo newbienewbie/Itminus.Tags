@@ -3,10 +3,15 @@
 namespace Itminus.Tags.TagCbntors;
 
 
-
+/// <summary>
+/// 表示一个 Int16 类型的<see cref="TagCbntor"/>
+/// </summary>
 public class Int16TagCbntor : TagCbntor
 {
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public Int16TagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset) 
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {

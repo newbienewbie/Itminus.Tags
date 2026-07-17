@@ -2,9 +2,14 @@
 
 namespace Itminus.Tags.TagCbntors;
 
+/// <summary>
+/// 表示一个float型的 <see cref="TagCbntor"/>
+/// </summary>
 public class FloatTagCbntor : TagCbntor
 {
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public FloatTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset)
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {

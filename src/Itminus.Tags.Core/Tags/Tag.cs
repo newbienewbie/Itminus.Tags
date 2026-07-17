@@ -7,10 +7,17 @@ namespace Itminus.Tags;
 /// 注意：测点只需要实现<see cref="ITag"/>，并不一定要是这个基类的子类。比如<see cref="TagCbntor"/>就不是这个类的子类。<br/>
 /// </summary>
 /// <typeparam name="TValue"></typeparam>
+/// <typeparam name="TChannel"></typeparam>
 public abstract class Tag<TValue,TChannel> : ITag
     where TChannel: class, ITagChannel
 {
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <param name="thisChannel"></param>
+    /// <param name="container"></param>
+    /// <exception cref="InvalidOperationException"></exception>
     protected Tag(TagDescriptor descriptor, TChannel? thisChannel, TagContainer container)
     {
         this.TagDescriptor = descriptor;
@@ -53,9 +60,12 @@ public abstract class Tag<TValue,TChannel> : ITag
     public bool IsScaned { get; set; }
 
     #region 读写测点值
+    /// <summary>
+    /// 测点值
+    /// </summary>
     protected TValue? _value = default!;
 
-
+    /// <inheritdoc/>
     object? ITag.Value
     {
         get => Value;
@@ -65,6 +75,7 @@ public abstract class Tag<TValue,TChannel> : ITag
         }
     }
 
+    /// <inheritdoc/>
     public virtual TValue? Value
     {
         get => _value;
@@ -76,14 +87,18 @@ public abstract class Tag<TValue,TChannel> : ITag
         }
     }
 
+    /// <inheritdoc/>
     public bool IsDirty { get; set; }
 
-
+    /// <inheritdoc/>
     public DateTime Timestamp { get; set; }
     #endregion
 
 
-
+    /// <summary>
+    /// 通知测点值被读取
+    /// </summary>
+    /// <param name="newValue"></param>
     protected virtual void NotifyTagRead(object? newValue)
     {
         if (this.OnTagRead != null)
@@ -93,6 +108,10 @@ public abstract class Tag<TValue,TChannel> : ITag
         }
     }
 
+    /// <summary>
+    /// 通知测点值被写入
+    /// </summary>
+    /// <param name="newValue"></param>
     protected virtual void NotifyTagWritten(object? newValue)
     {
         if (this.OnTagWritten != null)

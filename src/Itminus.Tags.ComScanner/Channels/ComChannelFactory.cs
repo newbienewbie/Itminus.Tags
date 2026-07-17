@@ -6,12 +6,20 @@ internal class ComChannelFactory : ITagChannelFactory
 {
     private readonly ILoggerFactory _loggerFactory;
 
+
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ComChannelFactory(ILoggerFactory loggerFactory)
     {
         this._loggerFactory = loggerFactory;
     }
 
-
+    /// <summary>
+    /// 创建通道实例
+    /// </summary>
+    /// <param name="chDescriptor"></param>
+    /// <returns></returns>
     public ITagChannel Create(TagChannelDescriptor chDescriptor)
     {
         var descriptor = chDescriptor.ToComChannelDescriptor();

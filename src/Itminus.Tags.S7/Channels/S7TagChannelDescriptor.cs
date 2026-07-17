@@ -7,15 +7,26 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags.S7;
 
-
+/// <summary>
+/// S7通道描述符
+/// </summary>
 public class S7TagChannelDescriptor : TagChannelDescriptor
 {
+    /// <summary>
+    /// IP 地址，默认 localhost
+    /// </summary>
     public string IpAddr { get; set; } = "localhost";
+    /// <summary>
+    /// Rack
+    /// </summary>
     public short Rack { get; set; } = 0;
+    /// <summary>
+    /// Slot
+    /// </summary>
     public short Slot { get; set; } = 1;
 
 
-
+    /// <inheritdoc/>
     public override XElement ToXElement()
     {
         var ele = base.ToXElement();
@@ -28,8 +39,18 @@ public class S7TagChannelDescriptor : TagChannelDescriptor
 
 }
 
+/// <summary>
+/// extensions for <see cref="TagChannelDescriptor"/>
+/// </summary>
 public static class TagChannelDescriptor_S7Extensions
 {
+    /// <summary>
+    /// 把 <see cref="TagChannelDescriptor"/> 转换为 <see cref="S7TagChannelDescriptor"/>
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public static S7TagChannelDescriptor ToS7TagChannelDescriptor(this TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != S7Names.DriverName)

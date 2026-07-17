@@ -5,8 +5,18 @@ using Microsoft.Extensions.Options;
 
 namespace Itminus.Tags;
 
+/// <summary>
+///  builder for configuring and building services related to tags projects,
+///  including 
+///     channel factories, 
+///     tag loaders, 
+///     and logicet load options.
+/// </summary>
 public class TagsProjectServiceBuilder
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public TagsProjectServiceBuilder(IServiceCollection services) 
     {
 
@@ -106,6 +116,9 @@ public class TagsProjectServiceBuilder
 
 
     #region
+    /// <summary>
+    /// 业务逻辑选项的构建器
+    /// </summary>
     public OptionsBuilder<LogicetLoadOptions> LogicetLoadOptionsBuilder { get; }
     #endregion
 
@@ -118,7 +131,9 @@ public class TagsProjectServiceBuilder
         return this;
     }
 
-
+    /// <summary>
+    /// 构建服务，注册必要的服务和配置。<br/>
+    /// </summary>
     public void Build()
     {
         // channels/tags
@@ -145,7 +160,9 @@ public class TagsProjectServiceBuilder
 
 }
 
-
+/// <summary>
+/// 业务逻辑加载选项，用于配置 Logicet 插件的加载行为。<br/>
+/// </summary>
 public class LogicetLoadOptions
 {
     /// <summary>

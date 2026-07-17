@@ -3,7 +3,9 @@ using Itminus.Tags.TagCbntors;
 
 namespace Itminus.Tags.Hjzk;
 
-
+/// <summary>
+/// Hjzk CbntBuiilder 基类，将来会被扩展成 DI/DO CbntBuilder
+/// </summary>
 public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
 {
 
@@ -14,7 +16,7 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
     public abstract string AreaStartAddr { get; }
 
 
-
+    /// <inheritdoc/>
     public override TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor descriptor)
     {
         base.WithCbntDescriptor(descriptor);
@@ -22,7 +24,7 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
         return this;
     }
 
-
+    /// <inheritdoc/>
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeHjzkTagFactory();
@@ -36,6 +38,7 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
         return this;
     }
 
+    /// <inheritdoc/>
     protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;

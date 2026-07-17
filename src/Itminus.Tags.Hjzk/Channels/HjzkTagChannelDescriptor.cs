@@ -7,16 +7,23 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags.Hjzk;
 
-
+/// <summary>
+/// Hjzk 通道描述符
+/// </summary>
 public class HjzkTagChannelDescriptor : TagChannelDescriptor
 {
+    /// <summary>
+    /// IP 地址，默认 localhost
+    /// </summary>
     public string IpAddr { get; set; } = "localhost";
 
+    /// <summary>
+    /// 端口号，默认 502
+    /// </summary>
     public int Port { get; set; } = 502;
 
 
-
-
+    /// <inheritdoc/>
     public override XElement ToXElement()
     {
         var ele = base.ToXElement();
@@ -27,9 +34,18 @@ public class HjzkTagChannelDescriptor : TagChannelDescriptor
     }
 }
 
-
+/// <summary>
+/// conversions between <see cref="TagChannelDescriptor"/> and <see cref="HjzkTagChannelDescriptor"/>
+/// </summary>
 public static class TagChannelDescriptor_S7Extensions
 {
+    /// <summary>
+    /// 转成 <see cref="HjzkTagChannelDescriptor"/>
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public static HjzkTagChannelDescriptor ToHjzkTagChannelDescriptor(this TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != HjzkNames.DriverName)

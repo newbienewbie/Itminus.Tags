@@ -8,6 +8,9 @@ namespace Itminus.Tags.ComScanner.Channels;
 /// </summary>
 public class ScriptBasedComChannel : ScriptBasedComChannel<string>
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ScriptBasedComChannel(string channelName, ComChannelOption opt, ILogger<ComChannelBase<string>> logger)
         : base(channelName, opt, logger)
     {

@@ -15,6 +15,11 @@ internal class LogicetLoader : ILogicetsLoader
     private readonly LogicetLoadOptions _options;
     private readonly ILogger<LogicetLoader> _logger;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="logger"></param>
     public LogicetLoader(IOptions<LogicetLoadOptions> options, ILogger<LogicetLoader> logger)
     {
         this._options = options.Value;
@@ -69,7 +74,6 @@ internal class LogicetLoader : ILogicetsLoader
         return new LoadedLogicets(logicets, disposables);
     }
 
-    //
     private (IList<ILogicet> batch, IDisposable loader) MakeCore(IServiceProvider sp, IReadOnlyList<ITagChannel> channels, ITagGrp tags,string dll, List<Type> sharedTypes)
     {
         this._options.SharedTypesFilter?.Invoke(dll, sharedTypes);

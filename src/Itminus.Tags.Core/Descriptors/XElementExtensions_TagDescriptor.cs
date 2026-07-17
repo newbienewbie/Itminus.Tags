@@ -2,6 +2,9 @@
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// extensions for conversions between <see cref="XElement"/> and <see cref="TagDescriptor"/>
+/// </summary>
 public static class XElementExtensions_TagDescriptor
 {
     #region

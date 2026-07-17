@@ -7,14 +7,22 @@ using System.Xml.Linq;
 
 namespace Itminus.Tags.ModbusTcp;
 
-
+/// <summary>
+/// ModbusTcp 通道描述符
+/// </summary>
 public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
 {
+    /// <summary>
+    /// IP 地址，默认值为 localhost
+    /// </summary>
     public string IpAddr { get; set; } = "localhost";
 
+    /// <summary>
+    /// 端口号，默认值为 502
+    /// </summary>
     public int Port { get; set; } = 502;
 
-
+    /// <inheritdoc/>
     public override XElement ToXElement()
     {
         var ele = base.ToXElement();
@@ -25,8 +33,18 @@ public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
     }
 }
 
+/// <summary>
+/// conversions between <see cref="TagChannelDescriptor"/> and <see cref="ModbusTcpTagChannelDescriptor"/>
+/// </summary>
 public static class TagChannelDescriptor_ModbusTcpExtensions
 {
+    /// <summary>
+    /// 转成 <see cref="ModbusTcpTagChannelDescriptor"/>，如果当前对象已经是 <see cref="ModbusTcpTagChannelDescriptor"/>，则直接返回
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="ArgumentException"></exception>
     public static ModbusTcpTagChannelDescriptor ToModbusTcpTagChannelDescriptor(this TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != ModbusTcpNames.DriverName)

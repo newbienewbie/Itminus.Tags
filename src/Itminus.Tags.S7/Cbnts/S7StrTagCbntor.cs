@@ -1,10 +1,12 @@
-﻿using System.Buffers.Binary;
-using System.Text;
+﻿using System.Text;
 
 
 
 namespace Itminus.Tags.S7;
 
+/// <summary>
+/// S7 字符串测点缓存器
+/// </summary>
 public class S7StrTagCbntor : TagCbntor
 {
     /// <summary>

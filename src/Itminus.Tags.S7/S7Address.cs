@@ -4,23 +4,45 @@ using System.Text.RegularExpressions;
 
 namespace Itminus.Tags.S7;
 
-
+/// <summary>
+/// 地址类型
+/// </summary>
 public enum AreaKinds
 { 
+    /// <summary>
+    /// 空
+    /// </summary>
     None,
+    /// <summary>
+    /// MB
+    /// </summary>
     MB,
+    /// <summary>
+    /// DB
+    /// </summary>
     DB,
 }
 
+/// <summary>
+/// S7 地址
+/// </summary>
 public struct S7Address
 {
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public S7Address()
     {
     }
 
+    /// <summary>
+    /// 地址类型
+    /// </summary>
     public AreaKinds Area = AreaKinds.DB;
 
+    /// <summary>
+    /// Block号，只有AreaKinds.DB时才有意义
+    /// </summary>
     public int BlockNumber = 0;
 
     /// <summary>
@@ -28,8 +50,14 @@ public struct S7Address
     /// </summary>
     public bool BlockSpecified = true;
 
+    /// <summary>
+    /// 起始地址
+    /// </summary>
     public int StartAddress = 0;
 
+    /// <summary>
+    /// 是否使用位寻址
+    /// </summary>
     public bool UseBit = false;
 
     /// <summary>
@@ -81,8 +109,17 @@ public struct S7Address
     }
 }
 
+/// <summary>
+/// S7 地址解析器
+/// </summary>
 public static class S7AddressParser
 {
+    /// <summary>
+    /// 把地址字符串解析成 <see cref="S7Address"/>
+    /// </summary>
+    /// <param name="addr"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public static S7Address Parse(string addr)
     {
         var addrspan = addr.AsSpan();

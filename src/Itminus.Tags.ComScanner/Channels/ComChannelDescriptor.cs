@@ -9,13 +9,20 @@ using System.Text.RegularExpressions;
 
 namespace Itminus.Tags.ComScanner.Channels;
 
-
+/// <summary>
+/// COM 通道描述符
+/// </summary>
 public class ComChannelDescriptor : TagChannelDescriptor
 {
-
+    /// <summary>
+    /// 通道选项
+    /// </summary>
     public ComChannelOption Option { get;set;} = new ComChannelOption();
 
-
+    /// <summary>
+    /// 转换为 XElement
+    /// </summary>
+    /// <returns></returns>
     public override XElement ToXElement()
     {
         var ele = base.ToXElement();
@@ -41,8 +48,18 @@ public class ComChannelDescriptor : TagChannelDescriptor
     }
 }
 
+/// <summary>
+/// extensions for conversions between <see cref="TagChannelDescriptor"/> and <see cref="ComChannelDescriptor"/>
+/// </summary>
 public static class TagChannelDescriptor_ComExtensions
 {
+    /// <summary>
+    /// 转成 <see cref="ComChannelDescriptor"/>
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <exception cref="Exception"></exception>
     public static ComChannelDescriptor ToComChannelDescriptor(this TagChannelDescriptor descriptor)
     {
         if (descriptor.Driver != ComDriverNames.DriverName)

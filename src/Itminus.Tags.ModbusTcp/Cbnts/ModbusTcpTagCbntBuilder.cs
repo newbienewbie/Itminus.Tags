@@ -2,13 +2,22 @@
 
 namespace Itminus.Tags.ModbusTcp;
 
+/// <summary>
+/// ModbusTcp Cbnt 构建器
+/// </summary>
 public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ModbusTcpTagCbntBuilder()
         : base(new TagCbnt("unkown_modbustcp_cbnt_name", "unknown_modbustcp_cbnt_start_address"))
     {
     }
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ModbusTcpTagCbntBuilder(string cbntName, string startAddress)
         :base(new TagCbnt(cbntName, startAddress))
     {
@@ -28,7 +37,7 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
     public virtual string? Area { get; protected set; }
 
 
-
+    /// <inheritdoc/>
     public override TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor descriptor)
     {
         if (descriptor.Extras.TryGetValue("slave", out var slaveAttr))
@@ -47,7 +56,7 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
-
+    /// <inheritdoc/>
     public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
     {
         var tagFactory = this.MakeModbusTcpTagFactory();
@@ -61,6 +70,7 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
         return this;
     }
 
+    /// <inheritdoc/>
     protected override TagCbntBuilderBase AutoLayout()
     {
         var cacheSize = 0;

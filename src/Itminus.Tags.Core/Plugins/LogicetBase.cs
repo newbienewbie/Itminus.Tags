@@ -5,6 +5,12 @@
 /// </summary>
 public abstract class LogicetBase : ILogicet
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="channels"></param>
+    /// <param name="tags"></param>
+    /// <exception cref="Exception"></exception>
     public LogicetBase(IReadOnlyList<ITagChannel> channels, ITagGrp tags)
     {
         this.Channels = channels ?? throw new Exception("构造逻辑组件时通道集不可为空");

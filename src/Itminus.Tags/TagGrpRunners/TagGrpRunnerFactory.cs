@@ -7,6 +7,9 @@ internal class TagGrpRunnerFactory : ITagGrpRunnerFactory
 {
     private readonly IServiceProvider _sp;
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public TagGrpRunnerFactory(IServiceProvider sp)
     {
         this._sp = sp;

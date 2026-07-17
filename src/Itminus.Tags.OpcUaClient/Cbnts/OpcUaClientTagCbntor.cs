@@ -10,8 +10,15 @@ namespace Itminus.Tags.OpcUaClient.Cbnts;
 internal class OpcUaClientTagCbntor : TagCbntor
 {
     private OpcUaClientTagCbnt _cbnt;
+
+    /// <summary>
+    /// 节点ID
+    /// </summary>
     public NodeId NodeId { get; }
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public OpcUaClientTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
         : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
     {
@@ -20,6 +27,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
         this.NodeId = tagDescriptor.RawAddress;
     }
 
+    /// <inheritdoc/>
     public override object? Value {
         get 
         {

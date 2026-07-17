@@ -6,10 +6,14 @@ using Microsoft.FSharp.Core;
 
 namespace Itminus.Tags.S7;
 
-
+/// <summary>
+/// S7通道实现
+/// </summary>
 public class S7TagChannel : IContinousBytesBasedTagChannel
 {
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public S7TagChannel(string channelName, S7PlcItem plc, ILogger<S7TagChannel> logger)
     {
         if (string.IsNullOrEmpty(channelName))
@@ -28,13 +32,19 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
 
 
     internal S7Client? Client { get; set; }
+
+    /// <inheritdoc/>
     public string ChannelName { get; set; } = DRIVER;
+
+    /// <inheritdoc/>
     public S7PlcItem PlcItem { get; }
 
+    /// <inheritdoc/>
     public string Driver => DRIVER;
 
     private static readonly string DRIVER = S7Names.DriverName;
 
+    /// <inheritdoc/>
     public virtual async Task DisconnectAsync(CancellationToken ct)
     {
         await this.ExecuteOneByOneAsync(
@@ -66,7 +76,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
         );
     }
 
-
+    /// <inheritdoc/>
     public virtual async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
         await this.ExecuteOneByOneAsync(
@@ -107,7 +117,11 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     }
 
 
-
+    /// <summary>
+    /// 创建客户端并连接PLC
+    /// </summary>
+    /// <param name="ct"></param>
+    /// <returns></returns>
     protected virtual Task<FSharpResult<S7Client, ApiError>> CreateClientAndConnectAsync(CancellationToken ct)
     {
         var tcs = new TaskCompletionSource<FSharpResult<S7Client, ApiError>>();
@@ -139,9 +153,6 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     /// <summary>
     /// 读取
     /// </summary>
-    /// <param name="address"></param>
-    /// <param name="length">要读取的字节数量</param>
-    /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public virtual async Task<byte[]> ReadAsync(string address, int length, CancellationToken ct)
     {
@@ -189,9 +200,6 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     /// <summary>
     /// 写入底层
     /// </summary>
-    /// <param name="address"></param>
-    /// <param name="buffer"></param>
-    /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public virtual async Task WriteAsync(string address, byte[] buffer, CancellationToken ct)
     {
@@ -234,7 +242,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
         }
     }
 
-
+    /// <inheritdoc/>
     public virtual void Dispose()
     {
         var client = this.Client;

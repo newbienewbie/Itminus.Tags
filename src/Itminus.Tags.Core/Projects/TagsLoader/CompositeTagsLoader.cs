@@ -17,7 +17,6 @@ public delegate TagCbntBuilderBase? MakeTagCbntBuilder(ITagChannel channel, TagC
 /// </summary>
 /// <param name="channel"></param>
 /// <param name="descriptor"></param>
-/// <param name="element"></param>
 /// <returns></returns>
 public delegate TagBuilderBase? MakeTagBuilder(ITagChannel channel, TagDescriptor descriptor);
 
@@ -33,7 +32,7 @@ public class CompositeTagsLoader : ITagsLoader
     protected List<MakeTagBuilder> _tagFactories = new();
 
     /// <summary>
-    /// 注册 <see cref="TTagBuilder"/>的构建器
+    /// 注册 <see cref="TagBuilderBase"/> 的构建器
     /// </summary>
     /// <param name="factory"></param>
     /// <returns></returns>
@@ -104,6 +103,7 @@ public class CompositeTagsLoader : ITagsLoader
 
 
     #region 从 XElement 中加载 Tag|TagCbnt|TagGrp，并作为子节点追加到指定的父节点中
+    /// <inheritdoc/>
     public virtual void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         if(descriptor is TagGrpDescriptor grpDescriptor)
@@ -155,6 +155,13 @@ public class CompositeTagsLoader : ITagsLoader
         return;
     }
 
+    /// <summary>
+    /// 加载 TagCbnt
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="cbntDescriptor"></param>
+    /// <param name="availableChannels"></param>
+    /// <exception cref="Exception"></exception>
     protected virtual void LoadTagCbnt(ITagGrp parent, TagCbntDescriptor cbntDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         var thisChannel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
@@ -179,6 +186,14 @@ public class CompositeTagsLoader : ITagsLoader
         return;
     }
 
+    /// <summary>
+    /// 加载直接测点
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="tagDescriptor"></param>
+    /// <param name="availableChannels"></param>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="NotImplementedException"></exception>
     protected virtual void LoadDirectTag(ITagGrp parent, TagDescriptor tagDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         var thisChannel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
@@ -199,6 +214,11 @@ public class CompositeTagsLoader : ITagsLoader
         parent.AddTag(tag);
     }
 
+    /// <summary>
+    /// 加载 XElement 为 TagDescriptor
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
     protected virtual TagDescriptor LoadTagDescriptor(XElement e) => e.ToTagDescriptor();
     #endregion
 

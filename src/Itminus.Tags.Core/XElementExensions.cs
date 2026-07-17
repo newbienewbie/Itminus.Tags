@@ -2,6 +2,9 @@
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// extenions for XElement
+/// </summary>
 public static class XElementExensions
 {
 
@@ -30,12 +33,24 @@ public static class XElementExensions
     #endregion
 
     #region helpers
+    /// <summary>
+    /// 获取测点元素的名称
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     internal static string GetTagUnionName(this XElement e)
     {
         var tagName = (string?)e.Attribute("name") ?? throw new Exception($"Tag 未配置名称");
         return tagName;
     }
 
+    /// <summary>
+    /// 测点元素是否是入口测点
+    /// </summary>
+    /// <param name="e"></param>
+    /// <param name="tagName"></param>
+    /// <returns></returns>
     internal static bool GetTagUnionIsEntry(this XElement e, string tagName)
     {
         var isEntry = (bool?)e.Attribute("isEntry") ?? false;
@@ -157,6 +172,11 @@ public static class XElementExensions
         }
     }
 
+    /// <summary>
+    /// 是否是测点元素(Tag, TagCbnt, TagGrp)
+    /// </summary>
+    /// <param name="e"></param>
+    /// <returns></returns>
     public static bool IsTagUnion(this XElement e)
     {
         if (e.Name == "Tag")

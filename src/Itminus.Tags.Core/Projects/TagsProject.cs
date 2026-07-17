@@ -20,6 +20,14 @@ internal class TagsProject : ITagsProject
 
     private List<IDisposable> _disposables = new List<IDisposable>();
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="tagGrpRunnerFactory"></param>
+    /// <param name="channelsLoader"></param>
+    /// <param name="tagsLoader"></param>
+    /// <param name="logicetLoader"></param>
+    /// <param name="sp"></param>
     public TagsProject(ITagGrpRunnerFactory tagGrpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, IServiceProvider sp)
     {
         this._channelsLoader = channelsLoader;
@@ -170,6 +178,8 @@ internal class TagsProject : ITagsProject
     }
     #endregion
 
+
+    /// <inheritdoc/>
     public virtual Task RunAsync(CancellationToken ct)
     {
         if (this.Channels == null || this.Channels.Count == 0)
@@ -338,6 +348,7 @@ internal class TagsProject : ITagsProject
     //     Dispose(disposing: false);
     // }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -347,14 +358,24 @@ internal class TagsProject : ITagsProject
     #endregion
 }
 
-
+/// <summary>
+/// 意图写入异常
+/// </summary>
 public sealed class IntentWrittenException : Exception
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="entry"></param>
+    /// <param name="message"></param>
     public IntentWrittenException(string entry,string message)
         : base(message)
     {
         this.Entry = entry;
     }
 
+    /// <summary>
+    /// 入口
+    /// </summary>
     public string Entry { get; }
 }

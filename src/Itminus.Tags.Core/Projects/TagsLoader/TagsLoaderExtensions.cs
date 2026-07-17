@@ -2,6 +2,9 @@
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// extensions for <see cref="CompositeTagsLoader"/> to register specific driver Tag Loader
+/// </summary>
 public static class TagsLoaderExtensions
 {
     /// <summary>

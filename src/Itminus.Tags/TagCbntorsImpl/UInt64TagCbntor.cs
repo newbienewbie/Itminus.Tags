@@ -3,9 +3,14 @@
 
 namespace Itminus.Tags.TagCbntors;
 
+/// <summary>
+/// 表示一个 uint64 类型的<see cref="TagCbntor"/>
+/// </summary>
 public class UInt64TagCbntor : TagCbntor
 {
-
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public UInt64TagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset)
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {

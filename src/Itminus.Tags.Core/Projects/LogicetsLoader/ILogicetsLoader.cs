@@ -18,5 +18,9 @@ public interface ILogicetsLoader
     LoadedLogicets LoadLogicets(IServiceProvider sp, IEnumerable<string> dlls, IReadOnlyList<ITagChannel> channels, ITagGrp tags);
 }
 
-
+/// <summary>
+/// 业务逻辑小组件加载结果
+/// </summary>
+/// <param name="Logicets"></param>
+/// <param name="Disposables"></param>
 public record LoadedLogicets(IReadOnlyList<ILogicet> Logicets, IReadOnlyList<IDisposable> Disposables);
