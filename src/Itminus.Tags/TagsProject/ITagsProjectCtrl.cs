@@ -29,7 +29,7 @@ public interface ITagsProjectCtrl
     /// <summary>
     /// 启动测点项目轮询。<br/>
     /// 此方法通常不会结束，除非测点项目被停止或在启动阶段发生异常。<br/>
-    /// 如果在项目启动阶段就发送异常，则会触发<see cref="OnStartingException"/>回调。<br/>
+    /// 如果在项目启动阶段就发生异常，则会触发<see cref="OnStartingException"/>回调。<br/>
     /// 示例：
     /// <example><![CDATA[
     /// ctrl.StartPollAsync(dir: "D:\\MyProject", root: null, hook: async (proj, ct) =>{
