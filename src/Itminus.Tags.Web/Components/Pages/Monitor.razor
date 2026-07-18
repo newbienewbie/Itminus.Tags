@@ -1,14 +1,13 @@
 ﻿@using System.Collections.ObjectModel
 @using System.Reactive.Linq
 @using Itminus.Tags
-@using Itminus.Tags.BlazorLib.Components.ChannelDescriptors
 @using Itminus.Tags.BlazorLib.Components.Tags
-@using Itminus.Tags.Web.Tags
+@using System.Xml.Linq;
 
 @page "/monitor"
 @implements IDisposable
 @rendermode InteractiveServer
-@inject TagsProjectCtrl projctrl
+@inject ITagsProjectCtrl projctrl
 
 <PageTitle>Monitor</PageTitle>
 
@@ -20,7 +19,8 @@
             
             return;
         }
-        await this.projctrl.StartPoll( null, this.SelectedXml);
+        var root = XElement.Load(this.SelectedXml);
+        await this.projctrl.StartPollAsync( null, root: root, hook: (proj, ct) => Task.CompletedTask);
     });
 })">启动</MudButton>
 

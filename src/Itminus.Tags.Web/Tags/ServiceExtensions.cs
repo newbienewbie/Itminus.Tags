@@ -23,8 +23,6 @@ public static class ServiceExtensions
             b.AddHjzkSupport();
             b.AddComScannerSupport();
         });
-
-        services.AddSingleton<TagsProjectCtrl>();
     }
 
 }

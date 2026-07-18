@@ -66,7 +66,7 @@ public interface ITagsProject: IDisposable
     void Initialize(string projRoot, XElement? root=null);
 
     /// <summary>
-    /// 运行。<br/>
+    /// 运行本项目下所有的入口测点组。<br/>
     /// 这个方法在所有入口组都运行结束之前，不会返回！
     /// </summary>
     /// <param name="ct"></param>

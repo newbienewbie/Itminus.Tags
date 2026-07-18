@@ -21,6 +21,8 @@ public static class TagsProjectServiceCollection
         var tpsb = new TagsProjectServiceBuilder(services);
         configTagsLoader?.Invoke(tpsb);
         tpsb.Build();
+
+        services.AddSingleton<ITagsProjectCtrl, TagsProjectCtrl>();
         return services;
     }
 

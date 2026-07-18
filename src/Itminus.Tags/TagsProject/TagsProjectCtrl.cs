@@ -1,30 +1,50 @@
-﻿using Itminus.Tags;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Xml.Linq;
 
+namespace Itminus.Tags;
 
-namespace WpfDemo.Tags;
-
-public class TagsProjectCtrl
+/// <summary>
+/// 测点项目控制器
+/// </summary>
+internal class TagsProjectCtrl : ITagsProjectCtrl
 {
     private readonly IServiceScopeFactory _ssf;
     private readonly ILogger<TagsProjectCtrl> _logger;
 
-    public TagsProjectCtrl(IServiceScopeFactory ssf,ILogger<TagsProjectCtrl> logger) 
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="ssf"></param>
+    /// <param name="logger"></param>
+    public TagsProjectCtrl(IServiceScopeFactory ssf, ILogger<TagsProjectCtrl> logger)
     {
         this._ssf = ssf;
         this._logger = logger;
     }
 
+    /// <inheritdoc/>
     public ITagsProject? Project { get; private set; }
 
     CancellationTokenSource? _cts;
 
+    private int _lock = 0;
 
-    public async Task StartPollAsync(string? dir, Func<ITagsProject, CancellationToken, Task> hook)
+
+    /// <inheritdoc/>
+    public async Task StartPollAsync(string? dir, XElement? root, Func<ITagsProject, CancellationToken, Task> hook)
     {
-        if(this.Project != null)
+        if (Interlocked.CompareExchange(ref _lock, 1, 0) != 0)
         {
+            if (this.OnStartingException != null)
+            {
+                var handled = await this.OnStartingException(new Exception("当前测点项目已经启动！"));
+                if (handled)
+                {
+                    return;
+                }
+            }
+
             throw new Exception("当前测点项目已经启动！");
         }
 
@@ -35,15 +55,30 @@ public class TagsProjectCtrl
         try
         {
             this._cts = new CancellationTokenSource();
-            this.Project = sp.MakeProject(dir);
+            this.Project = sp.MakeProject(dir, root);
             var ct = _cts.Token;
             await hook(this.Project, ct);
             this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(true, this.Project));
             await this.Project.RunAsync(ct);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             this._logger.LogError(ex, "TagsProjectCtrl.StartPollAsync error");
+
+            // 如果用户没有注册OnStartException回调，则直接抛出异常
+            if (this.OnStartingException == null)
+            {
+                throw;
+            }
+
+            var handled = await this.OnStartingException(ex);
+
+            // 如果用户处理了异常，则不再向外抛出
+            if (handled)
+            {
+                return;
+            }
+            // 如果用户没有处理异常，则继续向外抛出
             throw;
         }
         finally
@@ -62,9 +97,12 @@ public class TagsProjectCtrl
             }
 
             this._cts = null;
+            Interlocked.Exchange(ref this._lock, 0);
         }
     }
 
+
+    /// <inheritdoc/>
     public async Task StopAsync()
     {
         // reset proj ctrl
@@ -114,28 +152,22 @@ public class TagsProjectCtrl
                 }
             }
 
-            this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(false, this.Project!));
+            this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(false, null));
         }
         catch
         {
             // ignore errors thrown by StartedOrStopped event handlers
         }
+
+        Interlocked.Exchange(ref _lock, 0);
     }
 
+    /// <inheritdoc/>
     public event TagsProjectStartedOrStopped? StartedOrStopped;
+
+    /// <inheritdoc/>
+    public Func<Exception, Task<bool>>? OnStartingException { get; set; } = null;
+
 }
 
-public class TagsProjectEventArgs: EventArgs
-{
-    public TagsProjectEventArgs(bool isstarted, ITagsProject project)
-    {
-        this.IsStarted = isstarted;
-        Project = project;
-    }
 
-    public ITagsProject Project { get; }
-
-    public bool IsStarted { get; }
-}
-
-public delegate void TagsProjectStartedOrStopped(TagsProjectCtrl sender, TagsProjectEventArgs args);

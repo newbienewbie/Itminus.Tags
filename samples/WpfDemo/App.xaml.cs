@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Itminus.Tags;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Configuration;
 using System.Data;
@@ -16,13 +17,13 @@ namespace WpfDemo;
 public partial class App : Application
 {
     public IServiceProvider? Root { get; private set; }
-    internal TagsProjectCtrl? Ctrl { get; private set; }
+    internal ITagsProjectCtrl? Ctrl { get; private set; }
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
         ServiceCollection services = ConfigureServiceCollections();
         this.Root = services.BuildServiceProvider();
-        this.Ctrl = this.Root.GetRequiredService<TagsProjectCtrl>();
+        this.Ctrl = this.Root.GetRequiredService<ITagsProjectCtrl>();
         TimerResolution.TimeBeginPeriod(1);
         var th = new Thread(async () =>
         {
@@ -30,7 +31,7 @@ public partial class App : Application
             var logger = loggerFactory.CreateLogger<App>();
 
             var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
-            await this.Ctrl.StartPollAsync(Path.Combine(dir!.FullName, "Tags"), (proj, ct) =>
+            await this.Ctrl.StartPollAsync(Path.Combine(dir!.FullName, "Tags"), null, (proj, ct) =>
             {
                 proj.Logicets.Add(new HeartBeatLogicet(
                     proj.Channels,
