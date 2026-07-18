@@ -10,8 +10,8 @@ public interface IContinousBytesBasedTagChannel: ITagChannel
     /// 并不是所有通道都支持这个接口，但是这里直接定义是为了简化测点组合的整体读取。
     /// </summary>
     /// <param name="address"></param>
-    /// <param name="count></param>
-    /// <param name="ct></param>
+    /// <param name="count"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
     public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct);
 
@@ -20,7 +20,7 @@ public interface IContinousBytesBasedTagChannel: ITagChannel
     /// </summary>
     /// <param name="address"></param>
     /// <param name="bytes"></param>
-    /// <param name="ct></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
     public Task WriteAsync(string address, byte[] bytes, CancellationToken ct);
 }

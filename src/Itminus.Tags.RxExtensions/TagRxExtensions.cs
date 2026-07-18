@@ -40,6 +40,7 @@ public static class TagRxExtensions
     /// 观测从底层读取或者向底层写入事件
     /// </summary>
     /// <param name="tag"></param>
+    /// <param name="startWithCurrent">true表示开始时推送当前值，false表示不推送</param>
     /// <returns></returns>
     public static IObservable<EventPattern<ITag, TagSyncEventArgs>> Watch(this ITag tag, bool startWithCurrent=true)
     {

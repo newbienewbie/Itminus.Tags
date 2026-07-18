@@ -7,8 +7,16 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags.Hjzk;
 
+/// <summary>
+/// Extension methods for TagsProjectServiceBuilder to add Hjzk support.
+/// </summary>
 public static class TagsProject_Extensions
 {
+    /// <summary>
+    /// 增加Hjzk支持
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
     public static TagsProjectServiceBuilder AddHjzkSupport(this TagsProjectServiceBuilder builder)
     {
         // register channel factory

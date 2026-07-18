@@ -7,6 +7,9 @@
 public class CompositeTagChannelFactory : ITagChannelFactory
 {
     #region
+    /// <summary>
+    /// 工厂列表 backing field
+    /// </summary>
     protected IList<ITagChannelFactory> _factoryList = new List<ITagChannelFactory>();
 
     /// <summary>

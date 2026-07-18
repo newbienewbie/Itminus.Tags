@@ -2,6 +2,9 @@
 
 namespace Itminus.Tags.Hjzk;
 
+/// <summary>
+/// Hjzk DI 测点组构建器
+/// </summary>
 public class HjzkDICbntBuilder : HjzkCbntBuilderBase
 {
     /// <summary>

@@ -1,7 +1,9 @@
-﻿using Itminus.Tags.ModbusTcp;
-
+﻿
 namespace Itminus.Tags.Hjzk;
 
+/// <summary>
+/// Hjzk DO 测点组构建器
+/// </summary>
 public class HjzkDOCbntBuilder : HjzkCbntBuilderBase
 {
     /// <summary>

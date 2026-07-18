@@ -2,15 +2,29 @@
 
 namespace Itminus.Tags.Hjzk;
 
+/// <summary>
+/// Hjzk 测点工厂
+/// </summary>
 public class HjzkTagFactory : TagCbntorFactoryBase
 {
     private readonly HjzkCbntBuilderBase _cbntBuilder;
 
+
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="builder"></param>
     public HjzkTagFactory(HjzkCbntBuilderBase builder) : base(builder)
     {
         this._cbntBuilder = builder;
     }
 
+    /// <summary>
+    /// 创建 DI 测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public virtual DITagCbntor CreateDITag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
@@ -29,6 +43,12 @@ public class HjzkTagFactory : TagCbntorFactoryBase
     }
 
 
+    /// <summary>
+    /// 创建 DO 测点
+    /// </summary>
+    /// <param name="tagDescriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public virtual DOTagCbntor CreateDOTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
@@ -46,6 +66,12 @@ public class HjzkTagFactory : TagCbntorFactoryBase
         return new DOTagCbntor(tagDescriptor, TagCbnt, offset);
     }
 
+    /// <summary>
+    /// 创建测点
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public override ITagCbntor CreateTag(TagDescriptor descriptor)
     {
         var tag = descriptor.TagKind switch

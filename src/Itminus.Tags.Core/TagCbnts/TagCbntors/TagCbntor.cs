@@ -71,8 +71,6 @@ public abstract class TagCbntor : ITagCbntor
     /// <summary>
     /// 通知值已经更新，这个方法不在乎值是否一样
     /// </summary>
-    /// <param name="oldValue"></param>
-    /// <param name="newValue"></param>
     public virtual void NotifyTagRead()
     {
         if (this.OnTagRead != null)
@@ -100,6 +98,9 @@ public abstract class TagCbntor : ITagCbntor
     public virtual bool IsDirty { get; set; }
 
 
+    /// <summary>
+    /// 标记已脏
+    /// </summary>
     protected virtual void MarkDirty()
     {
         this.IsDirty = true;
