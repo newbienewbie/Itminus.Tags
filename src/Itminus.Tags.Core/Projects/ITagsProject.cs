@@ -48,6 +48,11 @@ public interface ITagsProject: IDisposable
     string? ProjectRoot { get; }
 
     /// <summary>
+    /// 根元素
+    /// </summary>
+    XElement? RootElement { get; }
+
+    /// <summary>
     /// 轮询开始
     /// </summary>
     event TurnStarted? TurnStarted;
