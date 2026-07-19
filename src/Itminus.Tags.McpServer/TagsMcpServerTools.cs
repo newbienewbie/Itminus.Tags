@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
+using System.ComponentModel;
 
 namespace Itminus.Tags.McpServer;
 
@@ -22,19 +23,12 @@ public class TagsMcpServerTools
     #region
     /// <summary>
     /// 列出当前运行项目静态描述信息，返回一段 XML，其中描述了各个通道、层级式的测点点位。
-    /// 这里列出的描述信息，为后续所有操作提供了必要上下文信息。
-    /// 你总是应该先调用此方法，获取项目的测点树静态结构，然后再进行测点读写操作。
-    /// 这是因为读写时需要提供测点路径，而路径来自于这里项目静态XML描述——用各级元素的"name"形成一个路径，以 "/" 分隔层级，
-    /// <example>
-    /// 如 "IoBox/通用状态/PLC/心跳请求"， 
-    /// 表示: `&lt;TagGrp name='IoBox'/ &gt;`下有一个`&lt;TagGrp name='通用状态' &gt;`元素，
-    /// 其下又有一个`name='PLC'的`TagGrp`或者`TagCnbt`元素，
-    /// 最后又嵌套了一个`name='心跳请求'`的`Tag`节点。
-    /// </example>
-    /// 读写测点时，必须使用完整路径。
     /// </summary>
-    /// <returns></returns>
     [McpServerTool]
+    [Description(
+        "列出当前运行的测点项目静态描述信息(XML)，包括各个通道、层级式的测点点位等。这个静态结构描述，为后续所有操作提供了必要上下文信息。"+
+        "尤其是从顶级`<TagGrp>`开始，以 '/' 分隔各级元素的`name`，形成一个路径。这些Tag的路径是对相关Tag进行读、写点位时必须提供的的参数。"
+    )]
     public string ListProjectTree()
     {
         var root = this._ctrl.Project?.RootElement;
@@ -46,9 +40,11 @@ public class TagsMcpServerTools
     #region  读取测点
     /// <summary>
     /// 按完整路径读取单个测点的值，同时返回元数据（类型、访问模式、时间戳等）。
+    /// 路径必须从项目描述(XML)根元素下的顶层`TagGrp`开始逐层往下，每层应该使用`/`而不是`.`来分隔。
     /// </summary>
     /// <param name="path">测点的完整路径，路径来自项目静态描述文件，用各级元素的"name"形成一个路径，以 "/" 分隔层级，如 "IoBox/通用状态/PLC/心跳请求"。</param>
     [McpServerTool]
+    [Description("按完整路径读取测点的值。其中路径类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]
     public TagValue ReadTagValue(string path)
     {
         var proj = EnsureProject();
@@ -60,9 +56,11 @@ public class TagsMcpServerTools
 
     /// <summary>
     /// 按完整路径批量读取多个测点的值。
+    /// 路径必须从项目描述(XML)根元素下的顶层`TagGrp`开始逐层往下，每层应该使用`/`而不是`.`来分隔。
     /// </summary>
     /// <param name="paths">测点的完整路径数组，每个路径以 "/" 分隔层级。</param>
     [McpServerTool]
+    [Description("按完整路径批量读取测点的值。其中路径类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]
     public List<TagValue> ReadTagValues(string[] paths)
     {
         var proj = EnsureProject();
@@ -82,17 +80,19 @@ public class TagsMcpServerTools
         return results;
     }
 
-#endregion
+    #endregion
 
-#region  写入测点
+    #region  写入测点
     /// <summary>
     /// 按完整路径写入单个测点的值，会根据 TagKind 自动转换类型。
+    /// 路径必须从项目描述(XML)根元素下的顶层`TagGrp`开始逐层往下，每层应该使用`/`而不是`.`来分隔。
     /// </summary>
     /// <param name="path">测点的完整路径。</param>
     /// <param name="value">要写入的值，需要与测点类型兼容（BIT→bool，INT16→short，STR→string 等）。</param>
     /// <param name="waitForCompletion">是否等待写入完成，默认为 true。</param>
     [McpServerTool]
-    public async Task<WriteResult> WriteTagValue(string path, object? value, bool waitForCompletion = true)
+    [Description("按完整路径写入测点的值。其中路径类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]
+    public async Task<WriteResult> WriteTagValue(string path, string value, bool waitForCompletion = true)
     {
         var proj = EnsureProject();
 
@@ -107,7 +107,8 @@ public class TagsMcpServerTools
         if (entry is null)
             return WriteResult.Fail($"Could not find an entry group containing tag '{path}'.");
 
-        var convertedValue = ConvertValue(value, tag.TagKind());
+        if(!TryParseValue(value, tag.TagKind(), out var convertedValue))
+            return WriteResult.Fail($"Failed to convert value for tag '{path}'.");
 
         TagGrpWriteIntent intent = (_, _) =>
         {
@@ -134,11 +135,13 @@ public class TagsMcpServerTools
     /// <summary>
     /// 按完整路径批量写入多个测点的值。
     /// 内部按入口组（entry）分组，每个入口组合并为一个 WriteIntent，以提高效率。
+    /// 路径必须从项目描述(XML)根元素下的顶层`TagGrp`开始逐层往下，使用 `name` attribute 作为路径，路径应该使用`/`而不是`.`来分隔。
     /// </summary>
     /// <param name="tagValues">字典，key 为测点完整路径，value 为要写入的值。</param>
     /// <param name="waitForCompletion">是否等待所有写入意图完成，默认为 true。</param>
     [McpServerTool]
-    public async Task<WriteResult> WriteTagValues(Dictionary<string, object?> tagValues, bool waitForCompletion = true)
+    [Description("按完整路径批量写入测点的值。其中路径类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]
+    public async Task<WriteResult> WriteTagValues(Dictionary<string, string> tagValues, bool waitForCompletion = true)
     {
         var proj = EnsureProject();
 
@@ -158,7 +161,8 @@ public class TagsMcpServerTools
             if (entry is null)
                 return WriteResult.Fail($"Could not find an entry group containing tag '{path}'.");
 
-            var convertedValue = ConvertValue(kvp.Value, tag.TagKind());
+            if(!TryParseValue(kvp.Value, tag.TagKind(), out var convertedValue))
+                return WriteResult.Fail($"Failed to convert value for tag '{path}'.");
 
             if (!perEntry.TryGetValue(entry.Name, out var list))
             {
@@ -221,25 +225,66 @@ public class TagsMcpServerTools
         }
     }
 
-    private static object? ConvertValue(object? value, TagKinds tagKind)
+    private static bool TryParseValue(string value, TagKinds tagKind, out object? result)
     {
-        if (value is null) return null;
-
-        return tagKind switch
+        if (value is null)
         {
-            BuiltinTagKinds.BIT => value is bool b ? b : Convert.ToBoolean(value),
-            BuiltinTagKinds.BYTE => value is byte by ? by : Convert.ToByte(value),
-            BuiltinTagKinds.INT16 => value is short s ? s : Convert.ToInt16(value),
-            BuiltinTagKinds.UINT16 => value is ushort us ? us : Convert.ToUInt16(value),
-            BuiltinTagKinds.INT32 => value is int i ? i : Convert.ToInt32(value),
-            BuiltinTagKinds.UINT32 => value is uint ui ? ui : Convert.ToUInt32(value),
-            BuiltinTagKinds.INT64 => value is long l ? l : Convert.ToInt64(value),
-            BuiltinTagKinds.UINT64 => value is ulong ul ? ul : Convert.ToUInt64(value),
-            BuiltinTagKinds.FLOAT => value is float f ? f : Convert.ToSingle(value),
-            BuiltinTagKinds.STR => value?.ToString() ?? "",
-            BuiltinTagKinds.DI => value is bool b2 ? b2 : Convert.ToBoolean(value),
-            BuiltinTagKinds.DO => value is bool b3 ? b3 : Convert.ToBoolean(value),
-            _ => value
+            result = null;
+            return false;
+        }
+
+        switch (tagKind)
+        {
+            case BuiltinTagKinds.BIT : 
+                var parsedBit = Boolean.TryParse(value, out var bitResult);
+                result = bitResult;
+                return parsedBit;
+            case BuiltinTagKinds.BYTE:
+                var parsedByte = Byte.TryParse(value, out var byteResult);
+                result = byteResult;
+                return parsedByte;
+            case BuiltinTagKinds.INT16:
+                var parsedInt16 = Int16.TryParse(value, out var int16Result);
+                result = int16Result;
+                return parsedInt16;
+            case BuiltinTagKinds.UINT16:
+                var parsedUInt16 = UInt16.TryParse(value, out var uint16Result);
+                result= uint16Result;
+                return parsedUInt16;
+            case BuiltinTagKinds.INT32:
+                var parsedInt32 = Int32.TryParse(value, out var int32Result);
+                result = int32Result;
+                return parsedInt32;
+            case BuiltinTagKinds.UINT32:
+                var parsedUInt32 = UInt32.TryParse(value, out var uint32Result);
+                result = uint32Result;
+                return parsedUInt32;
+            case BuiltinTagKinds.INT64:
+                var parsedInt64 = Int64.TryParse(value, out var int64Result);
+                result = int64Result;
+                return parsedInt64;
+            case BuiltinTagKinds.UINT64:
+                var parsedUInt64 = UInt64.TryParse(value, out var uint64Result);
+                result = uint64Result;
+                return parsedUInt64;
+            case BuiltinTagKinds.FLOAT:
+                var parsedFloat = Single.TryParse(value, out var floatResult);
+                result = floatResult;
+                return parsedFloat;
+            case BuiltinTagKinds.STR:
+                result = value?.ToString() ?? "";
+                return true;
+            case BuiltinTagKinds.DI:
+                var parsedDI = Boolean.TryParse(value, out var diResult);
+                result = diResult;
+                return parsedDI;
+            case BuiltinTagKinds.DO:
+                var parsedDO = Boolean.TryParse(value, out var doResult);
+                result = doResult;
+                return parsedDO;
+            default:
+                result = value;
+                return true;
         };
     }
 

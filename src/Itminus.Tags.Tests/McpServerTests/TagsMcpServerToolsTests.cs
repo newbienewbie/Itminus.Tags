@@ -144,7 +144,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValue("g1/sub/bit_tag", true, waitForCompletion: true);
+        var result = await tools.WriteTagValue("g1/sub/bit_tag", "true", waitForCompletion: true);
         AssertSuccess(result);
 
         cts.Cancel();
@@ -158,7 +158,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValue("g1/sub/ro_tag", true);
+        var result = await tools.WriteTagValue("g1/sub/ro_tag", "true");
         AssertFail(result, "read-only");
 
         cts.Cancel();
@@ -172,7 +172,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValue("g1/no/such/tag", 42);
+        var result = await tools.WriteTagValue("g1/no/such/tag", "42");
         AssertFail(result, "Failed to find tag");
 
         cts.Cancel();
@@ -187,12 +187,12 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValues(new Dictionary<string, object?>
+        var result = await tools.WriteTagValues(new Dictionary<string, string>
         {
-            ["g1/sub/bit_tag"] = true,
-            ["g1/sub/int16_tag"] = (short)123,
-            ["g2/float_tag"] = 3.14f,
-            ["g2/int32_tag"] = 42,
+            ["g1/sub/bit_tag"] = "true",
+            ["g1/sub/int16_tag"] = "123",
+            ["g2/float_tag"] = "3.14",
+            ["g2/int32_tag"] = "42",
         }, waitForCompletion: true);
 
         AssertSuccess(result);
@@ -209,10 +209,10 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValues(new Dictionary<string, object?>
+        var result = await tools.WriteTagValues(new Dictionary<string, string>
         {
-            ["g1/sub/bit_tag"] = true,
-            ["g1/sub/ro_tag"] = true,
+            ["g1/sub/bit_tag"] = "true",
+            ["g1/sub/ro_tag"] = "true",
         });
         AssertFail(result, "read-only");
 
@@ -227,10 +227,10 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValues(new Dictionary<string, object?>
+        var result = await tools.WriteTagValues(new Dictionary<string, string>
         {
-            ["g1/sub/bit_tag"] = true,
-            ["g1/no/such"] = 0,
+            ["g1/sub/bit_tag"] = "true",
+            ["g1/no/such"] = "0",
         });
         AssertFail(result, "Failed to find tag");
 
@@ -246,7 +246,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValue("g1/sub/int16_tag", 42);
+        var result = await tools.WriteTagValue("g1/sub/int16_tag", "42");
         AssertSuccess(result);
 
         cts.Cancel();
@@ -260,7 +260,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTagValue("g2/float_tag", 3.14f);
+        var result = await tools.WriteTagValue("g2/float_tag", "3.14");
         AssertSuccess(result);
 
         cts.Cancel();

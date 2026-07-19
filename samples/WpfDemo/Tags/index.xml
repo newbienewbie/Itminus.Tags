@@ -3,7 +3,8 @@
 
 	<!-- 通道，可以配置多个-->
 	<Channel name="S7-1" driver="S7" >
-		<IpAddr>172.16.10.20</IpAddr>
+		<!--<IpAddr>172.16.10.20</IpAddr>-->
+		<IpAddr>localhost</IpAddr>
 		<Rack>0</Rack>
 		<Slot>1</Slot>
 	</Channel>
@@ -13,6 +14,7 @@
 		<TagGrp name="通用状态">
 			<TagCbnt name="PLC" address="DB200.100" access="RO">
 				<Tag name="心跳请求" address="$$100.0" type="BIT" access="RO"></Tag>
+				<Tag name="状态码" address="$$102.0" type="INT16" access="RW" endian="BigEndian"></Tag>
 			</TagCbnt>
 			<TagCbnt name="MST" address="DB201.100" access="R1W">
 				<Tag name="心跳响应" address="$$100.0" type="BIT" access="R1W"></Tag>
