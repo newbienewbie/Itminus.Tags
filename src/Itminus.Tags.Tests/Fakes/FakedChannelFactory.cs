@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Itminus.Tags.Tests.Projects.WriteIntents;
+namespace Itminus.Tags.Tests.Fakes;
 
 internal class FakedChannelFactory : ITagChannelFactory
 {

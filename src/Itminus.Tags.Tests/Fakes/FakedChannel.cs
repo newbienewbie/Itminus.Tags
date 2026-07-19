@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Itminus.Tags.Tests.Projects.WriteIntents;
+namespace Itminus.Tags.Tests.Fakes;
 
 internal class FakedChannel : ITagChannel
 {

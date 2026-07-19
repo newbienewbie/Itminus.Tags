@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Itminus.Tags.Tests.Fakes;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Threading;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using Xunit;
 
-namespace Itminus.Tags.Tests.Projects.WriteIntents;
+namespace Itminus.Tags.Tests.Projects;
 
 public class WriteIntentProjTests
 {
