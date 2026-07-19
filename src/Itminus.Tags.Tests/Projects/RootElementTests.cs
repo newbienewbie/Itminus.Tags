@@ -103,16 +103,24 @@ public class RootElementTests
         );
         xml.Save(indexXmlPath);
 
-        // Act
-        using var proj = sp.MakeProject(tempDir);
+        try
+        {
+            // Act
+            using var proj = sp.MakeProject(tempDir);
 
-        // Assert
-        Assert.NotNull(proj.RootElement);
-        Assert.Equal("root", proj.RootElement.Name.LocalName);
+            // Assert
+            Assert.NotNull(proj.RootElement);
+            Assert.Equal("root", proj.RootElement.Name.LocalName);
 
-        // Verify it actually contains content from the file
-        var channelElements = proj.RootElement.Elements("Channel");
-        Assert.Contains(channelElements, ch => ch.Attribute("name")?.Value == "ch1");
+            // Verify it actually contains content from the file
+            var channelElements = proj.RootElement.Elements("Channel");
+            Assert.Contains(channelElements, ch => ch.Attribute("name")?.Value == "ch1");
+        }
+        finally
+        {
+            // Clean up the temp directory after the test
+            Directory.Delete(tempDir, true);
+        }
     }
 
     [Fact]
