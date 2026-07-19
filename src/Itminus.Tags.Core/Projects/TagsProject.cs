@@ -37,14 +37,11 @@ internal class TagsProject : ITagsProject
         this._sp = sp;
     }
 
-    /// <summary>
-    /// 项目更目录
-    /// </summary>
+
+    /// <inheritdoc/>
     public string? ProjectRoot { get; private set; } = string.Empty;
 
-    /// <summary>
-    /// 根元素
-    /// </summary>
+    /// <inheritdoc/>
     public XElement? RootElement { get; private set; } = null;
 
     /// <summary>

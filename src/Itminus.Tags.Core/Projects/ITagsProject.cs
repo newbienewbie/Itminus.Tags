@@ -48,7 +48,8 @@ public interface ITagsProject: IDisposable
     string? ProjectRoot { get; }
 
     /// <summary>
-    /// 根元素
+    /// 用于最近一次 <see cref="Initialize(string, XElement?)"/> 的根元素，它是传入的 root 或从 index.xml 加载的。<br/>
+    /// 注意：你绝不应该手动修改这个元素
     /// </summary>
     XElement? RootElement { get; }
 
