@@ -1,4 +1,4 @@
-using Itminus.Tags.Tests.Projects.WriteIntents;
+using Itminus.Tags.Tests.Fakes;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Xml.Linq;
