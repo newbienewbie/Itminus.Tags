@@ -22,14 +22,14 @@ public class TagsMcpServerTools
 
     #region
     /// <summary>
-    /// 列出当前运行项目静态描述信息，返回一段 XML，其中描述了各个通道、层级式的测点点位。
+    /// 描述当前运行项目静态信息，返回一段 XML，其中描述了各个通道、层级式的测点点位。
     /// </summary>
     [McpServerTool]
     [Description(
         "列出当前运行的测点项目静态描述信息(XML)，包括各个通道、层级式的测点点位等。这个静态结构描述，为后续所有操作提供了必要上下文信息。"+
         "尤其是从顶级`<TagGrp>`开始，以 '/' 分隔各级元素的`name`，形成一个路径。这些Tag的路径是对相关Tag进行读、写点位时必须提供的的参数。"
     )]
-    public string ListProjectTree()
+    public string DescribeProject()
     {
         var root = this._ctrl.Project?.RootElement;
         return root?.ToString() ?? "there's no project yet. You should start it before you go on";
@@ -91,8 +91,11 @@ public class TagsMcpServerTools
     /// <param name="value">要写入的值，需要与测点类型兼容（BIT→bool，INT16→short，STR→string 等）。</param>
     /// <param name="waitForCompletion">是否等待写入完成，默认为 true。</param>
     [McpServerTool]
-    [Description("按完整路径写入测点的值。其中路径类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]
-    public async Task<WriteResult> WriteTagValue(string path, string value, bool waitForCompletion = true)
+    [Description("按完整路径写入测点的值。")]
+    public async Task<WriteResult> WriteTagValue(
+        [Description("从顶层TagGrp导航到子元素的路径，用`/`分隔元素名，类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]string path, 
+        [Description("要写入的目标值")]string value, 
+        [Description("是否要等待写入完成")]bool waitForCompletion = true)
     {
         var proj = EnsureProject();
 
@@ -141,7 +144,9 @@ public class TagsMcpServerTools
     /// <param name="waitForCompletion">是否等待所有写入意图完成，默认为 true。</param>
     [McpServerTool]
     [Description("按完整路径批量写入测点的值。其中路径类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]
-    public async Task<WriteResult> WriteTagValues(Dictionary<string, string> tagValues, bool waitForCompletion = true)
+    public async Task<WriteResult> WriteTagValues(
+        [Description("键值对，键名代表从顶层TagGrp导航到子元素的路径，用`/`分隔元素名，类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'；键值是用字符串表示的目标值")]Dictionary<string, string> tagValues,
+        [Description("是否要等待写入完成")] bool waitForCompletion = true)
     {
         var proj = EnsureProject();
 

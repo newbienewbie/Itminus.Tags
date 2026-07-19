@@ -86,6 +86,16 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         Assert.Throws<InvalidOperationException>(() => tools.ReadTagValue("g1/sub/bit_tag"));
     }
 
+    [Fact]
+    public async Task GetToolGuideAsync_ReturnsEmbeddedMarkdown()
+    {
+        var result = await TagsMcpResources.GetToolGuideAsync();
+
+        Assert.Equal("docs://itminus.tags/tool_guide", result.Uri);
+        Assert.Equal("text/markdown", result.MimeType);
+        Assert.Contains("Itminus.Tags是一套面向工业场景的测点通信库", result.Text);
+    }
+
 
     #region 测试 读取
     [Fact]

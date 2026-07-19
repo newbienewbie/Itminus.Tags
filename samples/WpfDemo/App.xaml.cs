@@ -1,4 +1,5 @@
 ﻿using Itminus.Tags;
+using Itminus.Tags.McpServer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -91,7 +92,7 @@ public partial class App : Application
             .WithHttpTransport(opts => {
                 opts.Stateless = true;
             })
-            .WithToolsFromAssembly(typeof(Itminus.Tags.McpServer.TagsMcpServerTools).Assembly);
+            .AddTagsMcp();
     }
 
 
