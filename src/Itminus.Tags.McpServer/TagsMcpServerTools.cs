@@ -19,14 +19,37 @@ public class TagsMcpServerTools
         _logger = logger;
     }
 
+    #region
+    /// <summary>
+    /// 列出当前运行项目静态描述信息，返回一段 XML，其中描述了各个通道、层级式的测点点位。
+    /// 这里列出的描述信息，为后续所有操作提供了必要上下文信息。
+    /// 你总是应该先调用此方法，获取项目的测点树静态结构，然后再进行测点读写操作。
+    /// 这是因为读写时需要提供测点路径，而路径来自于这里项目静态XML描述——用各级元素的"name"形成一个路径，以 "/" 分隔层级，
+    /// <example>
+    /// 如 "IoBox/通用状态/PLC/心跳请求"， 
+    /// 表示: `&lt;TagGrp name='IoBox'/ &gt;`下有一个`&lt;TagGrp name='通用状态' &gt;`元素，
+    /// 其下又有一个`name='PLC'的`TagGrp`或者`TagCnbt`元素，
+    /// 最后又嵌套了一个`name='心跳请求'`的`Tag`节点。
+    /// </example>
+    /// 读写测点时，必须使用完整路径。
+    /// </summary>
+    /// <returns></returns>
+    [McpServerTool]
+    public string ListProjectTree()
+    {
+        var root = this._ctrl.Project?.RootElement;
+        return root?.ToString() ?? "there's no project yet. You should start it before you go on";
+    }
+    #endregion
 
-#region  读取测点
+
+    #region  读取测点
     /// <summary>
     /// 按完整路径读取单个测点的值，同时返回元数据（类型、访问模式、时间戳等）。
     /// </summary>
-    /// <param name="path">测点的完整路径，以 "/" 分隔层级，如 "IoBox/通用状态/PLC/心跳请求"。</param>
+    /// <param name="path">测点的完整路径，路径来自项目静态描述文件，用各级元素的"name"形成一个路径，以 "/" 分隔层级，如 "IoBox/通用状态/PLC/心跳请求"。</param>
     [McpServerTool]
-    public TagValue ReadTag(string path)
+    public TagValue ReadTagValue(string path)
     {
         var proj = EnsureProject();
         ITag tag;
@@ -40,7 +63,7 @@ public class TagsMcpServerTools
     /// </summary>
     /// <param name="paths">测点的完整路径数组，每个路径以 "/" 分隔层级。</param>
     [McpServerTool]
-    public List<TagValue> ReadTags(string[] paths)
+    public List<TagValue> ReadTagValues(string[] paths)
     {
         var proj = EnsureProject();
         var results = new List<TagValue>();
@@ -69,7 +92,7 @@ public class TagsMcpServerTools
     /// <param name="value">要写入的值，需要与测点类型兼容（BIT→bool，INT16→short，STR→string 等）。</param>
     /// <param name="waitForCompletion">是否等待写入完成，默认为 true。</param>
     [McpServerTool]
-    public async Task<WriteResult> WriteTag(string path, object? value, bool waitForCompletion = true)
+    public async Task<WriteResult> WriteTagValue(string path, object? value, bool waitForCompletion = true)
     {
         var proj = EnsureProject();
 
@@ -115,7 +138,7 @@ public class TagsMcpServerTools
     /// <param name="tagValues">字典，key 为测点完整路径，value 为要写入的值。</param>
     /// <param name="waitForCompletion">是否等待所有写入意图完成，默认为 true。</param>
     [McpServerTool]
-    public async Task<WriteResult> WriteTags(Dictionary<string, object?> tagValues, bool waitForCompletion = true)
+    public async Task<WriteResult> WriteTagValues(Dictionary<string, object?> tagValues, bool waitForCompletion = true)
     {
         var proj = EnsureProject();
 

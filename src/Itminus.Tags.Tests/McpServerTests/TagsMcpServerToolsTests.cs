@@ -83,7 +83,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     public void EnsureProject_WhenNoProject_Throws()
     {
         var tools = new TagsMcpServerTools(new ProjectCtrl(null), Logger);
-        Assert.Throws<InvalidOperationException>(() => tools.ReadTag("g1/sub/bit_tag"));
+        Assert.Throws<InvalidOperationException>(() => tools.ReadTagValue("g1/sub/bit_tag"));
     }
 
 
@@ -93,7 +93,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     {
         using var proj = Factory.Create(null!, TestXml);
         var tools = MakeTools(proj);
-        var result = tools.ReadTag("g1/sub/bit_tag");
+        var result = tools.ReadTagValue("g1/sub/bit_tag");
         Assert.NotNull(result);
         Assert.NotNull(result.Descriptor);
         Assert.Equal("bit_tag", result.Descriptor.TagName);
@@ -106,7 +106,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     {
         using var proj = Factory.Create(null!, TestXml);
         var tools = MakeTools(proj);
-        Assert.Throws<InvalidOperationException>(() => tools.ReadTag("g1/nonexistent/tag"));
+        Assert.Throws<InvalidOperationException>(() => tools.ReadTagValue("g1/nonexistent/tag"));
     }
 
 
@@ -115,7 +115,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     {
         using var proj = Factory.Create(null!, TestXml);
         var tools = MakeTools(proj);
-        var results = tools.ReadTags(new[] { "g1/sub/bit_tag", "g1/sub/int16_tag", "g2/int32_tag" });
+        var results = tools.ReadTagValues(new[] { "g1/sub/bit_tag", "g1/sub/int16_tag", "g2/int32_tag" });
         Assert.Equal(3, results.Count);
         Assert.All(results, r => Assert.NotNull(r.Descriptor));
         Assert.All(results, r => Assert.Null(r.Error));
@@ -126,7 +126,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     {
         using var proj = Factory.Create(null!, TestXml);
         var tools = MakeTools(proj);
-        var results = tools.ReadTags(new[] { "g1/sub/bit_tag", "g1/no/such/tag" });
+        var results = tools.ReadTagValues(new[] { "g1/sub/bit_tag", "g1/no/such/tag" });
         Assert.Equal(2, results.Count);
         Assert.Null(results[0].Error);
         Assert.NotNull(results[1].Error);
@@ -144,7 +144,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTag("g1/sub/bit_tag", true, waitForCompletion: true);
+        var result = await tools.WriteTagValue("g1/sub/bit_tag", true, waitForCompletion: true);
         AssertSuccess(result);
 
         cts.Cancel();
@@ -158,7 +158,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTag("g1/sub/ro_tag", true);
+        var result = await tools.WriteTagValue("g1/sub/ro_tag", true);
         AssertFail(result, "read-only");
 
         cts.Cancel();
@@ -172,7 +172,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTag("g1/no/such/tag", 42);
+        var result = await tools.WriteTagValue("g1/no/such/tag", 42);
         AssertFail(result, "Failed to find tag");
 
         cts.Cancel();
@@ -187,7 +187,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTags(new Dictionary<string, object?>
+        var result = await tools.WriteTagValues(new Dictionary<string, object?>
         {
             ["g1/sub/bit_tag"] = true,
             ["g1/sub/int16_tag"] = (short)123,
@@ -209,7 +209,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTags(new Dictionary<string, object?>
+        var result = await tools.WriteTagValues(new Dictionary<string, object?>
         {
             ["g1/sub/bit_tag"] = true,
             ["g1/sub/ro_tag"] = true,
@@ -227,7 +227,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTags(new Dictionary<string, object?>
+        var result = await tools.WriteTagValues(new Dictionary<string, object?>
         {
             ["g1/sub/bit_tag"] = true,
             ["g1/no/such"] = 0,
@@ -246,7 +246,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTag("g1/sub/int16_tag", 42);
+        var result = await tools.WriteTagValue("g1/sub/int16_tag", 42);
         AssertSuccess(result);
 
         cts.Cancel();
@@ -260,7 +260,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         _ = Task.Run(() => proj.RunAsync(cts.Token));
         var tools = MakeTools(proj);
 
-        var result = await tools.WriteTag("g2/float_tag", 3.14f);
+        var result = await tools.WriteTagValue("g2/float_tag", 3.14f);
         AssertSuccess(result);
 
         cts.Cancel();
