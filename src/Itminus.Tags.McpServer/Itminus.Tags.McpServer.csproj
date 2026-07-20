@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <None Remove="guide.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="guide.md" />
+  </ItemGroup>
+</Project>

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Itminus.Tags.Tests.Projects.WriteIntents;
+namespace Itminus.Tags.Tests.Fakes;
 
 internal static class TagsProject_Extensions
 {
@@ -13,6 +13,19 @@ internal static class TagsProject_Extensions
             composite.AddFactory(factory);
         });
 
+        return builder;
+    }
+
+    /// <summary>
+    /// 注册 faked 测点构建器，使 faked 通道能解析 &lt;Tag&gt; 元素。
+    /// </summary>
+    internal static TagsProjectServiceBuilder AddFakedTagSupport(this TagsProjectServiceBuilder builder)
+    {
+        builder.ConfigTagsLoader((_, composite) =>
+        {
+            composite.AddTagBuilder((channel, descriptor) =>
+                channel is FakedChannel ? new FakedTagBuilder(descriptor) : null);
+        });
         return builder;
     }
 }

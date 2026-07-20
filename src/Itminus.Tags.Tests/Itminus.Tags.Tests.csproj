@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
     <ProjectReference Include="..\Itminus.Tags.ZLan\Itminus.Tags.ZLan.csproj" />
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
+    <ProjectReference Include="..\Itminus.Tags.McpServer\Itminus.Tags.McpServer.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="ComTags\ComProjTests\ComProjSelectorTests.xml">

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.002.0
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.12009.203 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{ACD2C8C2-4A10-428B-860F-C37E44C1AAEA}"
 	ProjectSection(SolutionItems) = preProject
@@ -36,6 +36,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.Core", "Itminus.Tags.Core\Itminus.Tags.Core.csproj", "{0A2B08DA-D453-4113-8F60-E65DBC402A6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDemo", "..\samples\WpfDemo\WpfDemo.csproj", "{254A2A77-B18D-451A-8902-7AD16818E360}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.McpServer", "Itminus.Tags.McpServer\Itminus.Tags.McpServer.csproj", "{2B77F7A3-2C48-6915-2171-D6CF3259407A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{254A2A77-B18D-451A-8902-7AD16818E360}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{254A2A77-B18D-451A-8902-7AD16818E360}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{254A2A77-B18D-451A-8902-7AD16818E360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B77F7A3-2C48-6915-2171-D6CF3259407A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B77F7A3-2C48-6915-2171-D6CF3259407A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B77F7A3-2C48-6915-2171-D6CF3259407A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B77F7A3-2C48-6915-2171-D6CF3259407A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

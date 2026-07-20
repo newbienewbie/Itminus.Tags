@@ -14,12 +14,17 @@
     <ProjectReference Include="..\..\src\Itminus.Tags.RxExtensions\Itminus.Tags.RxExtensions.csproj" />
     <ProjectReference Include="..\..\src\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
     <ProjectReference Include="..\..\src\Itminus.Tags\Itminus.Tags.csproj" />
+    <ProjectReference Include="..\..\src\Itminus.Tags.McpServer\Itminus.Tags.McpServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Tags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.4.1" />
   </ItemGroup>
 
 </Project>
