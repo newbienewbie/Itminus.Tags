@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Itminus.Tags.BlazorLib.Core\Itminus.Tags.BlazorLib.Core.csproj" />
     <ProjectReference Include="..\Itminus.Tags.ModbusTcp\Itminus.Tags.ModbusTcp.csproj" />
     <ProjectReference Include="..\Itminus.Tags.OpcUaClient\Itminus.Tags.OpcUaClient.csproj" />
     <ProjectReference Include="..\Itminus.Tags.RxExtensions\Itminus.Tags.RxExtensions.csproj" />
