@@ -14,7 +14,7 @@
             "name": "C#: Itminus.Tags.Web Debug",
             "type": "dotnet",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/src/Itminus.Tags.Web/Itminus.Tags.Web.csproj"
+            "projectPath": "${workspaceFolder}/samples/Itminus.Tags.Web/Itminus.Tags.Web.csproj"
         }
 
     ]

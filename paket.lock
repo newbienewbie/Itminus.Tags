@@ -1,6 +1,6 @@
 STORAGE: NONE
 STRATEGY: MIN
-RESTRICTION: == net8.0
+RESTRICTION: || (== net8.0) (== net8.0-windows10.0.19041.0)
 NUGET
   remote: https://api.nuget.org/v3/index.json
     BouncyCastle.Cryptography (2.4)
@@ -118,6 +118,8 @@ NUGET
       Microsoft.Extensions.Caching.Abstractions (>= 10.0.7)
       Microsoft.Extensions.Hosting.Abstractions (>= 10.0.7)
       ModelContextProtocol.Core (>= 1.4.1)
+    ModelContextProtocol.AspNetCore (1.4.1)
+      ModelContextProtocol (>= 1.4.1)
     ModelContextProtocol.Core (1.4.1)
       Microsoft.Extensions.AI.Abstractions (>= 10.5.2)
       Microsoft.Extensions.Logging.Abstractions (>= 10.0.7)

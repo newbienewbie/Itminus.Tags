@@ -13,5 +13,5 @@
 		<ProjectReference Include="..\Itminus.Tags.RxExtensions\Itminus.Tags.RxExtensions.csproj" />
 		<ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
 	</ItemGroup>
-	<Import Project="..\.paket\Paket.Restore.targets" />
+	<Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

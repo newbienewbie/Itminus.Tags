@@ -18,5 +18,5 @@
     <ProjectReference Include="..\Itminus.Tags.ComScanner\Itminus.Tags.ComScanner.csproj" />
     <ProjectReference Include="..\Itminus.Tags.Hjzk\Itminus.Tags.Hjzk.csproj" />
   </ItemGroup>
-  <Import Project="..\.paket\Paket.Restore.targets" />
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
