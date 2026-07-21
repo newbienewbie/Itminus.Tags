@@ -2,6 +2,7 @@
 using Itminus.Tags.BlazorLib;
 using Itminus.Tags.BlazorLib.Pages;
 using Itminus.Tags.McpServer;
+using Microsoft.AspNetCore.Builder;
 using System.IO;
 using System.Reflection;
 using System.Windows;
