@@ -1,0 +1,48 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "paket-restore-wpfdemo",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "paket", 
+                "restore",
+                //"--force",
+                "--project", "\"${workspaceFolder}/samples/WpfDemo/WpfDemo.csproj\"",
+                //"--output-path", "\"${workspaceFolder}/samples/WpfDemo/obj\"",
+                // "--target-framework", "net8.0-windows",
+            ],
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "presentation": {
+                "echo": true,
+                "focus": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build-wpfdemo",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/WpfDemo/WpfDemo.csproj"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "focus": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "wpfdemo-prepare",
+            "dependsOn": ["paket-restore-wpfdemo", "build-wpfdemo"],
+            "dependsOrder": "sequence",
+            "group": "none",
+            "problemMatcher": []
+        }
+    ]
+}

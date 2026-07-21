@@ -59,8 +59,8 @@ else
                 }
             </MudSelect>
             <MudNumericField T="int" Label="ScanInterval" @bind-Value="tgd.ScanInterval" />
-            <MudCheckBox T="bool" @bind-Checked="tgd.IsEntry" >IsEntry</MudCheckBox>
-            <MudCheckBox T="bool" @bind-Checked="tgd.IsEnabled">IsEnabled</MudCheckBox>
+            <MudCheckBox T="bool" @bind-Value="tgd.IsEntry" >IsEntry</MudCheckBox>
+            <MudCheckBox T="bool" @bind-Value="tgd.IsEnabled">IsEnabled</MudCheckBox>
         }
     </MudPaper>
 }

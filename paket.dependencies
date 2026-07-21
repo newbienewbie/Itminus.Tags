@@ -5,7 +5,7 @@ source https://baget.stdunit.com/v3/index.json
 cache ./nuget-package-caches
 storage: none
 strategy: min
-framework: net8.0, net8.0-windows10.0.19041
+framework: net8.0, net8.0-windows
 
 nuget Microsoft.Extensions.DependencyInjection >= 8.0 lowest_matching: true
 nuget Microsoft.Extensions.Logging >= 8.0 lowest_matching: true
@@ -21,7 +21,11 @@ nuget StdUnit.Sharp7.Options >= 0.6.4 lowest_matching: true
 
 nuget McMaster.NETCore.Plugins >= 2.0.0 lowest_matching: true
 
+nuget R3 >= 1.3.0 lowest_matching: true
+nuget R3Extensions.WPF >= 1.3.0 lowest_matching: true
+
 nuget System.Reactive >= 6.1.0 lowest_matching: true
+
 nuget System.IO.Ports >= 8.0.0 lowest_matching: true
 nuget System.IO.Pipelines >= 10.0.7 lowest_matching: true
 nuget System.Diagnostics.DiagnosticSource >= 10.0.10 lowest_matching: true
