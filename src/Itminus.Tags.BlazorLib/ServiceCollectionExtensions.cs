@@ -1,36 +1,39 @@
-﻿using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.OpcUa;
-using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ZLan;
-using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Hjzk;
-using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.ModbusTcp;
-using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.S7;
-using Itminus.Tags.BlazorLib.Components.Tags.Editors;
-using Microsoft.Extensions.DependencyInjection;
-using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Impl.Com;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.OpcUa;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.ZLan;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Hjzk;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.ModbusTcp;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.S7;
+using Itminus.Tags.BlazorLib.Components.ChannelDescriptors.Com;
 
 namespace Itminus.Tags.BlazorLib;
 
+/// <summary>
+/// extensions for DependencyInjection
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// 增加TagsBlazorLib服务
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="config"></param>
+    /// <returns></returns>
     public static IServiceCollection AddTagsBlazorLib(this IServiceCollection services, Action<TagsBlazorBuilder>? config = null)
     {
-        var builder = new TagsBlazorBuilder(services);
-        // default tag value editors
-        builder.AddTagValueEditor<BoolTagValueEditor>()
-               .AddTagValueEditor<NumericTagValueEditor>()
-               .AddTagValueEditor<TextTagValueEditor>();
+        services.AddTagsBlazorLibCore(builder =>
+        {
+            // Default channel descriptor viewers/editors
+            builder.AddS7ChannelDescriptorViewerAndEditor()
+                   .AddModbusTcpChannelDescriptorViewerAndEditor()
+                   .AddHjzkChannelDescriptorViewerAndEditor()
+                   .AddComScannerChannelDescriptorViewerAndEditor()
+                   .AddZLanChannelDescriptorViewerAndEditor()
+                   .AddOpcUaChannelDescriptorViewerAndEditor();
 
-        // Default channel descriptor viewers/editors
-        builder.AddS7ChannelDescriptorViewerAndEditor()
-               .AddModbusTcpChannelDescriptorViewerAndEditor()
-               .AddHjzkChannelDescriptorViewerAndEditor()
-               .AddComScannerChannelDescriptorViewerAndEditor()
-               .AddZLanChannelDescriptorViewerAndEditor()
-               .AddOpcUaChannelDescriptorViewerAndEditor();
-
-        // user configuration
-        config?.Invoke(builder);
-        builder.Build();
-        return builder.Services;
+            config?.Invoke(builder);
+        });
+        return services;
     }
 
 

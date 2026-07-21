@@ -1,4 +1,4 @@
-using Itminus.Tags.Tests.Fakes;
+﻿using Itminus.Tags.Tests.Fakes;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Xml.Linq;
@@ -46,9 +46,9 @@ public class RootElementTests
         using var proj = sp.MakeProject(dir!, expectedRoot);
 
         // Assert
-        Assert.NotNull(proj.RootElement);
-        Assert.Same(expectedRoot, proj.RootElement);
-        Assert.Equal("root", proj.RootElement.Name.LocalName);
+        Assert.NotNull(proj.GetRootElement());
+        Assert.Same(expectedRoot, proj.GetRootElement());
+        Assert.Equal("root", proj.GetRootElement()?.Name.LocalName);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class RootElementTests
 
         // Assert
         // RootElement 与传入的一致，而 Channels/Tags 应当从该 RootElement 中加载
-        Assert.Same(root, proj.RootElement);
+        Assert.Same(root, proj.GetRootElement());
         Assert.Single(proj.Channels);
         Assert.NotNull(proj.Tags.SelectGrp("g1"));
     }
@@ -109,11 +109,12 @@ public class RootElementTests
             using var proj = sp.MakeProject(tempDir);
 
             // Assert
-            Assert.NotNull(proj.RootElement);
-            Assert.Equal("root", proj.RootElement.Name.LocalName);
+            Assert.NotNull(proj.GetRootElement());
+            Assert.Equal("root", proj.GetRootElement()?.Name.LocalName);
 
             // Verify it actually contains content from the file
-            var channelElements = proj.RootElement.Elements("Channel");
+            var channelElements = proj.GetRootElement()?.Elements("Channel");
+            Assert.NotNull(channelElements);
             Assert.Contains(channelElements, ch => ch.Attribute("name")?.Value == "ch1");
         }
         finally

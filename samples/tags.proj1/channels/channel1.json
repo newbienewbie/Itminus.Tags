@@ -1,7 +1,0 @@
-{
-    "Name": "S7-1",
-    "Driver":"S7",
-    "IpAddr":"localhost",
-    "Rack":0,
-    "Slot":1
-}

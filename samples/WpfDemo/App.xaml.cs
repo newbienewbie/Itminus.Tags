@@ -1,12 +1,7 @@
 ﻿using Itminus.Tags;
-using Itminus.Tags.McpServer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using WpfDemo.Tags;
 using WpfDemo.Tags.Logicets;
 
 namespace WpfDemo;
@@ -22,7 +17,7 @@ public partial class App : Application
     private void Application_Startup(object sender, StartupEventArgs e)
     {
         var builder = WebApplication.CreateBuilder();
-        ConfigureServiceCollections(builder.Services);
+        builder.Services.ConfigureServies();
         var app = builder.Build();
         this.Root = app.Services;
         this.Ctrl = this.Root.GetRequiredService<ITagsProjectCtrl>();
@@ -69,31 +64,15 @@ public partial class App : Application
 
     private static void StartWeb(WebApplication app)
     {
+        app.ConfigureMiddlewares();
         var th2 = new Thread(() =>
         {
-            app.MapMcp();
             app.Run("http://localhost:3001");
         });
         th2.IsBackground = true;
         th2.Start();
     }
 
-    private static void ConfigureServiceCollections(IServiceCollection services)
-    {
-        services.AddLogging();
-        //services.AddSerilog((sp, lc) => lc
-        //    .ReadFrom.Services(sp)
-        //    .WriteTo.Console()
-        //    .WriteTo.File("logs/log.txt", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message}{NewLine}{Exception}", rollingInterval: RollingInterval.Day)
-        //    .Enrich.FromLogContext()
-        //);
-        services.AddWpfDemoTags();
-        services.AddMcpServer()
-            .WithHttpTransport(opts => {
-                opts.Stateless = true;
-            })
-            .AddTagsMcp();
-    }
 
 
     protected override async void OnExit(ExitEventArgs e)

@@ -1,4 +1,4 @@
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 
@@ -31,7 +31,7 @@ public class TagsMcpServerTools
     )]
     public string DescribeProject()
     {
-        var root = this._ctrl.Project?.RootElement;
+        var root = this._ctrl.Project?.GetRootElement();
         return root?.ToString() ?? "there's no project yet. You should start it before you go on";
     }
     #endregion

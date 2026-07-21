@@ -41,8 +41,12 @@ internal class TagsProject : ITagsProject
     /// <inheritdoc/>
     public string? ProjectRoot { get; private set; } = string.Empty;
 
+    #region RootElement
+    private XElement? _rootElement = null;
+
     /// <inheritdoc/>
-    public XElement? RootElement { get; private set; } = null;
+    public XElement? GetRootElement() => this._rootElement;
+    #endregion
 
     /// <summary>
     /// 从根元素中加载通道
@@ -109,7 +113,7 @@ internal class TagsProject : ITagsProject
             root = XElement.Load(rootxmlPath);
         }
 
-        this.RootElement = root;
+        this._rootElement = root;
         this.CompleteIntentChannels("项目正在初始化，未处理的意图已被丢弃");
         this.LoadChannels(root);
         this.LoadTags(root);
