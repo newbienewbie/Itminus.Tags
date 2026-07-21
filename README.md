@@ -1,6 +1,6 @@
 
 
-一个免费开源的工业通讯测点库。**你只管提供描述(`xml`)，我们负责让它跑起来**。
+一个免费开源的跨平台工业通讯测点库。**你只管提供描述(`xml`)，我们负责让它跑起来**。
 
 其中，你提供的描述类似于：
 ```xml
@@ -8,7 +8,6 @@
 	<!-- 通道，可以配置多个-->
 	<Channel name="S7-1" driver="S7" >
 		<IpAddr>172.16.10.20</IpAddr>
-		<!--<IpAddr>localhost</IpAddr>-->
 		<Rack>0</Rack>
 		<Slot>1</Slot>
 	</Channel>
@@ -40,23 +39,22 @@ var ctrl = sp.GetRequiredService<ITagsProjectCtrl>();
 var dir ="D:/manufacture/pl01/";	// 提供项目运行目录，其中有通信点表和可能用到的插件
 XElement? root = null;			// 空表示使用默认的`index.xml`来配置项目
 
-// 启动测点项目串行轮询，此方法通常会长时间运行:
-//     即使发生异常，也不会主动结束，而是会自动重试;
-//     除非在启动阶段发生异常或者测点项目被停止，否则不会主动退出。
 await ctrl.StartPollAsync(dir, root, hook: async(proj, ct) =>{
-    // 添加业务逻辑
+    // 添加心跳信号逻辑
     proj.Logicets.Add(new HeartBeatLogicet(
         proj.Channels,
         proj.Tags,
         loggerFactory.CreateLogger<HeartBeatLogicet>()
     ));
+	// ... 添加更多业务逻辑
 
     // ...可选：如注册 proj.TurnStarted 或者 projCrashed 事件处理
     return Task.CompletedTask;
 });
 ```
 
-支持通过MCP方式暴露给AI来读写测点。
+- 支持逻辑组件插件
+- 支持通过MCP方式暴露给AI来读写测点。
 
 ## 文档
 
