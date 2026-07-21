@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
+using Itminus.Tags.Rx;
 
 namespace Itminus.Tags.Tests.TagCbnts;
 

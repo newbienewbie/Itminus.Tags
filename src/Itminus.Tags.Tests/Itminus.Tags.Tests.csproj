@@ -13,6 +13,7 @@
     <ProjectReference Include="..\Itminus.Tags.ModbusTcp\Itminus.Tags.ModbusTcp.csproj" />
     <ProjectReference Include="..\Itminus.Tags.OpcUaClient\Itminus.Tags.OpcUaClient.csproj" />
     <ProjectReference Include="..\Itminus.Tags.RxExtensions\Itminus.Tags.RxExtensions.csproj" />
+    <ProjectReference Include="..\Itminus.Tags.R3Extensions\Itminus.Tags.R3Extensions.csproj" />
     <ProjectReference Include="..\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
     <ProjectReference Include="..\Itminus.Tags.ZLan\Itminus.Tags.ZLan.csproj" />
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />

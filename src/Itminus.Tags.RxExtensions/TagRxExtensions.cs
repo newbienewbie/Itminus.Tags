@@ -1,7 +1,7 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive;
 
-namespace Itminus.Tags;
+namespace Itminus.Tags.Rx;
 
 /// <summary>
 /// Rx extensions for ITag

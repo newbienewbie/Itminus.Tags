@@ -2,7 +2,7 @@
 using MudBlazor;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using Itminus.Tags;
+using Itminus.Tags.Rx;
 
 
 namespace Itminus.Tags.BlazorLib.Components.Tags;
