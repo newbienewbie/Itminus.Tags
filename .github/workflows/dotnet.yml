@@ -27,5 +27,5 @@ jobs:
       working-directory: .
       run: dotnet paket restore
     - name: build and test
-      working-directory: ./src
+      working-directory: 
       run: dotnet build 

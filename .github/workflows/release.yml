@@ -26,9 +26,12 @@ jobs:
     - name: Restore dependencies
       working-directory: .
       run: dotnet paket restore
+    - name: build and test
+      working-directory: 
+      run: dotnet build 
     - name: push
       working-directory: ./src
       run: dotnet pwsh ./publish-packages.ps1 -packageVersion ${{ github.event.inputs.releaseVersion }} 
       env:
-          NugetSource: ${{ secrets.NUGET_SOURCE }}
-          NugetApiKey: ${{ secrets.NUGET_KEY }}
+        NugetSource: ${{ secrets.NUGET_SOURCE }}
+        NugetApiKey: ${{ secrets.NUGET_KEY }}
