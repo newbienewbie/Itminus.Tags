@@ -3,8 +3,8 @@
 
 	<!-- 通道，可以配置多个-->
 	<Channel name="S7-1" driver="S7" >
-		<!--<IpAddr>172.16.10.20</IpAddr>-->
-		<IpAddr>localhost</IpAddr>
+		<IpAddr>172.16.10.20</IpAddr>
+		<!--<IpAddr>localhost</IpAddr>-->
 		<Rack>0</Rack>
 		<Slot>1</Slot>
 	</Channel>

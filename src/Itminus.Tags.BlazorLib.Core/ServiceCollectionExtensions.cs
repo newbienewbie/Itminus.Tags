@@ -1,5 +1,7 @@
 ﻿using Itminus.Tags.BlazorLib.Components.Tags.Editors;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace Itminus.Tags.BlazorLib;
 
@@ -16,6 +18,7 @@ public static class ServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection AddTagsBlazorLibCore(this IServiceCollection services, Action<TagsBlazorBuilder>? config = null)
     {
+        services.AddMudServices();
         var builder = new TagsBlazorBuilder(services);
         // default tag value editors
         builder.AddTagValueEditor<BoolTagValueEditor>()

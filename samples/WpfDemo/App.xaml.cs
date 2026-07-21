@@ -1,8 +1,7 @@
 ﻿using Itminus.Tags;
+using Itminus.Tags.BlazorLib;
+using Itminus.Tags.BlazorLib.Pages;
 using Itminus.Tags.McpServer;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -30,6 +29,31 @@ public partial class App : Application
 
         StartTagsPoll(this.Root, this.Ctrl);
         StartWeb(app);
+    }
+
+
+    private static void ConfigureServiceCollections(IServiceCollection services)
+    {
+        services.AddLogging();
+        //services.AddSerilog((sp, lc) => lc
+        //    .ReadFrom.Services(sp)
+        //    .WriteTo.Console()
+        //    .WriteTo.File("logs/log.txt", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message}{NewLine}{Exception}", rollingInterval: RollingInterval.Day)
+        //    .Enrich.FromLogContext()
+        //);
+        services.AddAntiforgery();
+        services.AddWpfDemoTags();
+        
+        services.AddMcpServer()
+            .WithHttpTransport(opts => {
+                opts.Stateless = true;
+            })
+            .AddTagsMcp();
+
+        services.AddRazorComponents()
+            .AddInteractiveServerComponents();
+        services.AddTagsBlazorLibCore();
+        services.AddAuthentication();
     }
 
     private void StartTagsPoll(IServiceProvider sp, ITagsProjectCtrl ctrl)
@@ -71,29 +95,20 @@ public partial class App : Application
     {
         var th2 = new Thread(() =>
         {
-            app.MapMcp();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAntiforgery();
+            app.MapRazorComponents<Itminus.Tags.BlazorLib.Apps.TagsApp>()
+                .AddInteractiveServerRenderMode();
+            app.MapMcp("/mcp");
             app.Run("http://localhost:3001");
         });
         th2.IsBackground = true;
         th2.Start();
     }
 
-    private static void ConfigureServiceCollections(IServiceCollection services)
-    {
-        services.AddLogging();
-        //services.AddSerilog((sp, lc) => lc
-        //    .ReadFrom.Services(sp)
-        //    .WriteTo.Console()
-        //    .WriteTo.File("logs/log.txt", outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] [{SourceContext}] {Message}{NewLine}{Exception}", rollingInterval: RollingInterval.Day)
-        //    .Enrich.FromLogContext()
-        //);
-        services.AddWpfDemoTags();
-        services.AddMcpServer()
-            .WithHttpTransport(opts => {
-                opts.Stateless = true;
-            })
-            .AddTagsMcp();
-    }
 
 
     protected override async void OnExit(ExitEventArgs e)

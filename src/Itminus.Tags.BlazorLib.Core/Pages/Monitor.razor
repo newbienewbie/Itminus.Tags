@@ -1,0 +1,13 @@
+﻿@using System.Collections.ObjectModel
+@using System.Reactive.Linq
+@using Itminus.Tags
+@using Itminus.Tags.BlazorLib.Components.Tags
+@using System.Xml.Linq
+
+@page "/iminus.tags/monitor"
+@rendermode InteractiveServer
+@inject ITagsProjectCtrl projctrl
+
+<PageTitle>Tags Monitor</PageTitle>
+
+<TagsView Project="@projctrl.Project"></TagsView>
