@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,8 +61,17 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         )
     );
 
-    private TagsMcpServerTools MakeTools(ITagsProject proj) =>
-        new(new ProjectCtrl(proj), Logger);
+    private TagsMcpServerTools MakeTools(ITagsProject proj, TagsProjectStartedOrStopped? handler=null)
+    {
+        var ctrl = new ProjectCtrl(proj);
+        if(handler is not null)
+        {
+            ctrl.StartedOrStopped += handler;
+        }
+        var tools = new TagsMcpServerTools(ctrl, Logger);
+        return tools;
+    }
+
 
     private static void AssertSuccess(WriteResult result)
     {
@@ -322,6 +331,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     {
         public ITagsProject? Project => project;
         public Func<Exception, Task<bool>>? OnStartingException { get; set; }
+
         public event TagsProjectStartedOrStopped? StartedOrStopped;
         public Task StartPollAsync(string? dir, XElement? root, Func<ITagsProject, CancellationToken, Task> hook)
             => throw new NotSupportedException();
