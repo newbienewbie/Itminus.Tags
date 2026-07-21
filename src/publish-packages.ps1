@@ -15,6 +15,8 @@ $projects = @(
     "Itminus.Tags.ComScanner",
 
     "Itminus.Tags.RxExtensions",
+    "Itminus.Tags.R3Extensions",
+
     "Itminus.Tags.BlazorLib.Core", 
     "Itminus.Tags.BlazorLib"
     )

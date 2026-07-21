@@ -6,9 +6,12 @@
     "configurations": [
         {
             "name": "C#: WPFDemo Debug",
-            "type": "dotnet",
+            "type": "coreclr",
             "request": "launch",
-            "projectPath": "${workspaceFolder}/samples/WpfDemo/WpfDemo.csproj",
+            "preLaunchTask": "wpfdemo-prepare",
+            "program": "${workspaceFolder}/samples/WpfDemo/bin/Debug/net8.0-windows/WpfDemo.dll",
+            "cwd": "${workspaceFolder}/samples/WpfDemo",
+            "args": [],
         },
         {
             "name": "C#: Itminus.Tags.Web Debug",

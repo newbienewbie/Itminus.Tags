@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using Itminus.Tags.Rx;
+using Itminus.Tags.R3;
+using R3;
 
 
 namespace Itminus.Tags.BlazorLib.Components.Tags;
@@ -60,13 +59,13 @@ public partial class TagView : IDisposable
                 // Throttle updates and avoid re-rendering if nothing actually changed.
                 _disposable = tag.Watch()
                     .TakeUntil(_destroySignal)
-                    .Sample(TimeSpan.FromMilliseconds(50))
+                    .ThrottleLast(TimeSpan.FromMilliseconds(50))
                     .Subscribe(ev =>
                     {
                         if (disposedValue)
                             return;
-                        var val = ev.EventArgs.NewValue;
-                        var ts = ev.EventArgs.Timestamp;
+                        var val = ev.NewValue;
+                        var ts = ev.Timestamp;
 
                         if (IsSame(Value, val) && ts == Timestamp)
                             return;
@@ -133,7 +132,7 @@ public partial class TagView : IDisposable
     #region IDisposable Support
     private IDisposable? _disposable;
     private bool disposedValue;
-    private readonly Subject<System.Reactive.Unit> _destroySignal = new Subject<System.Reactive.Unit>();
+    private readonly Subject<Unit> _destroySignal = new Subject<Unit>();
 
     /// <inheritdoc/>
     protected virtual void Dispose(bool disposing)
@@ -144,7 +143,7 @@ public partial class TagView : IDisposable
             {
                 try
                 {
-                    this._destroySignal.OnNext(System.Reactive.Unit.Default);
+                    this._destroySignal.OnNext(Unit.Default);
                 }
                 catch{ }
 

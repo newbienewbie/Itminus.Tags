@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "paket-restore-wpfdemo",
+            "type": "shell",
+            "command": "dotnet paket restore --project \"${workspaceFolder}/samples/WpfDemo/WpfDemo.csproj\"",
+            "group": "none",
+            "presentation": {
+                "echo": true,
+                "focus": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "build-wpfdemo",
+            "type": "shell",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/samples/WpfDemo/WpfDemo.csproj"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "focus": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "wpfdemo-prepare",
+            "dependsOn": ["paket-restore-wpfdemo", "build-wpfdemo"],
+            "dependsOrder": "sequence",
+            "group": "none",
+            "problemMatcher": []
+        }
+    ]
+}

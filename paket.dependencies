@@ -5,7 +5,7 @@ source https://baget.stdunit.com/v3/index.json
 cache ./nuget-package-caches
 storage: none
 strategy: min
-framework: net8.0, net8.0-windows10.0.19041
+framework: net8.0, net8.0-windows
 
 nuget Microsoft.Extensions.DependencyInjection >= 8.0 lowest_matching: true
 nuget Microsoft.Extensions.Logging >= 8.0 lowest_matching: true
