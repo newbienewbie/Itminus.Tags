@@ -21,10 +21,10 @@ jobs:
       with:
         dotnet-version: 8.0.102
     - name: Restore Tool dependencies
-      working-directory: ./src
+      working-directory: .
       run: dotnet tool restore
     - name: Restore dependencies
-      working-directory: ./src
+      working-directory: .
       run: dotnet paket restore
     - name: push
       working-directory: ./src
