@@ -4,8 +4,18 @@
         {
             "label": "paket-restore-wpfdemo",
             "type": "shell",
-            "command": "dotnet paket restore --project \"${workspaceFolder}/samples/WpfDemo/WpfDemo.csproj\"",
-            "group": "none",
+            "command": "dotnet",
+            "args": [
+                "paket", 
+                "restore",
+                //"--force",
+                "--project", "\"${workspaceFolder}/samples/WpfDemo/WpfDemo.csproj\"",
+                //"--output-path", "\"${workspaceFolder}/samples/WpfDemo/obj\"",
+                // "--target-framework", "net8.0-windows",
+            ],
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
             "presentation": {
                 "echo": true,
                 "focus": false
