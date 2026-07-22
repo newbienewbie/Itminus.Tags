@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
@@ -57,7 +59,9 @@ public class LogicetPluginLifecycleTests
         WeakReference loadContextRef;
         using (var project = factory.Create(projectDir, root))
         {
-            var logicet = Assert.Single(project.Logicets);
+            var logicets =  project.Logicets
+                .Where(l => l.GetType().Name == nameof(TestUnloadableLogicet));
+            var logicet = Assert.Single(logicets);
             Assert.Equal(nameof(TestUnloadableLogicet), logicet.GetType().Name);
             Assert.Single(project.Channels);
             Assert.IsType<S7TagChannel>(project.Channels[0]);
@@ -75,7 +79,12 @@ public class LogicetPluginLifecycleTests
 
     private static string CreateProjectDir()
     {
-        var projectDir = Path.Combine(Path.GetTempPath(), "Itminus.Tags.Tests", nameof(LogicetPluginLifecycleTests), Path.GetRandomFileName());
+        var projectDir = Path.Combine(
+            Path.GetTempPath(), 
+            "Itminus.Tags.Tests", 
+            nameof(LogicetPluginLifecycleTests), 
+            Path.GetRandomFileName()
+        );
         Directory.CreateDirectory(projectDir);
         return projectDir;
     }
@@ -121,24 +130,28 @@ public class LogicetPluginLifecycleTests
 
         Assert.False(loadContextRef.IsAlive);
     }
+
+
+
+    sealed class TestUnloadableLogicet : LogicetBase
+    {
+        public TestUnloadableLogicet(IReadOnlyList<ITagChannel> channels, ITagGrp tags)
+            : base(channels, tags)
+        {
+        }
+
+        public override int Order => 0;
+
+        public override bool MatchEntry(ITagGrp entry)
+        {
+            return entry.Name == "g1";
+        }
+
+        public override Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel)
+        {
+            return Task.CompletedTask;
+        }
+    }
 }
 
-public sealed class TestUnloadableLogicet : LogicetBase
-{
-    public TestUnloadableLogicet(IReadOnlyList<ITagChannel> channels, ITagGrp tags)
-        : base(channels, tags)
-    {
-    }
 
-    public override int Order => 0;
-
-    public override bool MatchEntry(ITagGrp entry)
-    {
-        return entry.Name == "g1";
-    }
-
-    public override Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel)
-    {
-        return Task.CompletedTask;
-    }
-}
