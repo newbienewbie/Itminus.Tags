@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Itminus.Tags;
 
@@ -7,16 +8,22 @@ internal class TagGrpRunner : ITagGrpRunner
     private readonly ITagsProject _project;
     private readonly ILogger<TagGrpRunner> _logger;
     private readonly ITagGrpRunnerRetryStrategy _retryStrategy;
+    private readonly ITagGrpRunnerPollDelayStrategy _pollDelayStrategy;
     private int _consecutiveFailures;
 
     /// <summary>
     /// c'tor
     /// </summary>
-    public TagGrpRunner(ITagsProject project, ILogger<TagGrpRunner> logger, ITagGrpRunnerRetryStrategy? retryStrategy = null)
+    public TagGrpRunner(
+        ITagsProject project,
+        ILogger<TagGrpRunner> logger,
+        ITagGrpRunnerRetryStrategy? retryStrategy = null,
+        ITagGrpRunnerPollDelayStrategy? pollDelayStrategy = null)
     {
         this._project = project;
         this._logger = logger;
         this._retryStrategy = retryStrategy ?? new DefaultTagGrpRunnerRetryStrategy();
+        this._pollDelayStrategy = pollDelayStrategy ?? new AdaptivePollDelayStrategy();
     }
 
     /// <inheritdoc/>
@@ -51,8 +58,11 @@ internal class TagGrpRunner : ITagGrpRunner
                 }
 
                 // 开始轮询
+                var sw = new Stopwatch();
                 while (!ct.IsCancellationRequested)
                 {
+                    sw.Restart();
+
                     if (channel != null)
                     {
                         await channel.EnsureConnectedAsync(force: false, ct);
@@ -69,7 +79,9 @@ internal class TagGrpRunner : ITagGrpRunner
                         await TurnProcess(entry, channel);
                     }
                     await entry.WriteAsync(ct);
-                    await Task.Delay(entry.ScanInterval, ct);
+
+                    sw.Stop();
+                    await this._pollDelayStrategy.DelayAsync(TimeSpan.FromMilliseconds(entry.ScanInterval), sw.Elapsed, ct);
                 }
             }
             catch (Exception ex)
