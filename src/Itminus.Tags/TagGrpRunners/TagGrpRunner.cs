@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace Itminus.Tags;
 
@@ -6,14 +7,23 @@ internal class TagGrpRunner : ITagGrpRunner
 {
     private readonly ITagsProject _project;
     private readonly ILogger<TagGrpRunner> _logger;
+    private readonly ITagGrpRunnerRetryStrategy _retryStrategy;
+    private readonly ITagGrpRunnerPollDelayStrategy _pollDelayStrategy;
+    private int _consecutiveFailures;
 
     /// <summary>
     /// c'tor
     /// </summary>
-    public TagGrpRunner(ITagsProject project, ILogger<TagGrpRunner> logger)
+    public TagGrpRunner(
+        ITagsProject project,
+        ILogger<TagGrpRunner> logger,
+        ITagGrpRunnerRetryStrategy? retryStrategy = null,
+        ITagGrpRunnerPollDelayStrategy? pollDelayStrategy = null)
     {
         this._project = project;
         this._logger = logger;
+        this._retryStrategy = retryStrategy ?? new DefaultTagGrpRunnerRetryStrategy();
+        this._pollDelayStrategy = pollDelayStrategy ?? new AdaptivePollDelayStrategy();
     }
 
     /// <inheritdoc/>
@@ -31,23 +41,28 @@ internal class TagGrpRunner : ITagGrpRunner
         while (!ct.IsCancellationRequested)
         {
             ITagChannel? channel = null;
+            // 本次启动是否失败？如果入口被禁用，不会被视为失败，即禁用会复位失败计数器
+            var failed = false;
             try
             {
-                channel = entry.GetChannel();
                 if (!entry.IsEnabled)
                 {
                     await Task.Delay(500, ct);
                     continue;
                 }
 
+                channel = entry.GetChannel();
                 if (TurnStarted is not null)
                 {
                     await TurnStarted(entry, channel);
                 }
 
                 // 开始轮询
+                var sw = new Stopwatch();
                 while (!ct.IsCancellationRequested)
                 {
+                    sw.Restart();
+
                     if (channel != null)
                     {
                         await channel.EnsureConnectedAsync(force: false, ct);
@@ -64,11 +79,24 @@ internal class TagGrpRunner : ITagGrpRunner
                         await TurnProcess(entry, channel);
                     }
                     await entry.WriteAsync(ct);
-                    await Task.Delay(entry.ScanInterval, ct);
+
+                    sw.Stop();
+                    var delay = this._pollDelayStrategy.GetDelay(TimeSpan.FromMilliseconds(entry.ScanInterval), sw.Elapsed);
+                    if (delay > TimeSpan.Zero)
+                    {
+                        await Task.Delay(delay, ct);
+                    }
+                    else
+                    {
+                        await Task.Yield();
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
             }
             catch (Exception ex)
             {
+                failed = true;
+                _consecutiveFailures++;
 
                 try
                 {
@@ -105,7 +133,16 @@ internal class TagGrpRunner : ITagGrpRunner
             }
             finally
             {
-                await Task.Delay(entry.ScanInterval, ct);
+                // 成功迭代则重置连续失败计数器；失败则使用策略等待
+                if (!failed)
+                {
+                    _consecutiveFailures = 0;
+                }
+
+                var delay = _consecutiveFailures > 0
+                    ? _retryStrategy.GetDelay(_consecutiveFailures)
+                    : TimeSpan.FromMilliseconds(entry.ScanInterval);
+                await Task.Delay(delay, ct);
             }
         }
     }
