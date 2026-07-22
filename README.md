@@ -1,6 +1,23 @@
 
+这是一个面向工业通讯场景的类库：
 
-一个免费开源的跨平台工业通讯测点库。**你只管提供描述(`xml`)，我们负责让它跑起来**。
+* 免费开源: 整个类库家族都是MIT授权，而且相关依赖链也都是(或近乎是)MIT授权。
+* 高度模块化: 每种硬件实现，以`nuget`包为单元，各自独立。
+* 易于扩展：照抄内置的设备实现，实现你自己的通讯封装，然后编写一个`.AddYourOwnSupport()`扩展方法。
+* 跨平台：依托于`dotnet`跨平台的能力，让你的代码跑到各种设备上。
+
+> **在正式发布1.0版本之前，这个包只会发布在我的测试源上**。
+> 如果你使用`nuget`管理，请参照[示例](https://github.com/newbienewbie/Itminus.Tags.WPFDemo/blob/867a5063bc65ec16f77692d4c56ce9da5a38dc3c/nuget.config#L3-L8)，指定包源为 https://baget.stdunit.com/v3/index.json ；
+> 如果你使用`paket`管理，参照本项目[paket.dependencies](https://github.com/newbienewbie/Itminus.Tags/blob/b4ef40f2952fa75d7154db03782c2b5f98be914c/paket.dependencies#L1-L2) 指定包源。
+> 我个人建议你使用`paket`管理依赖，这样哪怕我和nuget.org都破产跑路了，你的本地代码也能完全断网的情况下离线编译。
+
+警告：假设版本号是`<major>.<minor>.<patch>`:
+- 在`v1.0`版本之前，每个`minor`版本的跳变，可能会引入新特性和破坏性更新。
+- 在`v1.0`版本之后，每个`major`版本的跳变，可能会引入新特性和破坏性更新。
+
+## Quick Start
+
+**你只管提供描述(`xml`)，我们负责让它跑起来**。
 
 其中，你提供的描述类似于：
 ```xml
@@ -53,12 +70,44 @@ await ctrl.StartPollAsync(dir, root, hook: async(proj, ct) =>{
 });
 ```
 
-- 支持逻辑组件插件
-- 支持通过MCP方式暴露给AI来读写测点。
+优势：
+- 硬件无关抽象：理论上，你可以在家里用[S7模拟器](https://github.com/newbienewbie/S7SvrSim)编写自动化测试，验证你的逻辑，最后到现场前再切换到`OpcUa`设备上(或者反过来)。
+- 支持逻辑组件插件(dll)
+- 支持通过MCP方式暴露给AI：把测点项目描述作为上下文，AI可以轻松操作点位
+
+![]()
 
 ## 文档
 
-[制作中，预览版可以查看：http://tags.doc.stdunit.com ]
+开发者示例: 
+1. 本仓库自带的[Samples](https://github.com/newbienewbie/Itminus.Tags/tree/dev/samples): 主要用于开发验证+喂狗
+2. 供新手熟悉功能[WPFDemo](https://github.com/newbienewbie/Itminus.Tags.WPFDemo): 按分支演示功能。
+
+具体文档可以查看：[tags.doc](http://tags.doc.stdunit.com) 
+
+
+## 文件夹结构
+
+- `.config`
+    - `dotnet-tools.json`: 本项目用到的 dotnet tools 配置
+- `global.json`: 本项目SDK配置，目前锁定版本 `8.0.102`
+- `src/`: 项目代码及测试
+	- `Itminus.Tags.Core`: 核心抽象
+	- `Itminus.Tags`: 基本功能，但和具体的硬件设备无关，只依赖于`Itminus.Tags.Core`。
+	- `Itminus.Tags.RxExtensions`: `dotnet/reactive`扩展，只依赖于`Itminus.Tags.Core`
+	- `Itminus.Tags.R3Extensions`: `Cysharp/R3`扩展，只依赖于`Itminus.Tags.Core`
+	- `Itminus.Tags.S7`: 西门子S7协议扩展，只依赖于`Itminus.Tags` + **Sharp7**
+	- `Itminus.Tags.OpcUaClient`: OpcUa客户端扩展，依赖于`Itminus.Tags` + **OpcUa**
+	- `Itminus.Tags.ModbusTcp`: ModbusTcp扩展，依赖于`Itminus.Tags` + **NModbus**
+	- `Itminus.Tags.Hjzk`: Hjzk IO盒子扩展，依赖于`Itminus.Tags.ModbusTcp` 
+	- ... 其它硬件扩展
+	- `Itminus.Tags.BlazorLib.Core`: Blazor 类库，包含核心功能抽象，以及一个极简的监控页面。
+	- `Itminus.Tags.BlazorLib`: 包含一些常用硬件设备的实现。
+	- `Itminus.Tags.McpServer`: 这是一个把`Itminus.Tags`暴露成 [Model Context Protocol Server](https://modelcontextprotocol.io/) 的类库。
+	- `Itminus.Tags.Tests`: 上述所有子项目的测试
+- `samples/`: 示例代码
+- `paket.dependencies`: 用 [`paket`](https://github.com/fsprojects/Paket)管理的依赖声明
+- `paket.lock`: 依赖锁定文件
 
 ## 授权方式
 
