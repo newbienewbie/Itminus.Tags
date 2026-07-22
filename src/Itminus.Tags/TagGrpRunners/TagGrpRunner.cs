@@ -81,7 +81,16 @@ internal class TagGrpRunner : ITagGrpRunner
                     await entry.WriteAsync(ct);
 
                     sw.Stop();
-                    await this._pollDelayStrategy.DelayAsync(TimeSpan.FromMilliseconds(entry.ScanInterval), sw.Elapsed, ct);
+                    var delay = this._pollDelayStrategy.GetDelay(TimeSpan.FromMilliseconds(entry.ScanInterval), sw.Elapsed);
+                    if (delay > TimeSpan.Zero)
+                    {
+                        await Task.Delay(delay, ct);
+                    }
+                    else
+                    {
+                        await Task.Yield();
+                        ct.ThrowIfCancellationRequested();
+                    }
                 }
             }
             catch (Exception ex)

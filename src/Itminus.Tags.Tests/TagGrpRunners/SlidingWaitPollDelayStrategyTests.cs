@@ -1,7 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Itminus.Tags.Tests.TagGrpRunners;
@@ -9,19 +6,29 @@ namespace Itminus.Tags.Tests.TagGrpRunners;
 public class SlidingWaitPollDelayStrategyTests
 {
     [Fact]
-    public async Task SlidingWait_AlwaysWaitsFullInterval()
+    public void SlidingWait_ReturnsScanInterval()
     {
         // Arrange
         var strategy = new SlidingWaitPollDelayStrategy();
-        var ct = CancellationToken.None;
 
-        // Act — measure actual wait time
-        var sw = Stopwatch.StartNew();
-        await strategy.DelayAsync(TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(10), ct);
-        sw.Stop();
+        // Act
+        var delay = strategy.GetDelay(TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(10));
 
-        // Assert — should have waited approximately 50ms
-        Assert.True(sw.ElapsedMilliseconds >= 40,
-            $"实际等待 {sw.ElapsedMilliseconds}ms 应 >= 40ms");
+        // Assert
+        Assert.Equal(TimeSpan.FromMilliseconds(50), delay);
+    }
+
+    [Fact]
+    public void SlidingWait_IgnoresElapsed()
+    {
+        // Arrange
+        var strategy = new SlidingWaitPollDelayStrategy();
+
+        // Act — elapsed 不同但返回值相同
+        var delayFast = strategy.GetDelay(TimeSpan.FromMilliseconds(30), TimeSpan.FromMilliseconds(1));
+        var delaySlow = strategy.GetDelay(TimeSpan.FromMilliseconds(30), TimeSpan.FromMilliseconds(100));
+
+        // Assert
+        Assert.Equal(delayFast, delaySlow);
     }
 }
