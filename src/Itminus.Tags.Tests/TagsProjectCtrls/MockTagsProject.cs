@@ -35,10 +35,8 @@ internal class MockTagsProject : ITagsProject
     /// </summary>
     public void AddChannel(ITagChannel channel) => _channels.Add(channel);
 
-#pragma warning disable CS0067
     public event TurnStarted? TurnStarted;
     public event TurnCrashed? TurnCrashed;
-#pragma warning restore CS0067
     public void Initialize(string projRoot, XElement? root = null)
     {
         InitializeCallCount++;

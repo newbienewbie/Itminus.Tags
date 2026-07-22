@@ -6,6 +6,7 @@
     <IsPackable>false</IsPackable>
 	<NuGetAudit>false</NuGetAudit>
 	<LangVersion>latest</LangVersion>
+  <NoWarn>CS0067,CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Itminus.Tags.ComScanner\Itminus.Tags.ComScanner.csproj" />

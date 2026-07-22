@@ -365,10 +365,8 @@ public class TagGrpRunnerTests
             return written;
         }
 
-#pragma warning disable CS0618
         public bool WriteIntent(string entry, TagGrpWriteIntent intent) =>
             WriteIntent(entry, intent, out _);
-#pragma warning restore CS0618
 
         private Channel<IntentCompletion> CreateIntentChannel()
         {
@@ -388,10 +386,8 @@ public class TagGrpRunnerTests
         public Task RunAsync(CancellationToken ct) => Task.CompletedTask;
 
 
-#pragma warning disable CS0067
         public event TurnStarted? TurnStarted;
         public event TurnCrashed? TurnCrashed;
-#pragma warning restore CS0067
     }
 
     #endregion
