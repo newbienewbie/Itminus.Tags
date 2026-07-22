@@ -36,11 +36,13 @@ internal class ComChannelFactory : ITagChannelFactory
 
         // 回退到默认的基于行的串口扫描器
         var lineLogger = _loggerFactory.CreateLogger<LineBasedComChannel>();
-        return new LineBasedComChannel(
+        var channel =  new LineBasedComChannel(
             descriptor.Name,
             descriptor.Option,
             lineLogger
         );
+        channel.ReadEntireLine = descriptor.Option.ReadEntireLine;
+        return channel;
     }
 
 

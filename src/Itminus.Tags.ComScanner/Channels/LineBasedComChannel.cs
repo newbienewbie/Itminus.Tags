@@ -20,10 +20,17 @@ public class LineBasedComChannel : ComChannelBase<string>
     /// <inheritdoc/>
     public override string Driver => ComDriverNames.DriverName;
 
+    /// <summary>
+    /// 读取整行？
+    /// </summary>
+    public bool ReadEntireLine {get; set;} = true;
+
     /// <inheritdoc/>
     protected override Task<string> ParseDataAsync(SerialPort sport, CancellationToken ct)
     {
-        var str = sport.ReadLine();
+        var str = this.ReadEntireLine ?
+            sport.ReadLine() : 
+            sport.ReadExisting();
         return Task.FromResult(str);
     }
 }

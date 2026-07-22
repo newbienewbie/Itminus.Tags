@@ -30,6 +30,10 @@ public class ComChannelDescriptor : TagChannelDescriptor
         {
             ele.SetOrAddChild(nameof(Option.NewLine), this.Option.NewLine);
         }
+        if(!this.Option.ReadEntireLine)
+        {
+            ele.SetOrAddChild(nameof(Option.ReadEntireLine), this.Option.ReadEntireLine);
+        }
         if(!string.IsNullOrEmpty(this.Option.ReadScript))
         {
             ele.SetOrAddChild(nameof(Option.ReadScript), this.Option.ReadScript);
@@ -89,6 +93,13 @@ public static class TagChannelDescriptor_ComExtensions
             newline = raw;
         }
 
+        var readEntireLine = (
+                descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadEntireLine), out var readEntireLineStr) 
+                && bool.TryParse(readEntireLineStr.Value, out var readEntireLineVal)
+            )? 
+                readEntireLineVal: 
+                true;
+
         var readscript = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadScript), out var readScript) ?
                  null :
                  readScript.Value;
@@ -125,6 +136,7 @@ public static class TagChannelDescriptor_ComExtensions
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
             Option = new ComChannelOption {
+                ReadEntireLine = readEntireLine,
                 NewLine = newline,
                 ReadScript = readscript,
                 ReadScriptDebugInformationEnabled = readScriptDebugInformationEnabled,
