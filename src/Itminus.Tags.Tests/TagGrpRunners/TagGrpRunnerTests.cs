@@ -294,7 +294,118 @@ public class TagGrpRunnerTests
         Assert.True(intentTask.IsCompletedSuccessfully, "intentTask 应成功完成");
     }
 
+    [Fact]
+    public async Task StartAsync_ConsecutiveFailures_GrowDelay()
+    {
+        // Arrange — 使用一个记录调用次数的假策略
+        var mockStrategy = new MockRetryStrategy(delay: TimeSpan.FromMilliseconds(100));
+        var entry = new MockTagGrp
+        {
+            Channel = new FakedChannel(),
+            ScanInterval = 20,
+            IsEnabled = true,
+            ReadAsyncThrows = new InvalidOperationException("模拟读取异常")
+        };
+        var project = new MockProject();
+        var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance, mockStrategy);
 
+        using var cts = new CancellationTokenSource(2000);
+        var crashCount = 0;
+
+        runner.TurnCrashed += (_, _, _) =>
+        {
+            crashCount++;
+            return Task.CompletedTask;
+        };
+
+        // Act
+        await RunUntilCancelled(runner, entry, cts.Token);
+
+        // Assert — 应发生多次崩溃且每次传入的 consecutiveFailureCount 递增
+        Assert.True(crashCount >= 2, $"至少应发生2次崩溃，实际={crashCount}");
+        Assert.Equal(crashCount, mockStrategy.CallCount);
+        for (int i = 1; i < mockStrategy.CallCount; i++)
+        {
+            Assert.True(mockStrategy.ReceivedCounts[i] > mockStrategy.ReceivedCounts[i - 1],
+                $"consecutiveFailureCount 应递增: {mockStrategy.ReceivedCounts[i - 1]} -> {mockStrategy.ReceivedCounts[i]}");
+        }
+    }
+
+    [Fact]
+    public async Task StartAsync_FailResetThenAccumulateAgain()
+    {
+        // Arrange — 验证：失败→成功复位→再连续失败，计数器从 1 重新累计（1,2,3... 而非 4,5,6...）
+        var mockStrategy = new MockRetryStrategy(delay: TimeSpan.FromMilliseconds(10));
+        var entry = new MockTagGrp
+        {
+            Channel = new FakedChannel(),
+            ScanInterval = 10,
+            IsEnabled = true,
+        };
+        var project = new MockProject();
+        var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance, mockStrategy);
+
+        using var cts = new CancellationTokenSource();
+
+        // phase:
+        //   0 → 连续失败（累计 1,2,3）
+        //   1 → 在 crash handler 中禁用 entry，让外循环复位（!IsEnabled → continue → finally 复位）
+        //   2 → 重新启用，再次连续失败（从 1 重新累计 1,2,3...）
+        //   3 → 停止
+        var phase = 0;
+        var totalCrashes = 0;
+
+        entry.OnRead = () =>
+        {
+            if (phase == 0 || phase == 2)
+            {
+                throw new InvalidOperationException("模拟读取异常");
+            }
+        };
+
+        runner.TurnCrashed += (_, _, _) =>
+        {
+            totalCrashes++;
+
+            if (phase == 0 && totalCrashes >= 3)
+            {
+                // 已累计 3 次失败，禁用 entry 以触发复位
+                phase = 1;
+                entry.IsEnabled = false;
+                // 1 秒后重新启用（确保禁用的外循环迭代已完成复位）
+                _ = Task.Delay(1000, cts.Token).ContinueWith(_ =>
+                {
+                    if (!cts.IsCancellationRequested)
+                    {
+                        entry.IsEnabled = true;
+                        phase = 2;
+                    }
+                }, TaskContinuationOptions.NotOnCanceled);
+            }
+            else if (phase == 2 && totalCrashes >= 6)
+            {
+                // 复位后又累计了 3 次（totalCrashes 6 = 前 3 + 后 3）
+                phase = 3;
+                cts.Cancel();
+            }
+            return Task.CompletedTask;
+        };
+
+        // Act
+        await RunUntilCancelled(runner, entry, cts.Token);
+
+        // Assert
+        Assert.True(mockStrategy.CallCount >= 6);
+
+        // 前 3 次：连续累计 1, 2, 3
+        Assert.Equal(1, mockStrategy.ReceivedCounts[0]);
+        Assert.Equal(2, mockStrategy.ReceivedCounts[1]);
+        Assert.Equal(3, mockStrategy.ReceivedCounts[2]);
+        // 复位后再连续失败：重新从 1 累计 → 1, 2, 3...
+        Assert.Equal(1, mockStrategy.ReceivedCounts[3]);
+        Assert.Equal(2, mockStrategy.ReceivedCounts[4]);
+        Assert.Equal(3, mockStrategy.ReceivedCounts[5]);
+    }
 
     #region Mocks
 
@@ -315,6 +426,10 @@ public class TagGrpRunnerTests
 
         public int ReadAsyncCallCount { get; private set; }
         public int WriteAsyncCallCount { get; private set; }
+
+        /// <summary>
+        /// 如果不为 null，则 ReadAsync 会抛出此异常。
+        /// </summary>
         public Exception? ReadAsyncThrows { get; set; }
         public bool IsDirtyReturn { get; set; }
         public Action? OnRead { get; set; }
@@ -388,6 +503,35 @@ public class TagGrpRunnerTests
 
         public event TurnStarted? TurnStarted;
         public event TurnCrashed? TurnCrashed;
+    }
+
+    /// <summary>
+    /// 模拟的 <see cref="ITagGrpRunnerRetryStrategy"/>，记录每次调用时传入的
+    /// <c>consecutiveFailureCount</c> 并返回固定延迟。
+    /// </summary>
+    private class MockRetryStrategy : ITagGrpRunnerRetryStrategy
+    {
+        private readonly TimeSpan _delay;
+        private readonly List<int> _receivedCounts = new();
+
+        /// <summary> 
+        /// c'tor。
+        /// 指定返回的固定延迟值。
+        /// </summary>
+        public MockRetryStrategy(TimeSpan delay) => _delay = delay;
+
+        public IReadOnlyList<int> ReceivedCounts => _receivedCounts;
+        public int CallCount => _receivedCounts.Count;
+
+        /// <summary>最近一次返回的延迟值，仅供断言辅助使用。</summary>
+        public TimeSpan LastDelay { get; private set; }
+
+        public TimeSpan GetDelay(int consecutiveFailureCount)
+        {
+            _receivedCounts.Add(consecutiveFailureCount);
+            LastDelay = _delay;
+            return _delay;
+        }
     }
 
     #endregion

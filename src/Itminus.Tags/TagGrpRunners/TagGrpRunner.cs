@@ -6,14 +6,17 @@ internal class TagGrpRunner : ITagGrpRunner
 {
     private readonly ITagsProject _project;
     private readonly ILogger<TagGrpRunner> _logger;
+    private readonly ITagGrpRunnerRetryStrategy _retryStrategy;
+    private int _consecutiveFailures;
 
     /// <summary>
     /// c'tor
     /// </summary>
-    public TagGrpRunner(ITagsProject project, ILogger<TagGrpRunner> logger)
+    public TagGrpRunner(ITagsProject project, ILogger<TagGrpRunner> logger, ITagGrpRunnerRetryStrategy? retryStrategy = null)
     {
         this._project = project;
         this._logger = logger;
+        this._retryStrategy = retryStrategy ?? new DefaultTagGrpRunnerRetryStrategy();
     }
 
     /// <inheritdoc/>
@@ -31,15 +34,17 @@ internal class TagGrpRunner : ITagGrpRunner
         while (!ct.IsCancellationRequested)
         {
             ITagChannel? channel = null;
+            // 本次启动是否失败？如果入口被禁用，不会被视为失败，即禁用会复位失败计数器
+            var failed = false;
             try
             {
-                channel = entry.GetChannel();
                 if (!entry.IsEnabled)
                 {
                     await Task.Delay(500, ct);
                     continue;
                 }
 
+                channel = entry.GetChannel();
                 if (TurnStarted is not null)
                 {
                     await TurnStarted(entry, channel);
@@ -69,6 +74,8 @@ internal class TagGrpRunner : ITagGrpRunner
             }
             catch (Exception ex)
             {
+                failed = true;
+                _consecutiveFailures++;
 
                 try
                 {
@@ -105,7 +112,16 @@ internal class TagGrpRunner : ITagGrpRunner
             }
             finally
             {
-                await Task.Delay(entry.ScanInterval, ct);
+                // 成功迭代则重置连续失败计数器；失败则使用策略等待
+                if (!failed)
+                {
+                    _consecutiveFailures = 0;
+                }
+
+                var delay = _consecutiveFailures > 0
+                    ? _retryStrategy.GetDelay(_consecutiveFailures)
+                    : TimeSpan.FromMilliseconds(entry.ScanInterval);
+                await Task.Delay(delay, ct);
             }
         }
     }

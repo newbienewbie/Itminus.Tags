@@ -19,7 +19,8 @@ internal class TagGrpRunnerFactory : ITagGrpRunnerFactory
     public ITagGrpRunner Create(ITagsProject project)
     {
         var logger = this._sp.GetRequiredService<ILogger<TagGrpRunner>>();
-        var runner = new TagGrpRunner(project, logger);
+        var strategy = this._sp.GetService<ITagGrpRunnerRetryStrategy>();
+        var runner = new TagGrpRunner(project, logger, strategy);
         return runner;
     }
 }
