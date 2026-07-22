@@ -28,17 +28,11 @@ public class LineBasedComChannel : ComChannelBase<string>
     public bool ReadEntireLine {get; set;} = true;
 
     /// <inheritdoc/>
-    protected override async Task<string> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct)
+    protected override Task<string?> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct)
     {
-        string? str = null;
-        do
-        {
-            str = this.ReadEntireLine ?
-                sport.ReadLine() : 
-                sport.ReadExisting();
-            await Task.Yield();
-        }
-        while (string.IsNullOrEmpty(str) && !ct.IsCancellationRequested);
-        return str;
+        var str = this.ReadEntireLine ?
+            sport.ReadLine() : 
+            sport.ReadExisting();
+        return Task.FromResult(string.IsNullOrEmpty(str) ? null : str);
     }
 }

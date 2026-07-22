@@ -206,12 +206,13 @@ public abstract class ComChannelBase<T> :ITagChannel
     }
 
     /// <summary>
-    /// 解析数据包的抽象方法，由子类实现。
+    /// 从串口读取并解析一个数据包。如果未读到有效数据，返回 default(T?)。<br/>
+    /// 子类在此方法中实现具体的读取+解析逻辑（如 ReadLine、ReadExisting 或脚本执行），
     /// </summary>
-    /// <param name="sport"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
-    protected abstract Task<T> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct);
+    /// <param name="sport">串口句柄</param>
+    /// <param name="ct">取消令牌</param>
+    /// <returns>解析后的数据包，未读到有效数据时返回 default(T?)</returns>
+    protected abstract Task<T?> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct);
 
     private async Task PollDataAsync(CancellationToken ct)
     {
@@ -233,6 +234,10 @@ public abstract class ComChannelBase<T> :ITagChannel
                 {
                     this._readSema.Release();
                 }
+
+                // 未读到有效数据 → 跳过本轮，不写入 Channel 也不触发事件
+                if (data is null)
+                    continue;
 
                 await _channel.Writer.WriteAsync(data, ct);
                 DataReceived?.Invoke(this, data);

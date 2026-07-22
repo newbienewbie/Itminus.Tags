@@ -46,7 +46,7 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
     private string? _oldScriptPath;
 
     /// <inheritdoc/>
-    protected override async Task<T> ParseDataAsync(ISerialPortHandle serial, CancellationToken ct)
+    protected override async Task<T?> ParseDataAsync(ISerialPortHandle serial, CancellationToken ct)
     {
         if(this._runner is null)
         {
@@ -89,8 +89,8 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
         }
         var adapter = serial as SerialPortAdapter ?? throw new InvalidOperationException("ScriptBasedComChannel 需要真实的 SerialPort，请使用 SerialPortAdapter");
         var realPort = adapter.InnerPort;
-        var str = await this._runner.Invoke(new SerialPortGlobals(realPort), ct);
-        return str;
+        var result = await this._runner.Invoke(new SerialPortGlobals(realPort), ct);
+        return result;
     }
 
     private void TryClearOldScriptPath()
