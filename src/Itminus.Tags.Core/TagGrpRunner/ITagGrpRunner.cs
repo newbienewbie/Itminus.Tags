@@ -56,10 +56,10 @@ public interface ITagGrpRunner
     event TurnCrashed? TurnCrashed;
 
     /// <summary>
-    /// 启动对群组的监控: loop(输入 -> 处理 ->输出)<br/>
+    /// 启动对群组的监控: loop(意图执行-> 读取输入 -> 逻辑处理 -> 刷写输出)<br/>
     /// 一旦成功启动轮询，除非主动取消，否则不会抛出异常。
     /// </summary>
-    /// <param name="entry"></param>
+    /// <param name="entry">入口</param>
     /// <param name="ct"></param>
     /// <returns></returns>
     Task StartAsync(ITagGrp entry, CancellationToken ct);
