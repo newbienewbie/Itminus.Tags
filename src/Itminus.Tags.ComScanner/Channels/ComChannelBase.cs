@@ -29,6 +29,11 @@ public abstract class ComChannelBase<T> :ITagChannel
     public string? NewLine { get; }
 
     /// <summary>
+    /// 串口工厂委托。若设置，<see cref="CreateSerialPort(ComChannelOption)"/> 会优先调用此委托创建串口句柄。
+    /// </summary>
+    public Func<ComChannelOption, ISerialPortHandle>? SerialPortFactory { get; set; }
+
+    /// <summary>
     /// 消息通道的容量
     /// </summary>
     public int Capacity { get; }
@@ -47,25 +52,32 @@ public abstract class ComChannelBase<T> :ITagChannel
     public abstract string Driver { get; }
 
     /// <summary>
-    /// 底层串口对象。
+    /// 底层串口句柄。
     /// 如果未连接，则为null
     /// </summary>
-    public SerialPort? SerialPort { get; private set; }
+    public ISerialPortHandle? SerialPort { get; private set; }
 
     /// <summary>
-    /// 连接信号量，用于确保连接操作的线程安全。
+    /// 连接/断开互斥信号量。确保 <see cref="EnsureConnectedAsync"/> 和 <see cref="DisconnectAsync"/> 不会并发执行。
     /// </summary>
-    protected readonly SemaphoreSlim _connSema = new SemaphoreSlim(1);
+    private readonly SemaphoreSlim _connSema = new SemaphoreSlim(1, 1);
 
     /// <summary>
-    /// 读取信号量，用于确保读取操作的线程安全。
+    /// 读取互斥信号量。轮询线程通过此信号量独占读取操作。
     /// </summary>
-    protected readonly SemaphoreSlim _readSema = new SemaphoreSlim(1);
+    private readonly SemaphoreSlim _readSema = new SemaphoreSlim(1, 1);
 
     /// <summary>
-    /// 写入信号量，用于确保写入操作的线程安全。
+    /// 写入互斥信号量。所有写操作通过此信号量串行化。
+    /// 与读取（<see cref="_readSema"/>）不互斥——SerialPort 支持全双工读写。
     /// </summary>
-    protected readonly SemaphoreSlim _writeSema = new SemaphoreSlim(1);
+    private readonly SemaphoreSlim _writeSema = new SemaphoreSlim(1, 1);
+
+    /// <summary>
+    /// 后台轮询线程的生命周期 CancellationTokenSource。
+    /// <see cref="Dispose()"/> 时先取消此源以停止轮询，再安全释放资源。
+    /// </summary>
+    private CancellationTokenSource? _pollCts;
 
 
     /// <summary>
@@ -90,37 +102,39 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <returns></returns>
     public async virtual Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
-        await this._connSema.WaitAsync(ct);
-        try
-        {
-            if (this.SerialPort != null && !force)
-            {
-                return;
-            }
+        await this.ExecuteOneByOneAsync( 
+            _connSema, 
+            async ct => {
+                if (this.SerialPort != null && !force)
+                {
+                    return;
+                }
 
-            // 打开串口
-            this.SerialPort = new SerialPort(this._opt.Port, this._opt.BaundRate, this._opt.Parity, this._opt.DataBits, this._opt.StopBits);
-            if (!string.IsNullOrEmpty(this.NewLine))
-            {
-                this.SerialPort.NewLine = this.NewLine;
-            }
-            this.SerialPort.Open();
+                // 打开串口
+                this.SerialPort = CreateSerialPort(this._opt);
+                if (!string.IsNullOrEmpty(this.NewLine))
+                {
+                    this.SerialPort.NewLine = this.NewLine;
+                }
+                this.SerialPort.Open();
 
-            // 清空缓存
-            if(this._channel is not null)
-            {
-                this._channel.Writer.TryComplete();
-            }
-            this._channel = Channel.CreateBounded<T>(Capacity);
-            // 启动轮询
-            var t = new Thread(async () => await PollDataAsync(ct));
-            t.IsBackground = true;
-            t.Start();
-        }
-        finally
-        {
-            this._connSema.Release();
-        }
+                // 清空缓存
+                if(this._channel is not null)
+                {
+                    this._channel.Writer.TryComplete();
+                }
+                this._channel = Channel.CreateBounded<T>(Capacity);
+
+                // 启动轮询（使用内部 _pollCts 管理生命周期）
+                var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+                this._pollCts = cts;
+                var pollToken = cts.Token;
+                var t = new Thread(async () => await PollDataAsync(pollToken));
+                t.IsBackground = true;
+                t.Start();
+            },
+            ct
+        );
     }
 
     /// <summary>
@@ -130,30 +144,65 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <returns></returns>
     public async virtual Task DisconnectAsync(CancellationToken ct)
     {
-        await this._connSema.WaitAsync(ct);
-        try
-        {
-            this.SerialPort?.Close();
-            this.SerialPort?.Dispose();
-            this._channel.Writer.TryComplete();
-        }
-        finally
-        {
-            this.SerialPort = null;
-            this._connSema.Release();
-        }
+        await this.ExecuteOneByOneAsync(
+            _connSema,
+            async ct =>
+            {
+                // 先取消轮询线程，防止 PollDataAsync 在通道关闭后
+                // 因 ChannelClosedException 递归调用 DisconnectAsync 导致死锁
+                this._pollCts?.Cancel();
+
+                this.SerialPort?.Close();
+                this.SerialPort?.Dispose();
+                this._channel.Writer.TryComplete();
+                this.SerialPort = null;
+            },
+            ct
+        );
     }
 
     /// <inheritdoc/>
     public virtual void Dispose()
     {
-        this._channel.Writer.TryComplete();
-        this.SerialPort?.Dispose();
-        this.SerialPort = null;
+        // 1. 先取消轮询线程
+        var cts = Interlocked.Exchange(ref _pollCts, null);
+        cts?.Cancel();
+        cts?.Dispose();
 
-        this._connSema.Dispose();
+        // 2. 排干读取（等当前读操作完成）、写入（等当前写操作完成）、连接操作
+        this._readSema.Wait();
+        this._readSema.Release();
         this._readSema.Dispose();
+
+        this._writeSema.Wait();
+        this._writeSema.Release();
         this._writeSema.Dispose();
+
+        this._connSema.Wait();
+        try
+        {
+            this.SerialPort?.Dispose();
+            this.SerialPort = null;
+            this._channel.Writer.TryComplete();
+        }
+        finally
+        {
+            this._connSema.Release();
+            this._connSema.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// 创建串口句柄的工厂方法。
+    /// 若设置了 <see cref="SerialPortFactory"/> 则优先使用委托；
+    /// 否则默认创建 <see cref="SerialPortAdapter"/> 包装真实的 <see cref="System.IO.Ports.SerialPort"/>。
+    /// 子类可重写此方法以自定义创建逻辑。
+    /// </summary>
+    protected virtual ISerialPortHandle CreateSerialPort(ComChannelOption opt)
+    {
+        return SerialPortFactory?.Invoke(opt)
+            ?? new SerialPortAdapter(
+                new SerialPort(opt.Port, opt.BaundRate, opt.Parity, opt.DataBits, opt.StopBits));
     }
 
     /// <summary>
@@ -162,44 +211,43 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <param name="sport"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    protected abstract Task<T> ParseDataAsync(SerialPort sport, CancellationToken ct);
+    protected abstract Task<T> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct);
 
     private async Task PollDataAsync(CancellationToken ct)
     {
-        if (this.SerialPort is null)
-        {
-            throw new InvalidOperationException($"通道({this.ChannelName})的串口为null, 无法Poll");
-        }
         try
         {
+            if (this.SerialPort is null)
+            {
+                throw new InvalidOperationException($"通道({this.ChannelName})的串口为null, 无法Poll");
+            }
             while (!ct.IsCancellationRequested)
             {
                 T? data;
-                var read = false;
                 await this._readSema.WaitAsync(ct);
                 try
                 {
-                    read = true;
-                    data = await ParseDataAsync(this.SerialPort,ct);
+                    data = await ParseDataAsync(this.SerialPort, ct);
                 }
                 finally
                 {
                     this._readSema.Release();
                 }
 
-                if(read)
-                {
-                    await _channel.Writer.WriteAsync(data, ct);
-                    DataReceived?.Invoke(this, data);
-                }
+                await _channel.Writer.WriteAsync(data, ct);
+                DataReceived?.Invoke(this, data);
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ct.IsCancellationRequested && ex is not OperationCanceledException)
         {
+            // 只有非关闭引起的异常才尝试重连
             this._logger.LogError("通道({channel})读取失败：{ex}", this.ChannelName, ex.Message);
             await this.DisconnectAsync(CancellationToken.None);
         }
-
+        catch
+        {
+            // 关闭过程中的异常（取消/释放）静默吞掉
+        }
     }
     
     /// <summary>
@@ -235,19 +283,19 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <exception cref="InvalidOperationException"></exception>
     public async virtual Task WriteAsync(string response)
     {
-        if (this.SerialPort is null)
+        var serial = this.SerialPort;
+        if (serial is null)
         {
             throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
         }
-        await this._writeSema.WaitAsync();
-        try
-        {
-            this.SerialPort.Write(response);
-        }
-        finally
-        {
-            this._writeSema.Release();
-        }
+        await this.ExecuteOneByOneAsync(
+            _writeSema,
+            async ct =>
+            {
+                serial.Write(response);
+            },
+            CancellationToken.None
+        );
     }
 
     /// <summary>
@@ -259,21 +307,38 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <exception cref="InvalidOperationException"></exception>
     public async virtual Task WriteAsync(byte[] response,int offset, int count)
     {
-        if (this.SerialPort is null)
+        var serial = this.SerialPort;
+        if (serial is null)
         {
             throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
         }
-        await this._writeSema.WaitAsync();
+        await this.ExecuteOneByOneAsync(
+            _writeSema,
+            async ct =>
+            {
+                serial.Write(response, offset, count);
+            },
+            CancellationToken.None
+        );
+    }
+
+
+    /// <summary>
+    /// 串行化执行异步操作的辅助方法。
+    /// 通过指定的信号量确保操作互斥执行。
+    /// </summary>
+    private async Task ExecuteOneByOneAsync(SemaphoreSlim sema, Func<CancellationToken, Task> action, CancellationToken ct)
+    {
+        await sema.WaitAsync(ct);
         try
         {
-            this.SerialPort.Write(response, offset, count);
+            await action(ct);
         }
         finally
         {
-            this._writeSema.Release();
+            sema.Release();
         }
     }
-
 
 
 }

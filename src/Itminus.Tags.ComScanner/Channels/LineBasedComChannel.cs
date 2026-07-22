@@ -15,6 +15,7 @@ public class LineBasedComChannel : ComChannelBase<string>
     public LineBasedComChannel(string channelName, ComChannelOption opt, ILogger<LineBasedComChannel> logger)
         :base(channelName, opt, logger)
     {
+        this.ReadEntireLine = opt.ReadEntireLine;
     }
 
     /// <inheritdoc/>
@@ -26,7 +27,7 @@ public class LineBasedComChannel : ComChannelBase<string>
     public bool ReadEntireLine {get; set;} = true;
 
     /// <inheritdoc/>
-    protected override Task<string> ParseDataAsync(SerialPort sport, CancellationToken ct)
+    protected override Task<string> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct)
     {
         var str = this.ReadEntireLine ?
             sport.ReadLine() : 

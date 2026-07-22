@@ -41,7 +41,6 @@ internal class ComChannelFactory : ITagChannelFactory
             descriptor.Option,
             lineLogger
         );
-        channel.ReadEntireLine = descriptor.Option.ReadEntireLine;
         return channel;
     }
 
