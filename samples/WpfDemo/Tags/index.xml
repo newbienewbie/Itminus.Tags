@@ -9,6 +9,16 @@
 		<Slot>1</Slot>
 	</Channel>
 
+	<Channel name="COM-2#" driver="COM">
+		<Port>COM2</Port>
+		<BaundRate>9600</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+		<ReadEntireLine>false</ReadEntireLine>
+		<NewLine>\r</NewLine>
+	</Channel>
+
 	<!-- 测点配置，可以配置多个 -->
 	<TagGrp name="IoBox" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="0">
 		<TagGrp name="通用状态">
@@ -23,7 +33,10 @@
 		</TagGrp>
 
 	</TagGrp>
-
+	<TagGrp name="扫码枪" isEntry="true" isEnabled="true" scanInterval="10">
+		<!--  引入了自定义的marker特性来标识  -->
+		<Tag name="2#" type="STR" access="RO" channel="COM-2#" marker="ComScanner"/>
+	</TagGrp>
 
 	<!-- 逻辑配置，可以配置0~N个 -->
 	<!--<Logicet>Samples.Plugin1.dll</Logicet>-->

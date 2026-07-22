@@ -14,6 +14,7 @@
     <ProjectReference Include="..\..\src\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
     <ProjectReference Include="..\..\src\Itminus.Tags\Itminus.Tags.csproj" />
     <ProjectReference Include="..\..\src\Itminus.Tags.McpServer\Itminus.Tags.McpServer.csproj" />
+    <ProjectReference Include="..\..\src\Itminus.Tags.ComScanner\Itminus.Tags.ComScanner.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Tags\index.xml">

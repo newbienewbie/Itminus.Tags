@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.IO.Ports;
+using System.Net;
 
 namespace Itminus.Tags.ComScanner.Channels;
 
@@ -27,11 +28,17 @@ public class LineBasedComChannel : ComChannelBase<string>
     public bool ReadEntireLine {get; set;} = true;
 
     /// <inheritdoc/>
-    protected override Task<string> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct)
+    protected override async Task<string> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct)
     {
-        var str = this.ReadEntireLine ?
-            sport.ReadLine() : 
-            sport.ReadExisting();
-        return Task.FromResult(str);
+        string? str = null;
+        do
+        {
+            str = this.ReadEntireLine ?
+                sport.ReadLine() : 
+                sport.ReadExisting();
+            await Task.Yield();
+        }
+        while (string.IsNullOrEmpty(str) && !ct.IsCancellationRequested);
+        return str;
     }
 }
