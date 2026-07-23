@@ -48,6 +48,7 @@ public class ChannelDescriptorTests
     <IpAddr>192.168.1.13</IpAddr>
     <Rack>3</Rack>
     <Slot>4</Slot>
+    <ConnectionType>2</ConnectionType>
 </Channel>
 ";
         var element = XElement.Parse(xml);
@@ -56,12 +57,49 @@ public class ChannelDescriptorTests
         Assert.Equal("192.168.1.13", descriptor1.IpAddr);
         Assert.Equal(3, descriptor1.Rack);
         Assert.Equal(4, descriptor1.Slot);
+        Assert.Equal(2, descriptor1.ConnectionType);
 
         var element2 = descriptor1.ToXElement();
         Assert.Equal(element.ToString(), element2.ToString());
     }
 
+    [Fact]
+    public void TestLoadS7TagChannelDescriptorFromXml_EmptyConnectionType()
+    {
+        var xml =
+@"
+<Channel name='S7-3' driver='S7' >
+    <IpAddr>192.168.1.13</IpAddr>
+    <Rack>3</Rack>
+    <Slot>4</Slot>
+</Channel>
+";
+        var element = XElement.Parse(xml);
+        var descriptor0 = element.ToTagChannelDescriptor();
+        var descriptor1 = descriptor0.ToS7TagChannelDescriptor();
+        Assert.Equal("192.168.1.13", descriptor1.IpAddr);
+        Assert.Equal(3, descriptor1.Rack);
+        Assert.Equal(4, descriptor1.Slot);
+        Assert.Equal(3, descriptor1.ConnectionType);
+    }
 
+
+    [Fact]
+    public void TestLoadS7TagChannelDescriptorFromXml_InvalidConnectionType_ShouldThrow()
+    {
+        var xml =
+@"
+<Channel name='S7-3' driver='S7' >
+    <IpAddr>192.168.1.13</IpAddr>
+    <Rack>3</Rack>
+    <Slot>4</Slot>
+    <ConnectionType>invalid</ConnectionType>
+</Channel>
+";
+        var element = XElement.Parse(xml);
+        var descriptor0 = element.ToTagChannelDescriptor();
+        Assert.Throws<ArgumentException>(() => descriptor0.ToS7TagChannelDescriptor());
+    }
 
     [Fact]
     public void TestLoadModbusTcpTagChannelDescriptorFromXml()

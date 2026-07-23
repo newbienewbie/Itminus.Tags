@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using StdUnit.Sharp7.Options;
 using StdUnit.Sharp7;
 using Microsoft.FSharp.Core;
 
@@ -25,6 +24,12 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     private readonly ILogger<S7TagChannel> _logger;
     private readonly SemaphoreSlim _rw = new SemaphoreSlim(1, 1);
 
+    /// <summary>
+    /// S7Client 工厂。
+    /// 如果不为 null，则在 <see cref="CreateClientAndConnectAsync"/> 被调用；
+    /// 如果返回null，则会直接使用默认的<see cref="S7Client"/>构造
+    /// </summary>
+    public Func<S7PlcItem, S7Client?>? ClientFactory { get; set; }
 
 
     internal S7Client? Client { get; set; }
@@ -72,7 +77,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
         await this.ExecuteOneByOneAsync(
             async ct => {
                 //当前client存在并且连接有效
-                if (!force && Client != null && Client.Connected)
+                if (!force && Client != null && !Client.IsDead())
                 {
                     return;
                 }
@@ -113,7 +118,8 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
         var tcs = new TaskCompletionSource<FSharpResult<S7Client, ApiError>>();
         var th = new Thread(() =>
         {
-            var client = new S7Client();
+            var client = ClientFactory?.Invoke(this.PlcItem) ?? new S7Client();
+            client.SetConnectionType(this.PlcItem.ConnectionType);
             try
             {
                 var code = client.ConnectTo(this.PlcItem.IpAddr, this.PlcItem.Rack, this.PlcItem.Slot);

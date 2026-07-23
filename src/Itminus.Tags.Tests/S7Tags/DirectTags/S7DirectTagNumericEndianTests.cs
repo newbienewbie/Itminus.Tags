@@ -1,6 +1,5 @@
-using Itminus.Tags.S7;
+﻿using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
-using StdUnit.Sharp7.Options;
 using System;
 using System.Buffers.Binary;
 using System.Threading;
