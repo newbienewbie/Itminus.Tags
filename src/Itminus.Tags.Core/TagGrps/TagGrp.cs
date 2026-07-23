@@ -129,6 +129,9 @@ public class TagGrp : ITagGrp
     public int ScanInterval {get;set;}
 
     /// <inheritdoc/>
+    public TagAccessMode? AccessMode { get; set; }
+
+    /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)
     {
         foreach(var kvp in Children)

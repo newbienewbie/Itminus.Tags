@@ -98,7 +98,7 @@ public abstract class TagCbntBuilderBase
     /// </summary>
     /// <param name="accessMode"></param>
     /// <returns></returns>
-    public virtual TagCbntBuilderBase WithAccessMode(TagAccessMode accessMode)
+    public virtual TagCbntBuilderBase WithAccessMode(TagAccessMode? accessMode)
     {
         TagCbnt.AcessMode = accessMode;
         return this;
@@ -135,7 +135,7 @@ public abstract class TagCbntBuilderBase
     {
         tag.Parent = TagContainer.From(this.TagCbnt);
         TagCbnt.Children.Add(tag.TagName(), tag);
-        return this.WithAccessMode(tag.AccessMode());
+        return this;
     }
 
     /// <summary>

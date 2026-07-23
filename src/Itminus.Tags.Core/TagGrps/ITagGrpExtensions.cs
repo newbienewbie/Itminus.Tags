@@ -115,6 +115,24 @@ public static class ITagGrpExtensions
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public static ITagChannel GetRequiredChannel(this ITagGrp tagGrp) => tagGrp.GetChannel() ?? throw new Exception($"Channel is not configured : TagGrp({tagGrp.Name})");
+
+    /// <summary>
+    /// 冒泡式获取访问模式。<br/>
+    /// 先查自身 <see cref="ITagGrp.AccessMode"/>，再冒泡查父级。<br/>
+    /// 如果所有层级均为 null，默认返回 <see cref="TagAccessMode.RW"/>。
+    /// </summary>
+    /// <param name="tagGrp"></param>
+    /// <returns></returns>
+    public static TagAccessMode GetAccessMode(this ITagGrp tagGrp)
+    {
+        if (tagGrp.AccessMode.HasValue)
+            return tagGrp.AccessMode.Value;
+
+        if (tagGrp.Parent is not null)
+            return tagGrp.Parent.GetAccessMode();
+
+        return TagAccessMode.RW;
+    }
     #endregion
 
 

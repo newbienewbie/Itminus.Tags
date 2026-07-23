@@ -103,7 +103,7 @@ public class TagsMcpServerTools
         try { tag = proj.Tags.SelectTag(path); }
         catch (Exception ex) { return WriteResult.Fail($"Failed to find tag at path '{path}': {ex.Message}"); }
 
-        if (tag.AccessMode() == TagAccessMode.RO)
+        if (tag.GetAccessMode() == TagAccessMode.RO)
             return WriteResult.Fail($"Tag '{path}' is read-only (access mode: RO). Cannot write.");
 
         var entry = tag.SearchEntry();
@@ -159,7 +159,7 @@ public class TagsMcpServerTools
             try { tag = proj.Tags.SelectTag(path); }
             catch (Exception ex) { return WriteResult.Fail($"Failed to find tag at '{path}': {ex.Message}"); }
 
-            if (tag.AccessMode() == TagAccessMode.RO)
+            if (tag.GetAccessMode() == TagAccessMode.RO)
                 return WriteResult.Fail($"Tag '{path}' is read-only. Aborting batch write.");
 
             var entry = tag.SearchEntry();

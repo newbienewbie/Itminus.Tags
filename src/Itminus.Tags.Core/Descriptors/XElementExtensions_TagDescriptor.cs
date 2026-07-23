@@ -48,11 +48,7 @@ public static class XElementExtensions_TagDescriptor
                 .ToDictionary(attr => attr.Name.LocalName, attr => attr)
         };
 
-        var tagAccess = e.GetTagUnionAccess(tagName);
-        if (tagAccess.HasValue)
-        {
-            tagdescriptor.AccessMode = tagAccess.Value;
-        }
+        tagdescriptor.AccessMode = e.GetTagUnionAccess(tagName);
 
         var tagSize = (string?)e.Attribute("tagSize");
         if (!string.IsNullOrEmpty(tagSize))
@@ -76,15 +72,15 @@ public static class XElementExtensions_TagDescriptor
         var name = new XAttribute("name", descriptor.TagName);
         var address = new XAttribute("address", descriptor.RawAddress);
         var tagEndian = new XAttribute("endian", descriptor.EndianKind);
-        var access = new XAttribute("access", descriptor.AccessMode);
-
-
         var attrs = new List<XAttribute> {
             name,
             address,
             tagEndian,
-            access,
         };
+        if (descriptor.AccessMode.HasValue)
+        {
+            attrs.Add(new XAttribute("access", descriptor.AccessMode.Value));
+        }
         if (descriptor.TagKind != BuiltinTagKinds.Unknown)
         {
             var tagKind = new XAttribute("type", descriptor.TagKind);

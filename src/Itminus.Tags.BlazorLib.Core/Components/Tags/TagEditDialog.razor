@@ -5,7 +5,7 @@
 <MudDialog>
     <DialogContent>
         <MudText Typo="Typo.h6">编辑: @Tag.TagName()</MudText>
-        <MudText Typo="Typo.caption">@Tag.RawAddress() | @Tag.TagKind() | Access=@Tag.TagDescriptor.AccessMode</MudText>
+        <MudText Typo="Typo.caption">@Tag.RawAddress() | @Tag.TagKind() | Access=@(Tag.TagDescriptor.AccessMode?.ToString() ?? "None")</MudText>
 
         <MudDivider class="my-3" />
 

@@ -31,11 +31,7 @@ public static class XElementExtensions_TagCbntDescriptor
             ScanInterval = scanInterval,
         };
 
-        var accessMode = thisElement.GetTagUnionAccess(thisTagName);
-        if (accessMode.HasValue)
-        {
-            descriptor.AccessMode = accessMode.Value;
-        }
+        descriptor.AccessMode = thisElement.GetTagUnionAccess(thisTagName);
 
         // 处理额外特性
         foreach (var attr in thisElement.Attributes())
@@ -86,7 +82,10 @@ public static class XElementExtensions_TagCbntDescriptor
         {
             elem.SetAttributeValue("scanInterval", descriptor.ScanInterval);
         }
-        elem.SetAttributeValue("access", descriptor.AccessMode.ToString());
+        if (descriptor.AccessMode.HasValue)
+        {
+            elem.SetAttributeValue("access", descriptor.AccessMode.Value.ToString());
+        }
 
         foreach (var child in descriptor.Children)
         {

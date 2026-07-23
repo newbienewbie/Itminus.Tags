@@ -29,7 +29,7 @@
 	</TagGrp>
 
 	<TagGrp name="称重仪" isEntry="true" isEnabled="true" scanInterval="10">
-	    <!-- 注意这个测点没有指定 access -->
+	    <!-- 注意这个测点没有指定 access，会冒泡到父级 Grp 的默认值 RW -->
 		<Tag name="1#" type="AnyLoad" channel="COM-2" ></Tag>
 	</TagGrp>
 

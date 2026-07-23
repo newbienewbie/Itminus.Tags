@@ -136,6 +136,7 @@ public class CompositeTagsLoader : ITagsLoader
         var thisGrp = new TagGrp(thisTagName, thisIsEntry, thisChannel);
         thisGrp.IsEnabled = grpDescriptor.IsEnabled;
         thisGrp.ScanInterval = grpDescriptor.ScanInterval;
+        thisGrp.AccessMode = grpDescriptor.AccessMode;
         parent.AddTag(thisGrp);
         foreach (var child in grpDescriptor.Children)
         {

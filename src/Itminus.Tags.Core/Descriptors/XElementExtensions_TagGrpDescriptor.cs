@@ -25,6 +25,10 @@ public static class XElementExtensions_TagGrpDescriptor
         {
             elem.SetAttributeValue("scanInterval", descriptor.ScanInterval);
         }
+        if (descriptor.AccessMode.HasValue)
+        {
+            elem.SetAttributeValue("access", descriptor.AccessMode.Value.ToString());
+        }
         foreach (var child in descriptor.Children)
         {
             if (child is TagDescriptor tagDesc)
@@ -66,7 +70,7 @@ public static class XElementExtensions_TagGrpDescriptor
             ScanInterval = scanInterval,
             IsEntry = isEntry,
         };
-        var accessMode = thisElement.GetTagUnionAccess(thisTagName);
+        grp.AccessMode = thisElement.GetTagUnionAccess(thisTagName);
 
         // 处理额外特性
         foreach (var attr in thisElement.Attributes())

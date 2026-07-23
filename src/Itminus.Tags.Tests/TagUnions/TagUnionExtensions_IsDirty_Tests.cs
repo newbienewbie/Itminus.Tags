@@ -39,7 +39,7 @@ public class TagUnionExtensions_IsDirty_Tests
 
         public int ScanInterval { get; set; }
         public bool IsEnabled { get; set; } = true;
-        public TagAccessMode AcessMode { get; set; }
+        public TagAccessMode? AcessMode { get; set; }
         public bool IsScaned { get; set; }
         public ITagChannel? Channel { get; set; }
         public string StartAddress { get; set; } = string.Empty;
