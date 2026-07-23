@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using StdUnit.Sharp7.Options;
 
 namespace Itminus.Tags.S7;
 
@@ -43,6 +42,7 @@ public class S7TagChannelFactory : ITagChannelFactory
             IpAddr = s7ChannelDescriptor.IpAddr,
             Rack = s7ChannelDescriptor.Rack,
             Slot = s7ChannelDescriptor.Slot,
+            ConnectionType = s7ChannelDescriptor.ConnectionType
         };
         var logger = _loggerFactory.CreateLogger<S7TagChannel>();
         return new S7TagChannel(
