@@ -25,6 +25,11 @@ public class S7TagChannelDescriptor : TagChannelDescriptor
     /// </summary>
     public short Slot { get; set; } = 1;
 
+    /// <summary>
+    /// 连接类型
+    /// </summary>
+    public ushort ConnectionType { get; set; } = 3;
+
 
     /// <inheritdoc/>
     public override XElement ToXElement()
@@ -34,6 +39,7 @@ public class S7TagChannelDescriptor : TagChannelDescriptor
         ele.SetOrAddChild(nameof(IpAddr), this.IpAddr);
         ele.SetOrAddChild(nameof(Rack), this.Rack);
         ele.SetOrAddChild(nameof(Slot), this.Slot);
+        ele.SetOrAddChild(nameof(ConnectionType), this.ConnectionType);
         return ele;
     }
 
@@ -74,12 +80,17 @@ public static class TagChannelDescriptor_S7Extensions
                 (short)0 :
                 short.TryParse(rackEle.Value, out var rack) ?
                     rack :
-                    throw new ArgumentException($"配置的Rack不是整数({rackEle.Value})"),
+                    throw new ArgumentException($"配置的Rack无法解析成short({rackEle.Value})"),
             Slot = !descriptor.Extras.TryGetValue(nameof(S7TagChannelDescriptor.Slot), out var slotEle) ?
                 (short)1 :
                 short.TryParse(slotEle.Value, out var slot) ?
                     slot :
-                    throw new ArgumentException($"配置的Slot不是整数({slotEle.Value})"),
+                    throw new ArgumentException($"配置的Slot无法解析成short({slotEle.Value})"),
+            ConnectionType = ! descriptor.Extras.TryGetValue(nameof(S7TagChannelDescriptor.ConnectionType), out var connTypeEle) ?
+                (ushort)3 :
+                ushort.TryParse(connTypeEle.Value, out var connType) ?
+                    connType :
+                    throw new ArgumentException($"配置的ConnectionType无法解析成ushort({connTypeEle.Value})"),
         };
         return res;
     }
