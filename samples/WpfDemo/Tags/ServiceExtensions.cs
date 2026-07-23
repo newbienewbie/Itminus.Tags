@@ -1,6 +1,7 @@
 ﻿using Itminus.Tags;
 using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
+using Itminus.Tags.ComScanner;
 
 namespace WpfDemo.Tags;
 
@@ -11,6 +12,7 @@ internal static class ServiceExtensions
         services.AddTagsProjectServices(builder =>
         {
             builder.AddS7Support();
+            builder.AddComScannerSupport();
         });
 
         return services;

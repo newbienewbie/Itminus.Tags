@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.IO.Ports;
+using System.Net;
 
 namespace Itminus.Tags.ComScanner.Channels;
 
@@ -15,15 +16,23 @@ public class LineBasedComChannel : ComChannelBase<string>
     public LineBasedComChannel(string channelName, ComChannelOption opt, ILogger<LineBasedComChannel> logger)
         :base(channelName, opt, logger)
     {
+        this.ReadEntireLine = opt.ReadEntireLine;
     }
 
     /// <inheritdoc/>
     public override string Driver => ComDriverNames.DriverName;
 
+    /// <summary>
+    /// 读取整行？
+    /// </summary>
+    public bool ReadEntireLine {get; set;} = true;
+
     /// <inheritdoc/>
-    protected override Task<string> ParseDataAsync(SerialPort sport, CancellationToken ct)
+    protected override Task<string?> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct)
     {
-        var str = sport.ReadLine();
-        return Task.FromResult(str);
+        var str = this.ReadEntireLine ?
+            sport.ReadLine() : 
+            sport.ReadExisting();
+        return Task.FromResult(string.IsNullOrEmpty(str) ? null : str);
     }
 }

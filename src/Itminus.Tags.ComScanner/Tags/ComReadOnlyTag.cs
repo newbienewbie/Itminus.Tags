@@ -60,7 +60,7 @@ public class ComReadOnlyTag<T> : Tag<T, ComChannelBase<T>>
     }
 
     /// <summary>
-    /// 当前的通道对象，用来向串口回写消息。<br/>
+    /// 当前的通道对象
     /// </summary>
     public ComChannelBase<T> ComChannel => this._bubbleChannel;
 }

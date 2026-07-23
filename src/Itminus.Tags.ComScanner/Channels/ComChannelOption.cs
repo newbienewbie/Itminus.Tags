@@ -7,10 +7,7 @@ namespace Itminus.Tags.ComScanner.Channels;
 /// </summary>
 public class ComChannelOption
 {
-    /// <summary>
-    /// 换行符。null表示使用系统默认的换行符。<br/>
-    /// </summary>
-    public string? NewLine { get; set; }
+
     /// <summary>
     /// 串口号。默认值为 COM1。<br/>
     /// </summary>
@@ -40,6 +37,16 @@ public class ComChannelOption
     /// 通道元素数量
     /// </summary>
     public int ChannelCapacity { get; set; } =1;
+
+    /// <summary>
+    /// 读取整行？<br/>
+    /// </summary>
+    public bool ReadEntireLine { get; set; } = true;
+
+    /// <summary>
+    /// 换行符。null表示使用系统默认的换行符。<br/>
+    /// </summary>
+    public string? NewLine { get; set; }
 
     /// <summary>
     /// 脚本

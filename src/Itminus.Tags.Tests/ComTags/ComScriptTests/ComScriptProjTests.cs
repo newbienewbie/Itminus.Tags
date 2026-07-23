@@ -228,10 +228,10 @@ public class ComScriptProjTests
         {
         }
 
-        public Task<string> ExecuteScriptAsync(CancellationToken ct = default)
+        public Task<string?> ExecuteScriptAsync(CancellationToken ct = default)
         {
-            // These tests focus on script runtime behavior, so an unopened SerialPort is sufficient.
-            return base.ParseDataAsync(new SerialPort(), ct);
+            // These tests focus on script runtime behavior, so an unopened SerialPortAdapter is sufficient.
+            return base.ParseDataAsync(new SerialPortAdapter(new SerialPort()), ct);
         }
     }
 }

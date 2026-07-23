@@ -60,4 +60,9 @@ public class ComWriteOnlyTag<T> : Tag<T, ComChannelBase<T>>
         this.IsDirty = false;
         this.NotifyTagWritten(value);
     }
+
+    /// <summary>
+    /// 当前的通道对象
+    /// </summary>
+    public ComChannelBase<T> ComChannel => this._bubbleChannel;
 }
