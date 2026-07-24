@@ -1,4 +1,4 @@
-﻿using Itminus.Tags.S7;
+using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,8 @@ namespace Itminus.Tags.Tests.S7Tags
                 Name = "S7-1",
                 Extras = new Dictionary<string, XElement>() { }
             });
-            var builder = new S7TagCbntBuilder("cbnt1", "DB200.100");
+            var builder = new S7TagCbntBuilder()
+                .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" });
 
             var descriptor = new TagDescriptor()
             {
@@ -51,7 +52,8 @@ namespace Itminus.Tags.Tests.S7Tags
                 Name = "S7-1",
                 Extras = new Dictionary<string, XElement>() { }
             });
-            var builder = new S7TagCbntBuilder("cbnt1", "DB200.100");
+            var builder = new S7TagCbntBuilder()
+                .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" });
 
             byte maxLen = 10;
             var descriptor = new TagDescriptor()
@@ -101,7 +103,8 @@ namespace Itminus.Tags.Tests.S7Tags
                 Name = "S7-1",
                 Extras = new Dictionary<string, XElement>() { }
             });
-            var builder = new S7TagCbntBuilder("cbnt1", "DB200.100");
+            var builder = new S7TagCbntBuilder()
+                .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" });
 
             byte maxLen = 10;
             var descriptor = new TagDescriptor()
@@ -128,7 +131,8 @@ namespace Itminus.Tags.Tests.S7Tags
                 Name = "S7-1",
                 Extras = new Dictionary<string, XElement>() { }
             });
-            var builder = new S7TagCbntBuilder("cbnt1", "DB200.100");
+            var builder = new S7TagCbntBuilder()
+                .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" });
 
             byte maxLen = 10;
             var descriptor = new TagDescriptor()
@@ -160,7 +164,8 @@ namespace Itminus.Tags.Tests.S7Tags
                 Name = "S7-1",
                 Extras = new Dictionary<string, XElement>() { }
             });
-            var builder = new S7TagCbntBuilder("cbnt1", "DB200.100");
+            var builder = new S7TagCbntBuilder()
+                .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" });
 
             byte maxLen = 10;
             var descriptor = new TagDescriptor()

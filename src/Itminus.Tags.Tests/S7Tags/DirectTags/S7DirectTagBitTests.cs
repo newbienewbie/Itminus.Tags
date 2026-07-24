@@ -1,4 +1,4 @@
-﻿using Itminus.Tags.S7;
+using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -18,7 +18,7 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_AutoBufferSize_ReadsEnoughBytes(byte nthBit, int expectedLength, byte[] payload, bool expectedValue)
     {
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(nthBit, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -38,7 +38,7 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_WriteAsync_WritesExpectedFlags(byte nthBit, bool val, byte[] expected)
     {
         var fake = new FakeContinousBytesChannel(new byte[expected.Length]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(nthBit, fake, grp);
 
         tag.Value = val;
@@ -55,7 +55,7 @@ public class S7DirectTagBitTests
     {
         var initial = new byte[] { 0b11111111 };
         var fake = new FakeContinousBytesChannel(initial);
-        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(0, fake, grp); // clear LSB
 
         tag.Value = false;
@@ -70,7 +70,7 @@ public class S7DirectTagBitTests
     {
         var initial = new byte[] { 0b11111110 };
         var fake = new FakeContinousBytesChannel(initial);
-        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(0, fake, grp); // set LSB
 
         tag.Value = true;

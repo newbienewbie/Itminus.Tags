@@ -37,7 +37,8 @@ public class SubTagTests
             Extras = new Dictionary<string, XElement>() { }
         });
 
-        var cbnt = new S7TagCbntBuilder("cbnt1", "DB200.100.1")
+        var cbnt = new S7TagCbntBuilder()
+            .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100.1" })
             .Configure(builder =>
             {
                 var tagFactory = builder.MakeS7TagFactory();
@@ -93,10 +94,10 @@ public class SubTagTests
             .Build(channel)
             ;
 
-        var root = new TagGrp("root", true, channel);
-        var grp1 = new TagGrp("sub1", false, null);
+        var root = new TagGrp(new TagGrpDescriptor { Name = "root", IsEntry = true }, channel);
+        var grp1 = new TagGrp(new TagGrpDescriptor { Name = "sub1", IsEntry = false }, null);
         root.AddTag(grp1);
-        var grp2 = new TagGrp("sub2", false, null);
+        var grp2 = new TagGrp(new TagGrpDescriptor { Name = "sub2", IsEntry = false }, null);
         grp1.AddTag(grp2);
 
         var noChannelTag = new NoChannelTag(

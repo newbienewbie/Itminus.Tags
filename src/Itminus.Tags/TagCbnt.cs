@@ -10,14 +10,21 @@ namespace Itminus.Tags;
 /// </summary>
 internal class TagCbnt : ITagCbnt
 {
-    internal TagCbnt(string name, string startAddress)
+    /// <summary>
+    /// c'tor
+    /// </summary>
+    /// <param name="descriptor"></param>
+    internal TagCbnt(TagCbntDescriptor descriptor)
     {
-        this.Name = name;
-        this.StartAddress = startAddress;
+        Descriptor = descriptor;
+        StartAddress = descriptor.StartAddress;
     }
 
     /// <inheritdoc/>
-    public string Name { get; set; } = "";
+    public TagCbntDescriptor? Descriptor { get; set; }
+
+    /// <inheritdoc/>
+    public string Name => Descriptor?.Name ?? "";
 
     /// <inheritdoc/>
     public ITagGrp? Parent { get; set; }
@@ -26,7 +33,7 @@ internal class TagCbnt : ITagCbnt
     public ITagChannel? Channel { get; set; }
 
     /// <inheritdoc/>
-    public string StartAddress { get; set; } = "";
+    public string StartAddress { get; set; }
 
     /// <inheritdoc/>
     public int CacheSize { get; set; }
@@ -65,13 +72,13 @@ internal class TagCbnt : ITagCbnt
     #endregion
 
     /// <inheritdoc/>
-    public int ScanInterval { get; set; } = 200;
+    public int ScanInterval => Descriptor?.ScanInterval ?? 0;
 
     /// <inheritdoc/>
-    public bool IsEnabled { get; set; } = true;
+    public bool IsEnabled => Descriptor?.IsEnabled ?? true;
 
     /// <inheritdoc/>
-    public TagAccessMode? AcessMode { get; set; }
+    public TagAccessMode? AcessMode => Descriptor?.AccessMode;
 
     /// <inheritdoc/>
     public bool IsScaned { get; set; }

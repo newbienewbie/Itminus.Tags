@@ -1,4 +1,4 @@
-﻿using Itminus.Tags.S7;
+using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
@@ -16,7 +16,7 @@ public class S7DirectTagStrTests
         const byte maxLen = 10;
         var payload = new byte[] { maxLen, 5, (byte)'H', (byte)'E', (byte)'L', (byte)'L', (byte)'O', 0, 0, 0, 0, 0 };
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         await tag.ReadAsync(CancellationToken.None);
@@ -30,7 +30,7 @@ public class S7DirectTagStrTests
     {
         const byte maxLen = 6;
         var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         tag.Value = "ABC";
@@ -49,7 +49,7 @@ public class S7DirectTagStrTests
     {
         const byte maxLen = 4;
         var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
         tag.Value = "ABCDE";

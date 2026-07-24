@@ -8,9 +8,14 @@
 public interface ITagCbnt
 {
     /// <summary>
-    /// 组合名称
+    /// 组合名称，委托自 <see cref="Descriptor"/><br/>
     /// </summary>
-    string Name { get; set; }
+    string Name { get; }
+
+    /// <summary>
+    /// 对应的描述符，可用于获取完整的静态配置信息
+    /// </summary>
+    TagCbntDescriptor? Descriptor { get; set; }
 
     /// <summary>
     /// 父组合
@@ -30,20 +35,20 @@ public interface ITagCbnt
     public ITagCbntor this[string tagName] { get; }
 
     /// <summary>
-    /// 采样间隔
+    /// 采样间隔，委托自 <see cref="Descriptor"/><br/>
     /// </summary>
-    int ScanInterval{ get; set; }
+    int ScanInterval { get; }
 
     /// <summary>
-    /// 是否使能？
+    /// 是否使能？委托自 <see cref="Descriptor"/><br/>
     /// </summary>
-    bool IsEnabled{ set; get; }
+    bool IsEnabled { get; }
 
     /// <summary>
-    /// 访问类型。<br/>
+    /// 访问类型。委托自 <see cref="Descriptor"/><br/>
     /// null 表示未配置，使用 <c>GetAccessMode()</c> 可获取带 RW 默认兜底的解析值。
     /// </summary>
-    TagAccessMode? AcessMode { get; set; }
+    TagAccessMode? AcessMode { get; }
 
     /// <summary>
     /// 是否被扫描过
@@ -58,7 +63,8 @@ public interface ITagCbnt
     ITagChannel? Channel { get; set; }
 
     /// <summary>
-    /// 起始地址
+    /// 起始地址。<br/>
+    /// 构建时从 <see cref="Descriptor"/> 拷贝初始化，但之后可独立变更，不污染描述符。
     /// </summary>
     string StartAddress { get; set; }
 

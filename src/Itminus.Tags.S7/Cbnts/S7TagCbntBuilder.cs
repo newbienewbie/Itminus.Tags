@@ -8,21 +8,12 @@ namespace Itminus.Tags.S7;
 public class S7TagCbntBuilder : TagCbntBuilderBase
 {
     /// <summary>
-    /// c'tor
+    /// c'tor<br/>
+    /// 需要额外使用 <c>WithCbntDescriptor()</c> 设置实际描述符。
     /// </summary>
     public S7TagCbntBuilder() 
-        : base(new TagCbnt("unkown_s7_cbnt_name", "unknown_s7_cbnt_start_address"))
+        : base(new TagCbnt(new TagCbntDescriptor { Name = "unkown_s7_cbnt_name", StartAddress = "unknown_s7_cbnt_start_address" }))
     {
-    }
-
-    /// <summary>
-    /// c'tor
-    /// </summary>
-    public S7TagCbntBuilder(string cbntName, string startAddress)
-        :base(new TagCbnt(cbntName, startAddress))
-    {
-        this.WithName(cbntName);
-        this.WithStartAddress(startAddress);
     }
 
     /// <inheritdoc/>

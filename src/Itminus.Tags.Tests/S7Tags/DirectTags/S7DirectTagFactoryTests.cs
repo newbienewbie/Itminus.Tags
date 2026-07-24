@@ -15,7 +15,7 @@ public class S7DirectTagFactoryTests
     {
         payload ??= new byte[16];
         var channel = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, channel);
         var factory = new S7DirectTagFactory(grp.IntoTagContainer());
         return (factory, channel, grp);
     }

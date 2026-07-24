@@ -15,10 +15,10 @@ public class ModbusTcpTagCombinationBuilderTests
     [Fact]
     public void Test_TagCombinationCacheSize()
     {
-        var builder = new ModbusTcpTagCbntBuilder("g1", "40001")
-            .WithChannel(null!)
-            .WithInterval(100)
-            .WithIsEnabled(true);
+        var cbntDescriptor = new TagCbntDescriptor { Name = "g1", StartAddress = "40001", ScanInterval = 100, IsEnabled = true };
+        var builder = new ModbusTcpTagCbntBuilder()
+            .WithCbntDescriptor(cbntDescriptor)
+            .WithChannel(null!);
 
         var channelFactory = new ModbusTcpChannelFactory(new LoggerFactory());
         var channel = channelFactory.Create(new TagChannelDescriptor() { 

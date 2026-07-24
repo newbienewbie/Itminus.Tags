@@ -88,7 +88,7 @@ public class ComProjTagSelectorTests
         Assert.Equal("AnyLoad", anyload.TagKind());
         Assert.Equal(proj.Channels[1], anyload.Channel);
         // 注意：默认的访问模式是RW，我们有意在xml定义中不设置访问模式，以测试自定义的测点加载逻辑
-        Assert.Equal(TagAccessMode.RW, anyload.AccessMode());
+        Assert.Equal(TagAccessMode.RW, anyload.GetAccessMode());
         #endregion
 
     }

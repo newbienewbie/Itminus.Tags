@@ -133,10 +133,7 @@ public class CompositeTagsLoader : ITagsLoader
             null:
             availableChannels.FirstOrDefault(c => c.ChannelName == grpDescriptor.ChannelName);
 
-        var thisGrp = new TagGrp(thisTagName, thisIsEntry, thisChannel);
-        thisGrp.IsEnabled = grpDescriptor.IsEnabled;
-        thisGrp.ScanInterval = grpDescriptor.ScanInterval;
-        thisGrp.AccessMode = grpDescriptor.AccessMode;
+        var thisGrp = new TagGrp(grpDescriptor, thisChannel);
         parent.AddTag(thisGrp);
         foreach (var child in grpDescriptor.Children)
         {
@@ -180,7 +177,6 @@ public class CompositeTagsLoader : ITagsLoader
         var cbntBuilder = builder
             .WithParent(parent)
             .WithChannel(thisChannel)
-            .WithAccessMode(cbntDescriptor.AccessMode)
             .AddTags(cbntors, channel);        
         var cbnt = cbntBuilder.Build(channel);
         parent.AddTag(cbnt);

@@ -39,6 +39,7 @@ public class TagUnionExtensions_IsDirty_Tests
 
         public int ScanInterval { get; set; }
         public bool IsEnabled { get; set; } = true;
+        public TagCbntDescriptor? Descriptor { get; set; }
         public TagAccessMode? AcessMode { get; set; }
         public bool IsScaned { get; set; }
         public ITagChannel? Channel { get; set; }
@@ -79,7 +80,7 @@ public class TagUnionExtensions_IsDirty_Tests
     [Fact]
     public void IsDirty_For_TagGrp_Uses_Grp_IsDirty_Method()
     {
-        var grp = new TagGrp(name: "grp1", isEntry: true, channel: null);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "grp1", IsEntry = true }, null);
         var u = new TagUnion.TagGrp(grp);
         Assert.False(u.IsDirty());
         grp.AddTag(new FakeTag { IsDirty = true });
@@ -90,17 +91,17 @@ public class TagUnionExtensions_IsDirty_Tests
     public void IsDirty_For_TagGrp_Nested_Any_Dirty_Makes_Root_Dirty()
     {
         // root
-        var root = new TagGrp(name: "root", isEntry: true, channel: null);
+        var root = new TagGrp(new TagGrpDescriptor { Name = "root", IsEntry = true }, null);
         var rootUnion = new TagUnion.TagGrp(root);
 
         // level1 groups
-        var g1 = new TagGrp(name: "g1", isEntry: false, channel: null);
-        var g2 = new TagGrp(name: "g2", isEntry: false, channel: null);
+        var g1 = new TagGrp(new TagGrpDescriptor { Name = "g1", IsEntry = false }, null);
+        var g2 = new TagGrp(new TagGrpDescriptor { Name = "g2", IsEntry = false }, null);
         root.AddTag(g1);
         root.AddTag(g2);
 
         // level2 under g1
-        var g1_1 = new TagGrp(name: "g1_1", isEntry: false, channel: null);
+        var g1_1 = new TagGrp(new TagGrpDescriptor { Name = "g1_1", IsEntry = false }, null);
         g1.AddTag(g1_1);
 
         // tags in various places

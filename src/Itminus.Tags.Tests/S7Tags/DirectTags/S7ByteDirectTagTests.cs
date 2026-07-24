@@ -95,7 +95,7 @@ public class S7ByteDirectTagTests
     private static ByteDirectTag CreateByteTag(out FakeContinousBytesChannel fake, out ITagGrp grp, byte[] payload)
     {
         fake = new FakeContinousBytesChannel(payload);
-        grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var descriptor = new TagDescriptor()
         {
             TagName = "direct-byte",

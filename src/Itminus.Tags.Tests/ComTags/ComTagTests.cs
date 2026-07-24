@@ -368,7 +368,7 @@ public class ComTagTests
 
     private static ComReadOnlyTag<string> CreateReadOnlyTag(string tagName, LineBasedComChannel channel)
     {
-        var grp = new TagGrp("g", isEntry: true, channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "g", IsEntry = true }, channel);
         var descriptor = new TagDescriptor
         {
             TagName = tagName,
@@ -380,7 +380,7 @@ public class ComTagTests
 
     private static ComWriteOnlyTag<string> CreateWriteOnlyTag(string tagName, LineBasedComChannel channel)
     {
-        var grp = new TagGrp("g", isEntry: true, channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "g", IsEntry = true }, channel);
         var descriptor = new TagDescriptor
         {
             TagName = tagName,

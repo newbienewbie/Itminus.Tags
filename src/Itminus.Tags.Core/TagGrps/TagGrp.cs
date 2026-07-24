@@ -9,18 +9,19 @@ public class TagGrp : ITagGrp
     /// <summary>
     /// c'tor
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="isEntry"></param>
+    /// <param name="descriptor"></param>
     /// <param name="channel"></param>
-    public TagGrp(string name, bool isEntry, ITagChannel? channel)
+    public TagGrp(TagGrpDescriptor descriptor, ITagChannel? channel)
     {
-        this.Name = name;
+        Descriptor = descriptor;
         this.Channel = channel;
-        this.IsEntry = isEntry;
     }
 
     /// <inheritdoc/>
-    public string Name { get; set; } = "";
+    public TagGrpDescriptor? Descriptor { get; set; }
+
+    /// <inheritdoc/>
+    public string Name => Descriptor?.Name ?? "";
 
     /// <summary>
     /// <inheritdoc/>
@@ -31,7 +32,7 @@ public class TagGrp : ITagGrp
     public ITagGrp? Parent { get; set; }
 
     /// <inheritdoc/>
-    public bool IsEntry { get; }
+    public bool IsEntry => Descriptor?.IsEntry ?? false;
 
     #region 子节点
 
@@ -123,13 +124,13 @@ public class TagGrp : ITagGrp
     #endregion
 
     /// <inheritdoc/>
-    public bool IsEnabled { get; set; } = true;
+    public bool IsEnabled => Descriptor?.IsEnabled ?? true;
 
     /// <inheritdoc/>
-    public int ScanInterval {get;set;}
+    public int ScanInterval => Descriptor?.ScanInterval ?? 0;
 
     /// <inheritdoc/>
-    public TagAccessMode? AccessMode { get; set; }
+    public TagAccessMode? AccessMode => Descriptor?.AccessMode;
 
     /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)

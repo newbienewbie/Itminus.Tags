@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Xunit;
 
 namespace Itminus.Tags.Tests.ZLanTags;
@@ -95,5 +96,27 @@ public class ZLanProjTests
         Assert.Equal(4, output.CacheSize);
         Assert.Equal(4, output.Cache.Length);
         #endregion
+    }
+
+    [Fact]
+    public void ZLanCbntBuilder_StartAddress_DoesNotPolluteDescriptor()
+    {
+        var descriptor = new TagCbntDescriptor
+        {
+            Name = "test-cbnt",
+            StartAddress = "40001",
+        };
+        descriptor.Extras["slave"] = new XAttribute("slave", "2");
+
+        var builder = new ZLanDICbntBuilder();
+        builder.WithCbntDescriptor(descriptor);
+
+        // Descriptor 的 StartAddress 应保持不变
+        Assert.Equal("40001", descriptor.StartAddress);
+
+        // TagCbnt 的 StartAddress 应是解析后的合成地址
+        var resolved = builder.TagCbnt.StartAddress;
+        Assert.StartsWith("2~", resolved);
+        Assert.NotEqual("40001", resolved);
     }
 }
