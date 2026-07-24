@@ -80,9 +80,9 @@ public interface ITagGrp
     TagAccessMode? AccessMode { get; }
 
     /// <summary>
-    /// 是否使能？委托自 <see cref="Descriptor"/><br/>
+    /// 是否使能？
     /// </summary>
-    public bool IsEnabled { get; }
+    public bool IsEnabled { get; set; }
 
 
 

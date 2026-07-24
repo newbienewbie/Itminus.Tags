@@ -35,9 +35,9 @@ public interface ITagCbnt
     public ITagCbntor this[string tagName] { get; }
 
     /// <summary>
-    /// 是否使能？委托自 <see cref="Descriptor"/><br/>
+    /// 是否使能？
     /// </summary>
-    bool IsEnabled { get; }
+    bool IsEnabled { get; set; }
 
     /// <summary>
     /// 访问类型。委托自 <see cref="Descriptor"/><br/>

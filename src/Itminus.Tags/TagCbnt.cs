@@ -17,6 +17,7 @@ internal class TagCbnt : ITagCbnt
     internal TagCbnt(TagCbntDescriptor descriptor)
     {
         Descriptor = descriptor;
+        IsEnabled = descriptor.IsEnabled;
         StartAddress = descriptor.StartAddress;
     }
 
@@ -72,7 +73,7 @@ internal class TagCbnt : ITagCbnt
     #endregion
 
     /// <inheritdoc/>
-    public bool IsEnabled => Descriptor.IsEnabled;
+    public bool IsEnabled { get; set; }
 
     /// <inheritdoc/>
     public TagAccessMode? AcessMode => Descriptor.AccessMode;

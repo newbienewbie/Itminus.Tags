@@ -14,6 +14,7 @@ public class TagGrp : ITagGrp
     public TagGrp(TagGrpDescriptor descriptor, ITagChannel? channel)
     {
         Descriptor = descriptor;
+        IsEnabled = descriptor.IsEnabled;
         this.Channel = channel;
     }
 
@@ -124,7 +125,7 @@ public class TagGrp : ITagGrp
     #endregion
 
     /// <inheritdoc/>
-    public bool IsEnabled => Descriptor.IsEnabled;
+    public bool IsEnabled { get; set; }
 
     /// <inheritdoc/>
     public TagAccessMode? AccessMode => Descriptor.AccessMode;

@@ -8,6 +8,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     internal OpcUaClientTagCbnt(TagCbntDescriptor descriptor)
     {
         Descriptor = descriptor;
+        IsEnabled = descriptor.IsEnabled;
         StartAddress = descriptor.StartAddress;
     }
 
@@ -28,7 +29,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
         throw new Exception($"TagCbnt({this.Name}) has no child who's name={tagName}");
 
     /// <inheritdoc/>
-    public bool IsEnabled => Descriptor.IsEnabled;
+    public bool IsEnabled { get; set; }
     /// <inheritdoc/>
     public TagAccessMode? AcessMode => Descriptor.AccessMode;
     /// <inheritdoc/>
