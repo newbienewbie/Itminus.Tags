@@ -52,13 +52,18 @@ public static class ITagGrpExtensions
 
     #region
     /// <summary>
+    /// 当前节点是否是入口
+    /// </summary>
+    public static bool IsEntry(this ITagGrp grp) => grp.Descriptor.IsEntry;
+
+    /// <summary>
     /// 扫描入口节点
     /// </summary>
     /// <param name="grp"></param>
     /// <returns></returns>
     public static IList<ITagGrp> ScanEntries(this ITagGrp grp)
     {
-        if(grp.IsEntry)
+        if(grp.IsEntry())
         {
             return new List<ITagGrp>() { grp };
         }

@@ -19,11 +19,6 @@ public interface ITagGrp
     /// </summary>
     TagGrpDescriptor Descriptor { get; set; }
 
-    /// <summary>
-    /// 是否是入口
-    /// </summary>
-    bool IsEntry { get; }
-
     #region Child
     /// <summary>
     /// 子测点集合

@@ -29,9 +29,6 @@ public class TagGrp : ITagGrp
     /// <inheritdoc/>
     public ITagGrp? Parent { get; set; }
 
-    /// <inheritdoc/>
-    public bool IsEntry => Descriptor.IsEntry;
-
     #region 子节点
 
     /// <inheritdoc/>

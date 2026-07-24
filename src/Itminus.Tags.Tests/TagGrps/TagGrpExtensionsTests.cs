@@ -82,4 +82,32 @@ public class TagGrpExtensionsTests
     }
 
     #endregion
+
+    #region IsEntry (ITagGrp)
+
+    [Fact]
+    public void IsEntry_WhenDescriptorIsEntry_ReturnsTrue()
+    {
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "entry", IsEntry = true }, channel: null);
+
+        Assert.True(grp.IsEntry());
+    }
+
+    [Fact]
+    public void IsEntry_WhenDescriptorNotEntry_ReturnsFalse()
+    {
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "normal", IsEntry = false }, channel: null);
+
+        Assert.False(grp.IsEntry());
+    }
+
+    [Fact]
+    public void IsEntry_DefaultIsFalse()
+    {
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "normal" }, channel: null);
+
+        Assert.False(grp.IsEntry());
+    }
+
+    #endregion
 }
