@@ -58,7 +58,7 @@ public class TagCbnt_Tests
     public async Task Test_TagCnbtRWTriggerTagSyncsEvents()
     {
         var channel = new MockChannel();
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", ScanInterval = 20, IsEnabled = true })
+        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", IsEnabled = true })
         {
             Channel = channel,
         };
@@ -133,7 +133,7 @@ public class TagCbnt_Tests
     public async Task Test_TagCnbtRWTriggerTagSyncsEventsObservable()
     {
         var channel = new MockChannel();
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", ScanInterval = 20, IsEnabled = true })
+        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", IsEnabled = true })
         {
             Channel = channel,
         };

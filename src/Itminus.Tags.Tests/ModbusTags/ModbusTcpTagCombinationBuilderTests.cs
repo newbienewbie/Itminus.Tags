@@ -15,7 +15,7 @@ public class ModbusTcpTagCombinationBuilderTests
     [Fact]
     public void Test_TagCombinationCacheSize()
     {
-        var cbntDescriptor = new TagCbntDescriptor { Name = "g1", StartAddress = "40001", ScanInterval = 100, IsEnabled = true };
+        var cbntDescriptor = new TagCbntDescriptor { Name = "g1", StartAddress = "40001", IsEnabled = true };
         var builder = new ModbusTcpTagCbntBuilder()
             .WithCbntDescriptor(cbntDescriptor)
             .WithChannel(null!);

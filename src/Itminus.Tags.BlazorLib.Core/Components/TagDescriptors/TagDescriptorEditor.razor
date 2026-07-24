@@ -34,7 +34,6 @@ else
         {
             <MudTextField Label="Name" @bind-Value="cbd.Name" />
             <MudTextField Label="StartAddress" @bind-Value="cbd.StartAddress" />
-            <MudNumericField T="int" Label="ScanInterval" @bind-Value="cbd.ScanInterval" />
             <MudSelect T="string" Label="Channel" @bind-Value="cbd.ChannelName">
                 <MudSelectItem Value="@string.Empty"></MudSelectItem>
                 @foreach (var channel in Channels)

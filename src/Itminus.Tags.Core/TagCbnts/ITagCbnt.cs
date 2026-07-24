@@ -35,11 +35,6 @@ public interface ITagCbnt
     public ITagCbntor this[string tagName] { get; }
 
     /// <summary>
-    /// 采样间隔，委托自 <see cref="Descriptor"/><br/>
-    /// </summary>
-    int ScanInterval { get; }
-
-    /// <summary>
     /// 是否使能？委托自 <see cref="Descriptor"/><br/>
     /// </summary>
     bool IsEnabled { get; }

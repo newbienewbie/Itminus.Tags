@@ -72,9 +72,6 @@ internal class TagCbnt : ITagCbnt
     #endregion
 
     /// <inheritdoc/>
-    public int ScanInterval => Descriptor?.ScanInterval ?? 0;
-
-    /// <inheritdoc/>
     public bool IsEnabled => Descriptor?.IsEnabled ?? true;
 
     /// <inheritdoc/>

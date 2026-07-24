@@ -29,7 +29,6 @@ public class TagGrpDescriptor_Tests
         {
             Name = "TagCbnt1",
             StartAddress = "D100",
-            ScanInterval = 500,
             IsEnabled = true,
             AccessMode = TagAccessMode.RW,
         };
@@ -47,7 +46,6 @@ public class TagGrpDescriptor_Tests
         {
             Name = "Tag2",
             StartAddress = "D200",
-            ScanInterval = 500,
             IsEnabled = true,
             AccessMode = TagAccessMode.RO,
         };

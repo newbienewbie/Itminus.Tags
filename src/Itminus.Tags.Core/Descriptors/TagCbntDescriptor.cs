@@ -23,11 +23,6 @@ public class TagCbntDescriptor : ITagsDescriptor
     public string StartAddress { get; set; } = "";
 
     /// <summary>
-    /// 扫描间隔
-    /// </summary>
-    public int ScanInterval { get; set; } = 200;
-
-    /// <summary>
     /// 是否启用
     /// </summary>
     public bool IsEnabled { get; set; } = true;

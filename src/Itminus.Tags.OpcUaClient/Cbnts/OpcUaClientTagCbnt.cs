@@ -28,8 +28,6 @@ internal class OpcUaClientTagCbnt : ITagCbnt
         throw new Exception($"TagCbnt({this.Name}) has no child who's name={tagName}");
 
     /// <inheritdoc/>
-    public int ScanInterval => Descriptor?.ScanInterval ?? 0;
-    /// <inheritdoc/>
     public bool IsEnabled => Descriptor?.IsEnabled ?? true;
     /// <inheritdoc/>
     public TagAccessMode? AcessMode => Descriptor?.AccessMode;
