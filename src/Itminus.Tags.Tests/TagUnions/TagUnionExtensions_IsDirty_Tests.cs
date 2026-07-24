@@ -30,6 +30,11 @@ public class TagUnionExtensions_IsDirty_Tests
 
     private sealed class FakeCbnt : ITagCbnt
     {
+        public FakeCbnt(TagCbntDescriptor descriptor)
+        {
+            Descriptor = descriptor;
+        }
+
         public string Name { get; set; } = "cbnt";
         public ITagGrp? Parent { get; set; }
 
@@ -39,7 +44,7 @@ public class TagUnionExtensions_IsDirty_Tests
 
         public int ScanInterval { get; set; }
         public bool IsEnabled { get; set; } = true;
-        public TagCbntDescriptor? Descriptor { get; set; }
+        public TagCbntDescriptor Descriptor { get; set; }
         public TagAccessMode? AcessMode { get; set; }
         public bool IsScaned { get; set; }
         public ITagChannel? Channel { get; set; }
@@ -69,7 +74,7 @@ public class TagUnionExtensions_IsDirty_Tests
     [Fact]
     public void IsDirty_For_TagCbnt_Uses_Cbnt_IsDirty()
     {
-        var cbnt = new FakeCbnt { IsDirty = true };
+        var cbnt = new FakeCbnt(new TagCbntDescriptor { Name = "cbnt" }) { IsDirty = true };
         var u = new TagUnion.TagCbnt(cbnt);
         Assert.True(u.IsDirty());
 

@@ -20,7 +20,7 @@ public class TagGrpRunnerTests
     private (TagGrpRunner runner, MockTagGrp entry, MockProject project, FakedChannel channel) CreateRunner()
     {
         var channel = new FakedChannel();
-        var entry = new MockTagGrp { Channel = channel, Descriptor = new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10_000 } };
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10_000 }) { Channel = channel };
         var project = new MockProject();
         var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance);
         return (runner, entry, project, channel);
@@ -261,11 +261,10 @@ public class TagGrpRunnerTests
     public async Task StartAsync_ProcessIntents()
     {
         // Arrange
-        var entry = new MockTagGrp
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "intent-entry", ScanInterval = 20 })
         {
             Name = "intent-entry",
             Channel = new FakedChannel(),
-            Descriptor = new TagGrpDescriptor { Name = "intent-entry", ScanInterval = 20 },
             IsEnabled = true
         };
         var project = new MockProject();
@@ -299,10 +298,9 @@ public class TagGrpRunnerTests
     {
         // Arrange — 使用一个记录调用次数的假策略
         var mockStrategy = new MockRetryStrategy(delay: TimeSpan.FromMilliseconds(100));
-        var entry = new MockTagGrp
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 20 })
         {
             Channel = new FakedChannel(),
-            Descriptor = new TagGrpDescriptor { Name = "test-entry", ScanInterval = 20 },
             IsEnabled = true,
             ReadAsyncThrows = new InvalidOperationException("模拟读取异常")
         };
@@ -336,10 +334,9 @@ public class TagGrpRunnerTests
     {
         // Arrange — 验证：失败→成功复位→再连续失败，计数器从 1 重新累计（1,2,3... 而非 4,5,6...）
         var mockStrategy = new MockRetryStrategy(delay: TimeSpan.FromMilliseconds(10));
-        var entry = new MockTagGrp
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10 })
         {
             Channel = new FakedChannel(),
-            Descriptor = new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10 },
             IsEnabled = true,
         };
         var project = new MockProject();
@@ -411,6 +408,11 @@ public class TagGrpRunnerTests
 
     private class MockTagGrp : ITagGrp
     {
+        public MockTagGrp(TagGrpDescriptor descriptor)
+        {
+            Descriptor = descriptor;
+        }
+
         public string Name { get; set; } = "test-entry";
         public ITagGrp? Parent { get; set; }
         public bool IsEntry { get; } = true;
@@ -422,7 +424,7 @@ public class TagGrpRunnerTests
         public ITagGrp AddTag(ITagGrp tagGrp) => this;
         public bool IsEnabled { get; set; } = true;
         public TagAccessMode? AccessMode { get; set; }
-        public TagGrpDescriptor? Descriptor { get; set; }
+        public TagGrpDescriptor Descriptor { get; set; }
         public ITagChannel? Channel { get; set; }
 
         public int ReadAsyncCallCount { get; private set; }

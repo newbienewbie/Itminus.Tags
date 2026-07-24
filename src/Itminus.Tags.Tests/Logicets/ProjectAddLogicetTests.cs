@@ -71,7 +71,7 @@ public class ProjectAddLogicetTests
     {
         // Arrange
         var channels = Array.Empty<ITagChannel>();
-        var tags = new MockTagGrp();
+        var tags = new MockTagGrp(new TagGrpDescriptor { Name = "mock" });
         var project = new MockProject(channels, tags);
 
         var services = new ServiceCollection();
@@ -92,7 +92,7 @@ public class ProjectAddLogicetTests
     {
         // Arrange
         var channels = Array.Empty<ITagChannel>();
-        var tags = new MockTagGrp();
+        var tags = new MockTagGrp(new TagGrpDescriptor { Name = "mock" });
         var project = new MockProject(channels, tags);
 
         var services = new ServiceCollection();
@@ -113,7 +113,7 @@ public class ProjectAddLogicetTests
     {
         // Arrange
         var channels = Array.Empty<ITagChannel>();
-        var tags = new MockTagGrp();
+        var tags = new MockTagGrp(new TagGrpDescriptor { Name = "mock" });
         var project = new MockProject(channels, tags);
 
         var customLogicet = new SimpleLogicet(channels, tags);
@@ -138,7 +138,7 @@ public class ProjectAddLogicetTests
     {
         // Arrange
         var channels = Array.Empty<ITagChannel>();
-        var tags = new MockTagGrp();
+        var tags = new MockTagGrp(new TagGrpDescriptor { Name = "mock" });
         var project = new MockProject(channels, tags);
 
         // creator 返回 null，应 fallback 到 ActivatorUtilities
@@ -194,6 +194,11 @@ public class ProjectAddLogicetTests
     /// </summary>
     private class MockTagGrp : ITagGrp
     {
+        public MockTagGrp(TagGrpDescriptor descriptor)
+        {
+            Descriptor = descriptor;
+        }
+
         public string Name { get; set; } = "mock";
         public ITagGrp? Parent { get; set; }
         public bool IsEntry { get; } = false;
@@ -205,7 +210,7 @@ public class ProjectAddLogicetTests
         public ITagGrp AddTag(ITagGrp tagGrp) => this;
         public bool IsEnabled { get; set; } = true;
         public TagAccessMode? AccessMode { get; set; }
-        public TagGrpDescriptor? Descriptor { get; set; }
+        public TagGrpDescriptor Descriptor { get; set; }
         public ITagChannel? Channel { get; set; }
         public Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
         public Task WriteAsync(CancellationToken ct) => Task.CompletedTask;
