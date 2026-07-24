@@ -1,4 +1,4 @@
-﻿source https://api.nuget.org/v3/index.json
+source https://api.nuget.org/v3/index.json
 source https://baget.stdunit.com/v3/index.json
 
 
@@ -43,3 +43,4 @@ nuget xunit.runner.visualstudio >= 2.5.3 lowest_matching: true
 nuget coverlet.collector >= 6.0.0 lowest_matching: true
 nuget Microsoft.NET.Test.Sdk >= 17.8.0 lowest_matching: true
 
+nuget Moq

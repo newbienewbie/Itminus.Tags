@@ -87,7 +87,7 @@ public class OpcUaClientTagChannel : ITagChannel
     /// 创建一个新的 OPC UA 会话对象
     /// </summary>
     /// <returns></returns>
-    protected virtual async Task<Session> CreateSessionAsync()
+    protected virtual async Task<ISession> CreateSessionAsync()
     {
         // 验证应用配置对象
         await _appConfig.Validate(ApplicationType.Client);
@@ -114,7 +114,10 @@ public class OpcUaClientTagChannel : ITagChannel
     }
 
     #region 连接
-    private Session? _session { get; set; }
+    /// <summary>
+    /// 内部的 OPC UA 会话对象
+    /// </summary>
+    protected virtual ISession? OpcSession{get;set;}
 
     /// <summary>
     /// 确保已经建立连接
@@ -122,11 +125,11 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <returns></returns>
     public async Task EnsureConnectedAsync(bool force,CancellationToken ct)
     {
-        _session ??= await CreateSessionAsync();
+        OpcSession ??= await CreateSessionAsync();
 
-        if (!_session.Connected)
+        if (!OpcSession.Connected)
         {
-            await _session.ReconnectAsync(ct);
+            await OpcSession.ReconnectAsync(ct);
         }
     }
 
@@ -139,14 +142,14 @@ public class OpcUaClientTagChannel : ITagChannel
     {
         try
         {
-            if (this._session != null)
+            if (this.OpcSession != null)
             {
-                await _session.CloseAsync(ct);
+                await OpcSession.CloseAsync(ct);
             }
         }
         finally
         {
-            this._session = null;
+            this.OpcSession = null;
         }
 
     }
@@ -164,16 +167,16 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <exception cref="InvalidOperationException"></exception>
     public virtual async Task<(DataValueCollection values, IList<ServiceResult> errs)> ReadAsync(IList<NodeId> nodeIds, CancellationToken ct)
     {
-        if(this._session is null)
+        if(this.OpcSession is null)
         {
             throw new InvalidOperationException("会话未创建");
         }
-        if(this._session.Connected == false)
+        if(this.OpcSession.Connected == false)
         {
             throw new InvalidOperationException("会话未连接");
         }
 
-        var (values, errs) = await this._session.ReadValuesAsync(nodeIds, ct);
+        var (values, errs) = await this.OpcSession.ReadValuesAsync(nodeIds, ct);
         return (values, errs);
     }
 
@@ -187,11 +190,11 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <exception cref="Exception"></exception>
     public virtual async Task WriteAsync(IDictionary<NodeId, DataValue> toBeWritten, CancellationToken ct)
     {
-        if (this._session is null)
+        if (this.OpcSession is null)
         {
             throw new InvalidOperationException("会话未创建");
         }
-        if (this._session.Connected == false)
+        if (this.OpcSession.Connected == false)
         {
             throw new InvalidOperationException("会话未连接");
         }
@@ -211,7 +214,7 @@ public class OpcUaClientTagChannel : ITagChannel
         }
 
         // 远程写入
-        var resp = await this._session.WriteAsync(null, writeValues, CancellationToken.None);
+        var resp = await this.OpcSession.WriteAsync(null, writeValues, CancellationToken.None);
         ClientBase.ValidateResponse(resp.Results, writeValues);
         ClientBase.ValidateDiagnosticInfos(resp.DiagnosticInfos, writeValues);
 
@@ -235,16 +238,16 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <exception cref="InvalidOperationException"></exception>
     public virtual async Task<DataValue> ReadValueAsync(NodeId nodeId, CancellationToken ct)
     {
-        if (this._session is null)
+        if (this.OpcSession is null)
         {
             throw new InvalidOperationException("会话未创建");
         }
-        if (this._session.Connected == false)
+        if (this.OpcSession.Connected == false)
         {
             throw new InvalidOperationException("会话未连接");
         }
 
-        var value = await this._session.ReadValueAsync(nodeId, ct);
+        var value = await this.OpcSession.ReadValueAsync(nodeId, ct);
         return value;
     }
 
@@ -268,12 +271,12 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <inheritdoc/>
     public void Dispose()
     {
-        if (_session != null && _session.Connected)
+        if (OpcSession != null && OpcSession.Connected)
         {
             try
             {
                 _logger.LogInformation("通道={ChannelName} 正在断开连接...", ChannelName);
-                _session.Close();
+                OpcSession.Close();
                 _logger.LogInformation("通道={ChannelName}  断开连接完成!", ChannelName);
             }
             catch (Exception e)
