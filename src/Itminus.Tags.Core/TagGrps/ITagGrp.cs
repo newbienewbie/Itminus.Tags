@@ -74,6 +74,12 @@ public interface ITagGrp
     int ScanInterval { get; set; }
 
     /// <summary>
+    /// 访问模式。<br/>
+    /// null 表示未配置，使用 <c>GetAccessMode()</c> 可获取带 RW 默认兜底的解析值。
+    /// </summary>
+    TagAccessMode? AccessMode { get; set; }
+
+    /// <summary>
     /// 是否使能？
     /// </summary>
     public bool IsEnabled { set; get; }

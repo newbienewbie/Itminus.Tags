@@ -205,6 +205,7 @@ public class ProjectAddLogicetTests
         public ITagGrp AddTag(ITagGrp tagGrp) => this;
         public int ScanInterval { get; set; }
         public bool IsEnabled { get; set; } = true;
+        public TagAccessMode? AccessMode { get; set; }
         public ITagChannel? Channel { get; set; }
         public Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
         public Task WriteAsync(CancellationToken ct) => Task.CompletedTask;

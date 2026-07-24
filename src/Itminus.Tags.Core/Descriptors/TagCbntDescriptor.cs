@@ -33,9 +33,11 @@ public class TagCbntDescriptor : ITagsDescriptor
     public bool IsEnabled { get; set; } = true;
     
     /// <summary>
-    /// 访问模式
+    /// 访问模式。<br/>
+    /// null 表示未指定，在构建阶段会冒泡式向上检索父级配置。<br/>
+    /// 如果所有层级均为 null，则会抛出异常。
     /// </summary>
-    public TagAccessMode AccessMode { get; set; } = TagAccessMode.RW;
+    public TagAccessMode? AccessMode { get; set; }
 
     /// <summary>
     /// 额外特性

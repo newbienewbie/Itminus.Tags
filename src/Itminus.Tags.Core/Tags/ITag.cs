@@ -169,25 +169,48 @@ public static class ITagExtensions
     public static EndianKinds TagEndian(this ITag tag) => tag.TagDescriptor.EndianKind;
 
     /// <summary>
-    /// 访问模式
+    /// 访问模式（可能为 null，表示未配置）。
     /// </summary>
     /// <param name="tag"></param>
     /// <returns></returns>
-    public static TagAccessMode AccessMode(this ITag tag) => tag.TagDescriptor.AccessMode;
+    public static TagAccessMode? AccessMode(this ITag tag) => tag.TagDescriptor.AccessMode;
+
+    /// <summary>
+    /// 冒泡式获取解析后的访问模式。<br/>
+    /// 先查自身 <see cref="TagDescriptor.AccessMode"/>，再查父级 Cbnt/Grp。<br/>
+    /// 如果所有层级均未配置，默认返回 <see cref="TagAccessMode.RW"/>。
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
+    public static TagAccessMode GetAccessMode(this ITag tag)
+    {
+        if (tag.TagDescriptor.AccessMode.HasValue)
+            return tag.TagDescriptor.AccessMode.Value;
+
+        if (tag.Parent is not null)
+        {
+            return tag.Parent.Map(
+                cbnt => cbnt.AcessMode,
+                grp => grp.AccessMode
+            ) ?? TagAccessMode.RW;
+        }
+
+        return TagAccessMode.RW;
+    }
 
     /// <summary>
     /// 只读？
     /// </summary>
     /// <param name="tag"></param>
     /// <returns></returns>
-    public static bool IsReadOnly(this ITag tag) => tag.AccessMode() == TagAccessMode.RO;
+    public static bool IsReadOnly(this ITag tag) => tag.GetAccessMode() == TagAccessMode.RO;
 
     /// <summary>
     /// 只写？
     /// </summary>
     /// <param name="tag"></param>
     /// <returns></returns>
-    public static bool IsWriteOnly(this ITag tag) => tag.AccessMode() == TagAccessMode.WO;
+    public static bool IsWriteOnly(this ITag tag) => tag.GetAccessMode() == TagAccessMode.WO;
 
     /// <summary>
     /// 把当前测点转成具体类型

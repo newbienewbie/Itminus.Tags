@@ -71,7 +71,7 @@ internal class TagCbnt : ITagCbnt
     public bool IsEnabled { get; set; } = true;
 
     /// <inheritdoc/>
-    public TagAccessMode AcessMode { get; set; } = TagAccessMode.RW;
+    public TagAccessMode? AcessMode { get; set; }
 
     /// <inheritdoc/>
     public bool IsScaned { get; set; }

@@ -93,9 +93,11 @@ public class TagDescriptor: ITagsDescriptor
     public EndianKinds EndianKind { set; get; } = EndianKinds.LittleEndian;
 
     /// <summary>
-    /// 测点访问类型
+    /// 测点访问类型。<br/>
+    /// null 表示未指定，在构建阶段会冒泡式向上检索父级配置。<br/>
+    /// 如果所有层级均为 null，则会抛出异常。
     /// </summary>
-    public TagAccessMode AccessMode { get; set; }
+    public TagAccessMode? AccessMode { get; set; }
 
     /// <summary>
     /// 通道名。<br/>

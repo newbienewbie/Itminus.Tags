@@ -116,7 +116,7 @@ public class ComProjTagSelectorTests
                     throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComChannelBase<string>)}！实际={channel.GetType()}");
                 }
 
-                var accessMode = this.TagDescriptor.AccessMode;
+                var accessMode = this.TagDescriptor.AccessMode ?? this.Parent.GetAccessMode();
 
                 ITag tag = accessMode switch
                 {

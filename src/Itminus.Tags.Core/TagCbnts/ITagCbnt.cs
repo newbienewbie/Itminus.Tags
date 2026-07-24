@@ -40,9 +40,10 @@ public interface ITagCbnt
     bool IsEnabled{ set; get; }
 
     /// <summary>
-    /// 访问类型
+    /// 访问类型。<br/>
+    /// null 表示未配置，使用 <c>GetAccessMode()</c> 可获取带 RW 默认兜底的解析值。
     /// </summary>
-    TagAccessMode AcessMode { get; set; }
+    TagAccessMode? AcessMode { get; set; }
 
     /// <summary>
     /// 是否被扫描过

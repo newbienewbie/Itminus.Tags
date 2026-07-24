@@ -33,6 +33,12 @@ public class TagGrpDescriptor: ITagsDescriptor
     public int ScanInterval { get; set; } = 200;
 
     /// <summary>
+    /// 访问模式。<br/>
+    /// null 表示未指定，在构建阶段会冒泡式向上检索父级配置。<br/>
+    /// </summary>
+    public TagAccessMode? AccessMode { get; set; }
+
+    /// <summary>
     /// 额外属性
     /// </summary>
     public IDictionary<string, XAttribute> Extras { get; } = new Dictionary<string, XAttribute>();

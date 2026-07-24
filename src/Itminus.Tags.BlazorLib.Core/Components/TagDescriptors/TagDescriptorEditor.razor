@@ -22,7 +22,8 @@ else
             </MudSelect>
             <MudTextField Label="Note" @bind-Value="td.Note" />
             <MudNumericField T="int" Label="TagSize" @bind-Value="td.TagSize" />
-            <MudSelect T="TagAccessMode" Label="Access" @bind-Value="td.AccessMode">
+            <MudSelect T="TagAccessMode?" Label="Access" @bind-Value="td.AccessMode">
+                <MudSelectItem Value="@((TagAccessMode?)null)">空</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.RW">RW</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.RO">RO</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.R1W">R1W</MudSelectItem>
@@ -41,7 +42,8 @@ else
                     <MudSelectItem Value="@channel.Name">@channel.Name</MudSelectItem>
                 }
             </MudSelect>
-            <MudSelect T="TagAccessMode" Label="Access" @bind-Value="cbd.AccessMode">
+            <MudSelect T="TagAccessMode?" Label="Access" @bind-Value="cbd.AccessMode">
+                <MudSelectItem Value="@((TagAccessMode?)null)">空</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.RW">RW</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.RO">RO</MudSelectItem>
                 <MudSelectItem Value="TagAccessMode.R1W">R1W</MudSelectItem>
@@ -57,6 +59,13 @@ else
                 {
                     <MudSelectItem Value="@channel.Name">@channel.Name</MudSelectItem>
                 }
+            </MudSelect>
+            <MudSelect T="TagAccessMode?" Label="Access" @bind-Value="tgd.AccessMode">
+                <MudSelectItem Value="@((TagAccessMode?)null)">空</MudSelectItem>
+                <MudSelectItem Value="TagAccessMode.RW">RW</MudSelectItem>
+                <MudSelectItem Value="TagAccessMode.RO">RO</MudSelectItem>
+                <MudSelectItem Value="TagAccessMode.R1W">R1W</MudSelectItem>
+                <MudSelectItem Value="TagAccessMode.WO">WO</MudSelectItem>
             </MudSelect>
             <MudNumericField T="int" Label="ScanInterval" @bind-Value="tgd.ScanInterval" />
             <MudCheckBox T="bool" @bind-Value="tgd.IsEntry" >IsEntry</MudCheckBox>

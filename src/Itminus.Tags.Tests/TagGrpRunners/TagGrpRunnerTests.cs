@@ -422,6 +422,7 @@ public class TagGrpRunnerTests
         public ITagGrp AddTag(ITagGrp tagGrp) => this;
         public int ScanInterval { get; set; } = 1000;
         public bool IsEnabled { get; set; } = true;
+        public TagAccessMode? AccessMode { get; set; }
         public ITagChannel? Channel { get; set; }
 
         public int ReadAsyncCallCount { get; private set; }

@@ -29,7 +29,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// <inheritdoc/>
     public bool IsEnabled { get; set; }
     /// <inheritdoc/>
-    public TagAccessMode AcessMode { get; set; }
+    public TagAccessMode? AcessMode { get; set; }
     /// <inheritdoc/>
     public bool IsScaned { get; set; }
     /// <inheritdoc/>
