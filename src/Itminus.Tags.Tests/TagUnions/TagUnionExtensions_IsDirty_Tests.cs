@@ -35,7 +35,6 @@ public class TagUnionExtensions_IsDirty_Tests
             Descriptor = descriptor;
         }
 
-        public string Name { get; set; } = "cbnt";
         public ITagGrp? Parent { get; set; }
 
         private readonly Dictionary<string, ITagCbntor> _children = new();
@@ -45,7 +44,6 @@ public class TagUnionExtensions_IsDirty_Tests
         public int ScanInterval { get; set; }
         public bool IsEnabled { get; set; } = true;
         public TagCbntDescriptor Descriptor { get; set; }
-        public TagAccessMode? AcessMode { get; set; }
         public bool IsScaned { get; set; }
         public ITagChannel? Channel { get; set; }
         public string StartAddress { get; set; } = string.Empty;

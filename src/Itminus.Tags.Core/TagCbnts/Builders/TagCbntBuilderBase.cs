@@ -28,7 +28,7 @@ public abstract class TagCbntBuilderBase
     /// <summary>
     /// 组合名
     /// </summary>
-    public virtual string Name => TagCbnt.Name;
+    public virtual string Name => TagCbnt.TagName();
 
     /// <summary>
     /// 起始地址

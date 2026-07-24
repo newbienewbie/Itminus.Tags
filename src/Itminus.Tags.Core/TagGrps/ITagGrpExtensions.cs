@@ -52,13 +52,18 @@ public static class ITagGrpExtensions
 
     #region
     /// <summary>
+    /// 当前节点是否是入口
+    /// </summary>
+    public static bool IsEntry(this ITagGrp grp) => grp.Descriptor.IsEntry;
+
+    /// <summary>
     /// 扫描入口节点
     /// </summary>
     /// <param name="grp"></param>
     /// <returns></returns>
     public static IList<ITagGrp> ScanEntries(this ITagGrp grp)
     {
-        if(grp.IsEntry)
+        if(grp.IsEntry())
         {
             return new List<ITagGrp>() { grp };
         }
@@ -114,19 +119,27 @@ public static class ITagGrpExtensions
     /// <param name="tagGrp"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static ITagChannel SearchRequiredChannel(this ITagGrp tagGrp) => tagGrp.SearchChannel() ?? throw new Exception($"Channel is not configured : TagGrp({tagGrp.Name})");
+    public static string TagName(this ITagGrp tagGrp) => tagGrp.Descriptor.Name;
+
+    /// <summary>
+    /// 冒泡式获取通信通道，如果为空则抛出异常
+    /// </summary>
+    /// <param name="tagGrp"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public static ITagChannel SearchRequiredChannel(this ITagGrp tagGrp) => tagGrp.SearchChannel() ?? throw new Exception($"Channel is not configured : TagGrp({tagGrp.TagName()})");
 
     /// <summary>
     /// 冒泡式获取访问模式。<br/>
-    /// 先查自身 <see cref="ITagGrp.AccessMode"/>，再冒泡查父级。<br/>
+    /// 先查自身，再冒泡查父级。<br/>
     /// 如果所有层级均为 null，默认返回 <see cref="TagAccessMode.RW"/>。
     /// </summary>
     /// <param name="tagGrp"></param>
     /// <returns></returns>
     public static TagAccessMode SearchAccessMode(this ITagGrp tagGrp)
     {
-        if (tagGrp.AccessMode.HasValue)
-            return tagGrp.AccessMode.Value;
+        if (tagGrp.Descriptor.AccessMode.HasValue)
+            return tagGrp.Descriptor.AccessMode.Value;
 
         if (tagGrp.Parent is not null)
             return tagGrp.Parent.SearchAccessMode();
@@ -162,6 +175,6 @@ public static class ITagGrpExtensions
     /// <param name="tagGrp"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static int SearchRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.SearchScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.Name})");
+    public static int SearchRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.SearchScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.TagName()})");
     #endregion
 }

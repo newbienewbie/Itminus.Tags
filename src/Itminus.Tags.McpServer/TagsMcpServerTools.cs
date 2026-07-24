@@ -119,8 +119,8 @@ public class TagsMcpServerTools
             return ValueTask.CompletedTask;
         };
 
-        if (!proj.WriteIntent(entry.Name, intent, out var task))
-            return WriteResult.Fail($"Failed to write intent for tag '{path}' in entry '{entry.Name}'. Intent queue may be full.");
+        if (!proj.WriteIntent(entry.TagName(), intent, out var task))
+            return WriteResult.Fail($"Failed to write intent for tag '{path}' in entry '{entry.TagName()}'. Intent queue may be full.");
 
         if (waitForCompletion)
         {
@@ -169,10 +169,10 @@ public class TagsMcpServerTools
             if(!TryParseValue(kvp.Value, tag.TagKind(), out var convertedValue))
                 return WriteResult.Fail($"Failed to convert value for tag '{path}'.");
 
-            if (!perEntry.TryGetValue(entry.Name, out var list))
+            if (!perEntry.TryGetValue(entry.TagName(), out var list))
             {
                 list = new List<(string, ITag, object?)>();
-                perEntry[entry.Name] = list;
+                perEntry[entry.TagName()] = list;
             }
             list.Add((path, tag, convertedValue));
         }

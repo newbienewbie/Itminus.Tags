@@ -8,11 +8,6 @@
 public interface ITagCbnt
 {
     /// <summary>
-    /// 组合名称，委托自 <see cref="Descriptor"/><br/>
-    /// </summary>
-    string Name { get; }
-
-    /// <summary>
     /// 对应的描述符，可用于获取完整的静态配置信息
     /// </summary>
     TagCbntDescriptor Descriptor { get; set; }
@@ -35,15 +30,9 @@ public interface ITagCbnt
     public ITagCbntor this[string tagName] { get; }
 
     /// <summary>
-    /// 是否使能？委托自 <see cref="Descriptor"/><br/>
+    /// 是否使能？
     /// </summary>
-    bool IsEnabled { get; }
-
-    /// <summary>
-    /// 访问类型。委托自 <see cref="Descriptor"/><br/>
-    /// null 表示未配置，使用 <see cref="ITagCbntExtensions.SearchAccessMode"/> 可获取带 RW 默认兜底的解析值。
-    /// </summary>
-    TagAccessMode? AcessMode { get; }
+    bool IsEnabled { get; set; }
 
     /// <summary>
     /// 是否被扫描过

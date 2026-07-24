@@ -67,8 +67,8 @@ public static class ITagExtensions
         if (tag.Parent is not null)
         {
             return tag.Parent.Map(
-                cbnt => cbnt.AcessMode,
-                grp => grp.AccessMode
+                cbnt => cbnt.Descriptor.AccessMode,
+                grp => grp.Descriptor.AccessMode
             ) ?? TagAccessMode.RW;
         }
 
@@ -145,7 +145,7 @@ public static class ITagExtensions
 
         ITagGrp? GetEntryForGrp(ITagGrp grp)
         {
-            if(grp.IsEntry)
+            if(grp.IsEntry())
             {
                 return grp;
             }

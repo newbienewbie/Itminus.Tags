@@ -14,14 +14,12 @@ public class TagGrp : ITagGrp
     public TagGrp(TagGrpDescriptor descriptor, ITagChannel? channel)
     {
         Descriptor = descriptor;
+        IsEnabled = descriptor.IsEnabled;
         this.Channel = channel;
     }
 
     /// <inheritdoc/>
     public TagGrpDescriptor Descriptor { get; set; }
-
-    /// <inheritdoc/>
-    public string Name => Descriptor.Name;
 
     /// <summary>
     /// <inheritdoc/>
@@ -31,9 +29,6 @@ public class TagGrp : ITagGrp
     /// <inheritdoc/>
     public ITagGrp? Parent { get; set; }
 
-    /// <inheritdoc/>
-    public bool IsEntry => Descriptor.IsEntry;
-
     #region 子节点
 
     /// <inheritdoc/>
@@ -42,7 +37,7 @@ public class TagGrp : ITagGrp
     /// <inheritdoc/>
     public TagUnion this[string tagName] => Children.TryGetValue(tagName, out var tag) ?
         tag :
-        throw new Exception($"TagGrp({this.Name}) has no child who's name={tagName}");
+        throw new Exception($"TagGrp({this.TagName()}) has no child who's name={tagName}");
 
     /// <summary>
     /// 获取子节点，支持路径访问，例如：`"tagGrp1/tagGrp2/tagCbnt1"`<br/>
@@ -106,7 +101,7 @@ public class TagGrp : ITagGrp
             tagCbnt.Parent = this;
         }
 
-        this.Children.Add(tagCbnt.Name, new TagUnion.TagCbnt(tagCbnt));
+        this.Children.Add(tagCbnt.TagName(), new TagUnion.TagCbnt(tagCbnt));
         return this;
     }
 
@@ -118,16 +113,13 @@ public class TagGrp : ITagGrp
     public virtual ITagGrp AddTag(ITagGrp tagGrp)
     {
         tagGrp.Parent = this;
-        this.Children.Add(tagGrp.Name, new TagUnion.TagGrp(tagGrp));
+        this.Children.Add(tagGrp.TagName(), new TagUnion.TagGrp(tagGrp));
         return this;
     }
     #endregion
 
     /// <inheritdoc/>
-    public bool IsEnabled => Descriptor.IsEnabled;
-
-    /// <inheritdoc/>
-    public TagAccessMode? AccessMode => Descriptor.AccessMode;
+    public bool IsEnabled { get; set; }
 
     /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)

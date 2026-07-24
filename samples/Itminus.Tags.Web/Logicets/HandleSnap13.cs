@@ -37,7 +37,7 @@ internal class HandleSnap13 : LogicetBase
 
     public override bool MatchEntry(ITagGrp entry)
     {
-        return entry.Name == "g3";
+        return entry.TagName() == "g3";
     }
 
     private int i=0;

@@ -111,8 +111,8 @@ public static class TagUnionExtensions
     /// <exception cref="Exception"></exception>
     public static ITag AsTag(this TagUnion tagunion) => tagunion.Map(
         tagunit => tagunit,
-        tagcbnt => throw new Exception($"{tagcbnt.Name} is a {nameof(ITagCbnt)} intead of a {nameof(ITag)}"),
-        taggrp => throw new Exception($"{taggrp.Name} is a {nameof(ITagGrp)} intead of a {nameof(ITag)}")
+        tagcbnt => throw new Exception($"{tagcbnt.TagName()} is a {nameof(ITagCbnt)} intead of a {nameof(ITag)}"),
+        taggrp => throw new Exception($"{taggrp.TagName()} is a {nameof(ITagGrp)} intead of a {nameof(ITag)}")
         );
 
     /// <summary>
@@ -124,7 +124,7 @@ public static class TagUnionExtensions
     public static ITagCbnt AsTagCbnt(this TagUnion tagunion) => tagunion.Map(
         tagunit => throw new Exception($"{tagunit.TagName()} is a {nameof(ITag)} intead of a {nameof(ITagCbnt)}"),
         tagcbnt => tagcbnt,
-        taggrp => throw new Exception($"{taggrp.Name} is a {nameof(ITagGrp)} intead of a {nameof(ITagCbnt)}")
+        taggrp => throw new Exception($"{taggrp.TagName()} is a {nameof(ITagGrp)} intead of a {nameof(ITagCbnt)}")
     );
 
     /// <summary>
@@ -135,7 +135,7 @@ public static class TagUnionExtensions
     /// <exception cref="Exception"></exception>
     public static ITagGrp AsTagGrp(this TagUnion tagunion) => tagunion.Map(
         tagunit => throw new Exception($"{tagunit.TagName()} is a {nameof(ITag)} intead of a {nameof(ITagGrp)}"),
-        tagcbnt => throw new Exception($"{tagcbnt.Name} is a {nameof(ITagCbnt)} intead of a {nameof(ITagGrp)}"),
+        tagcbnt => throw new Exception($"{tagcbnt.TagName()} is a {nameof(ITagCbnt)} intead of a {nameof(ITagGrp)}"),
         taggrp => taggrp
     );
     #endregion

@@ -10,11 +10,6 @@ namespace Itminus.Tags;
 public interface ITagGrp
 {
     /// <summary>
-    /// 群组名称，委托自 <see cref="Descriptor"/><br/>
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
     /// 父群组
     /// </summary>
     ITagGrp? Parent { get; set; }
@@ -23,11 +18,6 @@ public interface ITagGrp
     /// 对应的描述符，可用于获取完整的静态配置信息
     /// </summary>
     TagGrpDescriptor Descriptor { get; set; }
-
-    /// <summary>
-    /// 是否是入口
-    /// </summary>
-    bool IsEntry { get; }
 
     #region Child
     /// <summary>
@@ -74,15 +64,9 @@ public interface ITagGrp
 
 
     /// <summary>
-    /// 访问模式。委托自 <see cref="Descriptor"/><br/>
-    /// null 表示未配置，使用 <see cref="ITagGrpExtensions.SearchAccessMode"/> 可获取带 RW 默认兜底的解析值。
+    /// 是否使能？
     /// </summary>
-    TagAccessMode? AccessMode { get; }
-
-    /// <summary>
-    /// 是否使能？委托自 <see cref="Descriptor"/><br/>
-    /// </summary>
-    public bool IsEnabled { get; }
+    public bool IsEnabled { get; set; }
 
 
 

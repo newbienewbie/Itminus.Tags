@@ -211,7 +211,7 @@ internal class TagsProject : ITagsProject
         var tasks = new ConcurrentBag<Task>();
         Parallel.ForEach(entries, entry =>
         {
-            var writeIntentChannel = this._entryWriteIntentChannels.GetOrAdd(entry.Name, _ => this.CreateIntentChannel());
+            var writeIntentChannel = this._entryWriteIntentChannels.GetOrAdd(entry.TagName(), _ => this.CreateIntentChannel());
             var logicets = this.Logicets
                 .Where(l => l.MatchEntry(entry))
                 .OrderBy(l => l.Order)
@@ -252,7 +252,7 @@ internal class TagsProject : ITagsProject
     {
         // 校验 entry 是否真的存在，只允许向合法的入口写入意图
         var entries = this.GetEntries();
-        if(!entries.Any(e => e.Name == entry))
+        if(!entries.Any(e => e.TagName() == entry))
         {
             throw new KeyNotFoundException($"未找到指定的入口测点组: {entry}");
         }

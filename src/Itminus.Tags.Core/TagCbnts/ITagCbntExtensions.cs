@@ -21,19 +21,17 @@ public static class ITagCbntExtensions
     public static ITagChannel? SearchChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.SearchChannel();
 
     /// <summary>
+    /// 获取测点组合的名称
+    /// </summary>
+    public static string TagName(this ITagCbnt tagcbnt) => tagcbnt.Descriptor.Name;
+
+    /// <summary>
     /// 冒泡式获取测点的通道。如果没有配置通道，则抛出异常
     /// </summary>
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static ITagChannel SearchRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.SearchChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.Name})");
-
-    /// <summary>
-    /// 获取测点读写访问模式（可能为 null，表示未配置）。
-    /// </summary>
-    /// <param name="tagcbnt"></param>
-    /// <returns></returns>
-    internal static TagAccessMode? AccessMode(this ITagCbnt tagcbnt) => tagcbnt.AcessMode;
+    public static ITagChannel SearchRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.SearchChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.TagName()})");
 
     /// <summary>
     /// 获取解析后的访问模式。<br/>
@@ -42,7 +40,7 @@ public static class ITagCbntExtensions
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
     public static TagAccessMode SearchAccessMode(this ITagCbnt tagcbnt)
-        => tagcbnt.AcessMode ?? tagcbnt.Parent?.AccessMode ?? TagAccessMode.RW;
+        => tagcbnt.Descriptor.AccessMode ?? tagcbnt.Parent?.Descriptor.AccessMode ?? TagAccessMode.RW;
 
     /// <summary>
     /// 只读？
