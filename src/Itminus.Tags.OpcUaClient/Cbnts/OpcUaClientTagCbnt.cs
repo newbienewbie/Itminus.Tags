@@ -28,8 +28,6 @@ internal class OpcUaClientTagCbnt : ITagCbnt
         throw new Exception($"TagCbnt({this.Name}) has no child who's name={tagName}");
 
     /// <inheritdoc/>
-    public int ScanInterval => Descriptor?.ScanInterval ?? 0;
-    /// <inheritdoc/>
     public bool IsEnabled => Descriptor?.IsEnabled ?? true;
     /// <inheritdoc/>
     public TagAccessMode? AcessMode => Descriptor?.AccessMode;
@@ -74,7 +72,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.GetChannel() as OpcUaClientTagChannel;
+        var channel = this.SearchChannel() as OpcUaClientTagChannel;
         if(channel is null)
         {
             throw new Exception($"TagCbnt({this.Name}) 通道应为{nameof(OpcUaClientTagChannel)},实际为{channel?.GetType()}");
@@ -112,7 +110,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// <inheritdoc/>
     public async Task WriteAsync(CancellationToken ct)
     {
-        var channel = this.GetChannel() as OpcUaClientTagChannel;
+        var channel = this.SearchChannel() as OpcUaClientTagChannel;
         if (channel is null)
         {
             throw new Exception($"TagCbnt({this.Name}) 通道应为{nameof(OpcUaClientTagChannel)},实际为{channel?.GetType()}");

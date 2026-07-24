@@ -122,7 +122,7 @@ public class SubTagTests
         Assert.Equal("拍照-响应-OK", tag2.TagName());
 
         // 测试冒泡式访问通道
-        Assert.Equal(cbnt.GetRequiredChannel(), root.Channel);
-        Assert.Equal(root.Channel, noChannelTag.GetRequiredChannel());
+        Assert.Equal(cbnt.SearchRequiredChannel(), root.Channel);
+        Assert.Equal(root.Channel, noChannelTag.SearchRequiredChannel());
     }
 }

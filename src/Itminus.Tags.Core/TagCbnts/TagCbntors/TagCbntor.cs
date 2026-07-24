@@ -39,7 +39,7 @@ public abstract class TagCbntor : ITagCbntor
     /// <summary>
     /// 通道
     /// </summary>
-    public ITagChannel? Channel => TagCbnt.GetChannel();
+    public ITagChannel? Channel => TagCbnt.SearchChannel();
 
     /// <summary>
     /// 父容器，指向所属的测点组合。<br/>
@@ -117,7 +117,7 @@ public abstract class TagCbntor : ITagCbntor
     /// <returns></returns>
     public virtual async Task WriteAsync(CancellationToken ct)
     {
-        var channel0 = this.TagCbnt.GetRequiredChannel();
+        var channel0 = this.TagCbnt.SearchRequiredChannel();
         var channel = channel0 as IContinousBytesBasedTagChannel;
         if (channel is null)
         {
@@ -139,7 +139,7 @@ public abstract class TagCbntor : ITagCbntor
     /// <returns></returns>
     public virtual async Task ReadAsync(CancellationToken ct)
     {
-        var channel0 = this.TagCbnt.GetRequiredChannel();
+        var channel0 = this.TagCbnt.SearchRequiredChannel();
         var channel = channel0 as IContinousBytesBasedTagChannel;
         if (channel is null)
         {

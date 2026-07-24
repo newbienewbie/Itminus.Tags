@@ -20,7 +20,6 @@ public static class XElementExtensions_TagCbntDescriptor
         var thisChannelName = thisElement.GetTagUnionChannelName();
         var address = thisElement.GetTagUnionAddress(thisTagName);
         var isEnabled = !string.Equals(thisElement.Attribute("isEnabled")?.Value, "false", StringComparison.OrdinalIgnoreCase);
-        var scanInterval = thisElement.GetTagUnionScanInterval(thisTagName) ?? 0;
 
         var descriptor = new TagCbntDescriptor
         {
@@ -28,7 +27,6 @@ public static class XElementExtensions_TagCbntDescriptor
             ChannelName = thisChannelName,
             StartAddress = address,
             IsEnabled = isEnabled,
-            ScanInterval = scanInterval,
         };
 
         descriptor.AccessMode = thisElement.GetTagUnionAccess(thisTagName);
@@ -78,10 +76,6 @@ public static class XElementExtensions_TagCbntDescriptor
             elem.SetAttributeValue("address", descriptor.StartAddress);
         }
         elem.SetAttributeValue("isEnabled", descriptor.IsEnabled);
-        if (descriptor.ScanInterval != default)
-        {
-            elem.SetAttributeValue("scanInterval", descriptor.ScanInterval);
-        }
         if (descriptor.AccessMode.HasValue)
         {
             elem.SetAttributeValue("access", descriptor.AccessMode.Value.ToString());

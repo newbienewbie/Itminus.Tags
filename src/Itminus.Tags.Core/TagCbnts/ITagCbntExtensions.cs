@@ -18,7 +18,7 @@ public static class ITagCbntExtensions
     /// </summary>
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
-    public static ITagChannel? GetChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.GetChannel();
+    public static ITagChannel? SearchChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.SearchChannel();
 
     /// <summary>
     /// 冒泡式获取测点的通道。如果没有配置通道，则抛出异常
@@ -26,7 +26,7 @@ public static class ITagCbntExtensions
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static ITagChannel GetRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.GetChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.Name})");
+    public static ITagChannel SearchRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.SearchChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.Name})");
 
     /// <summary>
     /// 获取测点读写访问模式（可能为 null，表示未配置）。
@@ -41,7 +41,7 @@ public static class ITagCbntExtensions
     /// </summary>
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
-    public static TagAccessMode GetAccessMode(this ITagCbnt tagcbnt)
+    public static TagAccessMode SearchAccessMode(this ITagCbnt tagcbnt)
         => tagcbnt.AcessMode ?? tagcbnt.Parent?.AccessMode ?? TagAccessMode.RW;
 
     /// <summary>
@@ -49,9 +49,9 @@ public static class ITagCbntExtensions
     /// </summary>
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
-    public static bool IsReadOnly(this ITagCbnt tagcbnt) => tagcbnt.GetAccessMode() == TagAccessMode.RO;
+    public static bool IsReadOnly(this ITagCbnt tagcbnt) => tagcbnt.SearchAccessMode() == TagAccessMode.RO;
     /// <summary>
     /// 只写？
     /// </summary>
-    public static bool IsWriteOnly(this ITagCbnt tagcbnt) => tagcbnt.GetAccessMode() == TagAccessMode.WO;
+    public static bool IsWriteOnly(this ITagCbnt tagcbnt) => tagcbnt.SearchAccessMode() == TagAccessMode.WO;
 }

@@ -50,7 +50,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
     /// <inheritdoc />
     public override async Task WriteAsync(CancellationToken ct)
     {
-        var channel = this.TagCbnt.GetRequiredChannel();
+        var channel = this.TagCbnt.SearchRequiredChannel();
         var opcUaChannel = channel as OpcUaClientTagChannel 
             ?? throw new InvalidOperationException("Channel is not an OpcUaTagChannel");
         var cbnt = this.TagCbnt as OpcUaClientTagCbnt
@@ -68,7 +68,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
     /// <inheritdoc />
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.TagCbnt.GetRequiredChannel();
+        var channel = this.TagCbnt.SearchRequiredChannel();
         var opcUaChannel = channel as OpcUaClientTagChannel
             ?? throw new InvalidOperationException("Channel is not an OpcUaTagChannel");
         var cbnt = this.TagCbnt as OpcUaClientTagCbnt
