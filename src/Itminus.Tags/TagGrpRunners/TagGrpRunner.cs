@@ -81,7 +81,8 @@ internal class TagGrpRunner : ITagGrpRunner
                     await entry.WriteAsync(ct);
 
                     sw.Stop();
-                    var delay = this._pollDelayStrategy.GetDelay(TimeSpan.FromMilliseconds(entry.ScanInterval), sw.Elapsed);
+                    var span = TimeSpan.FromMilliseconds(entry.SearchScanInterval() ?? 0);
+                    var delay = this._pollDelayStrategy.GetDelay(span, sw.Elapsed);
                     if (delay > TimeSpan.Zero)
                     {
                         await Task.Delay(delay, ct);
@@ -141,7 +142,7 @@ internal class TagGrpRunner : ITagGrpRunner
 
                 var delay = _consecutiveFailures > 0
                     ? _retryStrategy.GetDelay(_consecutiveFailures)
-                    : TimeSpan.FromMilliseconds(entry.ScanInterval);
+                    : TimeSpan.FromMilliseconds(entry.SearchScanInterval() ?? 0);
                 await Task.Delay(delay, ct);
             }
         }
