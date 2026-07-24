@@ -89,7 +89,7 @@ public class ComProjTagSelectorTests
         Assert.Equal(proj.Channels[1], anyload.Channel);
         // 注意：默认的访问模式是RW，我们有意在xml定义中不设置访问模式，以测试自定义的测点加载逻辑
         Assert.Null(anyload.AccessMode());
-        Assert.Equal(TagAccessMode.RW, anyload.GetAccessMode());
+        Assert.Equal(TagAccessMode.RW, anyload.SearchAccessMode());
         #endregion
 
     }
@@ -117,7 +117,7 @@ public class ComProjTagSelectorTests
                     throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(ComChannelBase<string>)}！实际={channel.GetType()}");
                 }
 
-                var accessMode = this.TagDescriptor.AccessMode ?? this.Parent.GetAccessMode();
+                var accessMode = this.TagDescriptor.AccessMode ?? this.Parent.SearchAccessMode();
 
                 ITag tag = accessMode switch
                 {

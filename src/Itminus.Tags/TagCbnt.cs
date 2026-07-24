@@ -86,7 +86,7 @@ internal class TagCbnt : ITagCbnt
     /// <inheritdoc/>
     public virtual async Task ReadAsync(CancellationToken ct)
     {
-        var channel0 = this.GetRequiredChannel();
+        var channel0 = this.SearchRequiredChannel();
         var channel = channel0 as IContinousBytesBasedTagChannel;
         if(channel is null)
         {
@@ -104,7 +104,7 @@ internal class TagCbnt : ITagCbnt
     /// <inheritdoc/>
     public virtual async Task WriteAsync(CancellationToken ct)
     {
-        var channel0 = this.GetRequiredChannel();
+        var channel0 = this.SearchRequiredChannel();
         var channel = channel0 as IContinousBytesBasedTagChannel;
         if (channel is null)
         {

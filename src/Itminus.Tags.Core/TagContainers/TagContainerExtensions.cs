@@ -11,9 +11,9 @@ public static class TagContainerExtensions
     /// </summary>
     /// <param name="tagContainer"></param>
     /// <returns></returns>
-    public static ITagChannel GetRequiredChannel(this TagContainer tagContainer) => tagContainer.Map(
-        handleTagCbnt: cbnt => cbnt.GetRequiredChannel(),
-        handleTagGrp: grp => grp.GetRequiredChannel()
+    public static ITagChannel SearchRequiredChannel(this TagContainer tagContainer) => tagContainer.Map(
+        handleTagCbnt: cbnt => cbnt.SearchRequiredChannel(),
+        handleTagGrp: grp => grp.SearchRequiredChannel()
     );
 
 

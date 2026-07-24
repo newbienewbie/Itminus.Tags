@@ -51,7 +51,7 @@ internal class TagGrpRunner : ITagGrpRunner
                     continue;
                 }
 
-                channel = entry.GetChannel();
+                channel = entry.SearchChannel();
                 if (TurnStarted is not null)
                 {
                     await TurnStarted(entry, channel);

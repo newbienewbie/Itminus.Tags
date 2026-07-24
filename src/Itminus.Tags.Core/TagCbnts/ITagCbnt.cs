@@ -46,7 +46,7 @@ public interface ITagCbnt
 
     /// <summary>
     /// 访问类型。委托自 <see cref="Descriptor"/><br/>
-    /// null 表示未配置，使用 <c>GetAccessMode()</c> 可获取带 RW 默认兜底的解析值。
+    /// null 表示未配置，使用 <see cref="ITagCbntExtensions.SearchAccessMode"/> 可获取带 RW 默认兜底的解析值。
     /// </summary>
     TagAccessMode? AcessMode { get; }
 

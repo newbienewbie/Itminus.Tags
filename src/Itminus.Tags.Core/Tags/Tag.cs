@@ -25,7 +25,7 @@ public abstract class Tag<TValue,TChannel> : ITag
         this.Parent = container;
 
         // init bubble channel
-        var requiredChannel = this.GetRequiredChannel();
+        var requiredChannel = this.SearchRequiredChannel();
         if (requiredChannel is not TChannel ch)
         {
             var tagname = this.TagName();

@@ -74,7 +74,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)
     {
-        var channel = this.GetChannel() as OpcUaClientTagChannel;
+        var channel = this.SearchChannel() as OpcUaClientTagChannel;
         if(channel is null)
         {
             throw new Exception($"TagCbnt({this.Name}) 通道应为{nameof(OpcUaClientTagChannel)},实际为{channel?.GetType()}");
@@ -112,7 +112,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// <inheritdoc/>
     public async Task WriteAsync(CancellationToken ct)
     {
-        var channel = this.GetChannel() as OpcUaClientTagChannel;
+        var channel = this.SearchChannel() as OpcUaClientTagChannel;
         if (channel is null)
         {
             throw new Exception($"TagCbnt({this.Name}) 通道应为{nameof(OpcUaClientTagChannel)},实际为{channel?.GetType()}");
