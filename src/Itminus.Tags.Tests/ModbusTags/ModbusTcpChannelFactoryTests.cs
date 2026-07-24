@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Xml.Linq;
 using Itminus.Tags.ModbusTcp;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -68,5 +69,22 @@ public class ModbusTcpChannelFactoryTests
         };
 
         Assert.Throws<InvalidOperationException>(() => factory.Create(descriptor));
+    }
+
+    [Fact]
+    public void Create_WithMaxBatchSize_PropagatesToChannel()
+    {
+        var factory = new ModbusTcpChannelFactory(NullLoggerFactory.Instance);
+        var descriptor = new TagChannelDescriptor
+        {
+            Name = "mb3",
+            Driver = "ModbusTcp",
+        };
+        descriptor.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "50");
+
+        var channel = factory.Create(descriptor);
+
+        var mbChannel = Assert.IsType<ModbusTcpChannel>(channel);
+        Assert.Equal((ushort)50, mbChannel.MaxBatchSize);
     }
 }

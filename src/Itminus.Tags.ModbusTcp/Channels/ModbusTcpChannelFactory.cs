@@ -42,6 +42,7 @@ public class ModbusTcpChannelFactory : ITagChannelFactory
         var plcitem = new ModbusTcpItem() { 
             IpAddr = mbDescriptor.IpAddr,
             Port = mbDescriptor.Port,
+            MaxBatchSize = mbDescriptor.MaxBatchSize,
         };
         var logger = _loggerFactory.CreateLogger<ModbusTcpChannel>();
         return new ModbusTcpChannel(

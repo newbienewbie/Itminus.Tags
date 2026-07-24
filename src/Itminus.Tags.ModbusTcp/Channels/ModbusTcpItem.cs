@@ -29,4 +29,9 @@ public class ModbusTcpItem
     /// 连接超时
     /// </summary>
     public int ConnTimeout { get; set; } = 1000;
+
+    /// <summary>
+    /// 单批次最多写入的寄存器数量。null 表示使用默认值。
+    /// </summary>
+    public ushort? MaxBatchSize { get; set; }
 }

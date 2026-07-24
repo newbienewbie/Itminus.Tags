@@ -18,8 +18,8 @@ internal class TestModbusTcpChannel : ModbusTcpChannel
 {
     public Mock<IModbusMaster> MasterMock { get; }
 
-    public TestModbusTcpChannel(string channelName, Mock<IModbusMaster> masterMock)
-        : base(channelName, new ModbusTcpItem(), NullLogger<ModbusTcpChannel>.Instance)
+    public TestModbusTcpChannel(string channelName, Mock<IModbusMaster> masterMock, ModbusTcpItem item)
+        : base(channelName, item, NullLogger<ModbusTcpChannel>.Instance)
     {
         MasterMock = masterMock;
     }
@@ -33,7 +33,7 @@ public class ModbusTcpChannelTests
     private static (TestModbusTcpChannel channel, Mock<IModbusMaster> mock) CreateChannel()
     {
         var mock = new Mock<IModbusMaster>(MockBehavior.Strict);
-        var channel = new TestModbusTcpChannel("mb1", mock);
+        var channel = new TestModbusTcpChannel("mb1", mock, new ModbusTcpItem());
         return (channel, mock);
     }
 
@@ -215,6 +215,37 @@ public class ModbusTcpChannelTests
 
         Assert.NotNull(captured);
         Assert.Equal(new bool[] { true, false, true }, captured);
+    }
+
+    #endregion
+
+    #region MaxBatchSize 自定义
+
+    [Fact]
+    public async Task WriteAsync_HoldingRegisters_CustomMaxBatchSize_ChunksCorrectly()
+    {
+        var mock = new Mock<IModbusMaster>(MockBehavior.Strict);
+        var item = new ModbusTcpItem { MaxBatchSize = 2 };
+        var channel = new TestModbusTcpChannel("mb1", mock, item);
+        mock
+            .Setup(x => x.WriteMultipleRegistersAsync(
+                (byte)1, 
+                It.IsAny<ushort>(), 
+                It.IsAny<ushort[]>()
+            ))
+            .Returns(Task.CompletedTask);
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        // 4 ushorts → 应分 2 批写入（每批 2 个）
+        var bytes = new byte[] { 0x01, 0x00, 0x02, 0x00, 0x03, 0x00, 0x04, 0x00 };
+        await channel.WriteAsync("1~40001", bytes, CancellationToken.None);
+
+        mock.Verify(
+            x => x.WriteMultipleRegistersAsync(1, 0, It.Is<ushort[]>(d => d.Length == 2)),
+            Times.Once);
+        mock.Verify(
+            x => x.WriteMultipleRegistersAsync(1, 2, It.Is<ushort[]>(d => d.Length == 2)),
+            Times.Once);
     }
 
     #endregion

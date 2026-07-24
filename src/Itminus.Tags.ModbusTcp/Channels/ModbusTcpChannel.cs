@@ -16,6 +16,11 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
 
     #region 配置
     private readonly ModbusTcpItem _modbusItem;
+
+    /// <summary>
+    /// 单批次最多写入的寄存器数量。null 表示使用默认值。
+    /// </summary>
+    public ushort? MaxBatchSize => _modbusItem.MaxBatchSize;
     /// <summary>
     /// IP 地址
     /// </summary>
@@ -254,6 +259,9 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
         if (addr.Area == RegisterKinds.HoldingRegisters)
         {
             var payload = MarshalHelper.BytesToUShorts(bytes);
+            var maxBatch = _modbusItem.MaxBatchSize.HasValue ?
+                 _modbusItem.MaxBatchSize.Value : 
+                (ushort)123;
 
             ushort offset = 0;
             while (true)
@@ -267,7 +275,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
                 {
                     break;
                 }
-                currlen = currlen > 123 ? (ushort)123 : currlen;
+                currlen = currlen > maxBatch ? maxBatch : currlen;
                 var subbytes = payload.AsSpan().Slice(offset, currlen).ToArray();
 
                 ushort effectiveOffset = (ushort)(addr.StartPoint + offset);

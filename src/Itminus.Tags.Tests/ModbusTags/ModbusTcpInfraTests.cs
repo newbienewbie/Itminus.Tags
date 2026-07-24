@@ -1,7 +1,6 @@
 using System;
 using System.Xml.Linq;
 using Itminus.Tags.ModbusTcp;
-using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Itminus.Tags.Tests.ModbusTags;
@@ -92,4 +91,67 @@ public class ModbusTcpTagChannelDescriptorTests
         Assert.Contains("Port", xml);
         Assert.Contains("502", xml);
     }
+
+    #region MaxBatchSize
+
+    [Fact]
+    public void MaxBatchSize_RoundtripsViaXml()
+    {
+        var descriptor = new ModbusTcpTagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+            IpAddr = "10.0.0.1",
+            Port = 502,
+            MaxBatchSize = 50,
+        };
+
+        var xml = descriptor.ToXElement();
+        var baseDesc = xml.ToTagChannelDescriptor();
+        var restored = baseDesc.ToModbusTcpTagChannelDescriptor();
+
+        Assert.Equal((ushort)50, restored.MaxBatchSize);
+    }
+
+    [Fact]
+    public void MaxBatchSize_DefaultNull()
+    {
+        var descriptor = new ModbusTcpTagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+
+        Assert.Null(descriptor.MaxBatchSize);
+    }
+
+    [Fact]
+    public void MaxBatchSize_ReadFromExtras()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "30");
+
+        var result = baseDesc.ToModbusTcpTagChannelDescriptor();
+
+        Assert.Equal((ushort)30, result.MaxBatchSize);
+    }
+
+    [Fact]
+    public void MaxBatchSize_InvalidValue_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "not-a-number");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+    }
+
+    #endregion
 }
