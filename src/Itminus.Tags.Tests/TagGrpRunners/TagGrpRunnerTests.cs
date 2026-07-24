@@ -20,7 +20,7 @@ public class TagGrpRunnerTests
     private (TagGrpRunner runner, MockTagGrp entry, MockProject project, FakedChannel channel) CreateRunner()
     {
         var channel = new FakedChannel();
-        var entry = new MockTagGrp { Channel = channel, ScanInterval = 10_000 };
+        var entry = new MockTagGrp { Channel = channel, Descriptor = new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10_000 } };
         var project = new MockProject();
         var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance);
         return (runner, entry, project, channel);
@@ -48,7 +48,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 20;
+        entry.Descriptor!.ScanInterval = 20;
         entry.IsEnabled = true;
 
         using var cts = new CancellationTokenSource();
@@ -82,7 +82,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 500;
+        entry.Descriptor!.ScanInterval = 500;
         entry.IsEnabled = false;
 
         using var cts = new CancellationTokenSource(800);
@@ -100,7 +100,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 20;
+        entry.Descriptor!.ScanInterval = 20;
         entry.IsEnabled = true;
 
         using var cts = new CancellationTokenSource();
@@ -128,7 +128,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 20;
+        entry.Descriptor!.ScanInterval = 20;
         entry.IsEnabled = true;
 
         using var cts = new CancellationTokenSource();
@@ -161,7 +161,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 20;
+        entry.Descriptor!.ScanInterval = 20;
         entry.IsEnabled = true;
         entry.IsDirtyReturn = true;
 
@@ -193,7 +193,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 20;
+        entry.Descriptor!.ScanInterval = 20;
         entry.IsEnabled = true;
         entry.ReadAsyncThrows = new InvalidOperationException("模拟读取异常");
 
@@ -224,7 +224,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 20;
+        entry.Descriptor!.ScanInterval = 20;
         entry.IsEnabled = true;
         entry.ReadAsyncThrows = new InvalidOperationException("模拟读取异常");
 
@@ -245,7 +245,7 @@ public class TagGrpRunnerTests
     {
         // Arrange
         var (runner, entry, _, _) = CreateRunner();
-        entry.ScanInterval = 10;
+        entry.Descriptor!.ScanInterval = 10;
         entry.IsEnabled = true;
 
         using var cts = new CancellationTokenSource(100);
@@ -265,7 +265,7 @@ public class TagGrpRunnerTests
         {
             Name = "intent-entry",
             Channel = new FakedChannel(),
-            ScanInterval = 20,
+            Descriptor = new TagGrpDescriptor { Name = "intent-entry", ScanInterval = 20 },
             IsEnabled = true
         };
         var project = new MockProject();
@@ -302,7 +302,7 @@ public class TagGrpRunnerTests
         var entry = new MockTagGrp
         {
             Channel = new FakedChannel(),
-            ScanInterval = 20,
+            Descriptor = new TagGrpDescriptor { Name = "test-entry", ScanInterval = 20 },
             IsEnabled = true,
             ReadAsyncThrows = new InvalidOperationException("模拟读取异常")
         };
@@ -339,7 +339,7 @@ public class TagGrpRunnerTests
         var entry = new MockTagGrp
         {
             Channel = new FakedChannel(),
-            ScanInterval = 10,
+            Descriptor = new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10 },
             IsEnabled = true,
         };
         var project = new MockProject();
@@ -420,7 +420,6 @@ public class TagGrpRunnerTests
         public ITagGrp AddTag(ITag tag) => this;
         public ITagGrp AddTag(ITagCbnt tagCbnt) => this;
         public ITagGrp AddTag(ITagGrp tagGrp) => this;
-        public int ScanInterval { get; set; } = 1000;
         public bool IsEnabled { get; set; } = true;
         public TagAccessMode? AccessMode { get; set; }
         public TagGrpDescriptor? Descriptor { get; set; }

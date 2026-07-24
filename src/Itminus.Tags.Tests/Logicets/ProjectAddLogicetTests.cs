@@ -203,7 +203,6 @@ public class ProjectAddLogicetTests
         public ITagGrp AddTag(ITag tag) => this;
         public ITagGrp AddTag(ITagCbnt tagCbnt) => this;
         public ITagGrp AddTag(ITagGrp tagGrp) => this;
-        public int ScanInterval { get; set; }
         public bool IsEnabled { get; set; } = true;
         public TagAccessMode? AccessMode { get; set; }
         public TagGrpDescriptor? Descriptor { get; set; }

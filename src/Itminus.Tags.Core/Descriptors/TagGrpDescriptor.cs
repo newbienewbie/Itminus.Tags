@@ -28,9 +28,10 @@ public class TagGrpDescriptor: ITagsDescriptor
     public bool IsEnabled { get; set; } = true; 
 
     /// <summary>
-    /// 扫描间隔
+    /// 扫描间隔<br/>
+    /// null 表示未指定，在构建阶段会冒泡式向上检索父级配置。<br/>
     /// </summary>
-    public int ScanInterval { get; set; } = 200;
+    public int? ScanInterval { get; set; }
 
     /// <summary>
     /// 访问模式。<br/>

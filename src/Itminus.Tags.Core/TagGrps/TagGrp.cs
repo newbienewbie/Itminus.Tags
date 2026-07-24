@@ -127,9 +127,6 @@ public class TagGrp : ITagGrp
     public bool IsEnabled => Descriptor?.IsEnabled ?? true;
 
     /// <inheritdoc/>
-    public int ScanInterval => Descriptor?.ScanInterval ?? 0;
-
-    /// <inheritdoc/>
     public TagAccessMode? AccessMode => Descriptor?.AccessMode;
 
     /// <inheritdoc/>

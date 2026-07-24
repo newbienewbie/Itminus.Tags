@@ -74,11 +74,6 @@ public interface ITagGrp
 
 
     /// <summary>
-    /// 扫描间隔，委托自 <see cref="Descriptor"/><br/>
-    /// </summary>
-    int ScanInterval { get; }
-
-    /// <summary>
     /// 访问模式。委托自 <see cref="Descriptor"/><br/>
     /// null 表示未配置，使用 <see cref="ITagGrpExtensions.SearchAccessMode"/> 可获取带 RW 默认兜底的解析值。
     /// </summary>
