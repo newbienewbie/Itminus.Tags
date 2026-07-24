@@ -25,9 +25,6 @@ internal class TagCbnt : ITagCbnt
     public TagCbntDescriptor Descriptor { get; set; }
 
     /// <inheritdoc/>
-    public string Name => Descriptor.Name;
-
-    /// <inheritdoc/>
     public ITagGrp? Parent { get; set; }
 
     /// <inheritdoc/>
@@ -69,7 +66,7 @@ internal class TagCbnt : ITagCbnt
     /// <inheritdoc/>
     public ITagCbntor this[string tagName] => this.Children.TryGetValue(tagName, out var tag) ? 
         tag : 
-        throw new Exception($"TagCbnt({this.Name}) has no child who's name={tagName}");
+        throw new Exception($"TagCbnt({this.TagName()}) has no child who's name={tagName}");
     #endregion
 
     /// <inheritdoc/>
@@ -85,7 +82,7 @@ internal class TagCbnt : ITagCbnt
         var channel = channel0 as IContinousBytesBasedTagChannel;
         if(channel is null)
         {
-            throw new NotImplementedException($"通道组合({nameof(TagCbnt)})依赖于通道{nameof(IContinousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}，如有必要，请考虑提供自己的通道组合实现。当前测点组合名称={this.Name}");
+            throw new NotImplementedException($"通道组合({nameof(TagCbnt)})依赖于通道{nameof(IContinousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}，如有必要，请考虑提供自己的通道组合实现。当前测点组合名称={this.TagName()}");
         }
         var bytes = await channel.ReadAsync(this.StartAddress, this.CacheSize, ct);
         this.Cache = bytes.AsMemory();
@@ -103,7 +100,7 @@ internal class TagCbnt : ITagCbnt
         var channel = channel0 as IContinousBytesBasedTagChannel;
         if (channel is null)
         {
-            throw new NotImplementedException($"通道组合({nameof(TagCbnt)})依赖于通道{nameof(IContinousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}，如有必要，请考虑提供自己的通道组合实现。当前测点组合名称={this.Name}");
+            throw new NotImplementedException($"通道组合({nameof(TagCbnt)})依赖于通道{nameof(IContinousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}，如有必要，请考虑提供自己的通道组合实现。当前测点组合名称={this.TagName()}");
         }
         var bytes = this.Cache.ToArray();
         await channel.WriteAsync(this.StartAddress, bytes, ct);

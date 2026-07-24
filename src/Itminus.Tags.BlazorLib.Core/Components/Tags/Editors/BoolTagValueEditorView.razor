@@ -43,7 +43,7 @@
             }
             var newvalue = _checked;
             _ = this.Project.WriteIntent(
-                entry.Name, 
+                entry.TagName(), 
                 (entry,ct) => {
                     Tag.Value = newvalue;
                     return ValueTask.CompletedTask;

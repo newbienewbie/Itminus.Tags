@@ -21,12 +21,17 @@ public static class ITagCbntExtensions
     public static ITagChannel? SearchChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.SearchChannel();
 
     /// <summary>
+    /// 获取测点组合的名称
+    /// </summary>
+    public static string TagName(this ITagCbnt tagcbnt) => tagcbnt.Descriptor.Name;
+
+    /// <summary>
     /// 冒泡式获取测点的通道。如果没有配置通道，则抛出异常
     /// </summary>
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static ITagChannel SearchRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.SearchChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.Name})");
+    public static ITagChannel SearchRequiredChannel(this ITagCbnt tagcbnt) => tagcbnt.SearchChannel() ?? throw new Exception($"Channel is not configured : TagCbnt({tagcbnt.TagName()})");
 
     /// <summary>
     /// 获取解析后的访问模式。<br/>

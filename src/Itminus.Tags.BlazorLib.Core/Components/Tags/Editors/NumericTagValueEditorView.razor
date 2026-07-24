@@ -45,7 +45,7 @@
                 return;
             }
             _ = this.Project.WriteIntent(
-                entry.Name, 
+                entry.TagName(), 
                 (entry,ct) => {
 
                     // Assign the correctly-typed value directly.

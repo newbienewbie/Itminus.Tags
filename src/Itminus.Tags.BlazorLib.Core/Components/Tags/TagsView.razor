@@ -63,7 +63,7 @@
     {
         var rootChildren = new List<TreeItemData<TagUnion>>();
         var root = new TreeItemData<TagUnion>(){
-            Text = group.Name,
+            Text = group.TagName(),
             Value = new TagUnion.TagGrp(group),
             Children = rootChildren,
             Icon = Icons.Material.Filled.Layers,
@@ -86,7 +86,7 @@
                 var nodeChildren = new List<TreeItemData<TagUnion>>();
                 var node = new TreeItemData<TagUnion>()
                     {
-                        Text = cbnt.Name,
+                        Text = cbnt.TagName(),
                         Value = child,
                         Children = nodeChildren,
                         Icon = Icons.Material.Filled.GroupWork,
@@ -113,7 +113,7 @@
             {
                 var node = new TreeItemData<TagUnion>()
                     {
-                        Text = group.Name,
+                        Text = group.TagName(),
                         Children = new List<TreeItemData<TagUnion>>(),
                         Icon = Icons.Material.Filled.DeviceUnknown,
                     };

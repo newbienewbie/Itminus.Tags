@@ -55,7 +55,7 @@
             }
             var newvalue = _text;
             _ = this.Project.WriteIntent(
-                entry.Name, 
+                entry.TagName(), 
                 (entry,ct) => {
                     Tag.Value = newvalue;
                     return ValueTask.CompletedTask;

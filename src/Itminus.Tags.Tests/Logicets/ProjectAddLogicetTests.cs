@@ -199,7 +199,6 @@ public class ProjectAddLogicetTests
             Descriptor = descriptor;
         }
 
-        public string Name { get; set; } = "mock";
         public ITagGrp? Parent { get; set; }
         public bool IsEntry { get; } = false;
         public IDictionary<string, TagUnion> Children { get; } = new Dictionary<string, TagUnion>();

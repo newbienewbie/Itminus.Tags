@@ -55,4 +55,31 @@ public class TagGrpExtensionsTests
     }
 
     #endregion
+
+    #region TagName (ITagGrp)
+
+    [Fact]
+    public void TagName_ForITagGrp_ReturnsDescriptorName()
+    {
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "myGrp" }, channel: null);
+
+        var result = grp.TagName();
+
+        Assert.Equal("myGrp", result);
+    }
+
+    [Fact]
+    public void TagName_ForITagGrp_DoesNotBubbleUp()
+    {
+        var parent = new TagGrp(new TagGrpDescriptor { Name = "parent" }, channel: null);
+        var child = new TagGrp(new TagGrpDescriptor { Name = "child" }, channel: null) { Parent = parent };
+
+        var result = child.TagName();
+
+        // TagName() 不冒泡，始终返回自身 Descriptor.Name
+        Assert.Equal("child", result);
+        Assert.NotEqual("parent", result);
+    }
+
+    #endregion
 }

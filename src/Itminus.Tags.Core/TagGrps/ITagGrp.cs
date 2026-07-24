@@ -10,11 +10,6 @@ namespace Itminus.Tags;
 public interface ITagGrp
 {
     /// <summary>
-    /// 群组名称，委托自 <see cref="Descriptor"/><br/>
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
     /// 父群组
     /// </summary>
     ITagGrp? Parent { get; set; }

@@ -35,7 +35,6 @@ public class TagUnionExtensions_IsDirty_Tests
             Descriptor = descriptor;
         }
 
-        public string Name { get; set; } = "cbnt";
         public ITagGrp? Parent { get; set; }
 
         private readonly Dictionary<string, ITagCbntor> _children = new();

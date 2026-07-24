@@ -8,11 +8,6 @@
 public interface ITagCbnt
 {
     /// <summary>
-    /// 组合名称，委托自 <see cref="Descriptor"/><br/>
-    /// </summary>
-    string Name { get; }
-
-    /// <summary>
     /// 对应的描述符，可用于获取完整的静态配置信息
     /// </summary>
     TagCbntDescriptor Descriptor { get; set; }

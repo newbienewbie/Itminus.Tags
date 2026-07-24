@@ -46,8 +46,8 @@ namespace Itminus.Tags.Tests.TagUnions
             var units = new List<string>();
 
             var traverser = new TagUnionTraverser(
-                grp => groups.Add(grp.Name),
-                cb => cbnts.Add(cb.Name),
+                grp => groups.Add(grp.TagName()),
+                cb => cbnts.Add(cb.TagName()),
                 tag => units.Add(tag.TagName())
             );
 

@@ -32,7 +32,7 @@ public class HeartBeatLogicet : LogicetBase
 
     public override int Order => 2;
 
-    public override bool MatchEntry(ITagGrp entry) => entry.Name == "IoBox";
+    public override bool MatchEntry(ITagGrp entry) => entry.TagName() == "IoBox";
 
     public override Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel)
     {

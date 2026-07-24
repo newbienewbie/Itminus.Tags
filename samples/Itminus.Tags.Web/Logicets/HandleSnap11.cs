@@ -29,7 +29,7 @@ internal class HandleSnap11 : LogicetBase
 
     public override bool MatchEntry(ITagGrp entry)
     {
-        return entry.Name == "g4";
+        return entry.TagName() == "g4";
     }
 
     public override Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel)

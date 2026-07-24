@@ -263,7 +263,6 @@ public class TagGrpRunnerTests
         // Arrange
         var entry = new MockTagGrp(new TagGrpDescriptor { Name = "intent-entry", ScanInterval = 20 })
         {
-            Name = "intent-entry",
             Channel = new FakedChannel(),
             IsEnabled = true
         };
@@ -413,7 +412,6 @@ public class TagGrpRunnerTests
             Descriptor = descriptor;
         }
 
-        public string Name { get; set; } = "test-entry";
         public ITagGrp? Parent { get; set; }
         public bool IsEntry { get; } = true;
         public IDictionary<string, TagUnion> Children { get; } = new Dictionary<string, TagUnion>();

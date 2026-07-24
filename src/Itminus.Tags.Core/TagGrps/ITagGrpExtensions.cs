@@ -114,7 +114,15 @@ public static class ITagGrpExtensions
     /// <param name="tagGrp"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static ITagChannel SearchRequiredChannel(this ITagGrp tagGrp) => tagGrp.SearchChannel() ?? throw new Exception($"Channel is not configured : TagGrp({tagGrp.Name})");
+    public static string TagName(this ITagGrp tagGrp) => tagGrp.Descriptor.Name;
+
+    /// <summary>
+    /// 冒泡式获取通信通道，如果为空则抛出异常
+    /// </summary>
+    /// <param name="tagGrp"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    public static ITagChannel SearchRequiredChannel(this ITagGrp tagGrp) => tagGrp.SearchChannel() ?? throw new Exception($"Channel is not configured : TagGrp({tagGrp.TagName()})");
 
     /// <summary>
     /// 冒泡式获取访问模式。<br/>
@@ -162,6 +170,6 @@ public static class ITagGrpExtensions
     /// <param name="tagGrp"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static int SearchRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.SearchScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.Name})");
+    public static int SearchRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.SearchScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.TagName()})");
     #endregion
 }

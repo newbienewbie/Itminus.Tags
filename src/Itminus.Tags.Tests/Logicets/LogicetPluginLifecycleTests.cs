@@ -144,7 +144,7 @@ public class LogicetPluginLifecycleTests
 
         public override bool MatchEntry(ITagGrp entry)
         {
-            return entry.Name == "g1";
+            return entry.TagName() == "g1";
         }
 
         public override Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel)

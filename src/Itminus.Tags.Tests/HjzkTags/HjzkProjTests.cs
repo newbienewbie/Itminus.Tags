@@ -44,7 +44,7 @@ public class HjzkProjTests
 
         // Test Tags
         Assert.NotNull(proj.Tags);
-        Assert.Equal("__main__", proj.Tags.Name);
+        Assert.Equal("__main__", proj.Tags.TagName());
         var g2 = proj.Tags.SelectGrp("g2");
         Assert.NotNull(g2);
 
