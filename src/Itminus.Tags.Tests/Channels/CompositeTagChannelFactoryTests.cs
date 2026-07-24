@@ -50,13 +50,30 @@ public class CompositeTagChannelFactoryTests
     }
 
     [Fact]
+    public void FactoryList_WhenEmpty_ReturnsEmpty()
+    {
+        var composite = new CompositeTagChannelFactory();
+        Assert.Empty(composite.FactoryList);
+    }
+
+    [Fact]
+    public void FactoryList_WhenAddFactory_ReturnsNonEmpty()
+    {
+        var composite = new CompositeTagChannelFactory();
+        composite.AddFactory(new FakeFactory("S7"));
+        Assert.NotEmpty(composite.FactoryList);
+        Assert.Single(composite.FactoryList);
+    }
+
+
+    [Fact]
     public void GetAvailableDrivers_WhenEmpty_ReturnsEmpty()
     {
         var composite = new CompositeTagChannelFactory();
 
         var drivers = composite.GetAvailableDrivers();
-
         Assert.Empty(drivers);
+        Assert.Empty(composite.FactoryList);
     }
 
     [Fact]
