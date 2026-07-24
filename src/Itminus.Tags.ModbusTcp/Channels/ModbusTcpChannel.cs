@@ -73,7 +73,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// 创建连接并初始化
     /// </summary>
     /// <returns></returns>
-    protected virtual async Task CreateConnectionAsync(int timeout, CancellationToken ct)
+    protected virtual async Task<IModbusMaster> CreateConnectionAsync(int timeout, CancellationToken ct)
     {
         var entered = await _connSignal.WaitAsync(timeout, ct);
         if (!entered)
@@ -85,10 +85,11 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
             _tcpClient = new TcpClient();
             await _tcpClient.ConnectAsync(IpAddr, Port, ct);
             var factory = new ModbusFactory();
-            ModbusMaster = factory.CreateMaster(_tcpClient);
-            ModbusMaster.Transport.ReadTimeout = ReadTimeout;
-            ModbusMaster.Transport.WriteTimeout = WriteTimeout;
+            var mb = factory.CreateMaster(_tcpClient);
+            mb.Transport.ReadTimeout = ReadTimeout;
+            mb.Transport.WriteTimeout = WriteTimeout;
             _logger.LogInformation($"ModbusMaster 初始化完成: 设备名={ChannelName}; addr={IpAddr}; port={Port}");
+            return mb;
         }
         finally
         {
@@ -134,7 +135,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
             return;
         }
         
-        await CreateConnectionAsync(ConnTimeout, ct);
+        this.ModbusMaster = await CreateConnectionAsync(ConnTimeout, ct);
         return;
     }
 
