@@ -6,6 +6,11 @@
 public static class ITagCbntExtensions
 {
     /// <summary>
+    /// 获取测点组合的名称
+    /// </summary>
+    public static string TagName(this ITagCbnt tagcbnt) => tagcbnt.Descriptor.Name;
+
+    /// <summary>
     /// 获取子测点。如果指定的测点名不存在，则抛出异常
     /// </summary>
     /// <param name="tagcbnt"></param>
@@ -19,11 +24,6 @@ public static class ITagCbntExtensions
     /// <param name="tagcbnt"></param>
     /// <returns></returns>
     public static ITagChannel? SearchChannel(this ITagCbnt tagcbnt) => tagcbnt.Channel ?? tagcbnt.Parent?.SearchChannel();
-
-    /// <summary>
-    /// 获取测点组合的名称
-    /// </summary>
-    public static string TagName(this ITagCbnt tagcbnt) => tagcbnt.Descriptor.Name;
 
     /// <summary>
     /// 冒泡式获取测点的通道。如果没有配置通道，则抛出异常
