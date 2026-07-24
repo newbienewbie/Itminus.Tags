@@ -147,7 +147,7 @@ public static class ITagGrpExtensions
         // Descriptor 中存在 ScanInterval 配置时直接返回（即使为 0 也是有效配置）
         if(tagGrp.Descriptor?.ScanInterval is not null)
         {
-            return tagGrp.ScanInterval;
+            return tagGrp.Descriptor.ScanInterval;
         }
         if(tagGrp.Parent is not null)
         {
