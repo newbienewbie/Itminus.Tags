@@ -31,8 +31,6 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     /// <inheritdoc/>
     public bool IsEnabled { get; set; }
     /// <inheritdoc/>
-    public TagAccessMode? AcessMode => Descriptor.AccessMode;
-    /// <inheritdoc/>
     public bool IsScaned { get; set; }
     /// <inheritdoc/>
     public ITagChannel? Channel { get; set; }

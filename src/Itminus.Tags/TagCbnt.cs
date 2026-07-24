@@ -76,9 +76,6 @@ internal class TagCbnt : ITagCbnt
     public bool IsEnabled { get; set; }
 
     /// <inheritdoc/>
-    public TagAccessMode? AcessMode => Descriptor.AccessMode;
-
-    /// <inheritdoc/>
     public bool IsScaned { get; set; }
 
     /// <inheritdoc/>

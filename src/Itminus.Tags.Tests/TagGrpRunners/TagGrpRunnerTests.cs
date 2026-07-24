@@ -423,7 +423,6 @@ public class TagGrpRunnerTests
         public ITagGrp AddTag(ITagCbnt tagCbnt) => this;
         public ITagGrp AddTag(ITagGrp tagGrp) => this;
         public bool IsEnabled { get; set; } = true;
-        public TagAccessMode? AccessMode { get; set; }
         public TagGrpDescriptor Descriptor { get; set; }
         public ITagChannel? Channel { get; set; }
 

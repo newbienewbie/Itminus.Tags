@@ -128,9 +128,6 @@ public class TagGrp : ITagGrp
     public bool IsEnabled { get; set; }
 
     /// <inheritdoc/>
-    public TagAccessMode? AccessMode => Descriptor.AccessMode;
-
-    /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)
     {
         foreach(var kvp in Children)
