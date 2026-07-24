@@ -102,7 +102,7 @@ public static class TagUnionExtensions
 
 
 
-    #region
+    #region AsXyz()
     /// <summary>
     /// 转成 <see cref="ITag"/>，如果类型不对则抛出异常
     /// </summary>
@@ -140,7 +140,7 @@ public static class TagUnionExtensions
     );
     #endregion
 
-    #region IsXyzFlag
+    #region IsXyzFlag()
     /// <summary>
     /// 是否是 TagUnit
     /// </summary>

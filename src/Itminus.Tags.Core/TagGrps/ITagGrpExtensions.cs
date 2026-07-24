@@ -9,6 +9,14 @@ namespace Itminus.Tags;
 /// </summary>
 public static class ITagGrpExtensions
 {
+    /// <summary>
+    /// 获取当前测点的名称
+    /// </summary>
+    /// <param name="tagGrp"></param>
+    /// <returns></returns>
+    public static string TagName(this ITagGrp tagGrp) => tagGrp.Descriptor.Name;
+
+
     #region 获取子孙节点
     /// <summary>
     /// 以路径获取子节点并作为<see cref="ITag"/>返回。<br/>
@@ -57,7 +65,8 @@ public static class ITagGrpExtensions
     public static bool IsEntry(this ITagGrp grp) => grp.Descriptor.IsEntry;
 
     /// <summary>
-    /// 扫描入口节点
+    /// 扫描入口节点：如果当前节点是入口，则返回自身；否则检索所有子节点中入口节点。<br/>
+    /// 返回入口节点列表，可能为空列表。
     /// </summary>
     /// <param name="grp"></param>
     /// <returns></returns>
@@ -75,7 +84,7 @@ public static class ITagGrpExtensions
             if (child is TagUnion.TagGrp unionTagGroup)
             {
                 var g = unionTagGroup.Value;
-                if (g.IsEnabled)
+                if (g.IsEntry())
                 {
                     results.Add(g);
                 }
@@ -85,7 +94,6 @@ public static class ITagGrpExtensions
                     results.AddRange(list);
                 }
             }
-            // todo: support TagCbnt as Entry
         }
         return results;
     }
@@ -112,15 +120,6 @@ public static class ITagGrpExtensions
         return null;
     }
 
-
-    /// <summary>
-    /// 冒泡式获取通信通道，如果为空则抛出异常
-    /// </summary>
-    /// <param name="tagGrp"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public static string TagName(this ITagGrp tagGrp) => tagGrp.Descriptor.Name;
-
     /// <summary>
     /// 冒泡式获取通信通道，如果为空则抛出异常
     /// </summary>
@@ -129,6 +128,10 @@ public static class ITagGrpExtensions
     /// <exception cref="Exception"></exception>
     public static ITagChannel SearchRequiredChannel(this ITagGrp tagGrp) => tagGrp.SearchChannel() ?? throw new Exception($"Channel is not configured : TagGrp({tagGrp.TagName()})");
 
+    #endregion
+
+
+    #region
     /// <summary>
     /// 冒泡式获取访问模式。<br/>
     /// 先查自身，再冒泡查父级。<br/>
@@ -146,10 +149,7 @@ public static class ITagGrpExtensions
 
         return TagAccessMode.RW;
     }
-    #endregion
 
-
-    #region
     /// <summary>
     /// 冒泡式获取扫描间隔
     /// </summary>
@@ -169,12 +169,5 @@ public static class ITagGrpExtensions
         return null;
     }
 
-    /// <summary>
-    /// 冒泡式获取通信通道，如果为空则抛出异常
-    /// </summary>
-    /// <param name="tagGrp"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public static int SearchRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.SearchScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.TagName()})");
     #endregion
 }

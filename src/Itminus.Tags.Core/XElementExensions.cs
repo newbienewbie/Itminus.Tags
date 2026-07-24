@@ -46,18 +46,6 @@ public static class XElementExensions
     }
 
     /// <summary>
-    /// 测点元素是否是入口测点
-    /// </summary>
-    /// <param name="e"></param>
-    /// <param name="tagName"></param>
-    /// <returns></returns>
-    internal static bool GetTagUnionIsEntry(this XElement e, string tagName)
-    {
-        var isEntry = (bool?)e.Attribute("isEntry") ?? false;
-        return isEntry;
-    }
-
-    /// <summary>
     /// 获取扫描间隔
     /// </summary>
     /// <param name="e"></param>
@@ -88,15 +76,6 @@ public static class XElementExensions
     {
         var channelName = (string?)e.Attribute("channel");
         return channelName;
-    }
-
-    internal static ITagChannel? GetTagUnionChannel(this XElement e, IList<ITagChannel> channels)
-    {
-        var channelName = (string?)e.Attribute("channel");
-        var channel = string.IsNullOrEmpty(channelName) ?
-            null :
-            channels.FirstOrDefault(c => c.ChannelName == channelName);
-        return channel;
     }
 
     internal static TagKinds GetTagUnionTagKind(this XElement e, string tagName)
@@ -143,33 +122,6 @@ public static class XElementExensions
     {
         var note = (string?)e.Attribute("note");
         return note;
-    }
-
-    internal static string? GetTagUnionDriver(this XElement e, string tagName)
-    {
-        var note = (string?)e.Attribute("driver");
-        return note;
-    }
-
-
-    internal static T MapTagUnion<T>(this XElement e, Func<XElement,T> mapTag, Func<XElement,T> mapTagCbnt, Func<XElement,T> mapTagGrp)
-    {
-        if (e.Name == "Tag")
-        {
-            return mapTag(e);
-        }
-        else if (e.Name == "TagCbnt")
-        {
-            return mapTagCbnt(e);
-        }
-        else if (e.Name == "TagGrp")
-        {
-            return mapTagGrp(e);
-        }
-        else
-        {
-            throw new Exception($"未知的测点配置元素:<{e.Name}/>");
-        }
     }
 
     /// <summary>

@@ -22,6 +22,11 @@ public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
     /// </summary>
     public int Port { get; set; } = 502;
 
+    /// <summary>
+    /// 单批次最多写入的寄存器数量。null 表示使用默认值。
+    /// </summary>
+    public ushort? MaxBatchSize { get; set; }
+
     /// <inheritdoc/>
     public override XElement ToXElement()
     {
@@ -29,6 +34,10 @@ public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
 
         ele.SetOrAddChild(nameof(IpAddr), this.IpAddr);
         ele.SetOrAddChild(nameof(Port), this.Port);
+        if (MaxBatchSize.HasValue)
+        {
+            ele.SetOrAddChild(nameof(MaxBatchSize), this.MaxBatchSize.Value.ToString());
+        }
         return ele;
     }
 }
@@ -68,6 +77,11 @@ public static class TagChannelDescriptor_ModbusTcpExtensions
                 int.TryParse(portEle.Value, out var port) ?
                     port :
                     throw new ArgumentException($"配置的端口号不是整数"),
+            MaxBatchSize = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxBatchSize), out var batchEle) ?
+                null :
+                ushort.TryParse(batchEle.Value, out var batch) ?
+                    batch :
+                    throw new ArgumentException($"MaxBatchSize 配置不是整数"),
         };
         return res;
     }

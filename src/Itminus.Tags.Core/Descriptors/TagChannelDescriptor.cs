@@ -40,7 +40,7 @@ public class TagChannelDescriptor
     }
 
     /// <summary>
-    /// 转行XElement
+    /// 转成XElement
     /// </summary>
     /// <returns></returns>
     public virtual XElement ToXElement()
@@ -52,7 +52,7 @@ public class TagChannelDescriptor
 
         foreach (var kvp in Extras)
         {
-            element.Add(kvp.Value);
+            element.Add(new XElement(kvp.Value));
         }
 
         return element;

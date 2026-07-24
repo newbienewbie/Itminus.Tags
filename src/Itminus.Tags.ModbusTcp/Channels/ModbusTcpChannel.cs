@@ -16,6 +16,11 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
 
     #region 配置
     private readonly ModbusTcpItem _modbusItem;
+
+    /// <summary>
+    /// 单批次最多写入的寄存器数量。null 表示使用默认值。
+    /// </summary>
+    public ushort? MaxBatchSize => _modbusItem.MaxBatchSize;
     /// <summary>
     /// IP 地址
     /// </summary>
@@ -73,7 +78,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// 创建连接并初始化
     /// </summary>
     /// <returns></returns>
-    protected virtual async Task CreateConnectionAsync(int timeout, CancellationToken ct)
+    protected virtual async Task<IModbusMaster> CreateConnectionAsync(int timeout, CancellationToken ct)
     {
         var entered = await _connSignal.WaitAsync(timeout, ct);
         if (!entered)
@@ -85,10 +90,11 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
             _tcpClient = new TcpClient();
             await _tcpClient.ConnectAsync(IpAddr, Port, ct);
             var factory = new ModbusFactory();
-            ModbusMaster = factory.CreateMaster(_tcpClient);
-            ModbusMaster.Transport.ReadTimeout = ReadTimeout;
-            ModbusMaster.Transport.WriteTimeout = WriteTimeout;
+            var mb = factory.CreateMaster(_tcpClient);
+            mb.Transport.ReadTimeout = ReadTimeout;
+            mb.Transport.WriteTimeout = WriteTimeout;
             _logger.LogInformation($"ModbusMaster 初始化完成: 设备名={ChannelName}; addr={IpAddr}; port={Port}");
+            return mb;
         }
         finally
         {
@@ -134,7 +140,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
             return;
         }
         
-        await CreateConnectionAsync(ConnTimeout, ct);
+        this.ModbusMaster = await CreateConnectionAsync(ConnTimeout, ct);
         return;
     }
 
@@ -253,6 +259,9 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
         if (addr.Area == RegisterKinds.HoldingRegisters)
         {
             var payload = MarshalHelper.BytesToUShorts(bytes);
+            var maxBatch = _modbusItem.MaxBatchSize.HasValue ?
+                 _modbusItem.MaxBatchSize.Value : 
+                (ushort)123;
 
             ushort offset = 0;
             while (true)
@@ -266,7 +275,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
                 {
                     break;
                 }
-                currlen = currlen > 123 ? (ushort)123 : currlen;
+                currlen = currlen > maxBatch ? maxBatch : currlen;
                 var subbytes = payload.AsSpan().Slice(offset, currlen).ToArray();
 
                 ushort effectiveOffset = (ushort)(addr.StartPoint + offset);
