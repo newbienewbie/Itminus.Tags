@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Itminus.Tags.OpcUaClient;
 using Itminus.Tags.OpcUaClient.Cbnts;
+using Opc.Ua;
 using Xunit;
 
 namespace Itminus.Tags.Tests.OpcUaClientTags;
@@ -152,4 +154,94 @@ public class OpcUaClientTagCbntorTests
         public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
         public void Dispose() { }
     }
+
+    #region ReadAsync / WriteAsync happy path (使用 MockOpcUaChannel)
+
+    [Fact]
+    public async Task ReadAsync_WithMockChannel_FiresOnTagReadAndUpdatesTimestamp()
+    {
+        var channel = new MockOpcUaChannel("mock");
+        var cbnt = new OpcUaClientTagCbnt(new TagCbntDescriptor { Name = "c", StartAddress = "ns=1" })
+        {
+            Channel = channel,
+        };
+        var descriptor = new TagDescriptor { TagName = "t", RawAddress = "ns=1;s=Var1", TagKind = BuiltinTagKinds.INT32, TagSize = 4 };
+        var tag = new OpcUaClientTagCbntor(descriptor, cbnt, 0, 0);
+
+        channel.ReadAsyncOverride = async (_, _) =>{
+            return (
+                new DataValueCollection { 
+                    new DataValue { Value = 99 } 
+                }, 
+                new List<ServiceResult> { null! }
+            );
+        };
+
+        var eventFired = false;
+        tag.OnTagRead += (_, _) => eventFired = true;
+
+        await tag.ReadAsync(CancellationToken.None);
+
+        Assert.True(eventFired);
+        Assert.Equal(99, tag.Value);
+        Assert.NotEqual(default, tag.Timestamp);
+    }
+
+    [Fact]
+    public async Task ReadAsync_WithMockChannel_PopulatesBag()
+    {
+        var channel = new MockOpcUaChannel("mock");
+        var cbnt = new OpcUaClientTagCbnt(new TagCbntDescriptor { Name = "c", StartAddress = "ns=1" })
+        {
+            Channel = channel,
+        };
+        var descriptor = new TagDescriptor { TagName = "t", RawAddress = "ns=1;s=Var1", TagKind = BuiltinTagKinds.INT32, TagSize = 4 };
+        var tag = new OpcUaClientTagCbntor(descriptor, cbnt, 0, 0);
+
+        channel.ReadAsyncOverride = async (_, _) =>{
+            return (
+                new DataValueCollection { new DataValue { Value = 42 } },
+                new List<ServiceResult> { null! }
+            );
+        };
+
+        await tag.ReadAsync(CancellationToken.None);
+
+        Assert.True(cbnt.Bag.ContainsKey(tag.NodeId));
+        Assert.Equal(42, cbnt.Bag[tag.NodeId].Value);
+    }
+
+    [Fact]
+    public async Task WriteAsync_WithMockChannel_FiresOnTagWrittenAndClearsDirty()
+    {
+        var channel = new MockOpcUaChannel("mock");
+        var cbnt = new OpcUaClientTagCbnt(new TagCbntDescriptor { Name = "c", StartAddress = "ns=1" })
+        {
+            Channel = channel,
+        };
+        var descriptor = new TagDescriptor { TagName = "t", RawAddress = "ns=1;s=Var1", TagKind = BuiltinTagKinds.INT32, TagSize = 4 };
+        var tag = new OpcUaClientTagCbntor(descriptor, cbnt, 0, 0);
+        tag.Value = 123;  // 触发脏标记
+
+        IDictionary<NodeId, DataValue>? written = null;
+        channel.WriteAsyncOverride = (dict, _) =>
+        {
+            written = dict;
+            return Task.CompletedTask;
+        };
+        var eventFired = false;
+        tag.OnTagWritten += (_, _) => eventFired = true;
+
+        Assert.True(tag.IsDirty);
+        await tag.WriteAsync(CancellationToken.None);
+
+        Assert.True(eventFired);
+        Assert.False(tag.IsDirty);
+        Assert.NotNull(written);
+        Assert.Single(written);
+        Assert.Equal(tag.NodeId, written.Keys.First());
+        Assert.Equal(123, written.Values.First().Value);
+    }
+
+    #endregion
 }

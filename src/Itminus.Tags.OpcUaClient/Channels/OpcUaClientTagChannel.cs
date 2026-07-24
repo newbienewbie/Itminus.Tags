@@ -162,7 +162,7 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <param name="ct"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public async Task<(DataValueCollection values, IList<ServiceResult> errs)> ReadAsync(IList<NodeId> nodeIds, CancellationToken ct)
+    public virtual async Task<(DataValueCollection values, IList<ServiceResult> errs)> ReadAsync(IList<NodeId> nodeIds, CancellationToken ct)
     {
         if(this._session is null)
         {
@@ -185,7 +185,7 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="Exception"></exception>
-    public async Task WriteAsync(IDictionary<NodeId, DataValue> toBeWritten, CancellationToken ct)
+    public virtual async Task WriteAsync(IDictionary<NodeId, DataValue> toBeWritten, CancellationToken ct)
     {
         if (this._session is null)
         {
