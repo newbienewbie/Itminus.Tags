@@ -142,7 +142,7 @@ public static class ITagGrpExtensions
     /// </summary>
     /// <param name="tagGrp"></param>
     /// <returns></returns>
-    public static int? GetScanInterval(this ITagGrp tagGrp)
+    public static int? SearchScanInterval(this ITagGrp tagGrp)
     {
         if(tagGrp.ScanInterval != default)
         {
@@ -150,7 +150,7 @@ public static class ITagGrpExtensions
         }
         if(tagGrp.Parent is not null)
         {
-            return tagGrp.Parent.GetScanInterval();
+            return tagGrp.Parent.SearchScanInterval();
         }
         return null;
     }
@@ -161,6 +161,6 @@ public static class ITagGrpExtensions
     /// <param name="tagGrp"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static int GetRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.GetScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.Name})");
+    public static int SearchRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.SearchScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.Name})");
     #endregion
 }
