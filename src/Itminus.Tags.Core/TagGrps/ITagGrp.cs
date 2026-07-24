@@ -22,7 +22,7 @@ public interface ITagGrp
     /// <summary>
     /// 对应的描述符，可用于获取完整的静态配置信息
     /// </summary>
-    TagGrpDescriptor? Descriptor { get; set; }
+    TagGrpDescriptor Descriptor { get; set; }
 
     /// <summary>
     /// 是否是入口

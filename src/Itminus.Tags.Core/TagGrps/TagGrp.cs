@@ -18,10 +18,10 @@ public class TagGrp : ITagGrp
     }
 
     /// <inheritdoc/>
-    public TagGrpDescriptor? Descriptor { get; set; }
+    public TagGrpDescriptor Descriptor { get; set; }
 
     /// <inheritdoc/>
-    public string Name => Descriptor?.Name ?? "";
+    public string Name => Descriptor.Name;
 
     /// <summary>
     /// <inheritdoc/>
@@ -32,7 +32,7 @@ public class TagGrp : ITagGrp
     public ITagGrp? Parent { get; set; }
 
     /// <inheritdoc/>
-    public bool IsEntry => Descriptor?.IsEntry ?? false;
+    public bool IsEntry => Descriptor.IsEntry;
 
     #region 子节点
 
@@ -124,10 +124,10 @@ public class TagGrp : ITagGrp
     #endregion
 
     /// <inheritdoc/>
-    public bool IsEnabled => Descriptor?.IsEnabled ?? true;
+    public bool IsEnabled => Descriptor.IsEnabled;
 
     /// <inheritdoc/>
-    public TagAccessMode? AccessMode => Descriptor?.AccessMode;
+    public TagAccessMode? AccessMode => Descriptor.AccessMode;
 
     /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)

@@ -27,25 +27,12 @@ public class TagGrpExtensionsTests
     }
 
     [Fact]
-    public void SearchScanInterval_WhenDescriptorNull_ReturnsNull()
-    {
-        // Descriptor 本身为 null（极端边缘情况），无父级 → null
-        var grp = new TagGrp(new TagGrpDescriptor { Name = "test", ScanInterval = 0 }, channel: null)
-        {
-            Descriptor = null,
-        };
-
-        var result = grp.SearchScanInterval();
-
-        Assert.Null(result);
-    }
-
-    [Fact]
     public void SearchScanInterval_BubblesUpMultiLevel()
     {
+        // 中间节点 ScanInterval 为 null → 冒泡到 root
         var root = new TagGrp(new TagGrpDescriptor { Name = "root", ScanInterval = 500 }, channel: null);
-        var mid = new TagGrp(new TagGrpDescriptor { Name = "mid" }, channel: null) { Descriptor = null, Parent = root };
-        var leaf = new TagGrp(new TagGrpDescriptor { Name = "leaf" }, channel: null) { Descriptor = null, Parent = mid };
+        var mid = new TagGrp(new TagGrpDescriptor { Name = "mid" }, channel: null) { Parent = root };
+        var leaf = new TagGrp(new TagGrpDescriptor { Name = "leaf" }, channel: null) { Parent = mid };
 
         var result = leaf.SearchScanInterval();
 

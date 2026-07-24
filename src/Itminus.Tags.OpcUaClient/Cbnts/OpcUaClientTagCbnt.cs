@@ -12,10 +12,10 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     }
 
     /// <inheritdoc/>
-    public TagCbntDescriptor? Descriptor { get; set; }
+    public TagCbntDescriptor Descriptor { get; set; }
 
     /// <inheritdoc/>
-    public string Name => Descriptor?.Name ?? "";
+    public string Name => Descriptor.Name;
 
     /// <inheritdoc/>
     public ITagGrp? Parent { get; set; }
@@ -28,9 +28,9 @@ internal class OpcUaClientTagCbnt : ITagCbnt
         throw new Exception($"TagCbnt({this.Name}) has no child who's name={tagName}");
 
     /// <inheritdoc/>
-    public bool IsEnabled => Descriptor?.IsEnabled ?? true;
+    public bool IsEnabled => Descriptor.IsEnabled;
     /// <inheritdoc/>
-    public TagAccessMode? AcessMode => Descriptor?.AccessMode;
+    public TagAccessMode? AcessMode => Descriptor.AccessMode;
     /// <inheritdoc/>
     public bool IsScaned { get; set; }
     /// <inheritdoc/>

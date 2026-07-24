@@ -15,7 +15,7 @@ public interface ITagCbnt
     /// <summary>
     /// 对应的描述符，可用于获取完整的静态配置信息
     /// </summary>
-    TagCbntDescriptor? Descriptor { get; set; }
+    TagCbntDescriptor Descriptor { get; set; }
 
     /// <summary>
     /// 父组合
