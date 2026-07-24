@@ -129,7 +129,9 @@ public class TagsMcpServerTools
                 await task;
                 return WriteResult.Ok($"Successfully wrote tag '{path}' with value: {convertedValue}");
             }
-            catch (Exception ex) { return WriteResult.Fail($"Write intent for tag '{path}' failed: {ex.Message}"); }
+            catch (Exception ex) { 
+                return WriteResult.Fail($"Write intent for tag '{path}' failed: {ex.Message}"); 
+            }
         }
 
         return WriteResult.Ok($"Write intent for tag '{path}' queued successfully (not waiting for completion).");
@@ -205,7 +207,9 @@ public class TagsMcpServerTools
                 await Task.WhenAll(tasks);
                 return WriteResult.Ok($"Successfully wrote {results.Count} tag(s) across {perEntry.Count} entry group(s): {string.Join(", ", results)}");
             }
-            catch (Exception ex) { return WriteResult.Fail($"Batch write failed: {ex.Message}"); }
+            catch (Exception ex) { 
+                return WriteResult.Fail($"Batch write failed: {ex.Message}"); 
+            }
         }
 
         return WriteResult.Ok($"Write intents for {results.Count} tag(s) across {perEntry.Count} entry group(s) queued successfully.");
@@ -216,7 +220,8 @@ public class TagsMcpServerTools
 
 #region 内部辅助函数
     private ITagsProject EnsureProject() =>
-        _ctrl.Project ?? throw new InvalidOperationException("No project is running.");
+        _ctrl.Project ?? 
+        throw new InvalidOperationException("No project is running.");
 
     private static TagValue BuildTagValue(ITag tag)
     {

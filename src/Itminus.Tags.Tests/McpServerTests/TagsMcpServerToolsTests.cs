@@ -153,6 +153,71 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     }
     #endregion
 
+    #region 测试 DescribeProject
+
+    [Fact]
+    public void DescribeProject_WhenProjectExists_ReturnsRootXml()
+    {
+        using var proj = Factory.Create(null!, TestXml);
+        var tools = MakeTools(proj);
+
+        var result = tools.DescribeProject();
+
+        Assert.StartsWith("<root>", result);
+        Assert.Contains("name=\"g1\"", result);
+        Assert.Contains("name=\"g2\"", result);
+        Assert.Contains("isEntry=\"true\"", result);
+    }
+
+    [Fact]
+    public void DescribeProject_ReturnsSameXmlAsInputRoot()
+    {
+        using var proj = Factory.Create(null!, TestXml);
+        var tools = MakeTools(proj);
+        var expected = TestXml.ToString();
+
+        var result = tools.DescribeProject();
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void DescribeProject_WhenNoProject_ReturnsHintMessage()
+    {
+        var tools = new TagsMcpServerTools(new ProjectCtrl(null), Logger);
+
+        var result = tools.DescribeProject();
+
+        Assert.Contains("there's no project yet", result);
+    }
+
+    [Fact]
+    public void DescribeProject_ContainsChannelInfo()
+    {
+        using var proj = Factory.Create(null!, TestXml);
+        var tools = MakeTools(proj);
+
+        var result = tools.DescribeProject();
+
+        Assert.Contains("Channel", result);
+        Assert.Contains("fake", result);
+    }
+
+    [Fact]
+    public void DescribeProject_ContainsTagNames()
+    {
+        using var proj = Factory.Create(null!, TestXml);
+        var tools = MakeTools(proj);
+
+        var result = tools.DescribeProject();
+
+        Assert.Contains("bit_tag", result);
+        Assert.Contains("int16_tag", result);
+        Assert.Contains("float_tag", result);
+    }
+
+    #endregion
+
 
     #region 测试 写入
     [Fact]
