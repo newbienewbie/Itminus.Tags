@@ -169,12 +169,5 @@ public static class ITagGrpExtensions
         return null;
     }
 
-    /// <summary>
-    /// 冒泡式获取通信通道，如果为空则抛出异常
-    /// </summary>
-    /// <param name="tagGrp"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    public static int SearchRequiredScanInterval(this ITagGrp tagGrp) => tagGrp.SearchScanInterval() ?? throw new Exception($"ScanInterval is not configured : TagGrp({tagGrp.TagName()})");
     #endregion
 }
