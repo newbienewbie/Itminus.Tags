@@ -64,7 +64,7 @@ public class OpcUaClientDirectTagTests
     public async Task DirectTag_ReadAsync_UsesFakeChannelValue()
     {
         var channel = new FakeOpcUaClientTagChannel();
-        var grp = new TagGrp("grp", isEntry: true, channel: channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "grp", IsEntry = true }, channel);
         var container = TagContainer.From(grp);
         var descriptor = new TagDescriptor
         {
@@ -85,7 +85,7 @@ public class OpcUaClientDirectTagTests
     public async Task DirectTag_WriteAsync_WritesFakeChannelValue()
     {
         var channel = new FakeOpcUaClientTagChannel();
-        var grp = new TagGrp("grp", isEntry: true, channel: channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "grp", IsEntry = true }, channel);
         var container = TagContainer.From(grp);
         var descriptor = new TagDescriptor
         {

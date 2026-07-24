@@ -36,37 +36,15 @@ public abstract class TagCbntBuilderBase
     public virtual string StartAddress => TagCbnt.StartAddress;
 
     /// <summary>
-    /// 设置测点组合描述符<br/>
+    /// 设置测点组合描述符，并预填一些运行时属性（比如起始地址）<br/>
     /// 会被自动调用
     /// </summary>
     /// <param name="cbntDescriptor"></param>
     /// <returns></returns>
     public virtual TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor cbntDescriptor)
     {
-        this.WithName(cbntDescriptor.Name);
-        this.WithStartAddress(cbntDescriptor.StartAddress);
-        return this;
-    }
-
-    /// <summary>
-    /// 设置测点组合名，返回自身。<br/>
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    public virtual TagCbntBuilderBase WithName(string name)
-    {
-        TagCbnt.Name = name;
-        return this;
-    }
-
-    /// <summary>
-    /// 设置测点组合起始地址，返回自身。<br/>
-    /// </summary>
-    /// <param name="startAddress"></param>
-    /// <returns></returns>
-    public virtual TagCbntBuilderBase WithStartAddress(string startAddress)
-    {
-        TagCbnt.StartAddress = startAddress;
+        TagCbnt.Descriptor = cbntDescriptor;
+        TagCbnt.StartAddress = cbntDescriptor.StartAddress;
         return this;
     }
 
@@ -90,39 +68,6 @@ public abstract class TagCbntBuilderBase
     public virtual TagCbntBuilderBase WithParent(ITagGrp? parent)
     {
         this.TagCbnt.Parent = parent;
-        return this;
-    }
-
-    /// <summary>
-    /// 设置访问模式，返回自身。<br/>
-    /// </summary>
-    /// <param name="accessMode"></param>
-    /// <returns></returns>
-    public virtual TagCbntBuilderBase WithAccessMode(TagAccessMode? accessMode)
-    {
-        TagCbnt.AcessMode = accessMode;
-        return this;
-    }
-
-    /// <summary>
-    /// 设置扫描间隔，返回自身。<br/>
-    /// </summary>
-    /// <param name="interval"></param>
-    /// <returns></returns>
-    public virtual TagCbntBuilderBase WithInterval(int interval)
-    {
-        TagCbnt.ScanInterval = interval;
-        return this;
-    }
-
-    /// <summary>
-    /// 设置是否启用，返回自身。<br/>
-    /// </summary>
-    /// <param name="enabled"></param>
-    /// <returns></returns>
-    public virtual TagCbntBuilderBase WithIsEnabled(bool enabled)
-    {
-        TagCbnt.IsEnabled = enabled;
         return this;
     }
 

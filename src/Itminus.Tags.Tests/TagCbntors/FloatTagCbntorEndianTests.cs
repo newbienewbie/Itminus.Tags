@@ -11,7 +11,7 @@ public class FloatTagCbntorEndianTests
 {
     private static TagCbnt CreateCbnt(int cacheSize)
     {
-        var cbnt = new TagCbnt("g", "0");
+        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0" });
         cbnt.ResizeCache(cacheSize);
         return cbnt;
     }

@@ -8,21 +8,12 @@ namespace Itminus.Tags.ModbusTcp;
 public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
 {
     /// <summary>
-    /// c'tor
+    /// c'tor<br/>
+    /// 需要额外使用 <c>WithCbntDescriptor()</c> 设置实际描述符。
     /// </summary>
     public ModbusTcpTagCbntBuilder()
-        : base(new TagCbnt("unkown_modbustcp_cbnt_name", "unknown_modbustcp_cbnt_start_address"))
+        : base(new TagCbnt(new TagCbntDescriptor { Name = "unkown_modbustcp_cbnt_name", StartAddress = "unknown_modbustcp_cbnt_start_address" }))
     {
-    }
-
-    /// <summary>
-    /// c'tor
-    /// </summary>
-    public ModbusTcpTagCbntBuilder(string cbntName, string startAddress)
-        :base(new TagCbnt(cbntName, startAddress))
-    {
-        this.WithName(cbntName);
-        this.WithStartAddress(startAddress);
     }
 
 

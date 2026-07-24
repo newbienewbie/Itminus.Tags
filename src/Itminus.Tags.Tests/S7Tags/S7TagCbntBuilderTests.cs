@@ -17,7 +17,8 @@ public class S7TagCbntBuilderTests
             Name = "S7-1",
             Extras = new Dictionary<string, XElement>(){ }
         });
-        var cbnt = new S7TagCbntBuilder("cbnt1", "DB200.100")
+        var cbnt = new S7TagCbntBuilder()
+            .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" })
             .Configure(builder =>
             {
                 var tagFactory = builder.MakeS7TagFactory();

@@ -58,11 +58,9 @@ public class TagCbnt_Tests
     public async Task Test_TagCnbtRWTriggerTagSyncsEvents()
     {
         var channel = new MockChannel();
-        var cbnt = new TagCbnt("mock tag cbnt", "0.0")
+        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", ScanInterval = 20, IsEnabled = true })
         {
-            ScanInterval =20,
             Channel = channel,
-            IsEnabled = true,
         };
         cbnt.ResizeCache(4);
         var tag1 = new BitTagCbntor(
@@ -135,11 +133,9 @@ public class TagCbnt_Tests
     public async Task Test_TagCnbtRWTriggerTagSyncsEventsObservable()
     {
         var channel = new MockChannel();
-        var cbnt = new TagCbnt("mock tag cbnt", "0.0")
+        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", ScanInterval = 20, IsEnabled = true })
         {
-            ScanInterval = 20,
             Channel = channel,
-            IsEnabled = true,
         };
         cbnt.ResizeCache(4);
         var tag1 = new BitTagCbntor(

@@ -74,7 +74,7 @@ public class ModbusTcpDirectTagTests
             new ModbusTcpItem(),
             new LoggerFactory().CreateLogger<ModbusTcpChannel>());
 
-        var grp = new TagGrp("grp", isEntry: true, channel: channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "grp", IsEntry = true }, channel);
         var container = TagContainer.From(grp);
         var descriptor = new TagDescriptor
         {
@@ -97,7 +97,7 @@ public class ModbusTcpDirectTagTests
     public async Task UInt32DirectTag_ReadAsync_UsesFakeChannelBytes()
     {
         var channel = new FakeModbusTcpTagChannel();
-        var grp = new TagGrp("grp", isEntry: true, channel: channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "grp", IsEntry = true }, channel);
         var container = TagContainer.From(grp);
         var descriptor = new TagDescriptor
         {
@@ -119,7 +119,7 @@ public class ModbusTcpDirectTagTests
     public async Task UInt32DirectTag_WriteAsync_WritesExpectedBigEndianBytes()
     {
         var channel = new FakeModbusTcpTagChannel();
-        var grp = new TagGrp("grp", isEntry: true, channel: channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "grp", IsEntry = true }, channel);
         var container = TagContainer.From(grp);
         var descriptor = new TagDescriptor
         {
@@ -145,7 +145,7 @@ public class ModbusTcpDirectTagTests
     public async Task Int16DirectTag_ReadWrite_WithLittleEndian_Works()
     {
         var channel = new FakeModbusTcpTagChannel();
-        var grp = new TagGrp("grp", isEntry: true, channel: channel);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "grp", IsEntry = true }, channel);
         var container = TagContainer.From(grp);
         var descriptor = new TagDescriptor
         {

@@ -5,14 +5,17 @@ namespace Itminus.Tags.OpcUaClient.Cbnts;
 
 internal class OpcUaClientTagCbnt : ITagCbnt
 {
-    internal OpcUaClientTagCbnt(string name, string startAddress)
+    internal OpcUaClientTagCbnt(TagCbntDescriptor descriptor)
     {
-        this.Name = name;
-        this.StartAddress = startAddress;
+        Descriptor = descriptor;
+        StartAddress = descriptor.StartAddress;
     }
 
     /// <inheritdoc/>
-    public string Name { get; set; }
+    public TagCbntDescriptor? Descriptor { get; set; }
+
+    /// <inheritdoc/>
+    public string Name => Descriptor?.Name ?? "";
 
     /// <inheritdoc/>
     public ITagGrp? Parent { get; set; }
@@ -25,17 +28,18 @@ internal class OpcUaClientTagCbnt : ITagCbnt
         throw new Exception($"TagCbnt({this.Name}) has no child who's name={tagName}");
 
     /// <inheritdoc/>
-    public int ScanInterval { get; set; }
+    public int ScanInterval => Descriptor?.ScanInterval ?? 0;
     /// <inheritdoc/>
-    public bool IsEnabled { get; set; }
+    public bool IsEnabled => Descriptor?.IsEnabled ?? true;
     /// <inheritdoc/>
-    public TagAccessMode? AcessMode { get; set; }
+    public TagAccessMode? AcessMode => Descriptor?.AccessMode;
     /// <inheritdoc/>
     public bool IsScaned { get; set; }
     /// <inheritdoc/>
     public ITagChannel? Channel { get; set; }
     /// <inheritdoc/>
     public string StartAddress { get; set; }
+
     /// <inheritdoc/>
     public Memory<byte> Cache { get; set; } = Memory<byte>.Empty;
     /// <inheritdoc/>

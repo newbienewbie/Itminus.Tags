@@ -20,7 +20,7 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
     public override TagCbntBuilderBase WithCbntDescriptor(TagCbntDescriptor descriptor)
     {
         base.WithCbntDescriptor(descriptor);
-        this.WithStartAddress($"{this.Slave}~{AreaStartAddr}");
+        this.TagCbnt.StartAddress = $"{this.Slave}~{AreaStartAddr}";
         return this;
     }
 

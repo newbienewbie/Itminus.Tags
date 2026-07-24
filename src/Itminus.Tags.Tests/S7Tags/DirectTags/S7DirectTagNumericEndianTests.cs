@@ -1,4 +1,4 @@
-﻿using Itminus.Tags.S7;
+using Itminus.Tags.S7;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Buffers.Binary;
@@ -18,7 +18,7 @@ public class S7DirectTagNumericEndianTests
         const short expected = unchecked((short)0x1234);
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateInt16Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -34,7 +34,7 @@ public class S7DirectTagNumericEndianTests
     {
         const short value = unchecked((short)0x1357);
         var fake = new FakeContinousBytesChannel(new byte[2]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateInt16Tag(endian, fake, grp);
 
         tag.Value = value;
@@ -51,7 +51,7 @@ public class S7DirectTagNumericEndianTests
         const ushort expected = 0xABCD;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateUInt16Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -67,7 +67,7 @@ public class S7DirectTagNumericEndianTests
     {
         const ushort value = 0x2468;
         var fake = new FakeContinousBytesChannel(new byte[2]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateUInt16Tag(endian, fake, grp);
 
         tag.Value = value;
@@ -84,7 +84,7 @@ public class S7DirectTagNumericEndianTests
         const int expected = unchecked((int)0x12345678);
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateInt32Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -100,7 +100,7 @@ public class S7DirectTagNumericEndianTests
     {
         const int value = unchecked((int)0x0BADF00D);
         var fake = new FakeContinousBytesChannel(new byte[4]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateInt32Tag(endian, fake, grp);
 
         tag.Value = value;
@@ -117,7 +117,7 @@ public class S7DirectTagNumericEndianTests
         const uint expected = 0x89ABCDEF;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateUInt32Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -133,7 +133,7 @@ public class S7DirectTagNumericEndianTests
     {
         const uint value = 0xCAFEBABE;
         var fake = new FakeContinousBytesChannel(new byte[4]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateUInt32Tag(endian, fake, grp);
 
         tag.Value = value;
@@ -150,7 +150,7 @@ public class S7DirectTagNumericEndianTests
         const long expected = unchecked((long)0x0123456789ABCDEFL);
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateInt64Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -166,7 +166,7 @@ public class S7DirectTagNumericEndianTests
     {
         const long value = unchecked((long)0x0F1E2D3C4B5A6978L);
         var fake = new FakeContinousBytesChannel(new byte[8]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateInt64Tag(endian, fake, grp);
 
         tag.Value = value;
@@ -183,7 +183,7 @@ public class S7DirectTagNumericEndianTests
         const ulong expected = 0x0123456789ABCDEFUL;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateUInt64Tag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -199,7 +199,7 @@ public class S7DirectTagNumericEndianTests
     {
         const ulong value = 0xF0E1D2C3B4A59687UL;
         var fake = new FakeContinousBytesChannel(new byte[8]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateUInt64Tag(endian, fake, grp);
 
         tag.Value = value;
@@ -216,7 +216,7 @@ public class S7DirectTagNumericEndianTests
         const float expected = 123.456f;
         var payload = GetBytes(expected, endian);
         var fake = new FakeContinousBytesChannel(payload);
-        var grp = new TagGrp("test-grp", isEntry: false, channel:fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateFloatTag(endian, fake, grp);
 
         await tag.ReadAsync(CancellationToken.None);
@@ -232,7 +232,7 @@ public class S7DirectTagNumericEndianTests
     {
         const float value = -987.5f;
         var fake = new FakeContinousBytesChannel(new byte[4]);
-        var grp = new TagGrp("test-grp", isEntry: false, channel: fake);
+        var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateFloatTag(endian, fake, grp);
 
         tag.Value = value;

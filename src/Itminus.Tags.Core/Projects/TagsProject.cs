@@ -66,7 +66,7 @@ internal class TagsProject : ITagsProject
     /// <returns></returns>
     protected virtual TagsProject LoadTags(XElement root)
     {
-        var main = new TagGrp(name: "__main__", isEntry: false, null);
+        var main = new TagGrp(new TagGrpDescriptor { Name = "__main__", IsEntry = false }, null);
         var descriptors = root.GetTagProjectGrpDescriptors();
         foreach (var descriptor in descriptors) 
         {

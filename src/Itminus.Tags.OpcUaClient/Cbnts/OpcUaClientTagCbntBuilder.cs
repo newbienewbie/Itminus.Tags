@@ -4,21 +4,12 @@ namespace Itminus.Tags.OpcUaClient.Cbnts;
 internal class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
 {
     /// <summary>
-    /// c'tor
+    /// c'tor<br/>
+    /// 需要额外使用 <c>WithCbntDescriptor()</c> 设置实际描述符。
     /// </summary>
     public OpcUaClientTagCbntBuilder() 
-        :base(new OpcUaClientTagCbnt("unkown_opcua_cbnt_name", "unknown_opcua_cbnt_start_address"))
+        :base(new OpcUaClientTagCbnt(new TagCbntDescriptor { Name = "unkown_opcua_cbnt_name", StartAddress = "unknown_opcua_cbnt_start_address" }))
     {
-    }
-
-    /// <summary>
-    /// c'tor
-    /// </summary>
-    public OpcUaClientTagCbntBuilder(string cbntName, string startAddress) 
-        :base(new OpcUaClientTagCbnt(cbntName, startAddress))
-    {
-        this.WithName(cbntName);
-        this.WithStartAddress(startAddress);
     }
 
     /// <inheritdoc/>
