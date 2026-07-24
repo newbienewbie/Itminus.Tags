@@ -21,7 +21,7 @@ public static class XElementExtensions_TagGrpDescriptor
             elem.SetAttributeValue("channel", descriptor.ChannelName);
         }
         elem.SetAttributeValue("isEnabled", descriptor.IsEnabled);
-        if (descriptor.ScanInterval != default)
+        if (descriptor.ScanInterval.HasValue)
         {
             elem.SetAttributeValue("scanInterval", descriptor.ScanInterval);
         }
@@ -59,7 +59,7 @@ public static class XElementExtensions_TagGrpDescriptor
         var thisChannelName = thisElement.GetTagUnionChannelName();
 
         var isEnabled = !string.Equals(thisElement.Attribute("isEnabled")?.Value, "false", StringComparison.OrdinalIgnoreCase);
-        var scanInterval = thisElement.GetTagUnionScanInterval(thisTagName) ?? 0;
+        int? scanInterval = thisElement.GetTagUnionScanInterval(thisTagName);
         var isEntry = string.Equals(thisElement.Attribute("isEntry")?.Value, "true", StringComparison.OrdinalIgnoreCase);
 
         var grp = new TagGrpDescriptor
