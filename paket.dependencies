@@ -34,7 +34,7 @@ nuget MudBlazor >= 9.2.0 lowest_matching: true
 
 nuget OPCFoundation.NetStandard.Opc.Ua >= 1.5.374.126 lowest_matching: true
 
-nuget Microsoft.CodeAnalysis.CSharp.Scripting >= 5.3.0 lowest_matching: true
+nuget Microsoft.CodeAnalysis.CSharp.Scripting >= 5.0.0 lowest_matching: true
 nuget ModelContextProtocol >= 1.4.1 lowest_matching: true
 nuget ModelContextProtocol.AspNetCore >= 1.4.1 lowest_matching: true
 
