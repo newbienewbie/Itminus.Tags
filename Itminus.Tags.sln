@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.37216.2
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.12021.73
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{ACD2C8C2-4A10-428B-860F-C37E44C1AAEA}"
 	ProjectSection(SolutionItems) = preProject
@@ -44,6 +44,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Plugin1", "samples\Samples.Plugin1\Samples.Plugin1.csproj", "{AD9C0AFC-1563-8496-7306-C3DA50242547}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.R3Extensions", "src\Itminus.Tags.R3Extensions\Itminus.Tags.R3Extensions.csproj", "{DA1DE182-1E44-26F1-7A75-E59A35C4B677}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.SimpleFiles", "src\Itminus.Tags.SimpleFiles\Itminus.Tags.SimpleFiles.csproj", "{4C70D391-DA84-79E3-2601-FFEC384F48B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -119,6 +121,10 @@ Global
 		{DA1DE182-1E44-26F1-7A75-E59A35C4B677}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA1DE182-1E44-26F1-7A75-E59A35C4B677}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA1DE182-1E44-26F1-7A75-E59A35C4B677}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C70D391-DA84-79E3-2601-FFEC384F48B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C70D391-DA84-79E3-2601-FFEC384F48B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C70D391-DA84-79E3-2601-FFEC384F48B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C70D391-DA84-79E3-2601-FFEC384F48B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
