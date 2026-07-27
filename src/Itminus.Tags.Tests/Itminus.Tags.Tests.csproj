@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Itminus.Tags.S7\Itminus.Tags.S7.csproj" />
     <ProjectReference Include="..\Itminus.Tags.ZLan\Itminus.Tags.ZLan.csproj" />
     <ProjectReference Include="..\Itminus.Tags\Itminus.Tags.csproj" />
+    <ProjectReference Include="..\Itminus.Tags.SimpleFiles\Itminus.Tags.SimpleFiles.csproj" />
     <ProjectReference Include="..\Itminus.Tags.McpServer\Itminus.Tags.McpServer.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +47,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="S7Tags\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SimpleFilesTags\DirectTags\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="S7Tags\DirectTags\index.xml">

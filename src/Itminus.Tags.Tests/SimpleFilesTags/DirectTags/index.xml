@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<!-- 通道 -->
+	<Channel name="SimpleFiles-1" driver="SimpleFiles">
+		<BaseDir>.</BaseDir>
+	</Channel>
+
+	<!-- 直接测点：TagGrp 下直接挂 Tag -->
+	<TagGrp name="g-direct" isEntry="true" isEnabled="true" channel="SimpleFiles-1" scanInterval="0">
+		<Tag name="bit-v"    address="bit.txt"    type="BIT" />
+		<Tag name="byte-v"   address="byte.txt"   type="BYTE" />
+		<Tag name="short-v"  address="short.txt"  type="INT16" />
+		<Tag name="ushort-v" address="ushort.txt" type="UINT16" />
+		<Tag name="int-v"    address="int.txt"    type="INT32" />
+		<Tag name="uint-v"   address="uint.txt"   type="UINT32" />
+		<Tag name="float-v"  address="float.txt"  type="FLOAT" />
+		<Tag name="double-v" address="double.txt" type="DOUBLE" />
+		<Tag name="str-v"    address="str.txt"    type="STR" />
+	</TagGrp>
+
+</root>

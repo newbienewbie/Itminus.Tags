@@ -74,11 +74,12 @@ internal abstract class SimpleFsDirectTagBase<T> : Tag<T, SimpleFilesTagChannel>
         var path = this.NormalizedAddress();
         if (!File.Exists(path))
         {
-            if (this.AutoCreateFile)
+            if (!this.AutoCreateFile)
             {
-                await this.CreateAndWriteDefaultAsync(path, ct);
+                return;
             }
-            return;
+            // 自动创建文件后继续往下执行写入
+            await this.CreateAndWriteDefaultAsync(path, ct);
         }
         var value = this._value?.ToString();
         await File.WriteAllTextAsync(path, value, ct);
