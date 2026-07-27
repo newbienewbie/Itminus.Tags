@@ -28,6 +28,18 @@ public static class TagsProjectServiceCollection
 
 
     /// <summary>
+    /// 以指定的key 注册 <see cref="ITagsProjectCtrl" />
+    /// </summary>
+    /// <param name="services"></param>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public static IServiceCollection AddKeyedTagsProjectCtrl(this IServiceCollection services,  string key)
+    {
+        services.AddKeyedSingleton<ITagsProjectCtrl, TagsProjectCtrl>(key);
+        return services;
+    }
+
+    /// <summary>
     /// 构建测点项目实例
     /// </summary>
     /// <param name="sp"></param>
