@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+
+	<Channel name="file" driver="SimpleFiles">
+		<BaseDir>/home/itminus/Desktop</BaseDir>
+	</Channel>
+
+	<TagGrp name="simpleFiles" isEntry="true" isEnabled="true" scanInterval="1000">
+		<Tag name="温度" address="/sys/class/thermal/thermal_zone0/temp" type="FLOAT" access="RO" channel="file"/>
+		<Tag name="测试1" address="bb" type="BYTE" access="R1W" channel="file" AutoCreateFile="true" />
+	</TagGrp>
+</root>

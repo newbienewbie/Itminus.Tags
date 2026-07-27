@@ -57,6 +57,11 @@ public static class BuiltinTagKinds
     public const string FLOAT = "FLOAT";
 
     /// <summary>
+    /// double
+    /// </summary>
+    public const string DOUBLE = "DOUBLE";
+
+    /// <summary>
     /// string
     /// </summary>
     public const string STR = "STR";

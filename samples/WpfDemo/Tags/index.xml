@@ -19,8 +19,13 @@
 		<NewLine>\r</NewLine>
 	</Channel>
 
+
+	<Channel name="file" driver="SimpleFiles">
+		<BaseDir>D:/temp</BaseDir>
+	</Channel>
+
 	<!-- 测点配置，可以配置多个 -->
-	<TagGrp name="IoBox" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="0">
+	<TagGrp name="IoBox" isEntry="true" isEnabled="false" channel="S7-1" scanInterval="0">
 		<TagGrp name="通用状态">
 			<TagCbnt name="PLC" address="DB200.100" access="RO">
 				<Tag name="心跳请求" address="$$100.0" type="BIT" access="RO"></Tag>
@@ -33,9 +38,14 @@
 		</TagGrp>
 
 	</TagGrp>
-	<TagGrp name="扫码枪" isEntry="true" isEnabled="true" scanInterval="10">
+	<TagGrp name="扫码枪" isEntry="true" isEnabled="false" scanInterval="10">
 		<!--  引入了自定义的marker特性来标识  -->
 		<Tag name="2#" type="STR" access="RO" channel="COM-2#" marker="ComScanner"/>
+	</TagGrp>
+
+	<TagGrp name="simpleFiles" isEntry="true" isEnabled="true" scanInterval="1000">
+		<Tag name="aa" address="aa" type="BIT" access="R1W" channel="file"/>
+		<Tag name="bb" address="bb" type="BYTE" access="R1W" channel="file"/>
 	</TagGrp>
 
 	<!-- 逻辑配置，可以配置0~N个 -->
