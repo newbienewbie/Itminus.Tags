@@ -1,3 +1,5 @@
 ﻿R3Extensions.WPF
+System.IO.Pipelines
+
 group Mcp
     ModelContextProtocol.AspNetCore
