@@ -8,6 +8,7 @@ $projects = @(
     "Itminus.Tags.McpServer",
 
     "Itminus.Tags.S7", 
+    "Itminus.Tags.SimpleFiles", 
     "Itminus.Tags.ModbusTcp", 
     "Itminus.Tags.ZLan",
     "Itminus.Tags.Hjzk",
