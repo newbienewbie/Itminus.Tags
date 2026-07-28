@@ -13,7 +13,7 @@
 	</PropertyGroup>
 	
   <ItemGroup>
-	  <ContentWithTargetPath Include="Samples.Plugin1\**\*.*">
+	  <ContentWithTargetPath Include="../Samples.Plugin1/bin/Debug/net8.0/**/*.*">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <TargetPath>$(StaticFilesFolderName)\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
 	  </ContentWithTargetPath>
