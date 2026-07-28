@@ -1,2 +1,3 @@
-﻿ModelContextProtocol.AspNetCore
-R3Extensions.WPF
+﻿R3Extensions.WPF
+group Mcp
+    ModelContextProtocol.AspNetCore
