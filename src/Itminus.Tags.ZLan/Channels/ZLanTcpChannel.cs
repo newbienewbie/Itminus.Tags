@@ -10,10 +10,8 @@ namespace Itminus.Tags.ZLan;
 
 public class ZLanTcpChannel : ModbusTcpChannel
 {
-    public ZLanTcpChannel(string channelName, ModbusTcpItem modbusItem, ILogger<ModbusTcpChannel> logger) 
-        : base(channelName, modbusItem, logger)
+    public ZLanTcpChannel(ZLanTcpTagChannelDescriptor descriptor, ILogger<ModbusTcpChannel> logger) 
+        : base(descriptor, logger)
     {
     }
-
-    public override string Driver => ZLanTcpNames.DriverName;
 }

@@ -10,6 +10,14 @@ namespace Itminus.Tags.OpcUaClient;
 public class OpcUaClientTagChannelDescriptor : TagChannelDescriptor
 {
     /// <summary>
+    /// c'tor
+    /// </summary>
+    public OpcUaClientTagChannelDescriptor()
+    {
+        this.Driver = OpcUaClientNames.DriverName;
+    }
+
+    /// <summary>
     /// 通道选项
     /// </summary>
     public OpcUaClientTagChannelOpt OpcUaTagChannelOpt { get; set; } = new();

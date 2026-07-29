@@ -13,16 +13,18 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     /// <summary>
     /// c'tor
     /// </summary>
-    public S7TagChannel(string channelName, S7PlcItem plc, ILogger<S7TagChannel> logger)
+    public S7TagChannel(S7TagChannelDescriptor descriptor, ILogger<S7TagChannel> logger)
     {
-        if (string.IsNullOrEmpty(channelName))
-        {
-            throw new ArgumentException($"'{nameof(channelName)}' cannot be null or empty", nameof(channelName));
-        }
-
-        this.ChannelName = channelName;
-        PlcItem = plc;
+        this.Descriptor = descriptor;
         this._logger = logger;
+        this.PlcItem =new S7PlcItem()
+        {
+            IpAddr = descriptor.IpAddr,
+            Rack = descriptor.Rack,
+            Slot = descriptor.Slot,
+            ConnectionType = descriptor.ConnectionType
+        };
+
     }
 
     private readonly ILogger<S7TagChannel> _logger;
@@ -39,15 +41,13 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
     internal S7Client? Client { get; set; }
 
     /// <inheritdoc/>
-    public string ChannelName { get; set; } = DRIVER;
+    public TagChannelDescriptor Descriptor { get; }
 
     /// <inheritdoc/>
     public S7PlcItem PlcItem { get; }
 
-    /// <inheritdoc/>
-    public string Driver => DRIVER;
 
-    private static readonly string DRIVER = S7Names.DriverName;
+
 
     /// <inheritdoc/>
     public virtual async Task DisconnectAsync(CancellationToken ct)
@@ -68,7 +68,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                     }
                     catch (Exception ex)
                     {
-                        this._logger.LogWarning("通道{ChannelName}断开连接失败：{message}\r\n{stackTrace}", ChannelName, ex.Message, ex.StackTrace);
+                        this._logger.LogWarning("通道{ChannelName}断开连接失败：{message}\r\n{stackTrace}", this.ChannelName(), ex.Message, ex.StackTrace);
                         this.Client = null;
                         tcs.SetException(ex);
                     }
@@ -91,18 +91,19 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                 {
                     return;
                 }
+                var channelName = this.ChannelName();
 
                 // 如果要强制连接，先清理当前的连接
                 if (force && Client != null)
                 {
                     try
                     {
-                        this._logger.LogInformation("通道={ChannelName} 强制断开连接中...", ChannelName);
+                        this._logger.LogInformation("通道={ChannelName} 强制断开连接中...", channelName);
                         this.Client.Disconnect();
                     }
                     catch(Exception ex)
                     {
-                        this._logger.LogError(ex, "通道={ChannelName} 强制断开异常", ChannelName);
+                        this._logger.LogError(ex, "通道={ChannelName} 强制断开异常", channelName);
                     }
                     finally
                     {
@@ -143,7 +144,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                 }
                 else
                 {
-                    tcs.SetResult(FSharpResult<S7Client, ApiError>.NewError(S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code)));
+                    tcs.SetResult(FSharpResult<S7Client, ApiError>.NewError(S7ErrorCodeHelper.GenerateApiError(this.ChannelName(), code)));
                 }
             }
             catch (Exception ex)
@@ -172,7 +173,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                     var code = client.DBRead(addr.BlockNumber, addr.StartAddress, length, buffer);
                     if (code != 0)
                     {
-                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName(), code);
                         throw new Exception(err.Text);
                     }
                     return Task.CompletedTask;
@@ -188,7 +189,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                     var code = client.MBRead(addr.StartAddress, length, buffer);
                     if (code != 0)
                     {
-                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName(), code);
                         throw new Exception(err.Text);
                     }
                     return Task.CompletedTask;
@@ -218,7 +219,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                     var code = client.DBWrite(addr.BlockNumber, addr.StartAddress, buffer.Length, buffer);
                     if (code != 0)
                     {
-                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName(), code);
                         throw new Exception(err.Text);
                     }
                     return Task.CompletedTask;
@@ -234,7 +235,7 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
                     var code = client.MBWrite(addr.StartAddress, buffer.Length, buffer);
                     if (code != 0)
                     {
-                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName, code);
+                        var err = S7ErrorCodeHelper.GenerateApiError(this.ChannelName(), code);
                         throw new Exception(err.Text);
                     }
                     return Task.CompletedTask;
@@ -254,19 +255,20 @@ public class S7TagChannel : IContinousBytesBasedTagChannel
         var client = this.Client;
         if (client != null && client.Connected)
         {
+            var channelName = this.ChannelName();
             try
             {
-                this._logger.LogInformation("通道={ChannelName} 正在释放: 断开连接中...", ChannelName);
+                this._logger.LogInformation("通道={ChannelName} 正在释放: 断开连接中...", channelName);
 
                 this.ExecuteOneByOne(() =>
                 {
                     client.Disconnect();
-                    this._logger.LogInformation("通道={ChannelName} 正在释放: 断开连接完成!", ChannelName);
+                    this._logger.LogInformation("通道={ChannelName} 正在释放: 断开连接完成!", channelName);
                 });
             }
             catch (Exception e)
             {
-                this._logger.LogWarning("通道={ChannelName} 释放异常:{exception}", ChannelName, e.Message);
+                this._logger.LogWarning("通道={ChannelName} 释放异常:{exception}", channelName, e.Message);
             }
         }
         this.Client = null;

@@ -35,7 +35,7 @@ public class SimpleFilesTagChannelFactoryTests
         var channel = factory.Create(descriptor);
 
         var simpleFilesChannel = Assert.IsType<SimpleFilesTagChannel>(channel);
-        Assert.Equal("factory-ch", simpleFilesChannel.ChannelName);
+        Assert.Equal("factory-ch", simpleFilesChannel.ChannelName());
         Assert.Null(simpleFilesChannel.Settings.BaseDir);
     }
 

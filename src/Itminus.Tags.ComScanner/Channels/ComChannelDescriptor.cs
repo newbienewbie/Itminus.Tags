@@ -15,6 +15,14 @@ namespace Itminus.Tags.ComScanner.Channels;
 public class ComChannelDescriptor : TagChannelDescriptor
 {
     /// <summary>
+    /// c'tor
+    /// </summary>
+    public ComChannelDescriptor()
+    {
+        this.Driver = ComDriverNames.DriverName;
+    }
+
+    /// <summary>
     /// 通道选项
     /// </summary>
     public ComChannelOption Option { get;set;} = new ComChannelOption();

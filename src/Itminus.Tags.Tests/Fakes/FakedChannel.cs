@@ -5,9 +5,11 @@ namespace Itminus.Tags.Tests.Fakes;
 
 internal class FakedChannel : ITagChannel
 {
-    public string ChannelName { get; } = "fake";
-
-    public string Driver => "fake";
+    public FakedChannel(TagChannelDescriptor descriptor)
+    {
+        Descriptor = descriptor;
+    }
+    public TagChannelDescriptor Descriptor { get; } 
 
     public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
 

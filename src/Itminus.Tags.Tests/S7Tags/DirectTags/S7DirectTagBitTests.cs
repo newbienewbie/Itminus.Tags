@@ -98,8 +98,7 @@ public class S7DirectTagBitTests
     {
         public FakeContinousBytesChannel(byte[] payload)
             :base(
-                 "fake", 
-                 new S7PlcItem(), 
+                 new S7TagChannelDescriptor() { Name = "fake" }, 
                  new LoggerFactory().CreateLogger<S7TagChannel>()
              )
         {

@@ -34,8 +34,8 @@ public class ModbusTcpChannelFactoryTests
 
         Assert.NotNull(channel);
         Assert.IsType<ModbusTcpChannel>(channel);
-        Assert.Equal("mb1", channel.ChannelName);
-        Assert.Equal("ModbusTcp", channel.Driver);
+        Assert.Equal("mb1", channel.ChannelName());
+        Assert.Equal("ModbusTcp", channel.Driver());
     }
 
     [Fact]

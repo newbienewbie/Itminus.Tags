@@ -13,6 +13,14 @@ namespace Itminus.Tags.ModbusTcp;
 public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
 {
     /// <summary>
+    /// c'tor
+    /// </summary>
+    public ModbusTcpTagChannelDescriptor()
+    {
+        this.Driver = ModbusTcpNames.DriverName;
+    }
+
+    /// <summary>
     /// IP 地址，默认值为 localhost
     /// </summary>
     public string IpAddr { get; set; } = "localhost";

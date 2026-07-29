@@ -420,9 +420,10 @@ public class S7DirectTagNumericEndianTests
     {
         public FakeContinousBytesChannel(byte[] payload)
             :base(
-                 "fake", 
-                 new S7PlcItem(), 
-                 new LoggerFactory().CreateLogger<S7TagChannel>()
+                new S7TagChannelDescriptor() {
+                    Name = "fake",
+                },
+                new LoggerFactory().CreateLogger<S7TagChannel>()
              )
         {
             this.LastWriteBuffer = (byte[])payload.Clone();

@@ -36,16 +36,7 @@ public class ZLanTcpChannelFactory : ITagChannelFactory
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
         var mbDescriptor = descriptor.ToZLanTcpTagChannelDescriptor();
-
-        var plcitem = new ModbusTcpItem() { 
-            IpAddr = mbDescriptor.IpAddr,
-            Port = mbDescriptor.Port,
-        };
         var logger = _loggerFactory.CreateLogger<ModbusTcpChannel>();
-        return new ZLanTcpChannel(
-            descriptor.Name,
-            plcitem,
-            logger
-        );
+        return new ZLanTcpChannel(mbDescriptor,logger);
     }
 }

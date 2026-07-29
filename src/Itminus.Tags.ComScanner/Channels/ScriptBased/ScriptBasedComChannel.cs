@@ -11,8 +11,8 @@ public class ScriptBasedComChannel : ScriptBasedComChannel<string>
     /// <summary>
     /// c'tor
     /// </summary>
-    public ScriptBasedComChannel(string channelName, ComChannelOption opt, ILogger<ComChannelBase<string>> logger)
-        : base(channelName, opt, logger)
+    public ScriptBasedComChannel(ComChannelDescriptor descriptor, ILogger<ComChannelBase<string>> logger)
+        : base(descriptor, logger)
     {
     }
 }

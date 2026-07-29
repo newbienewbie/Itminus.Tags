@@ -18,8 +18,8 @@ internal class TestModbusTcpChannel : ModbusTcpChannel
 {
     public Mock<IModbusMaster> MasterMock { get; }
 
-    public TestModbusTcpChannel(string channelName, Mock<IModbusMaster> masterMock, ModbusTcpItem item)
-        : base(channelName, item, NullLogger<ModbusTcpChannel>.Instance)
+    public TestModbusTcpChannel(ModbusTcpTagChannelDescriptor descriptor, Mock<IModbusMaster> masterMock)
+        : base(descriptor, NullLogger<ModbusTcpChannel>.Instance)
     {
         MasterMock = masterMock;
     }
@@ -33,7 +33,7 @@ public class ModbusTcpChannelTests
     private static (TestModbusTcpChannel channel, Mock<IModbusMaster> mock) CreateChannel()
     {
         var mock = new Mock<IModbusMaster>(MockBehavior.Strict);
-        var channel = new TestModbusTcpChannel("mb1", mock, new ModbusTcpItem());
+        var channel = new TestModbusTcpChannel(new ModbusTcpTagChannelDescriptor { Name = "mb1" }, mock);
         return (channel, mock);
     }
 
@@ -226,7 +226,7 @@ public class ModbusTcpChannelTests
     {
         var mock = new Mock<IModbusMaster>(MockBehavior.Strict);
         var item = new ModbusTcpItem { MaxBatchSize = 2 };
-        var channel = new TestModbusTcpChannel("mb1", mock, item);
+        var channel = new TestModbusTcpChannel(new ModbusTcpTagChannelDescriptor { Name = "mb1", MaxBatchSize = 2 }, mock);
         mock
             .Setup(x => x.WriteMultipleRegistersAsync(
                 (byte)1, 

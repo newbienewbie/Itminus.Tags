@@ -69,10 +69,13 @@ public class ModbusTcpDirectTagTests
     [Fact]
     public void UInt32DirectTag_AcceptsValuesGreaterThanIntMaxValue()
     {
+        var chDescriptor = new ModbusTcpTagChannelDescriptor {
+            Name = "ModbusTcp-1",
+        };
         var channel = new ModbusTcpChannel(
-            "ModbusTcp-1",
-            new ModbusTcpItem(),
-            new LoggerFactory().CreateLogger<ModbusTcpChannel>());
+            chDescriptor,
+            new LoggerFactory().CreateLogger<ModbusTcpChannel>()
+        );
 
         var grp = new TagGrp(new TagGrpDescriptor { Name = "grp", IsEntry = true }, channel);
         var container = TagContainer.From(grp);
@@ -172,8 +175,7 @@ public class ModbusTcpDirectTagTests
     {
         public FakeModbusTcpTagChannel()
             : base(
-                "fake-modbus",
-                new ModbusTcpItem(),
+                new ModbusTcpTagChannelDescriptor(){ Name = "fake-modbus",},
                 new LoggerFactory().CreateLogger<ModbusTcpChannel>())
         {
         }

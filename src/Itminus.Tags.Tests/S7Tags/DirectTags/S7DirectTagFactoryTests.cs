@@ -269,7 +269,7 @@ public class S7DirectTagFactoryTests
     private sealed class FakeContinousBytesChannel : S7TagChannel
     {
         public FakeContinousBytesChannel(byte[] payload)
-            : base("fake", new S7PlcItem(), new LoggerFactory().CreateLogger<S7TagChannel>())
+            : base(new S7TagChannelDescriptor() { Name = "fake" }, new LoggerFactory().CreateLogger<S7TagChannel>())
         {
             LastWriteBuffer = (byte[])payload.Clone();
         }

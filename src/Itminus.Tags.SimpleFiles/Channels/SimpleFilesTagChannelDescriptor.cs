@@ -8,6 +8,14 @@ namespace Itminus.Tags.SimpleFiles;
 internal class SimpleFilesTagChannelDescriptor : TagChannelDescriptor
 {
     /// <summary>
+    /// c'tor
+    /// </summary>
+    public SimpleFilesTagChannelDescriptor()
+    {
+        this.Driver = SimpleFilesNames.DriverName;
+    }
+
+    /// <summary>
     /// 基础目录
     /// </summary>
     public string? BaseDir { get; set; }

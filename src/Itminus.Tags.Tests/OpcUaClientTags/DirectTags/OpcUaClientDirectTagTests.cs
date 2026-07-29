@@ -110,16 +110,18 @@ public class OpcUaClientDirectTagTests
     {
         public FakeOpcUaClientTagChannel()
             : base(
-                "fake-opcua",
-                new OpcUaClientTagChannelOpt
-                {
-                    ClientName = "fake-client",
-                    ServerOpt = new OpcUaServerOpt
-                    {
-                        DiscoveryUrl = "opc.tcp://localhost:4840"
+                new OpcUaClientTagChannelDescriptor() { 
+                    Name = "fake-opcua",
+                    OpcUaTagChannelOpt =new OpcUaClientTagChannelOpt {
+                        ClientName = "fake-client",
+                        ServerOpt = new OpcUaServerOpt
+                        {
+                            DiscoveryUrl = "opc.tcp://localhost:4840"
+                        }
                     }
                 },
-                new LoggerFactory().CreateLogger<OpcUaClientTagChannel>())
+                new LoggerFactory().CreateLogger<OpcUaClientTagChannel>()
+            )
         {
         }
 

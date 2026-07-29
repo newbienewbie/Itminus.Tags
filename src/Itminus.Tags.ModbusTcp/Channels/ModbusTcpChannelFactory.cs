@@ -38,17 +38,7 @@ public class ModbusTcpChannelFactory : ITagChannelFactory
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
         var mbDescriptor = descriptor.ToModbusTcpTagChannelDescriptor();
-
-        var plcitem = new ModbusTcpItem() { 
-            IpAddr = mbDescriptor.IpAddr,
-            Port = mbDescriptor.Port,
-            MaxBatchSize = mbDescriptor.MaxBatchSize,
-        };
         var logger = _loggerFactory.CreateLogger<ModbusTcpChannel>();
-        return new ModbusTcpChannel(
-            descriptor.Name,
-            plcitem,
-            logger
-        );
+        return new ModbusTcpChannel(mbDescriptor, logger);
     }
 }

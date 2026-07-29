@@ -27,20 +27,12 @@ internal class ComChannelFactory : ITagChannelFactory
         if(!string.IsNullOrWhiteSpace(descriptor.Option.ReadScript))
         {
             var scriptLogger = _loggerFactory.CreateLogger<ComChannelBase<string>>();
-            return new ScriptBasedComChannel(
-                descriptor.Name,
-                descriptor.Option,
-                scriptLogger
-            );
+            return new ScriptBasedComChannel(descriptor,scriptLogger);
         }
 
         // 回退到默认的基于行的串口扫描器
         var lineLogger = _loggerFactory.CreateLogger<LineBasedComChannel>();
-        var channel =  new LineBasedComChannel(
-            descriptor.Name,
-            descriptor.Option,
-            lineLogger
-        );
+        var channel =  new LineBasedComChannel( descriptor,lineLogger);
         return channel;
     }
 

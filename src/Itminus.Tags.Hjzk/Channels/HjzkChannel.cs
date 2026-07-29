@@ -13,11 +13,8 @@ public class HjzkChannel : ModbusTcpChannel
     /// <summary>
     /// c'tor
     /// </summary>
-    public HjzkChannel(string channelName, ModbusTcpItem modbusItem, ILogger<HjzkChannel> logger) 
-        : base(channelName, modbusItem, logger)
+    public HjzkChannel(HjzkTagChannelDescriptor descriptor, ILogger<HjzkChannel> logger) 
+        : base(descriptor, logger)
     {
     }
-
-    /// <inheritdoc/>
-    public override string Driver => HjzkNames.DriverName;
 }

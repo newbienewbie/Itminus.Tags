@@ -15,7 +15,6 @@ public class S7TagChannelFactory : ITagChannelFactory
     /// </summary>
     public S7TagChannelFactory(ILoggerFactory loggerFactory)
     {
-
         this._loggerFactory = loggerFactory;
     }
 
@@ -37,18 +36,7 @@ public class S7TagChannelFactory : ITagChannelFactory
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
         var s7ChannelDescriptor = descriptor.ToS7TagChannelDescriptor();
-
-        var plcitem = new S7PlcItem() { 
-            IpAddr = s7ChannelDescriptor.IpAddr,
-            Rack = s7ChannelDescriptor.Rack,
-            Slot = s7ChannelDescriptor.Slot,
-            ConnectionType = s7ChannelDescriptor.ConnectionType
-        };
         var logger = _loggerFactory.CreateLogger<S7TagChannel>();
-        return new S7TagChannel(
-            descriptor.Name,
-            plcitem,
-            logger
-        );
+        return new S7TagChannel( s7ChannelDescriptor, logger );
     }
 }

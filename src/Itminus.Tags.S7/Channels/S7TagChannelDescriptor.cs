@@ -13,6 +13,14 @@ namespace Itminus.Tags.S7;
 public class S7TagChannelDescriptor : TagChannelDescriptor
 {
     /// <summary>
+    /// c'tor
+    /// </summary>
+    public S7TagChannelDescriptor()
+    {
+        this.Driver = S7Names.DriverName;
+    }
+
+    /// <summary>
     /// IP 地址，默认 localhost
     /// </summary>
     public string IpAddr { get; set; } = "localhost";

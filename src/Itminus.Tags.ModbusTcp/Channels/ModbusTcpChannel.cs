@@ -16,7 +16,6 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
 
     #region 配置
     private readonly ModbusTcpItem _modbusItem;
-
     /// <summary>
     /// 单批次最多写入的寄存器数量。null 表示使用默认值。
     /// </summary>
@@ -49,17 +48,20 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
 
 
     /// <inheritdoc/>
-    public string ChannelName { get; }
-    /// <inheritdoc/>
-    public virtual string Driver => ModbusTcpNames.DriverName;
+    public TagChannelDescriptor Descriptor { get; }
 
     /// <summary>
     /// c'tor
     /// </summary>
-    public ModbusTcpChannel(string channelName, ModbusTcpItem modbusItem, ILogger<ModbusTcpChannel> logger)
+    public ModbusTcpChannel(ModbusTcpTagChannelDescriptor descriptor, ILogger<ModbusTcpChannel> logger)
     {
-        ChannelName = channelName;
-        _modbusItem = modbusItem;
+        this.Descriptor = descriptor;
+        this._modbusItem = new ModbusTcpItem()
+        {
+            IpAddr = descriptor.IpAddr,
+            Port = descriptor.Port,
+            MaxBatchSize = descriptor.MaxBatchSize,
+        }; ;
         _logger = logger;
     }
 
@@ -80,10 +82,11 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// <returns></returns>
     protected virtual async Task<IModbusMaster> CreateConnectionAsync(int timeout, CancellationToken ct)
     {
+        var channelName = this.ChannelName();
         var entered = await _connSignal.WaitAsync(timeout, ct);
         if (!entered)
         {
-            throw new TimeoutException($"ModbusTcp 通道={ChannelName} 在创建连接前，获取锁超时！");
+            throw new TimeoutException($"ModbusTcp 通道={channelName} 在创建连接前，获取锁超时！");
         }
         try
         {
@@ -93,7 +96,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
             var mb = factory.CreateMaster(_tcpClient);
             mb.Transport.ReadTimeout = ReadTimeout;
             mb.Transport.WriteTimeout = WriteTimeout;
-            _logger.LogInformation($"ModbusMaster 初始化完成: 设备名={ChannelName}; addr={IpAddr}; port={Port}");
+            _logger.LogInformation("ModbusMaster 初始化完成: 设备名={channelName}; addr={IpAddr}; port={Port}",channelName, IpAddr, Port);
             return mb;
         }
         finally
@@ -165,7 +168,7 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
             }
             catch (Exception ex)
             {
-                _logger.LogWarning("通道{ChannelName}断开连接失败：{message}\r\n{stackTrace}", ChannelName, ex.Message, ex.StackTrace);
+                _logger.LogWarning("通道{ChannelName}断开连接失败：{message}\r\n{stackTrace}", this.ChannelName(), ex.Message, ex.StackTrace);
                 _tcpClient = null;
                 tcs.SetException(ex);
             }
@@ -298,17 +301,18 @@ public class ModbusTcpChannel : IContinousBytesBasedTagChannel
     /// <inheritdoc/>
     public void Dispose()
     {
+        var channelName = this.ChannelName();
         if (_tcpClient != null && _tcpClient.Connected)
         {
             try
             {
-                _logger.LogInformation("通道={ChannelName} 正在断开连接...", ChannelName);
+                _logger.LogInformation("通道={ChannelName} 正在断开连接...", channelName);
                 _tcpClient.Close();
-                _logger.LogInformation("通道={ChannelName}  断开连接完成!", ChannelName);
+                _logger.LogInformation("通道={ChannelName}  断开连接完成!", channelName);
             }
             catch (Exception e)
             {
-                _logger.LogWarning("通道={ChannelName} 释放异常:{exception}", ChannelName, e.Message);
+                _logger.LogWarning("通道={ChannelName} 释放异常:{exception}", channelName, e.Message);
             }
             finally
             {

@@ -36,13 +36,7 @@ public class OpcUaClientTagChannelFactory : ITagChannelFactory
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
         var opcDescriptor = descriptor.ToOpcUaClientTagChannelDescriptor();
-
-        var opt = opcDescriptor.OpcUaTagChannelOpt;
         var logger = _loggerFactory.CreateLogger<OpcUaClientTagChannel>();
-        return new OpcUaClientTagChannel(
-            descriptor.Name,
-            opt,
-            logger
-        );
+        return new OpcUaClientTagChannel(opcDescriptor, logger);
     }
 }

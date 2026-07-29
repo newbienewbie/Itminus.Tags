@@ -213,8 +213,11 @@ public class OpcUaClientTagCbntTests
 
     private class FakeSimpleChannel : ITagChannel
     {
-        public string ChannelName => "Fake";
-        public string Driver => "FAKE";
+        public TagChannelDescriptor Descriptor => new TagChannelDescriptor
+        {
+            Name = "Fake",
+            Driver = "Fake",
+        };
         public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
         public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
         public void Dispose() { }

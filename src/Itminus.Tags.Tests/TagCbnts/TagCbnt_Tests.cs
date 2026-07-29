@@ -23,9 +23,11 @@ public class TagCbnt_Tests
             0x03, 0x00, 0x00, 0x00,
         };
 
-        public string ChannelName => "MockChannel";
-
-        public string Driver => "MOCKCHANNEL";
+        public TagChannelDescriptor Descriptor => new TagChannelDescriptor
+        {
+            Name = "Mock",
+            Driver = "MOCK",
+        };
 
         public Task DisconnectAsync(CancellationToken ct)
         {

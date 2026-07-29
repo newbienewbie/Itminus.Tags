@@ -38,7 +38,7 @@ public class ProjTests
         // 验证通道
         Assert.Single(proj.Channels);
         Assert.IsType<SimpleFilesTagChannel>(proj.Channels[0]);
-        Assert.Equal(SimpleFilesNames.DriverName, proj.Channels[0].Driver);
+        Assert.Equal(SimpleFilesNames.DriverName, proj.Channels[0].Driver());
 
         // 验证群组
         var grp = proj.Tags.SelectGrp("g-direct");

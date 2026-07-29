@@ -18,7 +18,12 @@ public class DirectTagBuilderTests
 
     private static SimpleTagsDirectTagBuilder CreateBuilder(ITagChannel? selfChannel, TagDescriptor? descriptor = null)
     {
-        var channel = new SimpleFilesTagChannel("ch", new SimpleFilesSettings(), NullLogger<SimpleFilesTagChannel>.Instance);
+        var chdescriptor = new SimpleFilesTagChannelDescriptor()
+        {
+            Name = "ch", 
+            BaseDir = "",
+        };
+        var channel = new SimpleFilesTagChannel(chdescriptor, NullLogger<SimpleFilesTagChannel>.Instance);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g" }, channel);
         var builder = new SimpleTagsDirectTagBuilder();
         builder
@@ -42,7 +47,12 @@ public class DirectTagBuilderTests
     [Fact]
     public void Build_WhenSelfChannelIsSimpleFiles_CreatesTagWithSelfChannel()
     {
-        var sfChannel = new SimpleFilesTagChannel("self-ch", new SimpleFilesSettings(), NullLogger<SimpleFilesTagChannel>.Instance);
+        var descriptor = new SimpleFilesTagChannelDescriptor()
+        {
+            Name = "self-ch", 
+            BaseDir = "",
+        };
+        var sfChannel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
         var builder = CreateBuilder(selfChannel: sfChannel);
 
         var tag = builder.Build(null!);
@@ -96,8 +106,11 @@ public class DirectTagBuilderTests
 
     private class FakeNonSimpleFilesChannel : ITagChannel
     {
-        public string ChannelName => "NotSimpleFiles";
-        public string Driver => "FAKE";
+        public TagChannelDescriptor Descriptor => new TagChannelDescriptor
+        {
+            Name = "NotSimpleFiles",
+            Driver = "Fake",
+        };
         public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
         public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
         public void Dispose() { }

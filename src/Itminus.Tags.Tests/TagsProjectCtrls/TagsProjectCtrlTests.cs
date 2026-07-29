@@ -410,9 +410,11 @@ public class TagsProjectCtrlTests
     /// </summary>
     private class MockChannel : ITagChannel
     {
-        public string ChannelName { get; set; } = "mock";
-        public string Driver { get; set; } = "mock";
-
+        public TagChannelDescriptor Descriptor => new TagChannelDescriptor
+        {
+            Name = "mock",
+            Driver = "mock",
+        };
         public Func<CancellationToken, Task> DisconnectAsyncImpl { get; set; } = _ => Task.CompletedTask;
         public Func<bool, CancellationToken, Task> EnsureConnectedAsyncImpl { get; set; } = (_, _) => Task.CompletedTask;
         public Action DisposeImpl { get; set; } = () => { };

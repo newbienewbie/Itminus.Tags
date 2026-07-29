@@ -15,20 +15,30 @@ public class TagChannelTests
     [Fact]
     public void Channel_Constructor_SetsProperties()
     {
-        var settings = new SimpleFilesSettings { BaseDir = @"C:\base" };
+        var settings = new SimpleFilesSettings(@"C:\base");
         var logger = NullLogger<SimpleFilesTagChannel>.Instance;
-        var channel = new SimpleFilesTagChannel("test-ch", settings, logger);
+        var channel = new SimpleFilesTagChannel(
+            new SimpleFilesTagChannelDescriptor() {
+                Name = "test-ch",
+                BaseDir = settings.BaseDir,
+            }, 
+            logger
+        );
 
-        Assert.Equal("test-ch", channel.ChannelName);
-        Assert.Same(settings, channel.Settings);
-        Assert.Equal(SimpleFilesNames.DriverName, channel.Driver);
+        Assert.Equal("test-ch", channel.ChannelName());
+        Assert.Same(settings.BaseDir, channel.Settings.BaseDir);
+        Assert.Equal(SimpleFilesNames.DriverName, channel.Driver());
     }
 
     [Fact]
     public void Channel_MakePath_WithBaseDir_CombinesPath()
     {
-        var settings = new SimpleFilesSettings { BaseDir = @"C:\base" };
-        var channel = new SimpleFilesTagChannel("ch", settings, NullLogger<SimpleFilesTagChannel>.Instance);
+        var settings = new SimpleFilesSettings(@"C:\base");
+        var descriptor = new SimpleFilesTagChannelDescriptor() {
+                Name = "ch",
+                BaseDir = settings.BaseDir,
+            };
+        var channel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
 
         var path = channel.MakePath(@"sub\file.txt");
 
@@ -38,8 +48,12 @@ public class TagChannelTests
     [Fact]
     public void Channel_MakePath_WithoutBaseDir_ReturnsAddressAsIs()
     {
-        var settings = new SimpleFilesSettings();
-        var channel = new SimpleFilesTagChannel("ch", settings, NullLogger<SimpleFilesTagChannel>.Instance);
+        var settings = new SimpleFilesSettings(null);
+        var descriptor = new SimpleFilesTagChannelDescriptor() {
+            Name = "ch",
+            BaseDir = settings.BaseDir,
+        };
+        var channel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
 
         var path = channel.MakePath(@"C:\absolute\path.txt");
 
@@ -49,7 +63,11 @@ public class TagChannelTests
     [Fact]
     public void Channel_EnsureConnectedAsync_DoesNothing()
     {
-        var channel = new SimpleFilesTagChannel("ch", new SimpleFilesSettings(), NullLogger<SimpleFilesTagChannel>.Instance);
+        var descriptor = new SimpleFilesTagChannelDescriptor() {
+            Name = "ch",
+            BaseDir = new SimpleFilesSettings(null).BaseDir,
+        };
+        var channel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
 
         var task = channel.EnsureConnectedAsync(false, CancellationToken.None);
 
@@ -59,7 +77,11 @@ public class TagChannelTests
     [Fact]
     public void Channel_DisconnectAsync_DoesNothing()
     {
-        var channel = new SimpleFilesTagChannel("ch", new SimpleFilesSettings(), NullLogger<SimpleFilesTagChannel>.Instance);
+        var descriptor = new SimpleFilesTagChannelDescriptor() {
+            Name = "ch",
+            BaseDir = new SimpleFilesSettings(null).BaseDir,
+        };
+        var channel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
 
         var task = channel.DisconnectAsync(CancellationToken.None);
 
@@ -69,7 +91,11 @@ public class TagChannelTests
     [Fact]
     public void Channel_Dispose_DoesNotThrow()
     {
-        var channel = new SimpleFilesTagChannel("ch", new SimpleFilesSettings(), NullLogger<SimpleFilesTagChannel>.Instance);
+        var descriptor = new SimpleFilesTagChannelDescriptor() {
+            Name = "ch",
+            BaseDir = new SimpleFilesSettings(null).BaseDir,
+        };
+        var channel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
 
         channel.Dispose(); // should not throw
     }

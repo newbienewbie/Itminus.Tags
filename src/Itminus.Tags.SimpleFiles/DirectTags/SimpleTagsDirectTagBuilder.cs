@@ -17,7 +17,7 @@ internal partial class SimpleTagsDirectTagBuilder : TagBuilderBase
         }
         else if (this.Channel is not SimpleFilesTagChannel)
         {
-            throw new Exception($"测点({this.Name})配置了通道({this.Channel.ChannelName})，但不是{nameof(SimpleFilesTagChannel)}");
+            throw new Exception($"测点({this.Name})配置了通道({this.Channel.ChannelName()})，但不是{nameof(SimpleFilesTagChannel)}");
         }
         else
         {

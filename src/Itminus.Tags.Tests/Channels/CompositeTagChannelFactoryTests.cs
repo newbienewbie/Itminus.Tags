@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,19 +10,18 @@ public class CompositeTagChannelFactoryTests
 {
     private class FakeChannel : ITagChannel
     {
-        public FakeChannel(string from, string channelName, string driver)
+        public FakeChannel(string from, TagChannelDescriptor descriptor)
         {
             this.From = from;
-            this.ChannelName = channelName;
-            this.Driver = driver;
+            this.Descriptor = descriptor;
         }
 
         /// <summary>
         /// 由哪个工厂创建的
         /// </summary>
         public string From{get;}
-        public string ChannelName { get; set; } = "";
-        public string Driver { get; set; } = "";
+
+        public TagChannelDescriptor Descriptor { get; set; }
         public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
         public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
         public void Dispose() { }
@@ -34,8 +33,7 @@ public class CompositeTagChannelFactoryTests
         public FakeFactory(params string[] drivers) { _drivers = drivers; }
 
         public string Name {get;set;} = "FakeFactory";
-        public ITagChannel Create(TagChannelDescriptor descriptor) =>
-            new FakeChannel(Name, descriptor.Name, descriptor.Driver);
+        public ITagChannel Create(TagChannelDescriptor descriptor) => new FakeChannel(Name,descriptor);
         public IReadOnlyList<string> GetAvailableDrivers() => _drivers;
     }
 
@@ -100,8 +98,8 @@ public class CompositeTagChannelFactoryTests
         var channel = composite.Create(new TagChannelDescriptor { Driver = "S7", Name = "S7-1" });
 
         Assert.NotNull(channel);
-        Assert.Equal("S7-1", channel.ChannelName);
-        Assert.Equal("S7", channel.Driver);
+        Assert.Equal("S7-1", channel.ChannelName());
+        Assert.Equal("S7", channel.Driver());
     }
 
     [Fact]

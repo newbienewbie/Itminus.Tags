@@ -358,8 +358,15 @@ public class ComTagTests
     private static LineBasedComChannel CreateChannel(string name, MockSerialPortHandle mockPort)
     {
         var channel = new LineBasedComChannel(
-            name,
-            new ComChannelOption { Port = "COM_TEST", ReadEntireLine = true },
+            new ComChannelDescriptor()
+            {
+                Name = name,
+                Option = new ComChannelOption
+                {
+                    Port = "COM_TEST",
+                    ReadEntireLine = true,
+                },
+            },
             Logger
         );
         channel.SerialPortFactory = _ => mockPort;

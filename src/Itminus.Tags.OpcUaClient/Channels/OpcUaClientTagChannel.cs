@@ -27,20 +27,18 @@ public class OpcUaClientTagChannel : ITagChannel
     public OpcUaServerOpt ServerOpt => _channelOpt.ServerOpt;
     #endregion
 
-
-    /// <inheritdoc/>
-    public string ChannelName { get; }
-
-    /// <inheritdoc/>
-    public virtual string Driver => OpcUaClientNames.DriverName;
+    /// <summary>
+    /// 通道描述符
+    /// </summary>
+    public TagChannelDescriptor Descriptor { get; }
 
     /// <summary>
     /// c'tor
     /// </summary>
-    public OpcUaClientTagChannel(string channelName, OpcUaClientTagChannelOpt uaChannelOpt, ILogger<OpcUaClientTagChannel> logger)
+    public OpcUaClientTagChannel(OpcUaClientTagChannelDescriptor descriptor, ILogger<OpcUaClientTagChannel> logger)
     {
-        ChannelName = channelName;
-        _channelOpt = uaChannelOpt;
+        _channelOpt = descriptor.OpcUaTagChannelOpt;
+        Descriptor = descriptor;
         _logger = logger;
         _appConfig = PrepareOpcUaAppConfig();
     }
@@ -225,7 +223,7 @@ public class OpcUaClientTagChannel : ITagChannel
                 .Where(r => StatusCode.IsNotGood(r.First))
                 .Select(r => new WriteValueErr(r.Second.NodeId, r.First))
                 .ToList();
-            throw new Exception($"通道写入失败:通道={this.ChannelName}。异常={string.Join(";", notgoods)}。");
+            throw new Exception($"通道写入失败:通道={this.ChannelName()}。异常={string.Join(";", notgoods)}。");
         }
     }
 
@@ -273,15 +271,16 @@ public class OpcUaClientTagChannel : ITagChannel
     {
         if (OpcSession != null && OpcSession.Connected)
         {
+            var channelName = this.ChannelName();
             try
             {
-                _logger.LogInformation("通道={ChannelName} 正在断开连接...", ChannelName);
+                _logger.LogInformation("通道={ChannelName} 正在断开连接...", channelName);
                 OpcSession.Close();
-                _logger.LogInformation("通道={ChannelName}  断开连接完成!", ChannelName);
+                _logger.LogInformation("通道={ChannelName}  断开连接完成!", channelName);
             }
             catch (Exception e)
             {
-                _logger.LogWarning("通道={ChannelName} 释放异常:{exception}", ChannelName, e.Message);
+                _logger.LogWarning("通道={ChannelName} 释放异常:{exception}", channelName, e.Message);
             }
             finally
             {

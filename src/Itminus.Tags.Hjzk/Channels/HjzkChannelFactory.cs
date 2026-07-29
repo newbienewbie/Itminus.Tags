@@ -39,16 +39,7 @@ public class HjzkChannelFactory : ITagChannelFactory
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
         var mbDescriptor = descriptor.ToHjzkTagChannelDescriptor();
-
-        var plcitem = new ModbusTcpItem() { 
-            IpAddr = mbDescriptor.IpAddr,
-            Port = mbDescriptor.Port,
-        };
         var logger = _loggerFactory.CreateLogger<HjzkChannel>();
-        return new HjzkChannel(
-            descriptor.Name,
-            plcitem,
-            logger
-        );
+        return new HjzkChannel(mbDescriptor, logger);
     }
 }
