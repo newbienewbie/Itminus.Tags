@@ -22,7 +22,7 @@ public static class TagsLoaderExtensions
     {
         return loader.AddTagBuilder((channel, descriptor) =>
         {
-            if (channel.Driver != driver)
+            if (channel.Driver() != driver)
             {
                 return null;
             }
@@ -53,7 +53,7 @@ public static class TagsLoaderExtensions
         where TCbntBuilder : TagCbntBuilderBase, new()
     {
         return loader.AddTagsCbntBuilder((channel, descriptor) => {
-            if (channel.Driver != driver)
+            if (channel.Driver() != driver)
             {
                 return null;
             }

@@ -95,9 +95,17 @@ public class ComScriptProjTests
     [Fact]
     public void ScriptBasedComChannel_DefaultScript_ShouldUseGlobalsName()
     {
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "COM-9",
+            Driver = ComDriverNames.DriverName,
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
         using var channel = new ScriptBasedComChannel(
-            "COM-9",
-            new ComChannelOption(),
+            descriptor,
             NullLogger<ComChannelBase<string>>.Instance
         );
 
@@ -107,9 +115,17 @@ public class ComScriptProjTests
     [Fact]
     public void ScriptBasedComChannel_EmptyScript_ShouldFallBackToDefaultScript()
     {
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "COM-9",
+            Driver = ComDriverNames.DriverName,
+            Option = new ComChannelOption
+            {
+                ReadScript = "   ",
+            },
+        };
         using var channel = new ScriptBasedComChannel(
-            "COM-9",
-            new ComChannelOption { ReadScript = "   " },
+            descriptor,
             NullLogger<ComChannelBase<string>>.Instance
         );
 
@@ -221,8 +237,15 @@ public class ComScriptProjTests
     {
         public FakeScriptBasedComChannel(string script)
             : base(
-                "FAKE-COM",
-                new ComChannelOption { ReadScript = script, ReadScriptDebugInformationEnabled= true },
+                new ComChannelDescriptor
+                {
+                    Name = "FAKE-COM",
+                    Driver = ComDriverNames.DriverName,
+                    Option = new ComChannelOption
+                    {
+                       ReadScript = script, ReadScriptDebugInformationEnabled= true 
+                    },
+                },
                 NullLogger<ComChannelBase<string>>.Instance
             )
         {

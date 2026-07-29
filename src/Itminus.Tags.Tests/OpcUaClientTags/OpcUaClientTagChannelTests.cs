@@ -20,7 +20,10 @@ internal class TestOpcUaChannel : OpcUaClientTagChannel
     public Mock<ISession> SessionMock { get; }
 
     public TestOpcUaChannel(string channelName, Mock<ISession> sessionMock)
-        : base(channelName, new OpcUaClientTagChannelOpt(), NullLogger<OpcUaClientTagChannel>.Instance)
+        : base(
+            new OpcUaClientTagChannelDescriptor(){Name = channelName}, 
+            NullLogger<OpcUaClientTagChannel>.Instance
+        )
     {
         SessionMock = sessionMock;
     }

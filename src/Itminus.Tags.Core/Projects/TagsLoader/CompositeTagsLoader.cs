@@ -131,7 +131,7 @@ public class CompositeTagsLoader : ITagsLoader
         var thisIsEntry = grpDescriptor.IsEntry;
         var thisChannel = string.IsNullOrEmpty( grpDescriptor.ChannelName) ?
             null:
-            availableChannels.FirstOrDefault(c => c.ChannelName == grpDescriptor.ChannelName);
+            availableChannels.FirstOrDefault(c => c.ChannelName() == grpDescriptor.ChannelName);
 
         var thisGrp = new TagGrp(grpDescriptor, thisChannel);
         parent.AddTag(thisGrp);
@@ -164,7 +164,7 @@ public class CompositeTagsLoader : ITagsLoader
     {
         var thisChannel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
             null:
-            availableChannels.FirstOrDefault(c => c.ChannelName == cbntDescriptor.ChannelName);
+            availableChannels.FirstOrDefault(c => c.ChannelName() == cbntDescriptor.ChannelName);
         if (!string.IsNullOrEmpty(cbntDescriptor.ChannelName) && thisChannel is null)
         {
             throw new Exception($"未找到名称为 {cbntDescriptor.ChannelName} 的通道");
@@ -172,7 +172,7 @@ public class CompositeTagsLoader : ITagsLoader
         var channel = thisChannel ?? parent.SearchRequiredChannel();
 
         var builder = this.ChooseTagCbntBuilder(channel, cbntDescriptor) ??
-            throw new Exception($"未注册相应的TagCbntBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={cbntDescriptor.Name}");
+            throw new Exception($"未注册相应的TagCbntBuilder: 通道（Name={channel.ChannelName()}, Driver={channel.Driver()}), Element={cbntDescriptor.Name}");
         var cbntors = cbntDescriptor.Children.ToList();
         var cbntBuilder = builder
             .WithParent(parent)
@@ -195,7 +195,7 @@ public class CompositeTagsLoader : ITagsLoader
     {
         var thisChannel = string.IsNullOrEmpty(tagDescriptor.ChannelName) ?
             null :
-            availableChannels.FirstOrDefault(c => c.ChannelName == tagDescriptor.ChannelName);
+            availableChannels.FirstOrDefault(c => c.ChannelName() == tagDescriptor.ChannelName);
         if (!string.IsNullOrEmpty(tagDescriptor.ChannelName) && thisChannel is null)
         {
             throw new Exception($"未找到名称为 {tagDescriptor.ChannelName} 的通道");
@@ -203,7 +203,7 @@ public class CompositeTagsLoader : ITagsLoader
         var channel = thisChannel ?? parent.SearchRequiredChannel();
 
         var builder = this.ChooseTagBuilder(channel, tagDescriptor) ??
-            throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName}, Driver={channel.Driver}), Element={tagDescriptor.TagName}");
+            throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName()}, Driver={channel.Driver()}), Element={tagDescriptor.TagName}");
         var tag = builder
             .WithParent(parent)
             .WithChannel(thisChannel)

@@ -19,7 +19,15 @@ public class LineBasedComChannelTests
     [Fact]
     public void ReadEntireLine_DefaultValue_ShouldBeTrue()
     {
-        var channel = new LineBasedComChannel("ch", new ComChannelOption { Port = "COM_TEST" }, Logger);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         Assert.True(channel.ReadEntireLine);
     }
 
@@ -29,8 +37,16 @@ public class LineBasedComChannelTests
     [Fact]
     public void Constructor_ShouldSetChannelName()
     {
-        var channel = new LineBasedComChannel("my-channel", new ComChannelOption { Port = "COM_TEST" }, Logger);
-        Assert.Equal("my-channel", channel.ChannelName);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "my-channel",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
+        Assert.Equal("my-channel", channel.ChannelName());
     }
 
     /// <summary>
@@ -39,8 +55,16 @@ public class LineBasedComChannelTests
     [Fact]
     public void Driver_ShouldReturnComDriverName()
     {
-        var channel = new LineBasedComChannel("ch", new ComChannelOption { Port = "COM_TEST" }, Logger);
-        Assert.Equal(ComDriverNames.DriverName, channel.Driver);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
+        Assert.Equal(ComDriverNames.DriverName, channel.Driver());
     }
 
     /// <summary>
@@ -50,8 +74,15 @@ public class LineBasedComChannelTests
     public async Task EnsureConnectedAsync_ShouldOpenSerialPort()
     {
         var mockPort = new MockSerialPortHandle();
-
-        var channel = new LineBasedComChannel("ch-open", new ComChannelOption { Port = "COM_TEST" }, Logger);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-open",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         channel.SerialPortFactory = _ => mockPort;
 
         using var cts = new CancellationTokenSource();
@@ -77,8 +108,15 @@ public class LineBasedComChannelTests
     public async Task DisconnectAsync_ShouldCloseSerialPort()
     {
         var mockPort = new MockSerialPortHandle();
-
-        var channel = new LineBasedComChannel("ch-close", new ComChannelOption { Port = "COM_TEST" }, Logger);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-open",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         channel.SerialPortFactory = _ => mockPort;
 
         using var cts = new CancellationTokenSource();
@@ -104,16 +142,16 @@ public class LineBasedComChannelTests
     public async Task EnsureConnectedAsync_ShouldSetNewLine()
     {
         var mockPort = new MockSerialPortHandle();
-
-        var channel = new LineBasedComChannel(
-            "ch-newline",
-            new ComChannelOption
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-newline",
+            Option = new ComChannelOption
             {
                 Port = "COM_TEST",
                 NewLine = "abcdefg",
             },
-            Logger
-        );
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         channel.SerialPortFactory = _ => mockPort;
 
         using var cts = new CancellationTokenSource();
@@ -141,7 +179,15 @@ public class LineBasedComChannelTests
         var mockPort = new MockSerialPortHandle();
         mockPort.ReadLineQueue.Enqueue("scanned-barcode-123");
 
-        var channel = new LineBasedComChannel("ch-line", new ComChannelOption { Port = "COM_TEST" }, Logger);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-line",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         channel.SerialPortFactory = _ => mockPort;
         channel.ReadEntireLine = true;
 
@@ -173,15 +219,16 @@ public class LineBasedComChannelTests
         var mockPort = new MockSerialPortHandle();
         mockPort.ReadExistingReturnValue = "raw-buffer-data";
 
-        var channel = new LineBasedComChannel(
-            "ch-existing",
-            new ComChannelOption
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-existing",
+            Option = new ComChannelOption
             {
                 Port = "COM_TEST",
                 ReadEntireLine = false,
             },
-            Logger
-        );
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         channel.SerialPortFactory = _ => mockPort;
 
         using var cts = new CancellationTokenSource();
@@ -211,7 +258,15 @@ public class LineBasedComChannelTests
     {
         var mockPort = new MockSerialPortHandle();
 
-        var channel = new LineBasedComChannel("ch-write", new ComChannelOption { Port = "COM_TEST" }, Logger);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-write",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         channel.SerialPortFactory = _ => mockPort;
 
         using var cts = new CancellationTokenSource();
@@ -237,7 +292,15 @@ public class LineBasedComChannelTests
     [Fact]
     public async Task DisconnectAsync_WhenNotConnected_ShouldNotThrow()
     {
-        var channel = new LineBasedComChannel("ch-safe", new ComChannelOption { Port = "COM_TEST" }, Logger);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-safe",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         await channel.DisconnectAsync(CancellationToken.None);
         Assert.Null(channel.SerialPort);
     }
@@ -248,7 +311,15 @@ public class LineBasedComChannelTests
     [Fact]
     public void Dispose_WhenNotConnected_ShouldNotThrow()
     {
-        var channel = new LineBasedComChannel("ch-safe", new ComChannelOption { Port = "COM_TEST" }, Logger);
+        var descriptor = new ComChannelDescriptor
+        {
+            Name = "ch-safe",
+            Option = new ComChannelOption
+            {
+                Port = "COM_TEST",
+            },
+        };
+        var channel = new LineBasedComChannel(descriptor, Logger);
         channel.Dispose();
     }
 }

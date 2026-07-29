@@ -11,7 +11,7 @@ internal class FakedChannelFactory : ITagChannelFactory
 
     public ITagChannel Create(TagChannelDescriptor chDescriptor)
     {
-        return new FakedChannel();
+        return new FakedChannel(chDescriptor);
     }
 
 

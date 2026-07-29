@@ -16,7 +16,7 @@ internal partial class S7DirectTagBuilder : TagBuilderBase
         }
         else if (this.Channel is not S7TagChannel)
         {
-            throw new Exception($"测点({this.Name})配置了通道({this.Channel.ChannelName})，但不是{nameof(S7TagChannel)}");
+            throw new Exception($"测点({this.Name})配置了通道({this.Channel.ChannelName()})，但不是{nameof(S7TagChannel)}");
         }
         else
         {

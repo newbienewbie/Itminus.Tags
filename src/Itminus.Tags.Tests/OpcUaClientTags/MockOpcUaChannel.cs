@@ -15,7 +15,7 @@ namespace Itminus.Tags.Tests.OpcUaClientTags;
 internal class MockOpcUaChannel : OpcUaClientTagChannel
 {
     public MockOpcUaChannel(string channelName)
-        : base(channelName, new OpcUaClientTagChannelOpt(), NullLogger<OpcUaClientTagChannel>.Instance)
+        : base(new OpcUaClientTagChannelDescriptor(){Name=channelName}, NullLogger<OpcUaClientTagChannel>.Instance)
     {
     }
 

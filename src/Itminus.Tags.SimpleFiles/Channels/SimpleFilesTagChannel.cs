@@ -11,30 +11,25 @@ internal class SimpleFilesTagChannel : ITagChannel
     /// <summary>
     /// c'tor
     /// </summary>
-    public SimpleFilesTagChannel(string channelName, SimpleFilesSettings settings, ILogger<SimpleFilesTagChannel> logger)
+    public SimpleFilesTagChannel(SimpleFilesTagChannelDescriptor descriptor, ILogger<SimpleFilesTagChannel> logger)
     {
-        if (string.IsNullOrEmpty(channelName))
-        {
-            throw new ArgumentException($"'{nameof(channelName)}' cannot be null or empty", nameof(channelName));
-        }
-
-        this.ChannelName = channelName;
-        this.Settings = settings;
+        this.Descriptor = descriptor;
         this._logger = logger;
+        this.Settings = new SimpleFilesSettings(descriptor.BaseDir);
     }
 
     private readonly ILogger<SimpleFilesTagChannel> _logger;
 
     /// <inheritdoc/>
-    public string ChannelName { get; set; } = SimpleFilesNames.DriverName;
+    public TagChannelDescriptor Descriptor { get; set; }
+
+
 
     /// <summary>
     /// 通道设置
     /// </summary>
     public SimpleFilesSettings Settings { get; }
 
-    /// <inheritdoc/>
-    public string Driver => SimpleFilesNames.DriverName;
 
     /// <inheritdoc/>
     public virtual Task DisconnectAsync(CancellationToken ct)

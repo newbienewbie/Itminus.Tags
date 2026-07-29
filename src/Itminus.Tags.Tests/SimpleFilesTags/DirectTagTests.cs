@@ -20,9 +20,13 @@ public class DirectTagTests : IDisposable
     {
         _tempDir = Path.Combine(Path.GetTempPath(), $"SimpleFilesTests_{Guid.NewGuid()}");
         Directory.CreateDirectory(_tempDir);
-        var settings = new SimpleFilesSettings { BaseDir = _tempDir };
+        var settings = new SimpleFilesSettings(_tempDir);
+        var chdescriptor = new SimpleFilesTagChannelDescriptor() {
+            Name = "test-channel",
+            BaseDir = settings.BaseDir,
+        };
         var logger = NullLogger<SimpleFilesTagChannel>.Instance;
-        _channel = new SimpleFilesTagChannel("test-channel", settings, logger);
+        _channel = new SimpleFilesTagChannel(chdescriptor, logger);
         _grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = true }, _channel);
     }
 
@@ -668,9 +672,13 @@ public class DirectTagTests : IDisposable
     [Fact]
     public void NormalizedAddress_WithoutBaseDir_UsesRawAddressAsIs()
     {
-        var settings = new SimpleFilesSettings();
+        var settings = new SimpleFilesSettings(null);
+        var chdescriptor = new SimpleFilesTagChannelDescriptor() {
+            Name = "no-base",
+            BaseDir = settings.BaseDir,
+        };
         var logger = NullLogger<SimpleFilesTagChannel>.Instance;
-        var channel = new SimpleFilesTagChannel("no-base", settings, logger);
+        var channel = new SimpleFilesTagChannel(chdescriptor, logger);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g", IsEntry = true }, channel);
 
         var descriptor = MakeDescriptor("t", @"C:\absolute\path.txt", BuiltinTagKinds.INT32);

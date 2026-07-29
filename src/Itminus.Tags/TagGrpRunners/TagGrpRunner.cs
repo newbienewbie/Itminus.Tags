@@ -112,7 +112,7 @@ internal class TagGrpRunner : ITagGrpRunner
                             this._logger.LogCritical(
                                 "测点分组(分组={grp},通道={channel})错误处理又抛出了错误，这破坏了错误处理不能再抛出异常的假设。err={errMsg}\r\nStackTrace={strace}",
                                 entry.TagName(),
-                                channel?.ChannelName ?? "null",
+                                channel?.ChannelName() ?? "null",
                                 handlingError.Message,
                                 handlingError.StackTrace
                                 );

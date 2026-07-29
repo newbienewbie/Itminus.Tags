@@ -7,7 +7,7 @@ namespace Itminus.Tags.Tests.Tags;
 
 public class ITagExtensionsTests
 {
-    private FakedChannel CreateChannel() => new();
+    private FakedChannel CreateChannel() => new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" });
 
     #region SearchEntry
 

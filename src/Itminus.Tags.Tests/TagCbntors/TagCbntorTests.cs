@@ -16,8 +16,11 @@ public class TagCbntorContinousChannelTests
     /// </summary>
     private class MockChannel : IContinousBytesBasedTagChannel
     {
-        public string ChannelName => "MockChannel";
-        public string Driver => "MOCK";
+        public TagChannelDescriptor Descriptor => new TagChannelDescriptor
+        {
+            Name = "Mock",
+            Driver = "MOCK",
+        };
         public byte[]? LastWrittenBytes { get; private set; }
         public string? LastWrittenAddress { get; private set; }
         public string? LastReadAddress { get; private set; }

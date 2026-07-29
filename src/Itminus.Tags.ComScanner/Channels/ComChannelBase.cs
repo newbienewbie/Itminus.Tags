@@ -43,13 +43,10 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// </summary>
     protected Channel<T> _channel;
 
-    /// <inheritdoc/>
-    public string ChannelName { get; }
 
-    /// <summary>
-    /// 驱动
-    /// </summary>
-    public abstract string Driver { get; }
+    /// <inheritdoc/>
+    public TagChannelDescriptor Descriptor { get; }
+
 
     /// <summary>
     /// 底层串口句柄。
@@ -83,13 +80,14 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <summary>
     /// c'tor
     /// </summary>
-    protected ComChannelBase(string channelName, ComChannelOption opt, ILogger<ComChannelBase<T>> logger)
+    protected ComChannelBase(ComChannelDescriptor descriptor, ILogger<ComChannelBase<T>> logger)
     {
-        this.ChannelName = channelName;
-        this._opt = opt;
-        this.Capacity = opt.ChannelCapacity <= 0 ? 1 : opt.ChannelCapacity;
+        this.Descriptor = descriptor;
+        this._opt = descriptor.Option;
+        this.Capacity = descriptor.Option.ChannelCapacity <= 0 ? 1 : descriptor.Option.ChannelCapacity;
+        this.NewLine = descriptor.Option.NewLine;
         this._logger = logger;
-        this.NewLine = opt.NewLine;
+
 
         this._channel = Channel.CreateBounded<T>(this.Capacity);
     }
@@ -220,7 +218,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         {
             if (this.SerialPort is null)
             {
-                throw new InvalidOperationException($"通道({this.ChannelName})的串口为null, 无法Poll");
+                throw new InvalidOperationException($"通道({this.ChannelName()})的串口为null, 无法Poll");
             }
             while (!ct.IsCancellationRequested)
             {
@@ -246,7 +244,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         catch (Exception ex) when (!ct.IsCancellationRequested && ex is not OperationCanceledException)
         {
             // 只有非关闭引起的异常才尝试重连
-            this._logger.LogError("通道({channel})读取失败：{ex}", this.ChannelName, ex.Message);
+            this._logger.LogError("通道({channel})读取失败：{ex}", this.ChannelName(), ex.Message);
             await this.DisconnectAsync(CancellationToken.None);
         }
         catch
@@ -270,13 +268,13 @@ public abstract class ComChannelBase<T> :ITagChannel
     {
         if (this.SerialPort is null)
         {
-            throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
+            throw new InvalidOperationException($"通道({this.ChannelName()})的串口为空");
         }
         if (!this._channel.Reader.TryRead(out input))
         {
             return false;
         }
-        this._logger.LogInformation("通道({ChannelName})收到扫码枪输入：{input}", this.ChannelName, input);
+        this._logger.LogInformation("通道({ChannelName})收到扫码枪输入：{input}", this.ChannelName(), input);
         return true;
     }
 
@@ -291,7 +289,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         var serial = this.SerialPort;
         if (serial is null)
         {
-            throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
+            throw new InvalidOperationException($"通道({this.ChannelName()})的串口为空");
         }
         await this.ExecuteOneByOneAsync(
             _writeSema,
@@ -315,7 +313,7 @@ public abstract class ComChannelBase<T> :ITagChannel
         var serial = this.SerialPort;
         if (serial is null)
         {
-            throw new InvalidOperationException($"通道({this.ChannelName})的串口为空");
+            throw new InvalidOperationException($"通道({this.ChannelName()})的串口为空");
         }
         await this.ExecuteOneByOneAsync(
             _writeSema,

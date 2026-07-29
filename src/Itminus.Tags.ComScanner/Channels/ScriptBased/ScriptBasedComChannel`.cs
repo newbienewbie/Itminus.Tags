@@ -16,14 +16,14 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
     /// <summary>
     /// c'tor
     /// </summary>
-    public ScriptBasedComChannel(string channelName, ComChannelOption opt, ILogger<ComChannelBase<T>> logger)
-        : base(channelName, opt, logger)
+    public ScriptBasedComChannel(ComChannelDescriptor descriptor, ILogger<ComChannelBase<T>> logger)
+        : base(descriptor, logger)
     {
-        if(!string.IsNullOrWhiteSpace(opt.ReadScript))
+        if(!string.IsNullOrWhiteSpace(descriptor.Option.ReadScript))
         {
-            this.ReadScript = opt.ReadScript;
+            this.ReadScript = descriptor.Option.ReadScript;
         }
-        this.ReadScriptEmitDebugInformationEnabled = opt.ReadScriptDebugInformationEnabled;
+        this.ReadScriptEmitDebugInformationEnabled = descriptor.Option.ReadScriptDebugInformationEnabled;
     }
 
     /// <summary>
@@ -31,10 +31,6 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
     /// </summary>
     public string? ReadScript { get; } = "return serial.ReadLine();";
 
-    /// <summary>
-    /// 驱动名
-    /// </summary>
-    public override string Driver => ComDriverNames.DriverName;
 
     ScriptRunner<T>? _runner;
 

@@ -18,8 +18,11 @@ public class TagCbntorNonContinousChannelTests
     /// </summary>
     private class NonContinousChannel : ITagChannel
     {
-        public string ChannelName => "NonContinous";
-        public string Driver => "MOCK";
+        public TagChannelDescriptor Descriptor => new TagChannelDescriptor
+        {
+            Name = "NonContinous",
+            Driver = "MOCK",
+        };
         public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
         public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
         public void Dispose() { }

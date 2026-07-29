@@ -184,8 +184,11 @@ public class ITagCbntExtensionsTests
     /// </summary>
     private class ChannelMock : ITagChannel
     {
-        public string ChannelName => "Mock";
-        public string Driver => "MOCK";
+        public TagChannelDescriptor Descriptor => new TagChannelDescriptor
+        {
+            Name = "Mock",
+            Driver = "MOCK",
+        };
         public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
         public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
         public void Dispose() { }

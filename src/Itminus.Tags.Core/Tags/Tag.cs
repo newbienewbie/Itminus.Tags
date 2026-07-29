@@ -29,7 +29,7 @@ public abstract class Tag<TValue,TChannel> : ITag
         if (requiredChannel is not TChannel ch)
         {
             var tagname = this.TagName();
-            throw new InvalidOperationException($"测点(冒泡式)通道类型不对(测点={tagname},通道={requiredChannel.ChannelName} {typeof(TChannel).Name})");
+            throw new InvalidOperationException($"测点(冒泡式)通道类型不对(测点={tagname},通道={requiredChannel.ChannelName()} {typeof(TChannel).Name})");
         }
         this._bubbleChannel = ch;
     }

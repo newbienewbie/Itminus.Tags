@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Itminus.Tags.ModbusTcp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,27 +11,14 @@ namespace Itminus.Tags.Hjzk;
 /// <summary>
 /// Hjzk 通道描述符
 /// </summary>
-public class HjzkTagChannelDescriptor : TagChannelDescriptor
+public class HjzkTagChannelDescriptor : ModbusTcpTagChannelDescriptor
 {
     /// <summary>
-    /// IP 地址，默认 localhost
+    /// c'tor
     /// </summary>
-    public string IpAddr { get; set; } = "localhost";
-
-    /// <summary>
-    /// 端口号，默认 502
-    /// </summary>
-    public int Port { get; set; } = 502;
-
-
-    /// <inheritdoc/>
-    public override XElement ToXElement()
+    public HjzkTagChannelDescriptor()
     {
-        var ele = base.ToXElement();
-
-        ele.SetOrAddChild(nameof(IpAddr), this.IpAddr);
-        ele.SetOrAddChild(nameof(Port), this.Port);
-        return ele;
+        this.Driver = HjzkNames.DriverName;
     }
 }
 
@@ -69,6 +57,11 @@ public static class TagChannelDescriptor_S7Extensions
                 int.TryParse(portEle.Value, out var port) ?
                     port :
                     throw new ArgumentException($"配置的端口号不是整数"),
+            MaxBatchSize = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxBatchSize), out var batchEle) ?
+                null :
+                ushort.TryParse(batchEle.Value, out var batch) ?
+                    batch :
+                    throw new ArgumentException($"MaxBatchSize 配置不是整数"),
         };
         return res;
     }

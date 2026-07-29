@@ -26,7 +26,7 @@ public class S7TagChannelTests
         byte[]? mbReadBuffer = null,
         bool isDead = false)
     {
-        var channel = new S7TagChannel( "test-channel", new S7PlcItem(), NullLogger<S7TagChannel>.Instance);
+        var channel = new S7TagChannel(new S7TagChannelDescriptor { Name = "test-channel" }, NullLogger<S7TagChannel>.Instance);
         var mock = new MockS7Client {
             ConnectedValue = connected,
             ConnectToResult = connectToResult,
@@ -48,25 +48,9 @@ public class S7TagChannelTests
     public void Constructor_ShouldSetProperties()
     {
         var (channel, _) = CreateChannel();
-        Assert.Equal("test-channel", channel.ChannelName);
+        Assert.Equal("test-channel", channel.ChannelName());
         Assert.NotNull(channel.PlcItem);
-        Assert.Equal(S7Names.DriverName, channel.Driver);
-    }
-
-    [Fact]
-    public void Constructor_NullChannelName_ShouldThrow()
-    {
-        var plc = new S7PlcItem();
-        var logger = NullLogger<S7TagChannel>.Instance;
-        Assert.Throws<ArgumentException>(() => new S7TagChannel(null!, plc, logger));
-    }
-
-    [Fact]
-    public void Constructor_EmptyChannelName_ShouldThrow()
-    {
-        var plc = new S7PlcItem();
-        var logger = NullLogger<S7TagChannel>.Instance;
-        Assert.Throws<ArgumentException>(() => new S7TagChannel("", plc, logger));
+        Assert.Equal(S7Names.DriverName, channel.Driver());
     }
 
     [Fact]
@@ -74,8 +58,8 @@ public class S7TagChannelTests
     {
         var plc = new S7PlcItem();
         var logger = NullLogger<S7TagChannel>.Instance;
-        var channel = new S7TagChannel("s7-ch", plc, logger);
-        Assert.Equal("s7-ch", channel.ChannelName);
+        var channel = new S7TagChannel(new S7TagChannelDescriptor(){ Name = "s7-ch" }, logger);
+        Assert.Equal("s7-ch", channel.ChannelName());
     }
 
     #endregion

@@ -36,12 +36,8 @@ internal class SimpleFilesTagChannelFactory : ITagChannelFactory
     /// <exception cref="InvalidOperationException"></exception>
     public ITagChannel Create(TagChannelDescriptor descriptor)
     {
-        var simpleFilesChannelDescriptor = descriptor.ToSimpleFilesTagChannelDescriptor();
-        var settings = new SimpleFilesSettings()
-        {
-            BaseDir = simpleFilesChannelDescriptor.BaseDir
-        };
+        var sfDescriptor = descriptor.ToSimpleFilesTagChannelDescriptor();
         var logger = _loggerFactory.CreateLogger<SimpleFilesTagChannel>();
-        return new SimpleFilesTagChannel(descriptor.Name, settings, logger );
+        return new SimpleFilesTagChannel(sfDescriptor, logger );
     }
 }

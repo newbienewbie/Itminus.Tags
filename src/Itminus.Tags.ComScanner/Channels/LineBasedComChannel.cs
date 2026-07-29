@@ -13,14 +13,11 @@ public class LineBasedComChannel : ComChannelBase<string>
     /// <summary>
     /// c'tor
     /// </summary>
-    public LineBasedComChannel(string channelName, ComChannelOption opt, ILogger<LineBasedComChannel> logger)
-        :base(channelName, opt, logger)
+    public LineBasedComChannel(ComChannelDescriptor descriptor, ILogger<LineBasedComChannel> logger)
+        :base(descriptor, logger)
     {
-        this.ReadEntireLine = opt.ReadEntireLine;
+        this.ReadEntireLine = descriptor.Option.ReadEntireLine;
     }
-
-    /// <inheritdoc/>
-    public override string Driver => ComDriverNames.DriverName;
 
     /// <summary>
     /// 读取整行？

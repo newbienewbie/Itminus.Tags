@@ -32,7 +32,7 @@ public class TagContainerExtensionsTests
     [Fact]
     public void SearchRequiredChannel_WhenCbnt_DelegatesToCbnt()
     {
-        var channel = new FakedChannel();
+        var channel = new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" });
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g" }, channel);
         var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "c" }) { Parent = grp };
         var container = TagContainer.From(cbnt);
@@ -45,7 +45,7 @@ public class TagContainerExtensionsTests
     [Fact]
     public void SearchRequiredChannel_WhenGrp_DelegatesToGrp()
     {
-        var channel = new FakedChannel();
+        var channel = new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" });
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g" }, channel);
         var container = TagContainer.From(grp);
 

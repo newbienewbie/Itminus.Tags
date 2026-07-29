@@ -196,3 +196,4 @@ public class ChannelDescriptorTests
         Assert.Equal(original.Option.ReadEntireLine, descriptor1.Option.ReadEntireLine);
     }
 }
+

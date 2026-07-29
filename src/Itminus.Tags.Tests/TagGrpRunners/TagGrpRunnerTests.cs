@@ -19,7 +19,7 @@ public class TagGrpRunnerTests
     /// </summary>
     private (TagGrpRunner runner, MockTagGrp entry, MockProject project, FakedChannel channel) CreateRunner()
     {
-        var channel = new FakedChannel();
+        var channel = new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" });
         var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10_000 }) { Channel = channel };
         var project = new MockProject();
         var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance);
@@ -263,7 +263,7 @@ public class TagGrpRunnerTests
         // Arrange
         var entry = new MockTagGrp(new TagGrpDescriptor { Name = "intent-entry", ScanInterval = 20 })
         {
-            Channel = new FakedChannel(),
+            Channel = new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" }),
             IsEnabled = true
         };
         var project = new MockProject();
@@ -299,7 +299,7 @@ public class TagGrpRunnerTests
         var mockStrategy = new MockRetryStrategy(delay: TimeSpan.FromMilliseconds(100));
         var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 20 })
         {
-            Channel = new FakedChannel(),
+            Channel = new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" }),
             IsEnabled = true,
             ReadAsyncThrows = new InvalidOperationException("模拟读取异常")
         };
@@ -335,7 +335,7 @@ public class TagGrpRunnerTests
         var mockStrategy = new MockRetryStrategy(delay: TimeSpan.FromMilliseconds(10));
         var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10 })
         {
-            Channel = new FakedChannel(),
+            Channel = new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" }),
             IsEnabled = true,
         };
         var project = new MockProject();
