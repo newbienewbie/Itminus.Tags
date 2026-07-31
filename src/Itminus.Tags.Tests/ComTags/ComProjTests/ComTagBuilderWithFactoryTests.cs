@@ -159,7 +159,7 @@ public class ComTagBuilderWithFactoryTests
                 configure: b => b.WithFactory((descriptor, channel, container) =>{
                     if (channel is not ComChannelBase<string> com)
                     {
-                        throw new InvalidCastException($"测点({descriptor.TagName})当前通道必须是{nameof(ComChannelBase<string>)}！实际={channel.GetType()}");
+                        throw new InvalidCastException($"测点({descriptor.TagName})当前通道必须是{nameof(ComChannelBase<string>)}！实际={channel?.GetType()}");
                     }
 
                     var accessMode = descriptor.AccessMode ?? container.Map(
