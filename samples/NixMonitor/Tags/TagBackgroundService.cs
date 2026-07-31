@@ -23,7 +23,7 @@ class NixMonitorBackgroundService: BackgroundService
             _logger.LogInformation("Tags处理停止");
             await _ctrl.StopAsync();
         });
-        await _ctrl.StartPollAsync(Path.Combine(dir!.FullName, "Tags"), null, (proj, ct) =>
+        await _ctrl.StartPollAsync(Path.Combine(dir!.FullName, "Tags"), null, (proj, sp, ct) =>
         {
             proj.TurnStarted += (grp, ch) =>
             {

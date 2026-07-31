@@ -35,7 +35,7 @@ public partial class App : Application
             var logger = loggerFactory.CreateLogger<App>();
 
             var dir = Directory.GetParent(Assembly.GetExecutingAssembly().Location);
-            await ctrl.StartPollAsync(Path.Combine(dir!.FullName, "Tags"), null, (proj, ct) =>
+            await ctrl.StartPollAsync(Path.Combine(dir!.FullName, "Tags"), null, (proj, sp, ct) =>
             {
                 proj.Logicets.Add(new HeartBeatLogicet(
                     proj.Channels,
