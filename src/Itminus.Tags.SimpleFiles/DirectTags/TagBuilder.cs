@@ -2,13 +2,13 @@
 namespace Itminus.Tags.SimpleFiles;
 
 /// <summary>
-/// 委托：创建 SimpleFiles 直接测点
+/// 委托：创建 SimpleFiles 直接测点，返回 null 表示回退内部逻辑
 /// </summary>
 /// <param name="descriptor"></param>
 /// <param name="thisChannel"></param>
 /// <param name="container"></param>
 /// <returns></returns>
-public delegate ITag CreateSimpleFilesDirectTag(
+public delegate ITag? CreateSimpleFilesDirectTag(
     TagDescriptor descriptor, 
     SimpleFilesTagChannel? thisChannel,
     TagContainer container
@@ -56,7 +56,7 @@ public partial class SimpleFilesDirectTagBuilder : TagBuilderBase
         {
             ch = this.Channel as SimpleFilesTagChannel;
         }
-        
+
         if(this._createTag is not null)
         {
             var tag = this._createTag(this.TagDescriptor, ch, TagContainer.From(this.Parent));
