@@ -24,10 +24,12 @@ public class ComProjTagSelectorTests
                 // 测试自定义的串口测点构建器
                 loader.AddTagBuilder<AnyLoadComTagBuilder>(
                     "ComScanner",
+                    b => { },
                     b => b.TagDescriptor.TagKind == "AnyLoad"
                 );
                 loader.AddTagBuilder<AnyLoadComTagBuilder>(
                     "COM",
+                    b => { },
                     b => b.TagDescriptor.TagKind == "AnyLoad"
                 );
             });

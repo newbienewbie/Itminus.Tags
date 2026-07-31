@@ -2,6 +2,8 @@
 
 namespace Itminus.Tags;
 
+
+
 /// <summary>
 /// extensions for <see cref="CompositeTagsLoader"/> to register specific driver Tag Loader
 /// </summary>
@@ -15,10 +17,15 @@ public static class TagsLoaderExtensions
     /// <typeparam name="TTagBuilder"></typeparam>
     /// <param name="loader"></param>
     /// <param name="driver"></param>
+    /// <param name="configure"></param>
     /// <param name="predicate"></param>
     /// <returns></returns>
-    public static CompositeTagsLoader AddTagBuilder<TTagBuilder>(this CompositeTagsLoader loader, string driver, Func<TTagBuilder, bool>? predicate = null)
-        where TTagBuilder : TagBuilderBase, new()
+    public static CompositeTagsLoader AddTagBuilder<TTagBuilder>( 
+        this CompositeTagsLoader loader,
+        string driver, 
+        Action<TTagBuilder>? configure = null,
+        Func<TTagBuilder, bool>? predicate = null
+    ) where TTagBuilder : TagBuilderBase, new()
     {
         return loader.AddTagBuilder((channel, descriptor) =>
         {
@@ -29,7 +36,7 @@ public static class TagsLoaderExtensions
             var builder = new TTagBuilder();
             builder.WithChannel(channel);
             builder.WithTagDescriptor(descriptor);
-
+            configure?.Invoke(builder);
             var flag = predicate is null ? true : predicate(builder);
             if (!flag)
             {
@@ -47,9 +54,14 @@ public static class TagsLoaderExtensions
     /// <typeparam name="TCbntBuilder"></typeparam>
     /// <param name="loader"></param>
     /// <param name="driver"></param>
+    /// <param name="configure"></param>
     /// <param name="predicate"></param>
     /// <returns></returns>
-    public static CompositeTagsLoader AddTagsCbntBuilder<TCbntBuilder>(this CompositeTagsLoader loader, string driver, Func<TCbntBuilder, bool>? predicate = null)
+    public static CompositeTagsLoader AddTagsCbntBuilder<TCbntBuilder>(
+        this CompositeTagsLoader loader, 
+        string driver,
+        Action<TCbntBuilder>? configure = null,
+        Func<TCbntBuilder, bool>? predicate = null)
         where TCbntBuilder : TagCbntBuilderBase, new()
     {
         return loader.AddTagsCbntBuilder((channel, descriptor) => {
@@ -59,7 +71,7 @@ public static class TagsLoaderExtensions
             }
             var builder = new TCbntBuilder();
             builder.WithCbntDescriptor(descriptor);
-
+            configure?.Invoke(builder);
             var flag = predicate is null ? true : predicate(builder);
             if (!flag)
             {
