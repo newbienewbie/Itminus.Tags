@@ -1,7 +1,11 @@
 ﻿using System;
 namespace Itminus.Tags.OpcUaClient.Cbnts;
 
-internal class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
+/// <summary>
+/// 构建 OpcUaClient 测点组合的构建器。<br/>
+/// 当通道的驱动为 <see cref="OpcUaClientNames.DriverName"/> 时，用于构建测点组合。
+/// </summary>
+public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
 {
     /// <summary>
     /// c'tor<br/>
