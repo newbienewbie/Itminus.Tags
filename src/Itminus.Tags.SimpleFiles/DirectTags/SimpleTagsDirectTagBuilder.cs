@@ -1,13 +1,20 @@
 ﻿
 namespace Itminus.Tags.SimpleFiles;
 
-internal partial class SimpleTagsDirectTagBuilder : TagBuilderBase
+/// <summary>
+/// 构建 SimpleFiles 直接测点的构建器。<br/>
+/// 当通道的驱动为 <see cref="SimpleFilesNames.DriverName"/> 时，用于构建测点。
+/// </summary>
+public partial class SimpleTagsDirectTagBuilder : TagBuilderBase
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public SimpleTagsDirectTagBuilder()
     {
     }
 
-
+    /// <inheritdoc/>
     public override ITag Build(ITagChannel channel)
     {
         SimpleFilesTagChannel? ch;
