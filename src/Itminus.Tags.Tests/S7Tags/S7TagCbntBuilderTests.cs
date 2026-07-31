@@ -17,7 +17,8 @@ public class S7TagCbntBuilderTests
             Name = "S7-1",
             Extras = new Dictionary<string, XElement>(){ }
         });
-        var cbnt = new S7TagCbntBuilder()
+
+        var cbntbuilder = new S7TagCbntBuilder()
             .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" })
             .Configure(builder =>
             {
@@ -38,11 +39,19 @@ public class S7TagCbntBuilderTests
                     TagKind = BuiltinTagKinds.BIT,
                     TagSize = 1,
                 }));
-            })
+            });
+        Assert.Equal("cbnt1", cbntbuilder.Name);
+        Assert.Equal("DB200.100", cbntbuilder.StartAddress);
+        Assert.Null(cbntbuilder.Parent);
+  
+        var cbnt = cbntbuilder
             .Build(channel);
 
         var byteTag = cbnt.SelectTag("byte-tag");
         var bitTag = cbnt.SelectTag("bit-tag");
+
+
+
 
         Assert.Equal("DB200.104", byteTag.NormalizedAddress());
         Assert.Equal("DB200.106.1", bitTag.NormalizedAddress());

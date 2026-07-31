@@ -42,6 +42,17 @@ public class TagsLoaderExtensionsTests
         }
     }
 
+
+    class MyTagCbntor : TagCbntor
+    {
+        public MyTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
+            : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
+        {
+        }
+
+        public override object? Value { get; set; }
+    }
+
     /// <summary>
     /// 可追踪的 TagCbntBuilder
     /// </summary>
@@ -49,7 +60,8 @@ public class TagsLoaderExtensionsTests
     {
         public TraceCbntBuilder() : base(new TraceCbnt(new TagCbntDescriptor())) { }
         public bool ConfigureWasCalled { get; set; }
-        public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel) => this;
+        protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel) => 
+            new MyTagCbntor(descriptor, this.TagCbnt, 0, 0);
         protected override TagCbntBuilderBase AutoLayout() => this;
     }
 
@@ -60,7 +72,8 @@ public class TagsLoaderExtensionsTests
     {
         public ConfigurableCbntBuilder() : base(new TraceCbnt(new TagCbntDescriptor())) { }
         public string? CustomProperty { get; set; }
-        public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel) => this;
+        protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel) => 
+            new MyTagCbntor(descriptor, this.TagCbnt, 0, 0);
         protected override TagCbntBuilderBase AutoLayout() => this;
     }
 
