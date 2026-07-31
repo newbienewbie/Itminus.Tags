@@ -14,8 +14,9 @@ namespace Itminus.Tags.Tests.SimpleFilesTags;
 /// <summary>
 /// 验证外部可以：
 /// 1. 继承 <see cref="SimpleFilesDirectTagBase{T}"/> 编写自定义测点（如 JSON 反序列化到特定类型）
-/// 2. 通过手动调用 <see cref="TagsProject_Extensions.AddSimpleFilesTagBuilder"/> 注册基本类型测点构建器，
-///    再配合自定义的 TagBuilder，实现「基本类型读写 + JSON 到特定类型读写」共存
+/// 2. 通过 <see cref="TagsProject_Extensions.AddSimpleFilesTagBuilder"/> 的 configure 钩子 + 
+///    <see cref="SimpleFilesDirectTagBuilder.WithFactory"/> 注入创建委托，
+///    无需编写自定义 TagBuilder，即可实现「基本类型读写 + JSON 到特定类型读写」共存
 /// </summary>
 public class SimpleFilesDirectTagExtensionTests
 {
@@ -57,32 +58,6 @@ public class SimpleFilesDirectTagExtensionTests
         }
     }
 
-    /// <summary>
-    /// 外部自定义的 TagBuilder：为 SimpleFiles 驱动下 TagKind=="JSON" 的测点构建 <see cref="JsonPointDirectTag"/>
-    /// </summary>
-    public class JsonPointTagBuilder : TagBuilderBase
-    {
-        /// <summary>
-        /// c'tor
-        /// </summary>
-        public JsonPointTagBuilder()
-        {
-        }
-
-        /// <inheritdoc/>
-        public override ITag Build(ITagChannel channel)
-        {
-            if (channel is not SimpleFilesTagChannel simpleFilesChannel)
-            {
-                throw new InvalidCastException($"测点({this.Name})当前通道必须是{nameof(SimpleFilesTagChannel)}，实际={channel.GetType()}");
-            }
-            
-            this.TagDescriptor.NormalizedAddress = simpleFilesChannel.MakePath(this.TagDescriptor.RawAddress);
-            var thisChannel = this.Channel as SimpleFilesTagChannel;
-            return new JsonPointDirectTag(this.TagDescriptor, thisChannel, TagContainer.From(this.Parent));
-        }
-    }
-
     #endregion
 
     #region Helper
@@ -116,7 +91,7 @@ public class SimpleFilesDirectTagExtensionTests
     }
 
     /// <summary>
-    /// 注册：通道 + 自定义 JSON builder + 基本类型 builder（通过 AddSimpleFilesTagBuilder）
+    /// 注册：通道 + JSON 测点创建委托（通过 configure 钩子 + WithFactory）+ 基本类型 builder
     /// </summary>
     private static ServiceProvider BuildRoot()
     {
@@ -127,13 +102,19 @@ public class SimpleFilesDirectTagExtensionTests
             // 1. 仅注册通道
             b.AddSimpleFilesChannel();
 
-            // 2. 注册外部自定义的 JSON 测点构建器（先注册，predicate 命中 JSON 测点）
-            b.ConfigTagsLoader((sp, composite) =>
-                composite.AddTagBuilder<JsonPointTagBuilder>(
-                    SimpleFilesNames.DriverName,
-                    predicate: bd => bd.TagDescriptor.TagKind == "JSON"));
+            // 2. 注册 JSON 测点：configure 钩子中通过 WithFactory 注入创建委托（无需自定义 TagBuilder 类）
+            b.AddSimpleFilesTagBuilder(
+                predicate: bd => bd.TagDescriptor.TagKind == "JSON",
+                configure: b => b.WithFactory((descriptor, thisChannel, container) =>
+                {
+                    // 与内部 SimpleFilesDirectTagFactory 一致：基于通道 BaseDir 归一化文件路径
+                    var channel = thisChannel ?? (SimpleFilesTagChannel)container.SearchRequiredChannel();
+                    descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
+                    return new JsonPointDirectTag(descriptor, thisChannel, container);
+                })
+            );
 
-            // 3. 注册基本类型测点构建器（后注册，处理其余所有测点）
+            // 3. 注册基本类型测点构建器（后注册，处理其余所有测点，走内部工厂）
             b.AddSimpleFilesTagBuilder();
         });
         return services.BuildServiceProvider();
@@ -302,6 +283,59 @@ public class SimpleFilesDirectTagExtensionTests
             Assert.True(File.Exists(jsonPath));
             var content = await File.ReadAllTextAsync(jsonPath);
             Assert.Equal("{\"X\":0,\"Y\":0}", content);
+        }
+        finally
+        {
+            Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    #endregion
+
+    #region 验证：WithFactory 委托返回 null 时回退内部工厂
+
+    [Fact]
+    public void WithFactory_DelegateReturnsNull_FallsBackToInternalFactory()
+    {
+        var tempDir = CreateTempDir();
+        try
+        {
+            var services = new ServiceCollection();
+            services.AddLogging();
+            services.AddTagsProjectServices(b =>
+            {
+                b.AddSimpleFilesChannel();
+
+                // configure 中注入委托，但委托返回 null → 应回退内部工厂
+                b.AddSimpleFilesTagBuilder(
+                    configure: b => b.WithFactory((_, _, _) => null!)
+                );
+            });
+
+            using var root = services.BuildServiceProvider();
+            using var scope = root.CreateScope();
+
+            // 只含 INT32 测点的 XML
+            var xml = XElement.Parse($@"
+<root>
+    <Channel name='sf' driver='SimpleFiles'>
+        <BaseDir>{tempDir}</BaseDir>
+    </Channel>
+    <TagGrp name='g' isEntry='true' channel='sf' scanInterval='0'>
+        <Tag name='int-v' address='int.txt' type='INT32' />
+    </TagGrp>
+</root>");
+
+            using var proj = scope.ServiceProvider.MakeProject(null, xml);
+
+            var g = proj.Tags.SelectGrp("g");
+            Assert.NotNull(g);
+
+            var intTag = g.SelectTag("int-v");
+            Assert.NotNull(intTag);
+            Assert.Equal(BuiltinTagKinds.INT32, intTag.TagKind());
+            // 委托返回 null → 回退内部工厂创建内部实现类
+            Assert.Equal("Itminus.Tags.SimpleFiles.IntDirectTag", intTag.GetType().FullName);
         }
         finally
         {
