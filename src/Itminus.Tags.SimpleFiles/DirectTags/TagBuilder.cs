@@ -15,6 +15,26 @@ public partial class SimpleFilesDirectTagBuilder : TagBuilderBase
     }
 
 
+    /// <summary>
+    /// 使用 JSON 测点工厂创建<see cref="JsonDirectTag{TVal}"/>型测点。<br/>
+    /// </summary>
+    /// <typeparam name="TVal"></typeparam>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public SimpleFilesDirectTagBuilder WithJsonTagFactory<TVal>()
+    {
+        this.WithFactory( 
+            (descriptor, thisChannel, container) => {
+                var channel = thisChannel ?? container.SearchRequiredChannel();
+                var sfsChannel = channel as SimpleFilesTagChannel ?? throw new InvalidOperationException($"通道类型不匹配：{channel?.GetType().FullName}");
+                descriptor.NormalizedAddress = sfsChannel.MakePath(descriptor.RawAddress);
+                return new JsonDirectTag<TVal>(descriptor, thisChannel as SimpleFilesTagChannel, container);
+            }
+        );
+        return this;
+    }
+
+
     /// <inheritdoc/>
     protected override ITag Fallback(ITagChannel ch)
     {

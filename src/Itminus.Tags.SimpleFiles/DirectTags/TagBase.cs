@@ -70,11 +70,14 @@ public abstract class SimpleFilesDirectTagBase<T> : Tag<T, SimpleFilesTagChannel
     }
 
     /// <summary>
-    /// 解析文件内容为测点值
+    /// 解析文件内容为测点值。<br/>
+    /// 返回 <c>null</c> 是合法的：对于引用类型的 <typeparamref name="T"/>（如 JSON POCO），
+    /// 文件内容可能表示 null（如 JSON 字面量 <c>null</c>），此时返回 null 即可，<see cref="FormatValue"/> 会对称地序列化回去。<br/>
+    /// 对于值类型的 <typeparamref name="T"/>，返回值即为 <c>T</c> 本身（无约束泛型的 <c>T?</c> 不会变成 <c>Nullable&lt;T&gt;</c>）。
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    protected abstract T ParseValue(string text);
+    protected abstract T? ParseValue(string text);
 
     /// <summary>
     /// 将测点值格式化为文件内容。<br/>

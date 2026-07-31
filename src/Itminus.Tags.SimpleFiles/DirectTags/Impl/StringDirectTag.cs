@@ -14,7 +14,7 @@ internal class StringDirectTag : SimpleFilesDirectTagBase<string>
     {
     }
 
-    protected override string ParseValue(string text)
+    protected override string? ParseValue(string text)
     {
         return text;
     }

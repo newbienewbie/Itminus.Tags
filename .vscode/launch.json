@@ -18,6 +18,12 @@
             "type": "dotnet",
             "request": "launch",
             "projectPath": "${workspaceFolder}/samples/Itminus.Tags.Web/Itminus.Tags.Web.csproj"
+        },
+        {
+            "name": "C#: NixMonitor Debug",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/samples/NixMonitor/NixMonitor.csproj"
         }
 
     ]
