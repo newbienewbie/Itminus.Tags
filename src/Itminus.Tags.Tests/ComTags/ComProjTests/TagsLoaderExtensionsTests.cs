@@ -22,7 +22,7 @@ public class TagsLoaderExtensionsTests
     {
         public bool ConfigureWasCalled { get; set; }
 
-        public override ITag Build(ITagChannel channel)
+        protected override ITag Fallback(ITagChannel channel)
         {
             return new Fakes.FakedTag(TagDescriptor, channel as Fakes.FakedChannel, Parent);
         }
@@ -36,7 +36,7 @@ public class TagsLoaderExtensionsTests
         public string? CustomProperty { get; set; }
         public bool ConfigureWasCalled { get; set; }
 
-        public override ITag Build(ITagChannel channel)
+        protected override ITag Fallback(ITagChannel channel)
         {
             return new Fakes.FakedTag(TagDescriptor, channel as Fakes.FakedChannel, Parent);
         }

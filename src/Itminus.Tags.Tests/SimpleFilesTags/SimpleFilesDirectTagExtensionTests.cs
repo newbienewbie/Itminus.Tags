@@ -108,9 +108,10 @@ public class SimpleFilesDirectTagExtensionTests
                 configure: b => b.WithFactory((descriptor, thisChannel, container) =>
                 {
                     // 与内部 SimpleFilesDirectTagFactory 一致：基于通道 BaseDir 归一化文件路径
-                    var channel = thisChannel ?? (SimpleFilesTagChannel)container.SearchRequiredChannel();
-                    descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
-                    return new JsonPointDirectTag(descriptor, thisChannel, container);
+                    var channel = thisChannel ?? container.SearchRequiredChannel();
+                    var sfsChannel = channel as SimpleFilesTagChannel ?? throw new InvalidOperationException($"通道类型不匹配：{channel?.GetType().FullName}");
+                    descriptor.NormalizedAddress = sfsChannel.MakePath(descriptor.RawAddress);
+                    return new JsonPointDirectTag(descriptor, thisChannel as SimpleFilesTagChannel, container);
                 })
             );
 

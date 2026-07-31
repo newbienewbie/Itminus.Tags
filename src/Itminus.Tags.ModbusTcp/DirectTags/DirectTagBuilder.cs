@@ -6,8 +6,8 @@ internal partial class ModbusTcpDirectTagBuilder : TagBuilderBase
     {
     }
 
-
-    public override ITag Build(ITagChannel channel)
+    /// <inheritdoc/>
+    protected override ITag Fallback(ITagChannel channel)
     {
 
         ModbusTcpChannel? mbch;

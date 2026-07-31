@@ -104,7 +104,7 @@ public class ComProjTagSelectorTests
         {
         }
 
-        public override ITag Build(ITagChannel channel)
+        protected override ITag Fallback(ITagChannel channel)
         {
             if (channel is null)
             {

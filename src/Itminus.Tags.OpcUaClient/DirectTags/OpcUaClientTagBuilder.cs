@@ -2,7 +2,8 @@
 
 internal class OpcUaClientTagBuilder : TagBuilderBase
 {
-    public override ITag Build(ITagChannel channel)
+    /// <inheritdoc/>
+    protected override ITag Fallback(ITagChannel channel)
     {
         var container = this.Parent.IntoTagContainer();
 

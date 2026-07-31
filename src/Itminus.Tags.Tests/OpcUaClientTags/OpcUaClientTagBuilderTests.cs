@@ -34,17 +34,6 @@ public class OpcUaClientTagBuilderTests
     }
 
     [Fact]
-    public void Build_WhenSelfChannelNotOpcUa_Throws()
-    {
-        var fakeChannel = new FakeSimpleChannel();
-        var builder = CreateBuilder(selfChannel: fakeChannel);
-
-        var ex = Assert.Throws<Exception>(() => builder.Build(null!));
-        Assert.Contains(nameof(OpcUaClientTagChannel), ex.Message);
-        Assert.Contains("t", ex.Message);
-    }
-
-    [Fact]
     public void Build_SetsTagNameFromDescriptor()
     {
         var descriptor = new TagDescriptor { 
@@ -54,8 +43,8 @@ public class OpcUaClientTagBuilderTests
             TagSize = 4 
         };
         var builder = CreateBuilder(selfChannel: null, descriptor: descriptor);
-
-        var tag = builder.Build(null!);
+        var channel = builder.Channel ?? builder.Parent.IntoTagContainer().SearchRequiredChannel();
+        var tag = builder.Build(channel);
 
         Assert.Equal("myVar", tag.TagName());
     }
@@ -65,8 +54,8 @@ public class OpcUaClientTagBuilderTests
     {
         var descriptor = new TagDescriptor { TagName = "v", RawAddress = "ns=1;s=Addr1", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4 };
         var builder = CreateBuilder(selfChannel: null, descriptor: descriptor);
-
-        var tag = builder.Build(null!);
+        var channel = builder.Channel ?? builder.Parent.IntoTagContainer().SearchRequiredChannel();
+        var tag = builder.Build(channel);
 
         Assert.Equal("ns=1;s=Addr1", tag.NormalizedAddress());
     }

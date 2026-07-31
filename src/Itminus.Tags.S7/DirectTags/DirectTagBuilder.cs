@@ -6,8 +6,8 @@ internal partial class S7DirectTagBuilder : TagBuilderBase
     {
     }
 
-
-    public override ITag Build(ITagChannel channel)
+    /// <inheritdoc/>
+    protected override ITag Fallback(ITagChannel channel)
     {
         S7TagChannel? s7ch;
         if(this.Channel is null)

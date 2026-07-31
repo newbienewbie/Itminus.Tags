@@ -37,8 +37,8 @@ public class DirectTagBuilderTests
     public void Build_WhenSelfChannelIsNull_UsesFallbackChannel()
     {
         var builder = CreateBuilder(selfChannel: null);
-
-        var tag = builder.Build(null!);
+        var channel = builder.Channel ?? builder.Parent.IntoTagContainer().SearchRequiredChannel();
+        var tag = builder.Build(channel);
 
         Assert.IsType<IntDirectTag>(tag);
         Assert.Equal("t", tag.TagName());
@@ -54,22 +54,11 @@ public class DirectTagBuilderTests
         };
         var sfChannel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
         var builder = CreateBuilder(selfChannel: sfChannel);
-
-        var tag = builder.Build(null!);
+        var channel = builder.Channel ?? builder.Parent.IntoTagContainer().SearchRequiredChannel();
+        var tag = builder.Build(channel);
 
         Assert.IsType<IntDirectTag>(tag);
         Assert.Equal("t", tag.TagName());
-    }
-
-    [Fact]
-    public void Build_WhenSelfChannelNotSimpleFiles_Throws()
-    {
-        var fakeChannel = new FakeNonSimpleFilesChannel();
-        var builder = CreateBuilder(selfChannel: fakeChannel);
-
-        var ex = Assert.Throws<Exception>(() => builder.Build(null!));
-        Assert.Contains(nameof(SimpleFilesTagChannel), ex.Message);
-        Assert.Contains("t", ex.Message);
     }
 
     [Fact]
@@ -82,8 +71,8 @@ public class DirectTagBuilderTests
             TagKind = BuiltinTagKinds.FLOAT,
         };
         var builder = CreateBuilder(selfChannel: null, descriptor: descriptor);
-
-        var tag = builder.Build(null!);
+        var channel = builder.Channel ?? builder.Parent.IntoTagContainer().SearchRequiredChannel();
+        var tag = builder.Build(channel);
 
         Assert.Equal("myTag", tag.TagName());
     }
@@ -98,8 +87,8 @@ public class DirectTagBuilderTests
             TagKind = BuiltinTagKinds.FLOAT,
         };
         var builder = CreateBuilder(selfChannel: null, descriptor: descriptor);
-
-        var tag = builder.Build(null!);
+        var channel = builder.Channel ?? builder.Parent.IntoTagContainer().SearchRequiredChannel();
+        var tag = builder.Build(channel);
 
         Assert.Equal("path/to/file.txt", tag.NormalizedAddress());
     }

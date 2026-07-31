@@ -24,7 +24,7 @@ internal class FakedTagBuilder : TagBuilderBase
 {
     public FakedTagBuilder(TagDescriptor descriptor) => TagDescriptor = descriptor;
 
-    public override ITag Build(ITagChannel channel)
+    protected override ITag Fallback(ITagChannel channel)
     {
         var fakeCh = channel as FakedChannel;
         return new FakedTag(TagDescriptor, fakeCh, Parent);
