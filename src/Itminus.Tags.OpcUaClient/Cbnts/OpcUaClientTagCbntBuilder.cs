@@ -1,7 +1,11 @@
 ﻿using System;
 namespace Itminus.Tags.OpcUaClient.Cbnts;
 
-internal class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
+/// <summary>
+/// 构建 OpcUaClient 测点组合的构建器。<br/>
+/// 当通道的驱动为 <see cref="OpcUaClientNames.DriverName"/> 时，用于构建测点组合。
+/// </summary>
+public class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
 {
     /// <summary>
     /// c'tor<br/>
@@ -13,17 +17,10 @@ internal class OpcUaClientTagCbntBuilder : TagCbntBuilderBase
     }
 
     /// <inheritdoc/>
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
+    protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel)
     {
         var tagFactory = this.MakeOpcUaTagFactory();
-        this.Configure(builder => {
-            foreach (var descriptor in descriptors)
-            {
-                var tag = tagFactory.CreateTag(descriptor);
-                builder.AddTag(tag);
-            }
-        });
-        return this;
+        return tagFactory.CreateTag(descriptor);
     }
 
     /// <inheritdoc/>

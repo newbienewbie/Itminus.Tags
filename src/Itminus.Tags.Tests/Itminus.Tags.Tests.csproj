@@ -22,6 +22,9 @@
     <ProjectReference Include="..\Itminus.Tags.McpServer\Itminus.Tags.McpServer.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="Core\TagUnions\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="ComTags\ComProjTests\ComProjSelectorTests.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -53,9 +56,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="S7Tags\DirectTags\index.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="TagUnions\index.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="HjzkTags\index.xml">

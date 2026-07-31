@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Itminus.Tags;
 
+
 /// <summary>
 /// TagBuilder基类，用于构建 <see cref="ITag"/> 实例
 /// </summary>
@@ -68,14 +69,48 @@ public abstract class TagBuilderBase
         return this;
     }
 
+    #region CreateTag 委托
     /// <summary>
-    /// 配置当前构建器。<br/>
+    /// 用于自定义测点创建逻辑的委托。<br/>
+    /// 如果设置了该委托，则在构建测点时会优先调用；如果委托返回 null，则回退到构建器内部默认逻辑。
+    /// </summary>
+    protected CreateTag? _createTag;
+
+    /// <summary>
+    /// 设置创建测点的委托。<br/>
+    /// </summary>
+    /// <param name="createTag"></param>
+    /// <returns></returns>
+    public TagBuilderBase WithFactory(CreateTag createTag)
+    {
+        this._createTag = createTag;
+        return this;
+    }
+
+    /// <summary>
+    /// 委托：创建测点。<br/>
+    /// 委托会被优先调用；如果返回 null，则回退到构建器内部默认逻辑。
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <param name="thisChannel"></param>
+    /// <param name="container"></param>
+    /// <returns></returns>
+    public delegate ITag? CreateTag(
+        TagDescriptor descriptor,
+        ITagChannel? thisChannel,
+        TagContainer container
+        );
+    #endregion
+
+
+    /// <summary>
+    /// 兜底的配置方法，用于配置当前构建器。<br/>
     /// </summary>
     /// <param name="action"></param>
     /// <returns></returns>
     public virtual TagBuilderBase Configure(Action<TagBuilderBase> action)
     {
-        action?.Invoke(this);
+        action.Invoke(this);
         return this;
     }
 
@@ -84,5 +119,30 @@ public abstract class TagBuilderBase
     /// </summary>
     /// <param name="channel">(冒泡式得到的)通道</param>
     /// <returns></returns>
-    public abstract ITag Build(ITagChannel channel);
+    public virtual ITag Build(ITagChannel channel)
+    {
+        if(channel is null)
+        {
+            throw new Exception($"测点({this.Name})未配置通道");
+        }
+
+        if (this._createTag is not null)
+        {
+            var tag = this._createTag(this.TagDescriptor, this.Channel, TagContainer.From(this.Parent));
+            if (tag is not null)
+            {
+                return tag;
+            }
+        }
+
+        return Fallback(channel);
+    }
+
+    /// <summary>
+    /// 兜底的构建逻辑。<br/>
+    /// 如果没有设置 <see cref="_createTag"/>，或者 <see cref="_createTag"/> 返回 null，则会调用本方法。<br/>
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <returns></returns>
+    protected abstract ITag Fallback(ITagChannel channel);
 }

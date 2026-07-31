@@ -6,7 +6,7 @@ namespace Itminus.Tags.SimpleFiles;
 /// <summary>
 /// SimpleFiles通道实现
 /// </summary>
-internal class SimpleFilesTagChannel : ITagChannel
+public class SimpleFilesTagChannel : ITagChannel
 {
     /// <summary>
     /// c'tor

@@ -1,13 +1,20 @@
 ﻿namespace Itminus.Tags.S7;
 
-internal partial class S7DirectTagBuilder : TagBuilderBase
+/// <summary>
+/// 构建 S7 直接测点的构建器。<br/>
+/// 当通道的驱动为 <see cref="S7Names.DriverName"/> 时，用于构建测点。
+/// </summary>
+public partial class S7DirectTagBuilder : TagBuilderBase
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public S7DirectTagBuilder()
     {
     }
 
-
-    public override ITag Build(ITagChannel channel)
+    /// <inheritdoc/>
+    protected override ITag Fallback(ITagChannel channel)
     {
         S7TagChannel? s7ch;
         if(this.Channel is null)

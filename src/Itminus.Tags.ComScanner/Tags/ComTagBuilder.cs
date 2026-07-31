@@ -8,14 +8,13 @@ namespace Itminus.Tags.ComScanner.Tags;
 /// </summary>
 public class ComTagBuilder : TagBuilderBase
 {
-    /// <inheritdoc/>
-    public override ITag Build(ITagChannel channel)
+    /// <summary>
+    /// 内部默认逻辑：仅支持 STR 类型只读或者只写串口Tag
+    /// </summary>
+    /// <param name="channel"></param>
+    /// <returns></returns>
+    protected override ITag Fallback(ITagChannel channel)
     {
-        if(channel is null)
-        {
-            throw new Exception($"测点({this.Name})未配置通道({this.TagDescriptor.TagName})");
-        }
-
         var tagKind = this.TagDescriptor.TagKind;
         if (string.IsNullOrEmpty(tagKind) || string.Compare(tagKind,BuiltinTagKinds.STR, ignoreCase: true) == 0)
         {

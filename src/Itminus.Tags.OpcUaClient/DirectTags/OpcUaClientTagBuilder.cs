@@ -1,8 +1,13 @@
 ﻿namespace Itminus.Tags.OpcUaClient.DirectTags;
 
-internal class OpcUaClientTagBuilder : TagBuilderBase
+/// <summary>
+/// 构建 OpcUaClient 直接测点的构建器。<br/>
+/// 当通道的驱动为 <see cref="OpcUaClientNames.DriverName"/> 时，用于构建测点。
+/// </summary>
+public class OpcUaClientTagBuilder : TagBuilderBase
 {
-    public override ITag Build(ITagChannel channel)
+    /// <inheritdoc/>
+    protected override ITag Fallback(ITagChannel channel)
     {
         var container = this.Parent.IntoTagContainer();
 

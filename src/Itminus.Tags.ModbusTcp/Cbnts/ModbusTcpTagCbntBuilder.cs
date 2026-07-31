@@ -48,17 +48,10 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
     }
 
     /// <inheritdoc/>
-    public override TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
+    protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel)
     {
         var tagFactory = this.MakeModbusTcpTagFactory();
-        this.Configure(builder => {
-            foreach (var descriptor in descriptors)
-            {
-                var tag = tagFactory.CreateTag(descriptor);
-                builder.AddTag(tag);
-            }
-        });
-        return this;
+        return tagFactory.CreateTag(descriptor);
     }
 
     /// <inheritdoc/>

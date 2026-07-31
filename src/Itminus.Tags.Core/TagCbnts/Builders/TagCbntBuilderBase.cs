@@ -90,18 +90,76 @@ public abstract class TagCbntBuilderBase
     /// <returns></returns>
     public virtual TagCbntBuilderBase Configure(Action<TagCbntBuilderBase> action)
     {
-        action?.Invoke(this);
+        action.Invoke(this);
+        return this;
+    }
+
+    #region CreateTagCbntor 委托
+    /// <summary>
+    /// 用于自定义组合子创建逻辑的委托。<br/>
+    /// 如果设置了该委托，则在 <see cref="AddTags"/> 时会优先调用；如果委托返回 null，则回退到 <see cref="Fallback"/>。
+    /// </summary>
+    protected CreateTagCbntor? _createTagCbntor;
+
+    /// <summary>
+    /// 设置创建组合子的委托。<br/>
+    /// 委托会被优先用于创建组合子；若未设置委托，或委托返回 null，则回退到构建器内部默认逻辑。
+    /// </summary>
+    /// <param name="createTagCbntor"></param>
+    /// <returns></returns>
+    public TagCbntBuilderBase WithFactory(CreateTagCbntor createTagCbntor)
+    {
+        this._createTagCbntor = createTagCbntor;
         return this;
     }
 
     /// <summary>
+    /// 委托：创建组合子。<br/>
+    /// 委托会被优先调用；如果返回 null，则回退到构建器内部默认逻辑。
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <param name="channel">(冒泡式)获取的通道</param>
+    /// <param name="builder">CbntBuilder</param>
+    /// <returns></returns>
+    public delegate ITagCbntor? CreateTagCbntor(TagDescriptor descriptor, ITagChannel channel, TagCbntBuilderBase builder);
+    #endregion
+
+    /// <summary>
     /// 批量添加测点。<br/>
-    /// 实现应该构造<see cref="ITagCbntor"/>，并调用<see cref="AddTag(ITagCbntor)"/>添加到测点组合中。<br/>
+    /// 优先调用 <see cref="_createTagCbntor"/>（若设置了）；
+    /// 若委托返回 null，则回退到 <see cref="Fallback"/> 创建
+    /// <see cref="ITagCbntor"/>，并调用 <see cref="AddTag(ITagCbntor)"/> 添加到测点组合中。<br/>
     /// </summary>
     /// <param name="descriptors"></param>
     /// <param name="channel">(冒泡式)获取的通道</param>
     /// <returns></returns>
-    public abstract TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel);
+    public virtual TagCbntBuilderBase AddTags(IList<TagDescriptor> descriptors, ITagChannel channel)
+    {
+        foreach (var descriptor in descriptors)
+        {
+            ITagCbntor? tag = null;
+            if(this._createTagCbntor is not null)
+            {
+                tag = this._createTagCbntor(descriptor, channel, this);
+            }
+            if(tag is null)
+            {
+                tag = this.Fallback(descriptor, channel);
+            }
+
+            this.AddTag(tag);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// 兜底的组合子创建逻辑。<br/>
+    /// 如果没有设置 <see cref="_createTagCbntor"/>，或者 <see cref="_createTagCbntor"/> 返回 null，则会调用本方法。<br/>
+    /// </summary>
+    /// <param name="descriptor"></param>
+    /// <param name="channel">(冒泡式)获取的通道</param>
+    /// <returns></returns>
+    protected abstract ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel);
 
 
     /// <summary>

@@ -1,13 +1,20 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
-internal partial class ModbusTcpDirectTagBuilder : TagBuilderBase
+/// <summary>
+/// 构建 ModbusTcp 直接测点的构建器。<br/>
+/// 当通道的驱动为 <see cref="ModbusTcpNames.DriverName"/> 时，用于构建测点。
+/// </summary>
+public partial class ModbusTcpDirectTagBuilder : TagBuilderBase
 {
+    /// <summary>
+    /// c'tor
+    /// </summary>
     public ModbusTcpDirectTagBuilder()
     {
     }
 
-
-    public override ITag Build(ITagChannel channel)
+    /// <inheritdoc/>
+    protected override ITag Fallback(ITagChannel channel)
     {
 
         ModbusTcpChannel? mbch;
