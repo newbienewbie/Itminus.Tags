@@ -13,12 +13,8 @@ builder.Services.AddTagsProjectServices(builder =>
 {
     builder.AddSimpleFilesChannel()
         .AddSimpleFilesTagBuilder(
-            configure: b => b.WithFactory(
-                (descriptor, thisChannel, container) => {
-                    return new MyJsonTag(descriptor, thisChannel as SimpleFilesTagChannel, container);
-                }
-            ),
-            predicate: b => b.TagDescriptor.TagKind == "JSON"
+            configure: b => b.WithJsonTagFactory<MyJson>(),
+            predicate: b => b.TagDescriptor.TagKind == "MyJson"
         )
         .AddSimpleFilesTagBuilder();
 });

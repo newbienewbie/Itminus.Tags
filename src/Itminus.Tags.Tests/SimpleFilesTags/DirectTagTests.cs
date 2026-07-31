@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -450,6 +451,106 @@ public class DirectTagTests : IDisposable
     }
 
     #endregion
+
+    #region JsonTag
+    record MyJson(string name, int age);
+    [Fact]
+    public async Task JsonTag_ReadAsync_FromFile_ReturnsParsedObject()
+    {
+        var fileName = "json_val.txt";
+        var jsonContent = "{\"name\":\"Alice\",\"age\":30}";
+        var normailizedPath = Path.Combine(_tempDir, fileName);
+        await File.WriteAllTextAsync(normailizedPath, jsonContent);
+
+        var tagdescriptor = MakeDescriptor("j", fileName, "Json");
+        tagdescriptor.NormalizedAddress = normailizedPath;
+
+        var tag = new JsonDirectTag<MyJson>(
+            descriptor: tagdescriptor,
+            thisChannel: new SimpleFilesTagChannel(
+                new SimpleFilesTagChannelDescriptor { Name = "test-channel", BaseDir = _tempDir },
+                NullLogger<SimpleFilesTagChannel>.Instance
+            ),
+            container: _grp.IntoTagContainer()
+        );
+        await tag.ReadAsync(CancellationToken.None);
+
+        Assert.Equal(JsonSerializer.Deserialize<MyJson>(jsonContent), tag.Value);
+    }
+
+    [Fact]
+    public async Task JsonTag_WriteAsync_IntoFile_SinksJsonString()
+    {
+        var fileName = "json_val2.txt";
+        var normailizedPath = Path.Combine(_tempDir, fileName);
+        var tagdescriptor = MakeDescriptor("j", fileName, "Json");
+        tagdescriptor.NormalizedAddress = normailizedPath;
+        tagdescriptor.Extras = new Dictionary<string, XAttribute>
+        {
+            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "true")
+        };
+        var tag = new JsonDirectTag<MyJson>(
+            descriptor: tagdescriptor,
+            thisChannel: new SimpleFilesTagChannel(
+                new SimpleFilesTagChannelDescriptor { Name = "test-channel", BaseDir = _tempDir },
+                NullLogger<SimpleFilesTagChannel>.Instance
+            ),
+            container: _grp.IntoTagContainer()
+        );
+        var raw= new MyJson("Bob", 25);
+        tag.Value = raw;
+        await tag.WriteAsync(CancellationToken.None);
+        var content = await File.ReadAllTextAsync(normailizedPath);
+        var json = JsonSerializer.Deserialize<MyJson>(content);
+        Assert.Equal(raw, json);
+    }
+
+    [Fact]
+    public async Task JsonTag_ReadAsync_InvalidJson_Throws()
+    {
+        var fileName = "json_invalid.txt";
+        var normailizedPath = Path.Combine(_tempDir, fileName);
+        await File.WriteAllTextAsync(normailizedPath, "not-a-json");
+
+        var tagdescriptor = MakeDescriptor("j", fileName, "Json");
+        tagdescriptor.NormalizedAddress = normailizedPath;
+
+        var tag = new JsonDirectTag<MyJson>(
+            descriptor: tagdescriptor,
+            thisChannel: new SimpleFilesTagChannel(
+                new SimpleFilesTagChannelDescriptor { Name = "test-channel", BaseDir = _tempDir },
+                NullLogger<SimpleFilesTagChannel>.Instance
+            ),
+            container: _grp.IntoTagContainer()
+        );
+
+        await Assert.ThrowsAsync<JsonException>(() => tag.ReadAsync(CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task JsonTag_ReadAsync_JsonNullLiteral_ReturnsNullValue()
+    {
+        var fileName = "json_null.txt";
+        var normailizedPath = Path.Combine(_tempDir, fileName);
+        await File.WriteAllTextAsync(normailizedPath, "null");
+
+        var tagdescriptor = MakeDescriptor("j", fileName, "Json");
+        tagdescriptor.NormalizedAddress = normailizedPath;
+
+        var tag = new JsonDirectTag<MyJson>(
+            descriptor: tagdescriptor,
+            thisChannel: new SimpleFilesTagChannel(
+                new SimpleFilesTagChannelDescriptor { Name = "test-channel", BaseDir = _tempDir },
+                NullLogger<SimpleFilesTagChannel>.Instance
+            ),
+            container: _grp.IntoTagContainer()
+        );
+        await tag.ReadAsync(CancellationToken.None);
+
+        Assert.Null(tag.Value);
+    }
+    #endregion
+
 
     #region AutoCreateFile
 

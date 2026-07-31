@@ -44,10 +44,9 @@ public class SimpleFilesDirectTagExtensionTests
         }
 
         /// <inheritdoc/>
-        protected override JsonPoint ParseValue(string text)
+        protected override JsonPoint? ParseValue(string text)
         {
-            var value = JsonSerializer.Deserialize<JsonPoint>(text);
-            return value ?? throw new InvalidDataException($"无法将文件内容反序列化为 {nameof(JsonPoint)}：{text}");
+            return JsonSerializer.Deserialize<JsonPoint>(text);
         }
 
         /// <inheritdoc/>
@@ -345,4 +344,63 @@ public class SimpleFilesDirectTagExtensionTests
     }
 
     #endregion
+
+    #region 多JSON读写
+    record MyJson1(string name, int age);
+    record MyJson2(string name, int x, int y);
+    [Fact]
+    public void WithJsonTagFactory_RegisterMultipleTimes_CreateMultipleJsonTags()
+    {
+        var tempDir = CreateTempDir();
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddTagsProjectServices(b =>
+        {
+            // 1. 仅注册通道
+            b.AddSimpleFilesChannel();
+
+            b.AddSimpleFilesTagBuilder(
+                predicate: bd => bd.TagDescriptor.TagKind == "myjson1",
+                configure: b => b.WithJsonTagFactory<MyJson1>()
+            );
+
+            b.AddSimpleFilesTagBuilder(
+                predicate: bd => bd.TagDescriptor.TagKind == "myjson2",
+                configure: b => b.WithJsonTagFactory<MyJson2>()
+            );
+
+            // 3. 注册基本类型测点构建器（后注册，处理其余所有测点，走内部工厂）
+            b.AddSimpleFilesTagBuilder();
+        });
+
+        var rootsp = services.BuildServiceProvider();
+        using var scope = rootsp.CreateScope();
+        var sp = scope.ServiceProvider;
+
+        var xml = XElement.Parse($@"
+<root>
+    <Channel name='sf' driver='SimpleFiles'>
+        <BaseDir>{tempDir}</BaseDir>
+    </Channel>
+    <TagGrp name='g' isEntry='true' channel='sf' scanInterval='0'>
+        <Tag name='int-v'   address='int.txt'    type='INT32' />
+        <Tag name='json-1'  address='j1.json' type='myjson1' AutoCreateFile='true' />
+        <Tag name='json-2'  address='j2.json' type='myjson2' AutoCreateFile='true' />
+    </TagGrp>
+</root>");
+
+        using var proj = rootsp.MakeProject(null, xml);
+        var tags = proj.Tags.SelectGrp("g");
+        Assert.NotNull(tags);
+        var intTag = tags.SelectTag("int-v");
+        Assert.IsType<IntDirectTag>(intTag);
+        var json1Tag = tags.SelectTag("json-1");
+        Assert.IsType<JsonDirectTag<MyJson1>>(json1Tag);
+        var json2Tag = tags.SelectTag("json-2");
+        Assert.IsType<JsonDirectTag<MyJson2>>(json2Tag);
+        
+    }
+    #endregion
+
 }
