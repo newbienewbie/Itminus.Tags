@@ -2,6 +2,7 @@ using Itminus.Tags;
 using Itminus.Tags.SimpleFiles;
 using Itminus.Tags.BlazorLib;
 using NixMonitor.Tags;
+using NixMonitor.Tags.SimpleTags;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAntiforgery();
 builder.Services.AddTagsProjectServices(builder =>
 {
-    builder.AddSimpleFilesSupport();
+    builder.AddSimpleFilesChannel()
+        .AddSimpleFilesTagBuilder(
+            configure: b => b.WithFactory(
+                (descriptor, thisChannel, container) => {
+                    return new MyJsonTag(descriptor, thisChannel as SimpleFilesTagChannel, container);
+                }
+            ),
+            predicate: b => b.TagDescriptor.TagKind == "JSON"
+        )
+        .AddSimpleFilesTagBuilder();
 });
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
