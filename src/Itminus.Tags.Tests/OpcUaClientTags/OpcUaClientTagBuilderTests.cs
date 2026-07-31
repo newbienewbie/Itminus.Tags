@@ -1,9 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Itminus.Tags.OpcUaClient;
 using Itminus.Tags.OpcUaClient.DirectTags;
-using Itminus.Tags.Tests.Fakes;
 using Xunit;
 
 namespace Itminus.Tags.Tests.OpcUaClientTags;

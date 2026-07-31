@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Itminus.Tags;
+using Itminus.Tags.Core;
+using Itminus.Tags.Tests.Fakes;
 using Xunit;
 
 namespace Itminus.Tags.Tests.ComTags.ComProjTests;
@@ -24,7 +26,7 @@ public class TagsLoaderExtensionsTests
 
         protected override ITag Fallback(ITagChannel channel)
         {
-            return new Fakes.FakedTag(TagDescriptor, channel as Fakes.FakedChannel, Parent);
+            return new FakedTag(TagDescriptor, channel as FakedChannel, Parent);
         }
     }
 
@@ -38,7 +40,7 @@ public class TagsLoaderExtensionsTests
 
         protected override ITag Fallback(ITagChannel channel)
         {
-            return new Fakes.FakedTag(TagDescriptor, channel as Fakes.FakedChannel, Parent);
+            return new FakedTag(TagDescriptor, channel as FakedChannel, Parent);
         }
     }
 
@@ -110,7 +112,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -141,7 +143,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -170,7 +172,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -193,7 +195,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -215,7 +217,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -234,7 +236,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "OtherDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -257,7 +259,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -294,7 +296,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -322,7 +324,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -350,7 +352,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -376,7 +378,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "FakedDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
@@ -399,7 +401,7 @@ public class TagsLoaderExtensionsTests
     {
         // Arrange
         var loader = new CompositeTagsLoader();
-        var channel = new Fakes.FakedChannel(
+        var channel = new FakedChannel(
             new TagChannelDescriptor { Name = "ch1", Driver = "OtherDriver" });
         var parent = new TagGrp(
             new TagGrpDescriptor { Name = "root" }, channel);
