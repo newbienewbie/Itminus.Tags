@@ -20,7 +20,7 @@
             return;
         }
         var root = XElement.Load(this.SelectedXml);
-        await this.projctrl.StartPollAsync( null, root: root, hook: (proj, ct) => Task.CompletedTask);
+        await this.projctrl.StartPollAsync( null, root: root, hook: (proj, sp, ct) => Task.CompletedTask);
     });
 })">启动</MudButton>
 

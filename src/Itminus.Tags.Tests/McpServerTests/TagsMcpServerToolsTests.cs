@@ -398,7 +398,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         public Func<Exception, Task<bool>>? OnStartingException { get; set; }
 
         public event TagsProjectStartedOrStopped? StartedOrStopped;
-        public Task StartPollAsync(string? dir, XElement? root, Func<ITagsProject, CancellationToken, Task> hook)
+        public Task StartPollAsync(string? dir, XElement? root, Func<ITagsProject, IServiceProvider, CancellationToken, Task> hook)
             => throw new NotSupportedException();
         public Task StopAsync() => Task.CompletedTask;
     }

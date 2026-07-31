@@ -32,7 +32,7 @@ internal class TagsProjectCtrl : ITagsProjectCtrl
 
 
     /// <inheritdoc/>
-    public async Task StartPollAsync(string? dir, XElement? root, Func<ITagsProject, CancellationToken, Task> hook)
+    public async Task StartPollAsync(string? dir, XElement? root, Func<ITagsProject, IServiceProvider, CancellationToken, Task> hook)
     {
         if (Interlocked.CompareExchange(ref _lock, 1, 0) != 0)
         {
@@ -57,7 +57,7 @@ internal class TagsProjectCtrl : ITagsProjectCtrl
             this._cts = new CancellationTokenSource();
             this.Project = sp.MakeProject(dir, root);
             var ct = _cts.Token;
-            await hook(this.Project, ct);
+            await hook(this.Project, sp, ct);
             this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(true, this.Project));
             await this.Project.RunAsync(ct);
         }

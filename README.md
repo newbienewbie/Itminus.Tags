@@ -56,7 +56,7 @@ var ctrl = sp.GetRequiredService<ITagsProjectCtrl>();
 var dir ="D:/manufacture/pl01/";	// 提供项目运行目录，其中有通信点表和可能用到的插件
 XElement? root = null;			// 空表示使用默认的`index.xml`来配置项目
 
-await ctrl.StartPollAsync(dir, root, hook: async(proj, ct) =>{
+await ctrl.StartPollAsync(dir, root, hook: async(proj, sp, ct) =>{
     // 添加心跳信号逻辑
     proj.Logicets.Add(new HeartBeatLogicet(
         proj.Channels,
