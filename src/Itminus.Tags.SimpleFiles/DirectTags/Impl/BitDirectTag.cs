@@ -2,7 +2,7 @@
 namespace Itminus.Tags.SimpleFiles;
 
 
-internal class BitDirectTag : SimpleFsDirectTagBase<bool>
+internal class BitDirectTag : SimpleFilesDirectTagBase<bool>
 {
 
     /// <summary>

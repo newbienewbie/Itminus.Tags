@@ -49,13 +49,13 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddSimpleFilesTagBuilder(
         this TagsProjectServiceBuilder builder,
-        Action<SimpleTagsDirectTagBuilder>? configure = null,
-        Func<SimpleTagsDirectTagBuilder, bool>? predicate = null
+        Action<SimpleFilesDirectTagBuilder>? configure = null,
+        Func<SimpleFilesDirectTagBuilder, bool>? predicate = null
         )
     {
         // register SimpleFiles tags loader
         builder.ConfigTagsLoader((sp, composite) => { 
-            composite.AddTagBuilder<SimpleTagsDirectTagBuilder>(SimpleFilesNames.DriverName, configure, predicate);
+            composite.AddTagBuilder<SimpleFilesDirectTagBuilder>(SimpleFilesNames.DriverName, configure, predicate);
         });
 
         return builder;

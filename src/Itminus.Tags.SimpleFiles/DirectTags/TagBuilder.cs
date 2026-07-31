@@ -5,12 +5,12 @@ namespace Itminus.Tags.SimpleFiles;
 /// 构建 SimpleFiles 直接测点的构建器。<br/>
 /// 当通道的驱动为 <see cref="SimpleFilesNames.DriverName"/> 时，用于构建测点。
 /// </summary>
-public partial class SimpleTagsDirectTagBuilder : TagBuilderBase
+public partial class SimpleFilesDirectTagBuilder : TagBuilderBase
 {
     /// <summary>
     /// c'tor
     /// </summary>
-    public SimpleTagsDirectTagBuilder()
+    public SimpleFilesDirectTagBuilder()
     {
     }
 

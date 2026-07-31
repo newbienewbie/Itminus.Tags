@@ -5,7 +5,7 @@ namespace Itminus.Tags.SimpleFiles;
 /// <summary>
 /// 简单文件通道描述符
 /// </summary>
-internal class SimpleFilesTagChannelDescriptor : TagChannelDescriptor
+public class SimpleFilesTagChannelDescriptor : TagChannelDescriptor
 {
     /// <summary>
     /// c'tor

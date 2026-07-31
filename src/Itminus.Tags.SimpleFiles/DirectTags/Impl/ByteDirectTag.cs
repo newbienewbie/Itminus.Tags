@@ -3,7 +3,7 @@ namespace Itminus.Tags.SimpleFiles;
 
 
 
-internal class ByteDirectTag : SimpleFsDirectTagBase<byte>
+internal class ByteDirectTag : SimpleFilesDirectTagBase<byte>
 {
 
     /// <summary>

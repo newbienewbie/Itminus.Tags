@@ -1,6 +1,6 @@
 namespace Itminus.Tags.SimpleFiles;
 
-internal class UIntDirectTag : SimpleFsDirectTagBase<uint>
+internal class UIntDirectTag : SimpleFilesDirectTagBase<uint>
 {
 
     /// <summary>

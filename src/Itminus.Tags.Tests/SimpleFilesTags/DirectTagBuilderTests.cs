@@ -16,7 +16,7 @@ public class DirectTagBuilderTests
         TagKind = BuiltinTagKinds.INT32,
     };
 
-    private static SimpleTagsDirectTagBuilder CreateBuilder(ITagChannel? selfChannel, TagDescriptor? descriptor = null)
+    private static SimpleFilesDirectTagBuilder CreateBuilder(ITagChannel? selfChannel, TagDescriptor? descriptor = null)
     {
         var chdescriptor = new SimpleFilesTagChannelDescriptor()
         {
@@ -25,7 +25,7 @@ public class DirectTagBuilderTests
         };
         var channel = new SimpleFilesTagChannel(chdescriptor, NullLogger<SimpleFilesTagChannel>.Instance);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g" }, channel);
-        var builder = new SimpleTagsDirectTagBuilder();
+        var builder = new SimpleFilesDirectTagBuilder();
         builder
             .WithTagDescriptor(descriptor ?? DefaultDescriptor)
             .WithParent(grp)
