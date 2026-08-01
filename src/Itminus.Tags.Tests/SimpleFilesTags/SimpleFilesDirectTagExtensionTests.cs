@@ -403,4 +403,48 @@ public class SimpleFilesDirectTagExtensionTests
     }
     #endregion
 
+    #region 验证：泛型 WithFactory<TVal> —— 工厂无需自行归一化路径
+
+    [Fact]
+    public void GenericWithFactory_FactoryWithoutManualNormalization_StillBuildsWithNormalizedAddress()
+    {
+        var tempDir = CreateTempDir();
+        try
+        {
+            var services = new ServiceCollection();
+            services.AddLogging();
+            services.AddTagsProjectServices(b =>
+            {
+                b.AddSimpleFilesChannel();
+
+                // 与 BuildRoot 中的旧写法对比：这里工厂内不再自行 MakePath / 校验通道类型，
+                // 「通道解析 + 地址归一化」由泛型 WithFactory 重载代为完成
+                b.AddSimpleFilesTagBuilder(
+                    predicate: bd => bd.TagDescriptor.TagKind == "JSON",
+                    configure: b => b.WithFactory((descriptor, thisChannel, container) =>
+                        new JsonPointDirectTag(descriptor, thisChannel, container))
+                );
+
+                // 基本类型测点走内部工厂
+                b.AddSimpleFilesTagBuilder();
+            });
+
+            using var root = services.BuildServiceProvider();
+            using var scope = root.CreateScope();
+
+            using var proj = scope.ServiceProvider.MakeProject(null, BuildTestXml(tempDir));
+            var jsonTag = proj.Tags.SelectGrp("g").SelectTag("json-v");
+            Assert.NotNull(jsonTag);
+            Assert.IsType<JsonPointDirectTag>(jsonTag);
+            // 归一化地址 = BaseDir + RawAddress，已由泛型 WithFactory 写入 descriptor
+            Assert.Equal(Path.Combine(tempDir, "point.json"), jsonTag.NormalizedAddress());
+        }
+        finally
+        {
+            Directory.Delete(tempDir, recursive: true);
+        }
+    }
+
+    #endregion
+
 }
