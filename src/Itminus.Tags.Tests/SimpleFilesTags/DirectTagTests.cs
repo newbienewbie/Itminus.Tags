@@ -487,7 +487,7 @@ public class DirectTagTests : IDisposable
         tagdescriptor.NormalizedAddress = normailizedPath;
         tagdescriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "true")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "true")
         };
         var tag = new JsonDirectTag<MyJson>(
             descriptor: tagdescriptor,
@@ -570,7 +570,7 @@ public class DirectTagTests : IDisposable
         var descriptor = MakeDescriptor("t", fileName, tagKind);
         descriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "true")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "true")
         };
         var tag = CreateTag(descriptor);
 
@@ -593,7 +593,7 @@ public class DirectTagTests : IDisposable
         var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.STR);
         descriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "true")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "true")
         };
         var tag = CreateTag(descriptor);
 
@@ -616,7 +616,7 @@ public class DirectTagTests : IDisposable
         var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.INT32);
         descriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "false")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "false")
         };
         var tag = CreateTag(descriptor);
 
@@ -653,7 +653,7 @@ public class DirectTagTests : IDisposable
         var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.INT32);
         descriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "true")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "true")
         };
         var tag = CreateTag(descriptor);
         tag.Value = 42;
@@ -676,7 +676,7 @@ public class DirectTagTests : IDisposable
         var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.STR);
         descriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "true")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "true")
         };
         var tag = CreateTag(descriptor);
         tag.Value = "hello";
@@ -698,7 +698,7 @@ public class DirectTagTests : IDisposable
         var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.INT32);
         descriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "false")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "false")
         };
         var tag = CreateTag(descriptor);
         tag.Value = 99;
@@ -718,13 +718,54 @@ public class DirectTagTests : IDisposable
         var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.INT32);
         descriptor.Extras = new Dictionary<string, XAttribute>
         {
-            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "not-a-bool")
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "not-a-bool")
         };
         var tag = CreateTag(descriptor);
 
         var ex = await Assert.ThrowsAsync<Exception>(() => tag.ReadAsync(CancellationToken.None));
-        Assert.Contains("AutoCreateFile", ex.Message);
+        Assert.Contains("autoCreateFile", ex.Message);
         Assert.Contains("not-a-bool", ex.Message);
+    }
+
+    [Fact]
+    public async Task AutoCreateFile_LegacyKey_StillWorks()
+    {
+        // 旧 key AutoCreateFile 兼容：新 key 缺失时仍生效
+        var fileName = "legacy_auto.txt";
+        var fullPath = Path.Combine(_tempDir, fileName);
+        Assert.False(File.Exists(fullPath));
+
+        var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.INT32);
+        descriptor.Extras = new Dictionary<string, XAttribute>
+        {
+            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "true")
+        };
+        var tag = CreateTag(descriptor);
+
+        await tag.ReadAsync(CancellationToken.None);
+
+        Assert.True(File.Exists(fullPath));
+    }
+
+    [Fact]
+    public async Task AutoCreateFile_NewKeyTakesPriority_OverLegacyKey()
+    {
+        // 新 key autoCreateFile 优先：同时配置时以新 key 为准（true），忽略旧 key（false）
+        var fileName = "prio_auto.txt";
+        var fullPath = Path.Combine(_tempDir, fileName);
+        Assert.False(File.Exists(fullPath));
+
+        var descriptor = MakeDescriptor("t", fileName, BuiltinTagKinds.INT32);
+        descriptor.Extras = new Dictionary<string, XAttribute>
+        {
+            ["AutoCreateFile"] = new XAttribute("AutoCreateFile", "false"),
+            ["autoCreateFile"] = new XAttribute("autoCreateFile", "true"),
+        };
+        var tag = CreateTag(descriptor);
+
+        await tag.ReadAsync(CancellationToken.None);
+
+        Assert.True(File.Exists(fullPath));
     }
 
     #endregion

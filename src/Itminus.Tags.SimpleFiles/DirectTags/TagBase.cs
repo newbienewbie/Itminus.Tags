@@ -23,6 +23,12 @@ public abstract class SimpleFilesDirectTagBase<T> : Tag<T, SimpleFilesTagChannel
     private bool? _autoCreateFile;
 
     /// <summary>
+    /// XML 属性 key：是否自动创建文件。<br/>
+    /// 新 key 为 camelCase（<c>autoCreateFile</c>）；旧 key <c>AutoCreateFile</c> 暂时兼容，待合适时机移除。
+    /// </summary>
+    private const string AutoCreateFileAttrName = "autoCreateFile";
+
+    /// <summary>
     /// 是否自动创建文件
     /// </summary>
     public virtual bool AutoCreateFile
@@ -34,7 +40,9 @@ public abstract class SimpleFilesDirectTagBase<T> : Tag<T, SimpleFilesTagChannel
                 return this._autoCreateFile.Value;
             }
 
-            if (!this.TagDescriptor.Extras.TryGetValue("AutoCreateFile", out var autoCreateFileValue))
+            // 新 key 优先；旧 key AutoCreateFile 兼容（待合适时机移除）
+            if (!this.TagDescriptor.Extras.TryGetValue(AutoCreateFileAttrName, out var autoCreateFileValue)
+                && !this.TagDescriptor.Extras.TryGetValue("AutoCreateFile", out autoCreateFileValue))
             {
                 this._autoCreateFile = false;
                 return false;
@@ -42,7 +50,7 @@ public abstract class SimpleFilesDirectTagBase<T> : Tag<T, SimpleFilesTagChannel
 
             if (!bool.TryParse(autoCreateFileValue.Value, out var autoCreateFile))
             {
-                throw new Exception($"测点({this.TagName()})配置了AutoCreateFile，但无法解析为布尔值：{autoCreateFileValue}");
+                throw new Exception($"测点({this.TagName()})配置了{AutoCreateFileAttrName}，但无法解析为布尔值：{autoCreateFileValue}");
             }
 
             this._autoCreateFile = autoCreateFile;

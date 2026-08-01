@@ -73,7 +73,7 @@ public class SimpleFilesDirectTagExtensionTests
 
     /// <summary>
     /// 构建测试 XML：包含一个基本类型测点(int-v)和一个 JSON 测点(json-v)<br/>
-    /// json-v 配置了 AutoCreateFile=true，验证基类基于 <see cref="SimpleFilesDirectTagBase{T}.FormatValue"/> 自动创建默认文件的能力
+    /// json-v 配置了 autoCreateFile=true，验证基类基于 <see cref="SimpleFilesDirectTagBase{T}.FormatValue"/> 自动创建默认文件的能力
     /// </summary>
     private static XElement BuildTestXml(string baseDir)
     {
@@ -84,7 +84,7 @@ public class SimpleFilesDirectTagExtensionTests
     </Channel>
     <TagGrp name='g' isEntry='true' channel='sf' scanInterval='0'>
         <Tag name='int-v'   address='int.txt'    type='INT32' />
-        <Tag name='json-v'  address='point.json' type='JSON' AutoCreateFile='true' />
+        <Tag name='json-v'  address='point.json' type='JSON' autoCreateFile='true' />
     </TagGrp>
 </root>");
     }
@@ -178,7 +178,7 @@ public class SimpleFilesDirectTagExtensionTests
             var g = proj.Tags.SelectGrp("g");
             var intTag = g.SelectTag("int-v");
 
-            // 预创建文件（模拟文件已存在的场景；AutoCreateFile=false 时文件不存在会直接跳过写入）
+            // 预创建文件（模拟文件已存在的场景；autoCreateFile=false 时文件不存在会直接跳过写入）
             var intPath = Path.Combine(tempDir, "int.txt");
             await File.WriteAllTextAsync(intPath, "0");
 
@@ -264,7 +264,7 @@ public class SimpleFilesDirectTagExtensionTests
         var tempDir = CreateTempDir();
         try
         {
-            // 文件不存在（json-v 已配置 AutoCreateFile=true）
+            // 文件不存在（json-v 已配置 autoCreateFile=true）
             var jsonPath = Path.Combine(tempDir, "point.json");
             Assert.False(File.Exists(jsonPath));
 
@@ -385,8 +385,8 @@ public class SimpleFilesDirectTagExtensionTests
     </Channel>
     <TagGrp name='g' isEntry='true' channel='sf' scanInterval='0'>
         <Tag name='int-v'   address='int.txt'    type='INT32' />
-        <Tag name='json-1'  address='j1.json' type='myjson1' AutoCreateFile='true' />
-        <Tag name='json-2'  address='j2.json' type='myjson2' AutoCreateFile='true' />
+        <Tag name='json-1'  address='j1.json' type='myjson1' autoCreateFile='true' />
+        <Tag name='json-2'  address='j2.json' type='myjson2' autoCreateFile='true' />
     </TagGrp>
 </root>");
 

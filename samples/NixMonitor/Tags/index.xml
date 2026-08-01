@@ -7,7 +7,7 @@
 
 	<TagGrp name="simpleFiles" isEntry="true" isEnabled="true" scanInterval="1000">
 		<Tag name="温度" address="/sys/class/thermal/thermal_zone0/temp" type="FLOAT" access="RO" channel="file"/>
-		<Tag name="测试1" address="bb" type="BYTE" access="R1W" channel="file" AutoCreateFile="true" />
-		<Tag name="测试2" address="cc" type="MyJson" access="R1W" channel="file" AutoCreateFile="true" />
+		<Tag name="测试1" address="bb" type="BYTE" access="R1W" channel="file" autoCreateFile="true" />
+		<Tag name="测试2" address="cc" type="MyJson" access="R1W" channel="file" autoCreateFile="true" />
 	</TagGrp>
 </root>
