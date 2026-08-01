@@ -339,18 +339,9 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
                 MaxWriteRegistersPerPdu;
 
             ushort offset = 0;
-            while (true)
+            while (offset < payload.Length)
             {
-                ushort currlen = (ushort)(payload.Length - offset);
-                if (currlen < 0)
-                {
-                    throw new Exception("待写入的数据长度溢出");
-                }
-                if (currlen == 0)
-                {
-                    break;
-                }
-                currlen = currlen > maxBatch ? maxBatch : currlen;
+                var currlen = (ushort)Math.Min(payload.Length - offset, maxBatch);
                 var subbytes = payload.AsSpan().Slice(offset, currlen).ToArray();
 
                 ushort effectiveOffset = (ushort)(addr.StartPoint + offset);
