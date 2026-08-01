@@ -92,9 +92,9 @@ public class S7ByteDirectTagTests
         Assert.True(tag.Timestamp > before);
     }
 
-    private static ByteDirectTag CreateByteTag(out FakeContinousBytesChannel fake, out ITagGrp grp, byte[] payload)
+    private static ByteDirectTag CreateByteTag(out FakeContinuousBytesChannel fake, out ITagGrp grp, byte[] payload)
     {
-        fake = new FakeContinousBytesChannel(payload);
+        fake = new FakeContinuousBytesChannel(payload);
         grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var descriptor = new TagDescriptor()
         {
@@ -105,11 +105,11 @@ public class S7ByteDirectTagTests
         return new ByteDirectTag(descriptor, thisChannel: null, grp.IntoTagContainer());
     }
 
-    private sealed class FakeContinousBytesChannel : S7TagChannel
+    private sealed class FakeContinuousBytesChannel : S7TagChannel
     {
-        public FakeContinousBytesChannel(byte[] payload)
+        public FakeContinuousBytesChannel(byte[] payload)
             : base(
-            new S7TagChannelDescriptor { Name = "FakeContinousBytesChannel",  },
+            new S7TagChannelDescriptor { Name = "FakeContinuousBytesChannel",  },
             new LoggerFactory().CreateLogger<S7TagChannel>()
         )
         {

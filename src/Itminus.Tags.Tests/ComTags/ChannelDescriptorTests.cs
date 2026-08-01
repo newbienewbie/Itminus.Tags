@@ -20,7 +20,7 @@ public class ChannelDescriptorTests
 	<Channel name=""COM-2"" driver=""COM"">
 		<ChannelCapacity>42</ChannelCapacity>
 		<Port>COM2</Port>
-		<BaundRate>9600</BaundRate>
+		<BaudRate>9600</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
@@ -35,7 +35,7 @@ public class ChannelDescriptorTests
 
         Assert.Equal(42, opt.ChannelCapacity);
         Assert.Equal("COM2", opt.Port);
-        Assert.Equal(9600, opt.BaundRate);
+        Assert.Equal(9600, opt.BaudRate);
         Assert.Equal(System.IO.Ports.Parity.None, opt.Parity);
         Assert.Equal(8, opt.DataBits);
         Assert.Equal(System.IO.Ports.StopBits.One, opt.StopBits);
@@ -58,7 +58,7 @@ public class ChannelDescriptorTests
 	<Channel name=""COM-2"" driver=""COM"">
 		<ChannelCapacity>42</ChannelCapacity>
 		<Port>COM2</Port>
-		<BaundRate>9600</BaundRate>
+		<BaudRate>9600</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
@@ -75,7 +75,7 @@ public class ChannelDescriptorTests
 
         Assert.Equal(42, opt.ChannelCapacity);
         Assert.Equal("COM2", opt.Port);
-        Assert.Equal(9600, opt.BaundRate);
+        Assert.Equal(9600, opt.BaudRate);
         Assert.Equal(System.IO.Ports.Parity.None, opt.Parity);
         Assert.Equal(8, opt.DataBits);
         Assert.Equal(System.IO.Ports.StopBits.One, opt.StopBits);
@@ -99,7 +99,7 @@ public class ChannelDescriptorTests
 	<Channel name=""COM-3"" driver=""COM"">
 		<ChannelCapacity>10</ChannelCapacity>
 		<Port>COM3</Port>
-		<BaundRate>115200</BaundRate>
+		<BaudRate>115200</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
@@ -115,7 +115,7 @@ public class ChannelDescriptorTests
 
         Assert.Equal(10, opt.ChannelCapacity);
         Assert.Equal("COM3", opt.Port);
-        Assert.Equal(115200, opt.BaundRate);
+        Assert.Equal(115200, opt.BaudRate);
         Assert.Equal(System.IO.Ports.Parity.None, opt.Parity);
         Assert.Equal(8, opt.DataBits);
         Assert.Equal(System.IO.Ports.StopBits.One, opt.StopBits);
@@ -137,7 +137,7 @@ public class ChannelDescriptorTests
 	<Channel name=""COM-4"" driver=""COM"">
 		<ChannelCapacity>20</ChannelCapacity>
 		<Port>COM4</Port>
-		<BaundRate>9600</BaundRate>
+		<BaudRate>9600</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
@@ -153,7 +153,7 @@ public class ChannelDescriptorTests
 
         Assert.Equal(20, opt.ChannelCapacity);
         Assert.Equal("COM4", opt.Port);
-        Assert.Equal(9600, opt.BaundRate);
+        Assert.Equal(9600, opt.BaudRate);
         Assert.Equal(System.IO.Ports.Parity.None, opt.Parity);
         Assert.Equal(8, opt.DataBits);
         Assert.Equal(System.IO.Ports.StopBits.One, opt.StopBits);
@@ -178,7 +178,7 @@ public class ChannelDescriptorTests
             Option = new ComChannelOption
             {
                 Port = "COM5",
-                BaundRate = 9600,
+                BaudRate = 9600,
                 Parity = System.IO.Ports.Parity.None,
                 DataBits = 8,
                 StopBits = System.IO.Ports.StopBits.One,
@@ -192,7 +192,7 @@ public class ChannelDescriptorTests
         var descriptor1 = descriptor0.ToComChannelDescriptor();
 
         Assert.Equal(original.Option.Port, descriptor1.Option.Port);
-        Assert.Equal(original.Option.BaundRate, descriptor1.Option.BaundRate);
+        Assert.Equal(original.Option.BaudRate, descriptor1.Option.BaudRate);
         Assert.Equal(original.Option.ReadEntireLine, descriptor1.Option.ReadEntireLine);
     }
 }

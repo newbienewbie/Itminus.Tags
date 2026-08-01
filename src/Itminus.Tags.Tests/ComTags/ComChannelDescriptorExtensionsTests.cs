@@ -22,7 +22,7 @@ public class ComChannelDescriptorExtensionsTests
         var result = baseDesc.ToComChannelDescriptor();
 
         Assert.Equal("COM1", result.Option.Port);
-        Assert.Equal(9600, result.Option.BaundRate);
+        Assert.Equal(9600, result.Option.BaudRate);
         Assert.Equal(System.IO.Ports.Parity.None, result.Option.Parity);
         Assert.Equal(8, result.Option.DataBits);
         Assert.Equal(System.IO.Ports.StopBits.None, result.Option.StopBits);
@@ -42,7 +42,7 @@ public class ComChannelDescriptorExtensionsTests
             Option = new ComChannelOption
             {
                 Port = "COM10",
-                BaundRate = 115200,
+                BaudRate = 115200,
             },
         };
 
@@ -65,14 +65,14 @@ public class ComChannelDescriptorExtensionsTests
     }
 
     [Fact]
-    public void ToComChannelDescriptor_InvalidBaundRate_Throws()
+    public void ToComChannelDescriptor_InvalidBaudRate_Throws()
     {
         var baseDesc = new TagChannelDescriptor
         {
             Name = "com-bad-baud",
             Driver = ComDriverNames.DriverName,
         };
-        baseDesc.Extras["BaundRate"] = new XElement("BaundRate", "not-a-number");
+        baseDesc.Extras["BaudRate"] = new XElement("BaudRate", "not-a-number");
 
         Assert.Throws<Exception>(() => baseDesc.ToComChannelDescriptor());
     }

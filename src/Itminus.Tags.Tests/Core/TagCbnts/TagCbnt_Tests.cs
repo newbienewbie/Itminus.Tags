@@ -16,7 +16,7 @@ namespace Itminus.Tags.Tests.Core.TagCbnts;
 
 public class TagCbnt_Tests
 {
-    internal class MockChannel : IContinousBytesBasedTagChannel
+    internal class MockChannel : IContinuousBytesBasedTagChannel
     {
         private byte[] _bytes = new byte[4]
         {

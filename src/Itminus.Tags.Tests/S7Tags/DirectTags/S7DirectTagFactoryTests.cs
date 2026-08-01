@@ -11,10 +11,10 @@ namespace Itminus.Tags.Tests.S7Tags;
 
 public class S7DirectTagFactoryTests
 {
-    private static (S7DirectTagFactory Factory, FakeContinousBytesChannel Channel, TagGrp Grp) CreateContext(byte[]? payload = null)
+    private static (S7DirectTagFactory Factory, FakeContinuousBytesChannel Channel, TagGrp Grp) CreateContext(byte[]? payload = null)
     {
         payload ??= new byte[16];
-        var channel = new FakeContinousBytesChannel(payload);
+        var channel = new FakeContinuousBytesChannel(payload);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, channel);
         var factory = new S7DirectTagFactory(grp.IntoTagContainer());
         return (factory, channel, grp);
@@ -266,9 +266,9 @@ public class S7DirectTagFactoryTests
         Assert.Equal(0x7F, buf);
     }
 
-    private sealed class FakeContinousBytesChannel : S7TagChannel
+    private sealed class FakeContinuousBytesChannel : S7TagChannel
     {
-        public FakeContinousBytesChannel(byte[] payload)
+        public FakeContinuousBytesChannel(byte[] payload)
             : base(new S7TagChannelDescriptor() { Name = "fake" }, new LoggerFactory().CreateLogger<S7TagChannel>())
         {
             LastWriteBuffer = (byte[])payload.Clone();

@@ -1,7 +1,7 @@
 ﻿namespace Itminus.Tags.S7;
 
 
-internal class BitDirectTag : ContinousBytesBasedDirectTag<bool>
+internal class BitDirectTag : ContinuousBytesBasedDirectTag<bool>
 {
     /// <summary>
     /// 第Nth位比特: 取值范围 0~15。

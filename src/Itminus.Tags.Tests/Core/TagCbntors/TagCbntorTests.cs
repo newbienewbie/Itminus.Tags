@@ -7,14 +7,14 @@ using Xunit;
 namespace Itminus.Tags.Tests.Core.TagCbntors;
 
 /// <summary>
-/// 测试 TagCbntor 在 <see cref="IContinousBytesBasedTagChannel"/> 上的读写行为
+/// 测试 TagCbntor 在 <see cref="IContinuousBytesBasedTagChannel"/> 上的读写行为
 /// </summary>
-public class TagCbntorContinousChannelTests
+public class TagCbntorContinuousChannelTests
 {
     /// <summary>
     /// 模拟连续字节通道，跟踪读写调用的地址和字节
     /// </summary>
-    private class MockChannel : IContinousBytesBasedTagChannel
+    private class MockChannel : IContinuousBytesBasedTagChannel
     {
         public TagChannelDescriptor Descriptor => new TagChannelDescriptor
         {

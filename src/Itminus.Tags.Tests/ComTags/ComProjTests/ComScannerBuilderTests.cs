@@ -25,7 +25,7 @@ public class ComScannerBuilderTests
 <root>
     <Channel name='COM-1' driver='COM'>
         <Port>COM1</Port>
-        <BaundRate>9600</BaundRate>
+        <BaudRate>9600</BaudRate>
         <Parity>None</Parity>
         <DataBits>8</DataBits>
         <StopBits>One</StopBits>

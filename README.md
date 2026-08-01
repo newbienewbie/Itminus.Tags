@@ -18,7 +18,7 @@
 ### Todo
 
 **0.11.0 之前的 todo:**
-- [ ] 拼写错误修正：`BaundRate` -> `BaudRate`、`IContinous` -> `IContinuous`（含公共 API、示例与测试中的 XML）。
+- [x] 拼写错误修正：`BaundRate` -> `BaudRate`、`IContinous` -> `IContinuous`（含公共 API、示例与测试中的 XML）。
 - [ ] ModbusTcp：读写按 PDU 上限（125 寄存器）分批，补测试；顺带清理 `WriteAsync` 中 `currlen < 0` 的恒假死检查。
 - [ ] 公开接口不应该暴露 `FSharpResult`：`ModBusTcpAddressParser.ParseWithNthBit` / `ParseWithoutNthBit` 改为 `internal`（S7 已如此，Modbus 只差两个访问修饰符）。
 

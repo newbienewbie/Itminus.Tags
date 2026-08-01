@@ -8,7 +8,7 @@ namespace Itminus.Tags.ModbusTcp;
 /// <summary>
 /// ModbusTcp通道
 /// </summary>
-public class ModbusTcpChannel : IContinousBytesBasedTagChannel
+public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
 {
     private readonly ILogger<ModbusTcpChannel> _logger;
 

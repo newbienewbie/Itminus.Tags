@@ -70,7 +70,7 @@ public class ComScriptProjTests
                 [nameof(ComChannelDescriptor.Option.NewLine)] = new XElement(nameof(ComChannelDescriptor.Option.NewLine), "\\r\\n"),
                 [nameof(ComChannelDescriptor.Option.ReadScript)] = new XElement(nameof(ComChannelDescriptor.Option.ReadScript), "return \"ok\";"),
                 [nameof(ComChannelDescriptor.Option.Port)] = new XElement(nameof(ComChannelDescriptor.Option.Port), "COM3"),
-                [nameof(ComChannelDescriptor.Option.BaundRate)] = new XElement(nameof(ComChannelDescriptor.Option.BaundRate), "115200"),
+                [nameof(ComChannelDescriptor.Option.BaudRate)] = new XElement(nameof(ComChannelDescriptor.Option.BaudRate), "115200"),
                 [nameof(ComChannelDescriptor.Option.Parity)] = new XElement(nameof(ComChannelDescriptor.Option.Parity), nameof(Parity.Odd)),
                 [nameof(ComChannelDescriptor.Option.DataBits)] = new XElement(nameof(ComChannelDescriptor.Option.DataBits), "7"),
                 [nameof(ComChannelDescriptor.Option.StopBits)] = new XElement(nameof(ComChannelDescriptor.Option.StopBits), nameof(StopBits.One)),
@@ -85,7 +85,7 @@ public class ComScriptProjTests
         Assert.Equal("\r\n", res.Option.NewLine);
         Assert.Equal("return \"ok\";", res.Option.ReadScript);
         Assert.Equal("COM3", res.Option.Port);
-        Assert.Equal(115200, res.Option.BaundRate);
+        Assert.Equal(115200, res.Option.BaudRate);
         Assert.Equal(Parity.Odd, res.Option.Parity);
         Assert.Equal(7, res.Option.DataBits);
         Assert.Equal(StopBits.One, res.Option.StopBits);

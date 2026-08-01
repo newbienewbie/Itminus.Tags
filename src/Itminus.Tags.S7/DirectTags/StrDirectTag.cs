@@ -2,7 +2,7 @@
 
 namespace Itminus.Tags.S7;
 
-internal class StrDirectTag : ContinousBytesBasedDirectTag<string>
+internal class StrDirectTag : ContinuousBytesBasedDirectTag<string>
 {
     /// <summary>
     /// 字符串最大长度，ReadOnly

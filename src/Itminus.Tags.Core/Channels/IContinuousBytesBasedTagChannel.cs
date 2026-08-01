@@ -3,7 +3,7 @@
 /// <summary>
 /// 表示能以字节数组的方式连续读取的测点通道
 /// </summary>
-public interface IContinousBytesBasedTagChannel: ITagChannel
+public interface IContinuousBytesBasedTagChannel: ITagChannel
 {
     /// <summary>
     /// 读取底层硬件，返回一段字节数组表示所读取的结果。

@@ -200,7 +200,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     {
         return SerialPortFactory?.Invoke(opt)
             ?? new SerialPortAdapter(
-                new SerialPort(opt.Port, opt.BaundRate, opt.Parity, opt.DataBits, opt.StopBits));
+                new SerialPort(opt.Port, opt.BaudRate, opt.Parity, opt.DataBits, opt.StopBits));
     }
 
     /// <summary>

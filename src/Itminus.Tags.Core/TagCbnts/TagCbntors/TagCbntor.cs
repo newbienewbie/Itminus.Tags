@@ -5,7 +5,7 @@
 /// 默认的测点组合子。<br/>
 /// <br/>
 /// 注意:
-/// 如果相应的通道不是 <see cref="IContinousBytesBasedTagChannel"/>，
+/// 如果相应的通道不是 <see cref="IContinuousBytesBasedTagChannel"/>，
 /// 子类必须重写<see cref="WriteAsync(CancellationToken)"/>和<see cref="ReadAsync(CancellationToken)"/>两个方法。
 /// </summary>
 public abstract class TagCbntor : ITagCbntor
@@ -112,16 +112,16 @@ public abstract class TagCbntor : ITagCbntor
     /// 把当前测点值刷到底层。<br/>
     /// </summary>
     /// <remarks>
-    /// 注意：基类提供了基于<see cref="IContinousBytesBasedTagChannel"/>的实现。如果不是该种通道，子类应该重写本方法，否则会抛出异常。
+    /// 注意：基类提供了基于<see cref="IContinuousBytesBasedTagChannel"/>的实现。如果不是该种通道，子类应该重写本方法，否则会抛出异常。
     /// </remarks>
     /// <returns></returns>
     public virtual async Task WriteAsync(CancellationToken ct)
     {
         var channel0 = this.TagCbnt.SearchRequiredChannel();
-        var channel = channel0 as IContinousBytesBasedTagChannel;
+        var channel = channel0 as IContinuousBytesBasedTagChannel;
         if (channel is null)
         {
-            throw new NotImplementedException($"通道组合子默认实现依赖于通道{nameof(IContinousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}。当前测点组合子名称={this.TagName()}");
+            throw new NotImplementedException($"通道组合子默认实现依赖于通道{nameof(IContinuousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}。当前测点组合子名称={this.TagName()}");
         }
 
         var cache = this.TagCbnt.Cache.Slice(this.CacheOffset, this.TagSize());
@@ -134,16 +134,16 @@ public abstract class TagCbntor : ITagCbntor
     /// 从底层读取数据到当前测点值。<br/>
     /// </summary>
     /// <remarks>
-    /// 注意：基类提供了基于<see cref="IContinousBytesBasedTagChannel"/>的实现。如果不是该种通道，子类应该重写本方法，否则会抛出异常。
+    /// 注意：基类提供了基于<see cref="IContinuousBytesBasedTagChannel"/>的实现。如果不是该种通道，子类应该重写本方法，否则会抛出异常。
     /// </remarks>
     /// <returns></returns>
     public virtual async Task ReadAsync(CancellationToken ct)
     {
         var channel0 = this.TagCbnt.SearchRequiredChannel();
-        var channel = channel0 as IContinousBytesBasedTagChannel;
+        var channel = channel0 as IContinuousBytesBasedTagChannel;
         if (channel is null)
         {
-            throw new NotImplementedException($"通道组合子默认实现依赖于通道{nameof(IContinousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}。当前测点组合子名称={this.TagName()}");
+            throw new NotImplementedException($"通道组合子默认实现依赖于通道{nameof(IContinuousBytesBasedTagChannel)}，但当前实际通道是{channel0.GetType().Name}。当前测点组合子名称={this.TagName()}");
         }
 
         var bytes = await channel.ReadAsync(this.NormalizedAddress(), this.TagSize(),ct);

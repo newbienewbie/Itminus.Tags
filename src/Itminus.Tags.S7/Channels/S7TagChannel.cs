@@ -8,7 +8,7 @@ namespace Itminus.Tags.S7;
 /// <summary>
 /// S7通道实现
 /// </summary>
-public class S7TagChannel : IContinousBytesBasedTagChannel
+public class S7TagChannel : IContinuousBytesBasedTagChannel
 {
     /// <summary>
     /// c'tor
