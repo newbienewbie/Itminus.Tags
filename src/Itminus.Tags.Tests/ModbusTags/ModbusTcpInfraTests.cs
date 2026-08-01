@@ -92,10 +92,10 @@ public class ModbusTcpTagChannelDescriptorTests
         Assert.Contains("502", xml);
     }
 
-    #region MaxBatchSize
+    #region MaxWriteRegisters
 
     [Fact]
-    public void MaxBatchSize_RoundtripsViaXml()
+    public void MaxWriteRegisters_RoundtripsViaXml()
     {
         var descriptor = new ModbusTcpTagChannelDescriptor
         {
@@ -103,18 +103,18 @@ public class ModbusTcpTagChannelDescriptorTests
             Driver = "ModbusTcp",
             IpAddr = "10.0.0.1",
             Port = 502,
-            MaxBatchSize = 50,
+            MaxWriteRegisters = 50,
         };
 
         var xml = descriptor.ToXElement();
         var baseDesc = xml.ToTagChannelDescriptor();
         var restored = baseDesc.ToModbusTcpTagChannelDescriptor();
 
-        Assert.Equal((ushort)50, restored.MaxBatchSize);
+        Assert.Equal((ushort)50, restored.MaxWriteRegisters);
     }
 
     [Fact]
-    public void MaxBatchSize_DefaultNull()
+    public void MaxWriteRegisters_DefaultNull()
     {
         var descriptor = new ModbusTcpTagChannelDescriptor
         {
@@ -122,35 +122,62 @@ public class ModbusTcpTagChannelDescriptorTests
             Driver = "ModbusTcp",
         };
 
-        Assert.Null(descriptor.MaxBatchSize);
+        Assert.Null(descriptor.MaxWriteRegisters);
     }
 
     [Fact]
-    public void MaxBatchSize_ReadFromExtras()
+    public void MaxWriteRegisters_ReadFromExtras()
     {
         var baseDesc = new TagChannelDescriptor
         {
             Name = "mb1",
             Driver = "ModbusTcp",
         };
-        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "30");
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "30");
 
         var result = baseDesc.ToModbusTcpTagChannelDescriptor();
 
-        Assert.Equal((ushort)30, result.MaxBatchSize);
+        Assert.Equal((ushort)30, result.MaxWriteRegisters);
     }
 
     [Fact]
-    public void MaxBatchSize_InvalidValue_Throws()
+    public void MaxWriteRegisters_InvalidValue_Throws()
     {
         var baseDesc = new TagChannelDescriptor
         {
             Name = "mb1",
             Driver = "ModbusTcp",
         };
-        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "not-a-number");
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "not-a-number");
 
         Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void MaxWriteRegisters_Zero_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "0");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void MaxWriteRegisters_ExceedsProtocolLimit_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "124");
+
+        var ex = Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+        Assert.Contains("123", ex.Message);
     }
 
     #endregion

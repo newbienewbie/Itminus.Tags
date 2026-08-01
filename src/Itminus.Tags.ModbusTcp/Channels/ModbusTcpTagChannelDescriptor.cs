@@ -31,9 +31,10 @@ public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
     public int Port { get; set; } = 502;
 
     /// <summary>
-    /// 单批次最多写入的寄存器数量。null 表示使用默认值。
+    /// 单帧最多写入的寄存器数量(FC16)。null 表示使用协议默认值(123)。<br/>
+    /// 某些设备的单帧上限小于协议理论值，可通过此项配置更小的值。<br/>
     /// </summary>
-    public ushort? MaxBatchSize { get; set; }
+    public ushort? MaxWriteRegisters { get; set; }
 
     /// <summary>
     /// 单帧最多读取的寄存器数量(FC03/FC04)。null 表示使用协议默认值(125)。<br/>
@@ -54,9 +55,9 @@ public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
 
         ele.SetOrAddChild(nameof(IpAddr), this.IpAddr);
         ele.SetOrAddChild(nameof(Port), this.Port);
-        if (MaxBatchSize.HasValue)
+        if (MaxWriteRegisters.HasValue)
         {
-            ele.SetOrAddChild(nameof(MaxBatchSize), this.MaxBatchSize.Value.ToString());
+            ele.SetOrAddChild(nameof(MaxWriteRegisters), this.MaxWriteRegisters.Value.ToString());
         }
         if (MaxReadRegisters.HasValue)
         {
@@ -105,11 +106,15 @@ public static class TagChannelDescriptor_ModbusTcpExtensions
                 int.TryParse(portEle.Value, out var port) ?
                     port :
                     throw new ArgumentException($"配置的端口号不是整数"),
-            MaxBatchSize = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxBatchSize), out var batchEle) ?
+            MaxWriteRegisters = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxWriteRegisters), out var batchEle) ?
                 null :
-                ushort.TryParse(batchEle.Value, out var batch) ?
-                    batch :
-                    throw new ArgumentException($"MaxBatchSize 配置不是整数"),
+                !ushort.TryParse(batchEle.Value, out var batch) ?
+                    throw new ArgumentException($"MaxWriteRegisters 配置不是整数") :
+                    batch == 0 ?
+                        throw new ArgumentException($"MaxWriteRegisters 必须大于 0") :
+                        batch > ModbusTcpChannel.MaxWriteRegistersPerPdu ?
+                            throw new ArgumentException($"MaxWriteRegisters 配置({batch})超过协议上限({ModbusTcpChannel.MaxWriteRegistersPerPdu})") :
+                            batch,
             MaxReadRegisters = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxReadRegisters), out var readRegsEle) ?
                 null :
                 !ushort.TryParse(readRegsEle.Value, out var readRegs) ?

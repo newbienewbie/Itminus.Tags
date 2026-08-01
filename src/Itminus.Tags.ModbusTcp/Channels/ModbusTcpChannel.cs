@@ -19,21 +19,36 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
     /// 见 MODBUS Application Protocol V1.1b3 6.3/6.4 节。<br/>
     /// 可通过 <see cref="ModbusTcpItem.MaxReadRegisters"/> 配置更小的值（设备上限可能小于协议值）。<br/>
     /// </summary>
-    internal const ushort MaxReadRegistersPerPdu = 125;
+    public const ushort MaxReadRegistersPerPdu = 125;
 
     /// <summary>
     /// Modbus 读线圈/离散输入(FC01/FC02)单帧最大点数：2000。<br/>
     /// 见 MODBUS Application Protocol V1.1b3 6.1/6.2 节。<br/>
     /// 可通过 <see cref="ModbusTcpItem.MaxReadBits"/> 配置更小的值（设备上限可能小于协议值）。<br/>
     /// </summary>
-    internal const ushort MaxReadBitsPerPdu = 2000;
+    public const ushort MaxReadBitsPerPdu = 2000;
+
+    /// <summary>
+    /// Modbus 写保持寄存器(FC16)单帧最大寄存器数：123。<br/>
+    /// 见 MODBUS Application Protocol V1.1b3 6.11 节。<br/>
+    /// 可通过 <see cref="ModbusTcpItem.MaxWriteRegisters"/> 配置更小的值（设备上限可能小于协议值）。<br/>
+    /// </summary>
+    public const ushort MaxWriteRegistersPerPdu = 123;
 
     #region 配置
     private readonly ModbusTcpItem _modbusItem;
     /// <summary>
-    /// 单批次最多写入的寄存器数量。null 表示使用默认值。
+    /// 单帧最多写入的寄存器数量(FC16)。null 表示使用协议默认值(123)。
     /// </summary>
-    public ushort? MaxBatchSize => _modbusItem.MaxBatchSize;
+    public ushort? MaxWriteRegisters => _modbusItem.MaxWriteRegisters;
+    /// <summary>
+    /// 单帧最多读取的寄存器数量(FC03/FC04)。null 表示使用协议默认值(125)。
+    /// </summary>
+    public ushort? MaxReadRegisters => _modbusItem.MaxReadRegisters;
+    /// <summary>
+    /// 单帧最多读取的位数/点数(FC01/FC02)。null 表示使用协议默认值(2000)。
+    /// </summary>
+    public ushort? MaxReadBits => _modbusItem.MaxReadBits;
     /// <summary>
     /// IP 地址
     /// </summary>
@@ -74,7 +89,7 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
         {
             IpAddr = descriptor.IpAddr,
             Port = descriptor.Port,
-            MaxBatchSize = descriptor.MaxBatchSize,
+            MaxWriteRegisters = descriptor.MaxWriteRegisters,
             MaxReadRegisters = descriptor.MaxReadRegisters,
             MaxReadBits = descriptor.MaxReadBits,
         }; ;
@@ -319,9 +334,9 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
         if (addr.Area == RegisterKinds.HoldingRegisters)
         {
             var payload = MarshalHelper.BytesToUShorts(bytes);
-            var maxBatch = _modbusItem.MaxBatchSize.HasValue ?
-                 _modbusItem.MaxBatchSize.Value : 
-                (ushort)123;
+            var maxBatch = _modbusItem.MaxWriteRegisters.HasValue ?
+                 _modbusItem.MaxWriteRegisters.Value : 
+                MaxWriteRegistersPerPdu;
 
             ushort offset = 0;
             while (true)

@@ -391,14 +391,14 @@ public class ModbusTcpChannelTests
 
     #endregion
 
-    #region MaxBatchSize 自定义
+    #region MaxWriteRegisters 自定义
 
     [Fact]
-    public async Task WriteAsync_HoldingRegisters_CustomMaxBatchSize_ChunksCorrectly()
+    public async Task WriteAsync_HoldingRegisters_CustomMaxWriteRegisters_ChunksCorrectly()
     {
         var mock = new Mock<IModbusMaster>(MockBehavior.Strict);
-        var item = new ModbusTcpItem { MaxBatchSize = 2 };
-        var channel = new TestModbusTcpChannel(new ModbusTcpTagChannelDescriptor { Name = "mb1", MaxBatchSize = 2 }, mock);
+        var item = new ModbusTcpItem { MaxWriteRegisters = 2 };
+        var channel = new TestModbusTcpChannel(new ModbusTcpTagChannelDescriptor { Name = "mb1", MaxWriteRegisters = 2 }, mock);
         mock
             .Setup(x => x.WriteMultipleRegistersAsync(
                 (byte)1, 

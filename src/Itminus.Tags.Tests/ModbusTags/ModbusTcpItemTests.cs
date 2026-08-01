@@ -15,7 +15,7 @@ public class ModbusTcpItemTests
         Assert.Equal(10000, item.ReadTimeout);
         Assert.Equal(10000, item.WriteTimeout);
         Assert.Equal(1000, item.ConnTimeout);
-        Assert.Null(item.MaxBatchSize);  // null = 使用默认 123
+        Assert.Null(item.MaxWriteRegisters);  // null = 使用默认 123
     }
 
     [Fact]
@@ -28,7 +28,7 @@ public class ModbusTcpItemTests
             ReadTimeout = 5000,
             WriteTimeout = 5000,
             ConnTimeout = 2000,
-            MaxBatchSize = 50,
+            MaxWriteRegisters = 50,
         };
 
         Assert.Equal("192.168.1.100", item.IpAddr);
@@ -36,6 +36,6 @@ public class ModbusTcpItemTests
         Assert.Equal(5000, item.ReadTimeout);
         Assert.Equal(5000, item.WriteTimeout);
         Assert.Equal(2000, item.ConnTimeout);
-        Assert.Equal((ushort)50, item.MaxBatchSize);
+        Assert.Equal((ushort)50, item.MaxWriteRegisters);
     }
 }

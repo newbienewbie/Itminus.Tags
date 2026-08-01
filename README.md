@@ -21,7 +21,7 @@
 - [x] 拼写错误修正：`BaundRate` -> `BaudRate`、`IContinous` -> `IContinuous`（含公共 API、示例与测试中的 XML）。
 - [x] 公开接口不应该暴露 `FSharpResult`：`ModBusTcpAddressParser.ParseWithNthBit` / `ParseWithoutNthBit` 改为 `internal`（S7 已如此，Modbus 只差两个访问修饰符）。
 - [x] ModbusTcp：读按 PDU 上限分批并补测试——读保持/输入寄存器(FC03/FC04)每帧默认 125 个、读线圈/离散输入(FC01/FC02)每帧默认 2000 点，超出自动拆帧；单帧上限可通过 `MaxReadRegisters`/`MaxReadBits` 配置（某些设备上限小于协议值），配置值超协议上限时加载期报错。
-- [ ] ModbusTcp：写路径目前已经按 123 寄存器分批（`MaxBatchSize`），但是`MaxBatchSize`这个命名不好，没有和读分开。需要重命名。
+- [x] ModbusTcp：写路径按 123 寄存器分批；`MaxBatchSize` 重命名为 `MaxWriteRegisters`，与 `MaxReadRegisters`/`MaxReadBits` 对齐成 `Max{Action}{Unit}` 命名族（XML 元素名同步变更，1.0 前破坏性变更）。
 - [ ] ModbusTcp：清理 `WriteAsync` 中 `currlen < 0` 的恒假死检查。
 
 **1.0 之前的 todo:**

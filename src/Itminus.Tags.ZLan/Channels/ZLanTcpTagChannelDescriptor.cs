@@ -43,11 +43,15 @@ public static class TagChannelDescriptor_S7Extensions
                 int.TryParse(portEle.Value, out var port) ?
                     port :
                     throw new ArgumentException($"配置的端口号不是整数"),
-            MaxBatchSize = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxBatchSize), out var batchEle) ?
+            MaxWriteRegisters = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxWriteRegisters), out var batchEle) ?
                 null :
-                ushort.TryParse(batchEle.Value, out var batch) ?
-                    batch :
-                    throw new ArgumentException($"MaxBatchSize 配置不是整数"),
+                !ushort.TryParse(batchEle.Value, out var batch) ?
+                    throw new ArgumentException($"MaxWriteRegisters 配置不是整数") :
+                    batch == 0 ?
+                        throw new ArgumentException($"MaxWriteRegisters 必须大于 0") :
+                        batch > ModbusTcpChannel.MaxWriteRegistersPerPdu ?
+                            throw new ArgumentException($"MaxWriteRegisters 配置({batch})超过协议上限({ModbusTcpChannel.MaxWriteRegistersPerPdu})") :
+                            batch,
         };
         return res;
     }

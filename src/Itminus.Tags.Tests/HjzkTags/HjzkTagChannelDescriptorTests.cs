@@ -31,21 +31,21 @@ public class HjzkTagChannelDescriptorTests
     }
 
     [Fact]
-    public void ToXElement_WithMaxBatchSize_Roundtrips()
+    public void ToXElement_WithMaxWriteRegisters_Roundtrips()
     {
         var descriptor = new HjzkTagChannelDescriptor
         {
             Name = "hjzk-batch",
             IpAddr = "10.0.0.1",
             Port = 502,
-            MaxBatchSize = 20,
+            MaxWriteRegisters = 20,
         };
 
         var xml = descriptor.ToXElement();
         var baseDesc = xml.ToTagChannelDescriptor();
         var restored = baseDesc.ToHjzkTagChannelDescriptor();
 
-        Assert.Equal((ushort)20, restored.MaxBatchSize);
+        Assert.Equal((ushort)20, restored.MaxWriteRegisters);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class HjzkTagChannelDescriptorTests
 
         Assert.Equal("localhost", result.IpAddr);
         Assert.Equal(502, result.Port);
-        Assert.Null(result.MaxBatchSize);
+        Assert.Null(result.MaxWriteRegisters);
     }
 
     [Fact]
@@ -144,31 +144,57 @@ public class HjzkTagChannelDescriptorTests
     }
 
     [Fact]
-    public void ToHjzkTagChannelDescriptor_InvalidMaxBatchSize_Throws()
+    public void ToHjzkTagChannelDescriptor_InvalidMaxWriteRegisters_Throws()
     {
         var baseDesc = new TagChannelDescriptor
         {
             Name = "hjzk-bad-batch",
             Driver = HjzkNames.DriverName,
         };
-        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "not-a-number");
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "not-a-number");
 
         Assert.Throws<ArgumentException>(() => baseDesc.ToHjzkTagChannelDescriptor());
     }
 
     [Fact]
-    public void ToHjzkTagChannelDescriptor_MaxBatchSize_ReadsFromExtras()
+    public void ToHjzkTagChannelDescriptor_ZeroMaxWriteRegisters_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "hjzk-zero-batch",
+            Driver = HjzkNames.DriverName,
+        };
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "0");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToHjzkTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void ToHjzkTagChannelDescriptor_ExceedsMaxWriteRegisters_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "hjzk-big-batch",
+            Driver = HjzkNames.DriverName,
+        };
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "124");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToHjzkTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void ToHjzkTagChannelDescriptor_MaxWriteRegisters_ReadsFromExtras()
     {
         var baseDesc = new TagChannelDescriptor
         {
             Name = "hjzk-batch-extras",
             Driver = HjzkNames.DriverName,
         };
-        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "100");
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "100");
 
         var result = baseDesc.ToHjzkTagChannelDescriptor();
 
-        Assert.Equal((ushort)100, result.MaxBatchSize);
+        Assert.Equal((ushort)100, result.MaxWriteRegisters);
     }
 
     [Fact]
