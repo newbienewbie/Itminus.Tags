@@ -157,11 +157,11 @@ public static class ModBusTcpAddressParser
     }
 
     /// <summary>
-    /// 解析带位地址的Modbus地址
+    /// 解析带位地址的Modbus地址。<br/>
     /// </summary>
     /// <param name="address"></param>
     /// <returns></returns>
-    public static FSharpResult<ModbusTcpAddress, string> ParseWithNthBit(string address)
+    internal static FSharpResult<ModbusTcpAddress, string> ParseWithNthBit(string address)
     {
         var match = RegexPattern_WithNthBit.Match(address);
         if (!match.Success)
@@ -217,11 +217,11 @@ public static class ModBusTcpAddressParser
     }
 
     /// <summary>
-    /// 解析不带位地址的Modbus地址
+    /// 解析不带位地址的Modbus地址<br/>
     /// </summary>
     /// <param name="address"></param>
     /// <returns></returns>
-    public static FSharpResult<ModbusTcpAddress, string> ParseWithoutNthBit(string address)
+    internal static FSharpResult<ModbusTcpAddress, string> ParseWithoutNthBit(string address)
     {
         var match = RegexPattern_WithoutNthBit.Match(address);
         if (!match.Success)

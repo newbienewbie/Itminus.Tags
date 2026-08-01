@@ -19,8 +19,8 @@
 
 **0.11.0 之前的 todo:**
 - [x] 拼写错误修正：`BaundRate` -> `BaudRate`、`IContinous` -> `IContinuous`（含公共 API、示例与测试中的 XML）。
+- [x] 公开接口不应该暴露 `FSharpResult`：`ModBusTcpAddressParser.ParseWithNthBit` / `ParseWithoutNthBit` 改为 `internal`（S7 已如此，Modbus 只差两个访问修饰符）。
 - [ ] ModbusTcp：读写按 PDU 上限（125 寄存器）分批，补测试；顺带清理 `WriteAsync` 中 `currlen < 0` 的恒假死检查。
-- [ ] 公开接口不应该暴露 `FSharpResult`：`ModBusTcpAddressParser.ParseWithNthBit` / `ParseWithoutNthBit` 改为 `internal`（S7 已如此，Modbus 只差两个访问修饰符）。
 
 **1.0 之前的 todo:**
 - [ ] ModbusTcpChannel 和 OpcUaClientChannel 多入口的串行化。目前这两种驱动还不支持并行，意味着同一个通道不能给多个入口使用。落地方案参考 ComScanner 的分锁设计（连接/读/写分别加锁），避免一把大锁造成队头阻塞；串行化必须覆盖 `EnsureConnectedAsync`，消除并发创建连接/会话的竞态。
