@@ -154,4 +154,180 @@ public class ModbusTcpTagChannelDescriptorTests
     }
 
     #endregion
+
+    #region MaxReadRegisters
+
+    [Fact]
+    public void MaxReadRegisters_RoundtripsViaXml()
+    {
+        var descriptor = new ModbusTcpTagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+            MaxReadRegisters = 100,
+        };
+
+        var xml = descriptor.ToXElement();
+        var baseDesc = xml.ToTagChannelDescriptor();
+        var restored = baseDesc.ToModbusTcpTagChannelDescriptor();
+
+        Assert.Equal((ushort)100, restored.MaxReadRegisters);
+    }
+
+    [Fact]
+    public void MaxReadRegisters_DefaultNull()
+    {
+        var descriptor = new ModbusTcpTagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+
+        Assert.Null(descriptor.MaxReadRegisters);
+    }
+
+    [Fact]
+    public void MaxReadRegisters_ReadFromExtras()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadRegisters"] = new XElement("MaxReadRegisters", "32");
+
+        var result = baseDesc.ToModbusTcpTagChannelDescriptor();
+
+        Assert.Equal((ushort)32, result.MaxReadRegisters);
+    }
+
+    [Fact]
+    public void MaxReadRegisters_InvalidValue_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadRegisters"] = new XElement("MaxReadRegisters", "not-a-number");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void MaxReadRegisters_Zero_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadRegisters"] = new XElement("MaxReadRegisters", "0");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void MaxReadRegisters_ExceedsProtocolLimit_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadRegisters"] = new XElement("MaxReadRegisters", "126");
+
+        var ex = Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+        Assert.Contains("125", ex.Message);
+    }
+
+    #endregion
+
+    #region MaxReadBits
+
+    [Fact]
+    public void MaxReadBits_RoundtripsViaXml()
+    {
+        var descriptor = new ModbusTcpTagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+            MaxReadBits = 500,
+        };
+
+        var xml = descriptor.ToXElement();
+        var baseDesc = xml.ToTagChannelDescriptor();
+        var restored = baseDesc.ToModbusTcpTagChannelDescriptor();
+
+        Assert.Equal((ushort)500, restored.MaxReadBits);
+    }
+
+    [Fact]
+    public void MaxReadBits_DefaultNull()
+    {
+        var descriptor = new ModbusTcpTagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+
+        Assert.Null(descriptor.MaxReadBits);
+    }
+
+    [Fact]
+    public void MaxReadBits_ReadFromExtras()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadBits"] = new XElement("MaxReadBits", "1000");
+
+        var result = baseDesc.ToModbusTcpTagChannelDescriptor();
+
+        Assert.Equal((ushort)1000, result.MaxReadBits);
+    }
+
+    [Fact]
+    public void MaxReadBits_InvalidValue_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadBits"] = new XElement("MaxReadBits", "not-a-number");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void MaxReadBits_Zero_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadBits"] = new XElement("MaxReadBits", "0");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void MaxReadBits_ExceedsProtocolLimit_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "mb1",
+            Driver = "ModbusTcp",
+        };
+        baseDesc.Extras["MaxReadBits"] = new XElement("MaxReadBits", "2001");
+
+        var ex = Assert.Throws<ArgumentException>(() => baseDesc.ToModbusTcpTagChannelDescriptor());
+        Assert.Contains("2000", ex.Message);
+    }
+
+    #endregion
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Itminus.Tags.ModbusTcp;
@@ -65,6 +66,84 @@ public class ModbusTcpChannelTests
         Assert.Contains("偶数", ex.Message);
     }
 
+    [Fact]
+    public async Task ReadAsync_HoldingRegisters_OverPduLimit_Batches()
+    {
+        var (channel, mock) = CreateChannel();
+        // 252 字节 = 126 个寄存器 > 125 单帧上限 → 应分 2 批：125 + 1
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)0, (ushort)125))
+            .ReturnsAsync(Enumerable.Range(1, 125).Select(i => (ushort)i).ToArray());
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)125, (ushort)1))
+            .ReturnsAsync(new ushort[] { 0x00FF });
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~40001", 252, CancellationToken.None);
+
+        Assert.Equal(252, result.Length);
+        // 共两批调用
+        mock.Verify(x => x.ReadHoldingRegistersAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort>()), Times.Exactly(2));
+        // 第一批：ushort 1..125，小端序
+        for (int i = 0; i < 125; i++)
+        {
+            var u = (ushort)(i + 1);
+            Assert.Equal((byte)(u & 0xFF), result[i * 2]);
+            Assert.Equal((byte)(u >> 8), result[i * 2 + 1]);
+        }
+        // 第二批：0x00FF → [0xFF, 0x00]
+        Assert.Equal(0xFF, result[250]);
+        Assert.Equal(0x00, result[251]);
+    }
+
+    [Fact]
+    public async Task ReadAsync_HoldingRegisters_ExactlyPduLimit_SingleCall()
+    {
+        var (channel, mock) = CreateChannel();
+        // 250 字节 = 125 个寄存器 = 恰好单帧上限 → 一次调用
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)0, (ushort)125))
+            .ReturnsAsync(Enumerable.Repeat((ushort)0x0001, 125).ToArray());
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~40001", 250, CancellationToken.None);
+
+        Assert.Equal(250, result.Length);
+        mock.Verify(x => x.ReadHoldingRegistersAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ReadAsync_HoldingRegisters_CustomMaxReadRegisters_BatchesAtConfiguredSize()
+    {
+        var mock = new Mock<IModbusMaster>(MockBehavior.Strict);
+        var channel = new TestModbusTcpChannel(new ModbusTcpTagChannelDescriptor { Name = "mb1", MaxReadRegisters = 32 }, mock);
+        // 设备单帧上限 32 寄存器：读 100 个寄存器 → 32+32+32+4
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)0, (ushort)32))
+            .ReturnsAsync(Enumerable.Repeat((ushort)0x0101, 32).ToArray());
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)32, (ushort)32))
+            .ReturnsAsync(Enumerable.Repeat((ushort)0x0102, 32).ToArray());
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)64, (ushort)32))
+            .ReturnsAsync(Enumerable.Repeat((ushort)0x0103, 32).ToArray());
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)96, (ushort)4))
+            .ReturnsAsync(Enumerable.Repeat((ushort)0x0104, 4).ToArray());
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~40001", 200, CancellationToken.None);
+
+        Assert.Equal(200, result.Length);
+        // 每批小端：0x0101 → [0x01, 0x01]
+        Assert.Equal(0x01, result[0]);
+        Assert.Equal(0x01, result[1]);
+        // 末批 0x0104 → [0x04, 0x01]
+        Assert.Equal(0x04, result[198]);
+        Assert.Equal(0x01, result[199]);
+        mock.Verify(x => x.ReadHoldingRegistersAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort>()), Times.Exactly(4));
+    }
+
     #endregion
 
     #region ReadAsync — InputRegisters (address ~30001)
@@ -95,6 +174,31 @@ public class ModbusTcpChannelTests
         Assert.Contains("偶数", ex.Message);
     }
 
+    [Fact]
+    public async Task ReadAsync_InputRegisters_OverPduLimit_Batches()
+    {
+        var (channel, mock) = CreateChannel();
+        // 252 字节 = 126 个寄存器 > 125 单帧上限 → 应分 2 批：125 + 1
+        mock
+            .Setup(x => x.ReadInputRegistersAsync(1, (ushort)0, (ushort)125))
+            .ReturnsAsync(Enumerable.Repeat((ushort)0x1111, 125).ToArray());
+        mock
+            .Setup(x => x.ReadInputRegistersAsync(1, (ushort)125, (ushort)1))
+            .ReturnsAsync(new ushort[] { 0x2222 });
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~30001", 252, CancellationToken.None);
+
+        Assert.Equal(252, result.Length);
+        // 0x1111 → [0x11, 0x11]
+        Assert.Equal(0x11, result[0]);
+        Assert.Equal(0x11, result[1]);
+        // 0x2222 → [0x22, 0x22]
+        Assert.Equal(0x22, result[250]);
+        Assert.Equal(0x22, result[251]);
+        mock.Verify(x => x.ReadInputRegistersAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort>()), Times.Exactly(2));
+    }
+
     #endregion
 
     #region ReadAsync — InputContacts (address ~10001)
@@ -113,6 +217,27 @@ public class ModbusTcpChannelTests
         Assert.Equal(new byte[] { 0x01, 0x00, 0x01 }, result);
     }
 
+    [Fact]
+    public async Task ReadAsync_InputContacts_OverPduLimit_Batches()
+    {
+        var (channel, mock) = CreateChannel();
+        // 2001 点 > 2000 单帧上限 → 应分 2 批：2000 + 1
+        mock
+            .Setup(x => x.ReadInputsAsync(1, (ushort)0, (ushort)2000))
+            .ReturnsAsync(Enumerable.Repeat(true, 2000).ToArray());
+        mock
+            .Setup(x => x.ReadInputsAsync(1, (ushort)2000, (ushort)1))
+            .ReturnsAsync(new bool[] { false });
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~10001", 2001, CancellationToken.None);
+
+        Assert.Equal(2001, result.Length);
+        Assert.All(result.Take(2000), b => Assert.Equal(0x01, b));
+        Assert.Equal(0x00, result[2000]);
+        mock.Verify(x => x.ReadInputsAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort>()), Times.Exactly(2));
+    }
+
     #endregion
 
     #region ReadAsync — OutputCoils (address ~00001)
@@ -129,6 +254,53 @@ public class ModbusTcpChannelTests
         var result = await channel.ReadAsync("1~00001", 2, CancellationToken.None);
 
         Assert.Equal(new byte[] { 0x00, 0x01 }, result);
+    }
+
+    [Fact]
+    public async Task ReadAsync_OutputCoils_OverPduLimit_Batches()
+    {
+        var (channel, mock) = CreateChannel();
+        // 2001 点 > 2000 单帧上限 → 应分 2 批：2000 + 1
+        mock
+            .Setup(x => x.ReadCoilsAsync(1, (ushort)0, (ushort)2000))
+            .ReturnsAsync(Enumerable.Repeat(false, 2000).ToArray());
+        mock
+            .Setup(x => x.ReadCoilsAsync(1, (ushort)2000, (ushort)1))
+            .ReturnsAsync(new bool[] { true });
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~00001", 2001, CancellationToken.None);
+
+        Assert.Equal(2001, result.Length);
+        Assert.All(result.Take(2000), b => Assert.Equal(0x00, b));
+        Assert.Equal(0x01, result[2000]);
+        mock.Verify(x => x.ReadCoilsAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort>()), Times.Exactly(2));
+    }
+
+    [Fact]
+    public async Task ReadAsync_OutputCoils_CustomMaxReadBits_BatchesAtConfiguredSize()
+    {
+        var mock = new Mock<IModbusMaster>(MockBehavior.Strict);
+        var channel = new TestModbusTcpChannel(new ModbusTcpTagChannelDescriptor { Name = "mb1", MaxReadBits = 500 }, mock);
+        // 设备单帧上限 500 点：读 1200 点 → 500+500+200
+        mock
+            .Setup(x => x.ReadCoilsAsync(1, (ushort)0, (ushort)500))
+            .ReturnsAsync(Enumerable.Repeat(true, 500).ToArray());
+        mock
+            .Setup(x => x.ReadCoilsAsync(1, (ushort)500, (ushort)500))
+            .ReturnsAsync(Enumerable.Repeat(false, 500).ToArray());
+        mock
+            .Setup(x => x.ReadCoilsAsync(1, (ushort)1000, (ushort)200))
+            .ReturnsAsync(Enumerable.Repeat(true, 200).ToArray());
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~00001", 1200, CancellationToken.None);
+
+        Assert.Equal(1200, result.Length);
+        Assert.Equal(0x01, result[0]);       // 第一批 true
+        Assert.Equal(0x00, result[500]);     // 第二批 false
+        Assert.Equal(0x01, result[1000]);    // 第三批 true
+        mock.Verify(x => x.ReadCoilsAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort>()), Times.Exactly(3));
     }
 
     #endregion

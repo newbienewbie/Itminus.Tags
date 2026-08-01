@@ -33,7 +33,7 @@ internal abstract class MultipleBytesDirectTag<T> : Tag<T, ModbusTcpChannel>
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var bytes = await this._bubbleChannel.ReadAsync(this.NormalizedAddress(), count: this.BufferSize, ct);
+        var bytes = await this._bubbleChannel.ReadAsync(this.NormalizedAddress(), cbSize: this.BufferSize, ct);
         this._value = this.GetValueFromBytes(bytes);
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this._value);

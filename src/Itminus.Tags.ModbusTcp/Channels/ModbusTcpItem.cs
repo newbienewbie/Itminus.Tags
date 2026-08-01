@@ -32,6 +32,19 @@ public class ModbusTcpItem
 
     /// <summary>
     /// 单批次最多写入的寄存器数量。null 表示使用默认值。
+    /// 某些设备的单帧上限小于协议理论值，可通过此项配置更小的值。<br/>
     /// </summary>
     public ushort? MaxBatchSize { get; set; }
+
+    /// <summary>
+    /// 单帧最多读取的寄存器数量(FC03/FC04)。null 表示使用协议默认值(125)。<br/>
+    /// 某些设备的单帧上限小于协议理论值，可通过此项配置更小的值。<br/>
+    /// </summary>
+    public ushort? MaxReadRegisters { get; set; }
+
+    /// <summary>
+    /// 单帧最多读取的位数/点数(FC01/FC02)。null 表示使用协议默认值(2000)。<br/>
+    /// 某些设备的单帧上限小于协议理论值，可通过此项配置更小的值。<br/>
+    /// </summary>
+    public ushort? MaxReadBits { get; set; }
 }

@@ -14,6 +14,20 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
 
     private SemaphoreSlim _connSignal = new SemaphoreSlim(1, 1);
 
+    /// <summary>
+    /// Modbus 读保持/输入寄存器(FC03/FC04)单帧最大寄存器数：125。<br/>
+    /// 见 MODBUS Application Protocol V1.1b3 6.3/6.4 节。<br/>
+    /// 可通过 <see cref="ModbusTcpItem.MaxReadRegisters"/> 配置更小的值（设备上限可能小于协议值）。<br/>
+    /// </summary>
+    internal const ushort MaxReadRegistersPerPdu = 125;
+
+    /// <summary>
+    /// Modbus 读线圈/离散输入(FC01/FC02)单帧最大点数：2000。<br/>
+    /// 见 MODBUS Application Protocol V1.1b3 6.1/6.2 节。<br/>
+    /// 可通过 <see cref="ModbusTcpItem.MaxReadBits"/> 配置更小的值（设备上限可能小于协议值）。<br/>
+    /// </summary>
+    internal const ushort MaxReadBitsPerPdu = 2000;
+
     #region 配置
     private readonly ModbusTcpItem _modbusItem;
     /// <summary>
@@ -61,6 +75,8 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
             IpAddr = descriptor.IpAddr,
             Port = descriptor.Port,
             MaxBatchSize = descriptor.MaxBatchSize,
+            MaxReadRegisters = descriptor.MaxReadRegisters,
+            MaxReadBits = descriptor.MaxReadBits,
         }; ;
         _logger = logger;
     }
@@ -187,9 +203,8 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
     /// 读取底层硬件，返回一段字节数组表示所读取的结果。
     /// </summary>
     /// <param name="address"></param>
-    /// <param name="count"> 代表要读取的字节数。
+    /// <param name="cbSize"> 代表要读取的字节数(count of bytes)</param>
     /// <param name="ct"></param>
-    /// </param>
     /// <returns> 
     ///     
     ///     如果是读取HoldingRegister或者InputRegister，则返回的字节数组中每两个相邻的字节表示一个ushort；<br/>
@@ -197,48 +212,90 @@ public class ModbusTcpChannel : IContinuousBytesBasedTagChannel
     /// </returns>
     /// <exception cref="Exception"></exception>
     /// <exception cref="NotImplementedException"></exception>
-    public virtual async Task<byte[]> ReadAsync(string address, int count, CancellationToken ct)
+    public virtual async Task<byte[]> ReadAsync(string address, int cbSize, CancellationToken ct)
     {
 
         var addr = ModBusTcpAddressParser.Parse(address);
         if (addr.Area == RegisterKinds.HoldingRegisters)
         {
-            if (count % 2 != 0)
+            if (cbSize % 2 != 0)
             {
                 throw new Exception($"要求读取字节长度必须是偶数");
             }
-            var pointsCount = (ushort)(count / 2);
+            var pointsCount = (ushort)(cbSize / 2);
 
-            var points = await ModbusMaster!.ReadHoldingRegistersAsync(addr.SlaveAddress, addr.StartPoint, pointsCount);
-            var bytes = MarshalHelper.UShortsToBytes(points);
+            // 单帧最多读取的寄存器数(FC03)，默认协议上限 125；若设备上限更小，可通过 MaxReadRegisters 配置
+            var batchLimit = _modbusItem.MaxReadRegisters ?? MaxReadRegistersPerPdu;
+            var points = new List<ushort>(pointsCount);
+            ushort offset = 0;
+            while (offset < pointsCount)
+            {
+                var batchSize = (ushort)Math.Min(pointsCount - offset, batchLimit);
+                var part = await ModbusMaster!.ReadHoldingRegistersAsync(addr.SlaveAddress, (ushort)(addr.StartPoint + offset), batchSize);
+                points.AddRange(part);
+                offset += batchSize;
+            }
+            var bytes = MarshalHelper.UShortsToBytes(points.ToArray());
             return bytes;
         }
 
         if (addr.Area == RegisterKinds.InputRegisters)
         {
-            if (count % 2 != 0)
+            if (cbSize % 2 != 0)
             {
                 throw new Exception($"读取连续多个输入寄存器，要求读取字节长度必须是偶数");
             }
-            var pointsCount = (ushort)(count / 2);
+            var pointsCount = (ushort)(cbSize / 2);
 
-            var points = await ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, addr.StartPoint, pointsCount);
-            var bytes = MarshalHelper.UShortsToBytes(points);
+            // 单帧最多读取的寄存器数(FC04)，默认协议上限 125；若设备上限更小，可通过 MaxReadRegisters 配置
+            var batchLimit = _modbusItem.MaxReadRegisters ?? MaxReadRegistersPerPdu;
+            var points = new List<ushort>(pointsCount);
+            ushort offset = 0;
+            while (offset < pointsCount)
+            {
+                var batchSize = (ushort)Math.Min(pointsCount - offset, batchLimit);
+                var part = await ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, (ushort)(addr.StartPoint + offset), batchSize);
+                points.AddRange(part);
+                offset += batchSize;
+            }
+            var bytes = MarshalHelper.UShortsToBytes(points.ToArray());
             return bytes;
         }
 
         if (addr.Area == RegisterKinds.InputContacts)
         {
-            var pointsCount = (ushort)count;
-            var flags = await ModbusMaster!.ReadInputsAsync(addr.SlaveAddress, addr.StartPoint, pointsCount);
+            var pointsCount = (ushort)cbSize;
+
+            // 单帧最多读取的点数(FC02)，默认协议上限 2000；若设备上限更小，可通过 MaxReadBits 配置
+            var batchLimit = _modbusItem.MaxReadBits ?? MaxReadBitsPerPdu;
+            var flags = new List<bool>(pointsCount);
+            ushort offset = 0;
+            while (offset < pointsCount)
+            {
+                var batchSize = (ushort)Math.Min(pointsCount - offset, batchLimit);
+                var part = await ModbusMaster!.ReadInputsAsync(addr.SlaveAddress, (ushort)(addr.StartPoint + offset), batchSize);
+                flags.AddRange(part);
+                offset += batchSize;
+            }
             byte[] bytes = flags.Select(f => f ? (byte)1 : (byte)0).ToArray();
             return bytes;
         }
 
         if (addr.Area == RegisterKinds.OutputCoils)
         {
-            var pointsCount = (ushort)count;
-            var flags = await ModbusMaster!.ReadCoilsAsync(addr.SlaveAddress, addr.StartPoint, pointsCount);
+            var pointsCount = (ushort)cbSize;
+
+            // 单帧最多读取的点数(FC01)，默认协议上限 2000；若设备上限更小，可通过 MaxReadBits 配置
+            var batchLimit = _modbusItem.MaxReadBits ?? MaxReadBitsPerPdu;
+            var flags = new List<bool>(pointsCount);
+            ushort offset = 0;
+            while (offset < pointsCount)
+            {
+                var batchSize = (ushort)Math.Min(pointsCount - offset, batchLimit);
+                var part = await ModbusMaster!.ReadCoilsAsync(addr.SlaveAddress, (ushort)(addr.StartPoint + offset), batchSize);
+                flags.AddRange(part);
+                offset += batchSize;
+            }
             byte[] bytes = flags.Select(f => f ? (byte)1 : (byte)0).ToArray();
             return bytes;
         }

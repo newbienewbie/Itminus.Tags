@@ -35,6 +35,18 @@ public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
     /// </summary>
     public ushort? MaxBatchSize { get; set; }
 
+    /// <summary>
+    /// 单帧最多读取的寄存器数量(FC03/FC04)。null 表示使用协议默认值(125)。<br/>
+    /// 某些设备的单帧上限小于协议理论值，可通过此项配置更小的值。<br/>
+    /// </summary>
+    public ushort? MaxReadRegisters { get; set; }
+
+    /// <summary>
+    /// 单帧最多读取的位数/点数(FC01/FC02)。null 表示使用协议默认值(2000)。<br/>
+    /// 某些设备的单帧上限小于协议理论值，可通过此项配置更小的值。<br/>
+    /// </summary>
+    public ushort? MaxReadBits { get; set; }
+
     /// <inheritdoc/>
     public override XElement ToXElement()
     {
@@ -45,6 +57,14 @@ public class ModbusTcpTagChannelDescriptor : TagChannelDescriptor
         if (MaxBatchSize.HasValue)
         {
             ele.SetOrAddChild(nameof(MaxBatchSize), this.MaxBatchSize.Value.ToString());
+        }
+        if (MaxReadRegisters.HasValue)
+        {
+            ele.SetOrAddChild(nameof(MaxReadRegisters), this.MaxReadRegisters.Value.ToString());
+        }
+        if (MaxReadBits.HasValue)
+        {
+            ele.SetOrAddChild(nameof(MaxReadBits), this.MaxReadBits.Value.ToString());
         }
         return ele;
     }
@@ -90,6 +110,24 @@ public static class TagChannelDescriptor_ModbusTcpExtensions
                 ushort.TryParse(batchEle.Value, out var batch) ?
                     batch :
                     throw new ArgumentException($"MaxBatchSize 配置不是整数"),
+            MaxReadRegisters = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxReadRegisters), out var readRegsEle) ?
+                null :
+                !ushort.TryParse(readRegsEle.Value, out var readRegs) ?
+                    throw new ArgumentException($"MaxReadRegisters 配置不是整数") :
+                    readRegs == 0 ?
+                        throw new ArgumentException($"MaxReadRegisters 必须大于 0") :
+                        readRegs > ModbusTcpChannel.MaxReadRegistersPerPdu ?
+                            throw new ArgumentException($"MaxReadRegisters 配置({readRegs})超过协议上限({ModbusTcpChannel.MaxReadRegistersPerPdu})") :
+                            readRegs,
+            MaxReadBits = !descriptor.Extras.TryGetValue(nameof(ModbusTcpTagChannelDescriptor.MaxReadBits), out var readBitsEle) ?
+                null :
+                !ushort.TryParse(readBitsEle.Value, out var readBits) ?
+                    throw new ArgumentException($"MaxReadBits 配置不是整数") :
+                    readBits == 0 ?
+                        throw new ArgumentException($"MaxReadBits 必须大于 0") :
+                        readBits > ModbusTcpChannel.MaxReadBitsPerPdu ?
+                            throw new ArgumentException($"MaxReadBits 配置({readBits})超过协议上限({ModbusTcpChannel.MaxReadBitsPerPdu})") :
+                            readBits,
         };
         return res;
     }

@@ -10,10 +10,10 @@ public interface IContinuousBytesBasedTagChannel: ITagChannel
     /// 并不是所有通道都支持这个接口，但是这里直接定义是为了简化测点组合的整体读取。
     /// </summary>
     /// <param name="address"></param>
-    /// <param name="count"></param>
+    /// <param name="cbSize"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    public Task<byte[]> ReadAsync(string address, int count, CancellationToken ct);
+    public Task<byte[]> ReadAsync(string address, int cbSize, CancellationToken ct);
 
     /// <summary>
     /// 写入字节数组
