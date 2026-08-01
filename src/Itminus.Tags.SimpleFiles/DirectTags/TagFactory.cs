@@ -27,9 +27,6 @@ internal class SimpleFilesDirectTagFactory
             descriptor.TagSize = sizeof(byte);
         }
 
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
-
         return new BitDirectTag(descriptor, thisChannel, _parent);
     }
 
@@ -39,9 +36,6 @@ internal class SimpleFilesDirectTagFactory
         {
             descriptor.TagSize = sizeof(byte);
         }
-
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
 
         return new ByteDirectTag(descriptor, thisChannel, _parent);
     }
@@ -53,9 +47,6 @@ internal class SimpleFilesDirectTagFactory
             descriptor.TagSize = sizeof(short);
         }
 
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
-
         return new ShortDirectTag(descriptor, thisChannel, _parent);
     }
 
@@ -65,9 +56,6 @@ internal class SimpleFilesDirectTagFactory
         {
             descriptor.TagSize = sizeof(ushort);
         }
-
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
 
         return new UShortDirectTag(descriptor, thisChannel, _parent);
     }
@@ -79,9 +67,6 @@ internal class SimpleFilesDirectTagFactory
             descriptor.TagSize = sizeof(int);
         }
 
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
-
         return new IntDirectTag(descriptor, thisChannel, _parent);
     }
 
@@ -91,9 +76,6 @@ internal class SimpleFilesDirectTagFactory
         {
             descriptor.TagSize = sizeof(uint);
         }
-
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
 
         return new UIntDirectTag(descriptor, thisChannel, _parent);
     }
@@ -105,9 +87,6 @@ internal class SimpleFilesDirectTagFactory
             descriptor.TagSize = sizeof(float);
         }
 
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
-
         return new FloatDirectTag(descriptor, thisChannel, _parent);
     }
 
@@ -118,23 +97,21 @@ internal class SimpleFilesDirectTagFactory
             descriptor.TagSize = sizeof(double);
         }
 
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
-
         return new DoubleDirectTag(descriptor, thisChannel, _parent);
     }
 
     private StringDirectTag CreateStringTag(TagDescriptor descriptor, SimpleFilesTagChannel? thisChannel)
     {
-        var channel = thisChannel ?? this.SearchRequiredChannel();
-        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
-
         return new StringDirectTag(descriptor, thisChannel, _parent);
     }
 
 
     public ITag Create(TagDescriptor descriptor, SimpleFilesTagChannel? thisChannel)
     {
+        // 归一化地址
+        var channel = thisChannel ?? this.SearchRequiredChannel();
+        descriptor.NormalizedAddress = channel.MakePath(descriptor.RawAddress);
+
         ITag tag = descriptor.TagKind switch
         {
             BuiltinTagKinds.BIT => CreateBitTag(descriptor, thisChannel),
