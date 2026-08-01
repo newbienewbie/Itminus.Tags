@@ -49,6 +49,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.SimpleFiles", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NixMonitor", "samples\NixMonitor\NixMonitor.csproj", "{CFD0A797-F315-4012-A3A7-5FDC703B0A6A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D39756E2-C79A-418A-A1D6-C21433198206}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Itminus.Tags.LinuxProcInfo", "src\Itminus.Tags.LinuxProcInfo\Itminus.Tags.LinuxProcInfo.csproj", "{EA30DD9C-64E6-4BBE-805E-270F88869A05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +135,10 @@ Global
 		{CFD0A797-F315-4012-A3A7-5FDC703B0A6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFD0A797-F315-4012-A3A7-5FDC703B0A6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFD0A797-F315-4012-A3A7-5FDC703B0A6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA30DD9C-64E6-4BBE-805E-270F88869A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA30DD9C-64E6-4BBE-805E-270F88869A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA30DD9C-64E6-4BBE-805E-270F88869A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA30DD9C-64E6-4BBE-805E-270F88869A05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +148,7 @@ Global
 		{E2692008-195A-C185-D028-DE241F2612A2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{AD9C0AFC-1563-8496-7306-C3DA50242547} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{CFD0A797-F315-4012-A3A7-5FDC703B0A6A} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{EA30DD9C-64E6-4BBE-805E-270F88869A05} = {D39756E2-C79A-418A-A1D6-C21433198206}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6FF52024-3F01-4AC2-B991-CEE89ACF9FFC}
