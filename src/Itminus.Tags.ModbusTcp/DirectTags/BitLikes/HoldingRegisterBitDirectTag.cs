@@ -34,17 +34,11 @@ internal class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
     }
     #endregion
 
-    private ushort GetBufferSize() => (ushort)(this.NthBit / 8 + 1);
+    private ushort GetBufferSize() => 2;   // 寄存器是 16 位，bit0~15 都在同一个寄存器内，读取 1 个寄存器(2 字节)
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var addr = this.GetAddress();
-        var count = this.GetBufferSize();
-        var bytes = await this._bubbleChannel.ModbusMaster!.ReadHoldingRegistersAsync(
-            addr.SlaveAddress, 
-            addr.StartPoint, 
-            count
-        );
+        var bytes = await this._bubbleChannel.ReadAsync(this.NormalizedAddress(), this.GetBufferSize(), ct);
         var index = this.NthBit / 8;
         var nth = this.NthBit % 8;
         var flags = bytes[index];
@@ -55,14 +49,9 @@ internal class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
     }
     public override async Task WriteAsync(CancellationToken ct) 
     {
-        var addr = this.GetAddress();
         var count = this.GetBufferSize();
 
-        var bytes= await this._bubbleChannel.ModbusMaster!.ReadHoldingRegistersAsync(
-            addr.SlaveAddress,
-            addr.StartPoint,
-            count
-        );
+        var bytes = await this._bubbleChannel.ReadAsync(this.NormalizedAddress(), count, ct);
 
         var index = this.NthBit / 8;
         var nth = this.NthBit % 8;
@@ -70,13 +59,9 @@ internal class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
         var flag = this._value?
             oldFlags | 1 << nth :
             oldFlags & ~(1 << nth);
-        bytes[index] = (ushort) flag;
+        bytes[index] = (byte) flag;
 
-        await this._bubbleChannel.ModbusMaster!.WriteMultipleRegistersAsync(
-            addr.SlaveAddress,
-            addr.StartPoint,
-            bytes
-        );
+        await this._bubbleChannel.WriteAsync(this.NormalizedAddress(), bytes, ct);
         this.IsDirty = false;
         this.NotifyTagWritten(this._value);
     }

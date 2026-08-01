@@ -308,6 +308,28 @@ public class ModbusTcpChannelTests
     #region WriteAsync — HoldingRegisters
 
     [Fact]
+    public async Task WriteAsync_HoldingRegisters_SmallPayload_SingleCall()
+    {
+        // 快路径：≤ maxBatch(123) 寄存器 → 一次 WriteMultipleRegistersAsync，无分批
+        var (channel, mock) = CreateChannel();
+        ushort[]? captured = null;
+        mock
+            .Setup(x => x.WriteMultipleRegistersAsync((byte)1, (ushort)0, It.IsAny<ushort[]>()))
+            .Returns(Task.CompletedTask)
+            .Callback<byte, ushort, ushort[]>((_, _, data) => captured = data);
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        // 4 ushorts (8 bytes) ≤ 123 → 单次整体写入
+        await channel.WriteAsync("1~40001", new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 }, CancellationToken.None);
+
+        mock.Verify(x => x.WriteMultipleRegistersAsync(It.IsAny<byte>(), It.IsAny<ushort>(), It.IsAny<ushort[]>()), Times.Once);
+        Assert.NotNull(captured);
+        Assert.Equal(4, captured.Length);
+        Assert.Equal((ushort)0x0201, captured![0]);
+        Assert.Equal((ushort)0x0807, captured[3]);
+    }
+
+    [Fact]
     public async Task WriteAsync_HoldingRegisters_WritesBytes()
     {
         var (channel, mock) = CreateChannel();
@@ -442,6 +464,44 @@ public class ModbusTcpChannelTests
 
         await Assert.ThrowsAsync<NotImplementedException>(() =>
             channel.WriteAsync("1~10001", new byte[] { 0x01 }, CancellationToken.None));
+    }
+
+    #endregion
+
+    #region 大端 CPU 模拟（IsLittleEndianProbe 注入）
+
+    [Fact]
+    public async Task ReadAsync_HoldingRegisters_SimulatedBigEndianCpu_StillLittleEndianCache()
+    {
+        // 模拟大端 CPU：实例属性注入 false，验证退化路径仍输出"每寄存器低字节在前"
+        var (channel, mock) = CreateChannel();
+        channel.IsLittleEndianOverride = false;
+        mock
+            .Setup(x => x.ReadHoldingRegistersAsync(1, (ushort)0, (ushort)2))
+            .ReturnsAsync(new ushort[] { 0x1234, 0x5678 });
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        var result = await channel.ReadAsync("1~40001", 4, CancellationToken.None);
+
+        Assert.Equal(new byte[] { 0x34, 0x12, 0x78, 0x56 }, result);
+    }
+
+    [Fact]
+    public async Task WriteAsync_HoldingRegisters_SimulatedBigEndianCpu_StillParsesLittleEndianCache()
+    {
+        var (channel, mock) = CreateChannel();
+        channel.IsLittleEndianOverride = false;
+        ushort[]? captured = null;
+        mock
+            .Setup(x => x.WriteMultipleRegistersAsync((byte)1, (ushort)0, It.IsAny<ushort[]>()))
+            .Returns(Task.CompletedTask)
+            .Callback<byte, ushort, ushort[]>((_, _, data) => captured = data);
+        await channel.EnsureConnectedAsync(false, CancellationToken.None);
+
+        await channel.WriteAsync("1~40001", new byte[] { 0x01, 0x02, 0x03, 0x04 }, CancellationToken.None);
+
+        Assert.NotNull(captured);
+        Assert.Equal(new ushort[] { 0x0201, 0x0403 }, captured);
     }
 
     #endregion

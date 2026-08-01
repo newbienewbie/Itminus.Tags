@@ -35,13 +35,11 @@ internal class InputRegisterBitDirectTag: Tag<bool, ModbusTcpChannel>
     }
     #endregion
 
-    private ushort GetBufferSize() => (ushort)(this.NthBit / 8 + 1);
+    private ushort GetBufferSize() => 2;   // 寄存器是 16 位，bit0~15 都在同一个寄存器内，读取 1 个寄存器(2 字节)
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var addr = this.GetAddress();
-        var count = this.GetBufferSize();
-        var bytes= await this._bubbleChannel.ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, addr.StartPoint, count);
+        var bytes= await this._bubbleChannel.ReadAsync(this.NormalizedAddress(), this.GetBufferSize(), ct);
         var index = this.NthBit / 8;
         var nth = this.NthBit % 8;
         var flags = bytes[index];

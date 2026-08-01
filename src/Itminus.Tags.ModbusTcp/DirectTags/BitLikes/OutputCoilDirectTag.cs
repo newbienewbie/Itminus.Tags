@@ -43,9 +43,8 @@ internal class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
     /// <inheritdoc/>
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var addr = this.GetAddress();
-        var flags = await this._bubbleChannel.ModbusMaster!.ReadCoilsAsync(addr.SlaveAddress, addr.StartPoint, 1);
-        this._value = flags[0];
+        var bytes = await this._bubbleChannel.ReadAsync(this.NormalizedAddress(), 1, ct);
+        this._value = bytes[0] != 0;
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this._value);
     }
@@ -53,9 +52,8 @@ internal class OutputCoilDirectTag : Tag<bool, ModbusTcpChannel>
     /// <inheritdoc/>
     public override async Task WriteAsync(CancellationToken ct)
     {
-        var addr = this.GetAddress();
         var flag = this._value;
-        await this._bubbleChannel.ModbusMaster!.WriteSingleCoilAsync(addr.SlaveAddress, addr.StartPoint, flag);
+        await this._bubbleChannel.WriteAsync(this.NormalizedAddress(), new byte[] { flag ? (byte)1 : (byte)0 }, ct);
         this.IsDirty = false;
         this.NotifyTagWritten(flag);
     }

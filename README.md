@@ -23,7 +23,12 @@
 - [x] ModbusTcp：读按 PDU 上限分批并补测试——读保持/输入寄存器(FC03/FC04)每帧默认 125 个、读线圈/离散输入(FC01/FC02)每帧默认 2000 点，超出自动拆帧；单帧上限可通过 `MaxReadRegisters`/`MaxReadBits` 配置（某些设备上限小于协议值），配置值超协议上限时加载期报错。
 - [x] ModbusTcp：写路径按 123 寄存器分批；`MaxBatchSize` 重命名为 `MaxWriteRegisters`，与 `MaxReadRegisters`/`MaxReadBits` 对齐成 `Max{Action}{Unit}` 命名族（XML 元素名同步变更，1.0 前破坏性变更）。
 - [x] ModbusTcp：清理 `WriteAsync` 中 `currlen < 0` 的恒假死检查——`while(true)+break` 改为 `while(offset < payload.Length)`，循环条件即不变量，死检查与 `currlen==0` 分支一并移除。
-- [ ] ModbusTcp：现在ModbusTcp的测试覆盖率很低，需要补足测试。
+- [x] ModbusTcp：测试覆盖率从 58% 提升到 79%（包整体 line-rate）——补足 DirectTag 家族：MultipleBytes 家族（Float/Int32/Int64/UInt16/UInt32/UInt64）读写与字节序、ByteDirectTag 的读写/字节序/异常路径、4 个 BitLikes（HoldingRegisterBit/InputRegisterBit/OutputCoil/InputContact）的读写/置位/清位/只读写入抛错。
+- [x] ModbusTcp DirectTag 重构（方案B）：BitLikes 与 ByteDirectTag 不再直接访问 `ModbusMaster`，改为走通道层 `ReadAsync`/`WriteAsync`——修复 NthBit 8~15 的位寻址 bug（原代码把位索引当寄存器索引，读到相邻寄存器）；`ModbusMaster` 改 `internal` 不再暴露公共 API。
+- [x] ModbusTcp DirectTag 测试重构：BitLikes 与 ByteDirectTag 测试改用 `TestModbusTcpChannel` + Moq `IModbusMaster`，走真实通道层（地址解析、偶数校验、分批、`UShortsToBytes` 小端转换全被真实执行），弃用重写通道层的 fake——顺带修复被 fake 掩盖的 3 个 bug：`GetBufferSize()` 读 1 字节触发通道层偶数校验异常（改为恒 2 字节，寄存器 16 位含 bit0~15）、`ByteDirectTag` 高低字节取反、`ByteDirectTag` 写回字节序错误。补 NthBit 8~15 回归测试。
+- [ ] ModbusTcp DirectTag 遗留：MultipleBytes 家族（Float/Int32/Int64/UInt16/UInt32/UInt64）测试仍用 fake 通道，其字节序在真实通道层下的正确性存疑（16 位类型的 `EndianKind` 处理可能矛盾）——需改用 Moq 并审视。
+- [x] ModbusTcp 字节序语义修正（DirectTag 路径）：确立"通道层 cache 固定每寄存器低字节在前，EndianKind 描述设备寄存器内部存储序"模型——16 位类型交换分支（设备大端→cache 小端读，设备小端→cache 大端读）；32/64/Float 的 BigEndian 分支改为逐寄存器(2字节)交换后大端读/写（基类新增 `SwapEachRegister`）；测试全部改 Moq 走真实通道层，补 LittleEndian 回归。**注意**：Core 的数值 Cbntor（`Int16TagCbntor` 等公共类）有相同字节序模式，但影响面含 S7（S7 的 cache 布局可能不同），需独立一轮确认后修复。
+- [x] ModbusTcp 通道层字节转换自研：移除对 `MarshalHelper.UShortsToBytes`/`BytesToUShorts` 的依赖（该 helper 是 `Buffer.BlockCopy` 内存重解释，大端 CPU 会给出大端展平破坏 cache 契约）——改为自研 `ToLittleEndianBytes`/`FromLittleEndianBytes`：输入 `ReadOnlySpan<T>`、输出改为"写入调用方提供的 `Span` 目标"（分配权移交调用方，为 cache 复用铺路）；小端 CPU 走 `MemoryMarshal.AsBytes/Cast` 块拷贝（高频最优），大端 CPU 走显式小端循环（保跨端契约）；调用点用 `CollectionsMarshal.AsSpan` 消除 `List.ToArray()` 分配；`IsLittleEndianOverride` 可空实例属性注入（null 回退 `BitConverter.IsLittleEndian`，避免静态字段污染全局），测试覆盖大端模拟路径。写路径增加快路径：≤ `MaxWriteRegisters` 寄存器时一次整体写入，避免分批与切片分配；空 payload 直接返回。**遗留**：`FutureTech.Protocols`/`FutureTech.ModbusTcp.Options` 已无直接引用，可独立轮次评估移除。
 
 **1.0 之前的 todo:**
 - [ ] ModbusTcpChannel 和 OpcUaClientChannel 多入口的串行化。目前这两种驱动还不支持并行，意味着同一个通道不能给多个入口使用。落地方案参考 ComScanner 的分锁设计（连接/读/写分别加锁），避免一把大锁造成队头阻塞；串行化必须覆盖 `EnsureConnectedAsync`，消除并发创建连接/会话的竞态。
@@ -39,6 +44,11 @@
 - [ ] 文档完善和更新：现在文档库和主项目库分离，因为代码在快速更新，没时间同步完善文档。`docs/`打算只放一些基本的框架性的东西，详细的使用说明放到独立的文档库。时间戳/告警/心跳语义文档化：谁在什么时候写入 `Timestamp`、断线重连与数据有效性（stale）的系统行为。
 - [ ] 日志、报错提示、注释文档的多语言支持。
 - [ ] 工程化：启用 NetAnalyzers / `TreatWarningsAsErrors`；CI 加入测试覆盖率门槛。
+- [ ] 待查：Modbus优化时发现一个VS和CLI构建行为不一致的问题，见 backlog.md。
+- [ ] 性能：Modbus 读路径 cache 复用——`TagCbnt.ReadAsync` 每轮轮询 `this.Cache = bytes.AsMemory()` 换新引用，`CacheSize` 不变时可复用同一 `byte[]` 消除每轮分配；需接口改动（`IContinuousBytesBasedTagChannel.ReadAsync` 改为写入预分配 buffer 返回字节数），影响所有驱动，独立轮次设计。
+- [ ] 性能：Modbus 写路径消除 `FromLittleEndianBytes` 的物化——当前 NModbus `WriteMultipleRegistersAsync` 要求 `ushort[]`，且 `Span<ushort>` 不能跨 async await（ref struct 限制），故保留 dest 物化形态（1 分配 1 拷贝）。将来 NModbus 若支持 Span/Memory 参数，可在 await 调用内传 `MemoryMarshal.Cast<byte,ushort>(bytes)` 视图（小端 CPU）直接消除拷贝，helper 的 dest 形态不阻塞此演进。
+
+
 
 ## Quick Start
 
