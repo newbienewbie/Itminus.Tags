@@ -119,8 +119,11 @@ public static class TagChannelDescriptor_ComExtensions
         var port = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.Port), out var comPort) ?
                     "COM1" :
                     comPort.Value;
+        // 向后兼容：0.10 及之前版本使用拼写错误的 `<BaundRate>` 元素名，0.11 起修正为 `BaudRate`。
+        // 优先读新拼写，找不到时回退旧拼写——现场存量 XML 无需修改即可升级。
         var baudRate =
-                    !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.BaudRate), out var baudRateStr) ? defaultBaudRate :
+                    !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.BaudRate), out var baudRateStr) &&
+                    !descriptor.Extras.TryGetValue("BaundRate", out baudRateStr) ? defaultBaudRate :
                     int.TryParse(baudRateStr.Value, out var baudRateVal) ? baudRateVal :
                     throw new Exception($"串口波特率非法，无法解析成整数({baudRateStr.Value})");
         var parity = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.Parity), out var parityStr) ? defaultParity :

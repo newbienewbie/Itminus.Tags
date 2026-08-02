@@ -51,6 +51,52 @@ public class ChannelDescriptorTests
 
 
     [Fact]
+    public void TestLoadComChannelDescriptorFromXml_BaundRate_LegacySpelling_IsAccepted()
+    {
+        // 0.10 及之前版本的 XML 使用拼写错误的 <BaundRate>，0.11 起修正为 <BaudRate>。
+        // 兼容性：旧拼写必须仍能被解析，且优先于默认值 9600。
+        var xml =
+@"
+	<Channel name=""COM-2"" driver=""COM"">
+		<Port>COM2</Port>
+		<BaundRate>115200</BaundRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+	</Channel>
+";
+        var element = XElement.Parse(xml);
+        var descriptor0 = element.ToTagChannelDescriptor();
+        var descriptor1 = descriptor0.ToComChannelDescriptor();
+        var opt = descriptor1.Option;
+
+        Assert.Equal(115200, opt.BaudRate);
+    }
+
+    [Fact]
+    public void TestLoadComChannelDescriptorFromXml_BaudRate_NewSpelling_TakesPriority_Over_Legacy()
+    {
+        // 新拼写 <BaudRate> 与旧拼写 <BaundRate> 同时存在时，以新拼写为准。
+        var xml =
+@"
+	<Channel name=""COM-2"" driver=""COM"">
+		<Port>COM2</Port>
+		<BaundRate>9600</BaundRate>
+		<BaudRate>19200</BaudRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+	</Channel>
+";
+        var element = XElement.Parse(xml);
+        var descriptor0 = element.ToTagChannelDescriptor();
+        var descriptor1 = descriptor0.ToComChannelDescriptor();
+        var opt = descriptor1.Option;
+
+        Assert.Equal(19200, opt.BaudRate);
+    }
+
+    [Fact]
     public void TestLoadScriptBasedComChannelDescriptorFromXml()
     {
         var xml =
