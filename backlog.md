@@ -1,7 +1,6 @@
 
 # Backlog / 开发计划
 
-> 从 `README.md` 迁出的开发待办。README 只保留入口指引，详见各节。
 
 ## 1.0 之前的 todo
 
