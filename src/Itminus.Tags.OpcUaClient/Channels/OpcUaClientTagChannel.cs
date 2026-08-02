@@ -12,8 +12,6 @@ public class OpcUaClientTagChannel : ITagChannel
     private readonly ILogger<OpcUaClientTagChannel> _logger;
     private readonly ApplicationConfiguration _appConfig;
 
-    private SemaphoreSlim _connSignal = new SemaphoreSlim(1, 1);
-
     #region 配置
     private readonly OpcUaClientTagChannelOpt _channelOpt;
 

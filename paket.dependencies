@@ -14,8 +14,7 @@ nuget Microsoft.XmlSerializer.Generator >= 8.0 lowest_matching: true
 
 nuget FSharp.Core >= 8.0 lowest_matching: true
 nuget Itminus.FSharpExtensions >= 0.1.7 lowest_matching: true
-nuget FutureTech.ModbusTcp.Options >= 0.5.0 lowest_matching: true
-nuget FutureTech.Protocols >= 0.5.2 lowest_matching: true
+nuget NModbus >= 3.0.62 lowest_matching: true
 nuget StdUnit.Sharp7 >= 0.7.1 lowest_matching: true
 
 nuget McMaster.NETCore.Plugins >= 2.0.0 lowest_matching: true
@@ -55,3 +54,4 @@ group Mcp
 
     nuget ModelContextProtocol >= 1.2 lowest_matching: true
     nuget ModelContextProtocol.AspNetCore >= 1.2 lowest_matching: true
+    nuget System.IO.Pipelines >= 10.0.7 lowest_matching: true
