@@ -1,12 +1,10 @@
 ﻿using Itminus.Tags.ModbusTcp;
-using Itminus.Tags.TagCbntors;
-
 namespace Itminus.Tags.Hjzk;
 
 /// <summary>
 /// Hjzk CbntBuiilder 基类，将来会被扩展成 DI/DO CbntBuilder
 /// </summary>
-public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
+public abstract class HjzkCbntBuilderBase: ModbusBitTagCbntBuilder
 {
 
 
@@ -29,30 +27,6 @@ public abstract class HjzkCbntBuilderBase: ModbusTcpTagCbntBuilder
     {
         var tagFactory = this.MakeHjzkTagFactory();
         return tagFactory.CreateTag(descriptor);
-    }
-
-    /// <inheritdoc/>
-    protected override TagCbntBuilderBase AutoLayout()
-    {
-        var cacheSize = 0;
-        foreach (var kvp in this.TagCbnt.Children)
-        {
-            var tag = kvp.Value;
-            var occupied = tag.TagOffset + tag.TagDescriptor.TagSize;
-            if (tag is BitTagCbntor bitTag)
-            {
-                if (tag.CacheOffset != tag.TagOffset)
-                {
-                    occupied = tag.CacheOffset + 1;
-                }
-            }
-            if (occupied > cacheSize)
-            {
-                cacheSize = occupied;
-            }
-        }
-        this.TagCbnt.ResizeCache(cacheSize);
-        return this;
     }
 }
 

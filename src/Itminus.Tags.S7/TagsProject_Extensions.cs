@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags.S7;
 
@@ -8,7 +8,7 @@ namespace Itminus.Tags.S7;
 public static class TagsProject_Extensions
 {
     /// <summary>
-    /// 注册S7支持。是 <see cref="AddS7Channel"/>、<see cref="AddS7TagCbntBuilder"/> 与 <see cref="AddS7TagBuilder"/> 的组合
+    /// 注册S7支持。是 <see cref="AddS7Channel"/>、<see cref="AddS7TagCbntBuilder"/> 与 <see cref="AddS7DirectTagBuilder"/> 的组合
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
@@ -17,13 +17,13 @@ public static class TagsProject_Extensions
         builder
             .AddS7Channel()
             .AddS7TagCbntBuilder()
-            .AddS7TagBuilder();
+            .AddS7DirectTagBuilder();
         return builder;
     }
 
 #region 基本扩展
     /// <summary>
-    /// 注册S7支持——仅注册ChannelFactory，不注册TagBuilder/TagCbntBuilder <br/>
+    /// 注册S7支持——仅注册ChannelFactory，不注册DirectTagBuilder/TagCbntBuilder <br/>
     /// 作用是在通道的驱动为 <see cref="S7Names.DriverName"/> 时，会尝试构建一个通道。
     /// </summary>
     /// <param name="builder"></param>
@@ -41,7 +41,7 @@ public static class TagsProject_Extensions
     }
 
     /// <summary>
-    /// 注册S7支持——仅注册测点组合构建器（TagCbntBuilder），不注册ChannelFactory/TagBuilder <br/>
+    /// 注册S7支持——仅注册测点组合构建器（TagCbntBuilder），不注册ChannelFactory/DirectTagBuilder <br/>
     /// 作用是在通道的驱动为 <see cref="S7Names.DriverName"/> 时，会尝试构建一个测点组合。
     /// </summary>
     /// <param name="builder"></param>
@@ -63,14 +63,14 @@ public static class TagsProject_Extensions
     }
 
     /// <summary>
-    /// 注册S7支持——仅注册直接测点构建器（TagBuilder），不注册ChannelFactory/TagCbntBuilder <br/>
+    /// 注册S7支持——仅注册直接测点构建器（DirectTagBuilder），不注册ChannelFactory/TagCbntBuilder <br/>
     /// 作用是在通道的驱动为 <see cref="S7Names.DriverName"/> 时，会尝试构建一个测点。
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="configure">配置TagBuilder的回调</param>
-    /// <param name="predicate">用于过滤TagBuilder的谓词</param>
+    /// <param name="configure">配置DirectTagBuilder的回调</param>
+    /// <param name="predicate">用于过滤DirectTagBuilder的谓词</param>
     /// <returns></returns>
-    public static TagsProjectServiceBuilder AddS7TagBuilder(
+    public static TagsProjectServiceBuilder AddS7DirectTagBuilder(
         this TagsProjectServiceBuilder builder,
         Action<S7DirectTagBuilder>? configure = null,
         Func<S7DirectTagBuilder, bool>? predicate = null
@@ -79,7 +79,7 @@ public static class TagsProject_Extensions
         // register S7 tags loader
         builder.ConfigTagsLoader((sp, composite) =>
         {
-            composite.AddTagBuilder<S7DirectTagBuilder>(S7Names.DriverName, configure, predicate);
+            composite.AddDirectTagBuilder<S7DirectTagBuilder>(S7Names.DriverName, configure, predicate);
         });
         return builder;
     }

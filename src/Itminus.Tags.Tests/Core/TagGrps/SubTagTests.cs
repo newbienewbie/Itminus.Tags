@@ -41,7 +41,7 @@ public class SubTagTests
             .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100.1" })
             .Configure(builder =>
             {
-                var tagFactory = builder.MakeS7TagFactory();
+                var tagFactory = ((S7TagCbntBuilder)builder).MakeS7TagFactory();
 
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {

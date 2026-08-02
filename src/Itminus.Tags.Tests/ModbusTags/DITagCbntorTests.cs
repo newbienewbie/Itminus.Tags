@@ -8,9 +8,9 @@ namespace Itminus.Tags.Tests.ModbusTags;
 
 public class DITagCbntorTests
 {
-    private static (TagCbnt cbnt, DITagCbntor tag) CreateContext()
+    private static (TestBoolTagCbnt cbnt, DITagCbntor tag) CreateContext()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0" });
+        var cbnt = new TestBoolTagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0" });
         cbnt.ResizeCache(4);
         var descriptor = new TagDescriptor
         {
@@ -24,10 +24,10 @@ public class DITagCbntorTests
     }
 
     [Fact]
-    public void Value_WhenCacheByteZero_ReturnsFalse()
+    public void Value_WhenCacheFalse_ReturnsFalse()
     {
         var (cbnt, tag) = CreateContext();
-        cbnt.Cache.Span[0] = 0x00;
+        cbnt.Cache.Span[0] = false;
 
         var result = tag.Value;
 
@@ -35,10 +35,10 @@ public class DITagCbntorTests
     }
 
     [Fact]
-    public void Value_WhenCacheByteNonZero_ReturnsTrue()
+    public void Value_WhenCacheTrue_ReturnsTrue()
     {
         var (cbnt, tag) = CreateContext();
-        cbnt.Cache.Span[0] = 0x01;
+        cbnt.Cache.Span[0] = true;
 
         var result = tag.Value;
 

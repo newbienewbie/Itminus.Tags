@@ -23,7 +23,7 @@ internal static class TagsProject_Extensions
     {
         builder.ConfigTagsLoader((_, composite) =>
         {
-            composite.AddTagBuilder((channel, descriptor) =>
+            composite.AddDirectTagBuilder((channel, descriptor) =>
                 channel is FakedChannel ? new FakedTagBuilder(descriptor) : null);
         });
         return builder;

@@ -22,7 +22,7 @@ public class S7TagCbntBuilderTests
             .WithCbntDescriptor(new TagCbntDescriptor { Name = "cbnt1", StartAddress = "DB200.100" })
             .Configure(builder =>
             {
-                var tagFactory = builder.MakeS7TagFactory();
+                var tagFactory = ((S7TagCbntBuilder)builder).MakeS7TagFactory();
 
                 builder.AddTag(tagFactory.CreateTag(new TagDescriptor()
                 {
@@ -57,6 +57,6 @@ public class S7TagCbntBuilderTests
         Assert.Equal("DB200.106.1", bitTag.NormalizedAddress());
         Assert.Equal(4, byteTag.TagOffset);
         Assert.Equal(6, bitTag.TagOffset);
-        Assert.Equal(7, cbnt.CacheSize);
+        Assert.Equal(7, ((TagCbnt<byte>)cbnt).CacheSize);
     }
 }

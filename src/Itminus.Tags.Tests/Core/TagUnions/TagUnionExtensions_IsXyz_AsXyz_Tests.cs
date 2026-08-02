@@ -12,7 +12,7 @@ public class TagUnionExtensions_IsXyz_AsXyz_Tests
     private static ITag CreateFakeTag(string name = "t") 
         => new FakeTag { TagDescriptor = new TagDescriptor { TagName = name } };
     private static ITagCbnt CreateFakeCbnt(string name = "c") 
-        => new TagCbnt(new TagCbntDescriptor { Name = name });
+        => new TestByteTagCbnt(new TagCbntDescriptor { Name = name });
     private static ITagGrp CreateFakeGrp(string name = "g") 
         => new TagGrp(new TagGrpDescriptor { Name = name }, null);
 

@@ -22,7 +22,7 @@ public class TagContainerExtensionsTests
     [Fact]
     public void From_ITagCbnt_IntoTagContainer_ProducesSameType()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "c" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "c" });
 
         var container = cbnt.IntoTagContainer();
 
@@ -35,7 +35,7 @@ public class TagContainerExtensionsTests
     {
         var channel = new FakedChannel(new TagChannelDescriptor { Name = "fake-channel" });
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g" }, channel);
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "c" }) { Parent = grp };
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "c" }) { Parent = grp };
         var container = TagContainer.From(cbnt);
 
         var result = container.SearchRequiredChannel();

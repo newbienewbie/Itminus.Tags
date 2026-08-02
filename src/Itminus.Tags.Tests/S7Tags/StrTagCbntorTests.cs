@@ -69,13 +69,13 @@ namespace Itminus.Tags.Tests.S7Tags
             var strTag = tag as S7StrTagCbntor;
             Assert.NotNull(strTag);
 
-            Assert.Equal(new byte[] { (byte)maxLen, (byte)0 }, cbnt.Cache.Span.Slice(2, 2).ToArray());
+            Assert.Equal(new byte[] { (byte)maxLen, (byte)0 }, ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2, 2).ToArray());
 
 
             tag.Value = "ABCDE";
             Assert.Equal("ABCDE", tag.Value);
             Assert.Equal("ABCDE", tag.GetTagValue<string>());
-            Assert.Equal(new byte[] { (byte)maxLen, (byte)5 }, cbnt.Cache.Span.Slice(2, 2).ToArray());
+            Assert.Equal(new byte[] { (byte)maxLen, (byte)5 }, ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2, 2).ToArray());
             Assert.Equal(5, strTag.Strlen);
             Assert.Equal(10, strTag.Maxlen);
 
@@ -84,8 +84,8 @@ namespace Itminus.Tags.Tests.S7Tags
             tag.Value = newVal1;
             var got = tag.Value as string;
             Assert.Equal(newVal1, got);
-            Assert.Equal(new byte[] { (byte)maxLen, (byte)4 }, cbnt.Cache.Span.Slice(2, 2).ToArray());
-            var span = cbnt.Cache.Span.Slice(2+2, 4);
+            Assert.Equal(new byte[] { (byte)maxLen, (byte)4 }, ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2, 2).ToArray());
+            var span = ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2+2, 4);
             var roundtrip = Encoding.ASCII.GetString(span);
             Assert.Equal(newVal1, roundtrip);
             Assert.Equal(4, strTag.Strlen);
@@ -187,20 +187,20 @@ namespace Itminus.Tags.Tests.S7Tags
                 (byte)'A', (byte)'B', (byte)'C', (byte)'D', (byte)'E',
                 0, 0, 0, 0, 0,
             };
-            cache.CopyTo(cbnt.Cache.Span);
+            cache.CopyTo(((TagCbnt<byte>)cbnt).Cache.Span);
 
             // 读取不会崩溃
             Assert.Equal("ABCDE", tag.Value);
             Assert.Equal(10, strTag.Maxlen);
             Assert.Equal(5, strTag.Strlen);
-            Assert.Equal(new byte[] { 0, 5 }, cbnt.Cache.Span.Slice(2, 2).ToArray());
+            Assert.Equal(new byte[] { 0, 5 }, ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2, 2).ToArray());
 
             // 写入时仍然使用自己的MaxLen
             tag.Value = "WXYZ";
             Assert.Equal("WXYZ", tag.Value);
             Assert.Equal(10, strTag.Maxlen);
             Assert.Equal(4, strTag.Strlen);
-            Assert.Equal(new byte[] { 10, 4 }, cbnt.Cache.Span.Slice(2, 2).ToArray());
+            Assert.Equal(new byte[] { 10, 4 }, ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2, 2).ToArray());
         }
     }
 }

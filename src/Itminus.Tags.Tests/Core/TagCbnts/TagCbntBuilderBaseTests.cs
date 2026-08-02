@@ -30,9 +30,6 @@ public class TagCbntBuilderBaseTests
         public bool IsScaned { get; set; }
         public ITagChannel? Channel { get; set; }
         public string StartAddress { get; set; } = string.Empty;
-        public Memory<byte> Cache => Memory<byte>.Empty;
-        public int CacheSize => 0;
-        public void ResizeCache(int cacheSize) { }
         public bool IsDirty { get; set; }
         public Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
         public Task WriteAsync(CancellationToken ct) => Task.CompletedTask;
@@ -49,6 +46,9 @@ public class TagCbntBuilderBaseTests
         }
 
         public override object? Value { get; set; }
+
+        public override Task ReadAsync(CancellationToken ct) => throw new NotSupportedException();
+        public override Task WriteAsync(CancellationToken ct) => throw new NotSupportedException();
     }
 
     /// <summary>
@@ -81,6 +81,9 @@ public class TagCbntBuilderBaseTests
         }
 
         public override object? Value { get; set; }
+
+        public override Task ReadAsync(CancellationToken ct) => throw new NotSupportedException();
+        public override Task WriteAsync(CancellationToken ct) => throw new NotSupportedException();
     }
 
     #endregion

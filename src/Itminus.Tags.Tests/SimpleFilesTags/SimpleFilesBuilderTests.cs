@@ -10,7 +10,7 @@ namespace Itminus.Tags.Tests.SimpleFilesTags;
 /// <summary>
 /// 测试 <see cref="TagsProject_Extensions"/> 重构后，
 /// <see cref="TagsProject_Extensions.AddSimpleFilesChannel"/> +
-/// <see cref="TagsProject_Extensions.AddSimpleFilesTagBuilder"/> 多次注册的场景
+/// <see cref="TagsProject_Extensions.AddSimpleFilesDirectTagBuilder"/> 多次注册的场景
 /// </summary>
 public class SimpleFilesBuilderTests
 {
@@ -31,18 +31,18 @@ public class SimpleFilesBuilderTests
 </root>");
     }
 
-    #region AddSimpleFilesChannel + 单次 AddSimpleFilesTagBuilder（等价于 AddSimpleFilesSupport）
+    #region AddSimpleFilesChannel + 单次 AddSimpleFilesDirectTagBuilder（等价于 AddSimpleFilesSupport）
 
     [Fact]
-    public void AddSimpleFilesChannel_WithSingleAddSimpleFilesTagBuilder_ShouldLoadTags()
+    public void AddSimpleFilesChannel_WithSingleAddSimpleFilesDirectTagBuilder_ShouldLoadTags()
     {
-        // Arrange: AddSimpleFilesChannel 一次 + AddSimpleFilesTagBuilder 一次
+        // Arrange: AddSimpleFilesChannel 一次 + AddSimpleFilesDirectTagBuilder 一次
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddTagsProjectServices(b =>
         {
             b.AddSimpleFilesChannel();
-            b.AddSimpleFilesTagBuilder();
+            b.AddSimpleFilesDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -73,7 +73,7 @@ public class SimpleFilesBuilderTests
     }
 
     [Fact]
-    public void AddSimpleFilesChannel_WithSingleAddSimpleFilesTagBuilder_ConfigureIsInvoked()
+    public void AddSimpleFilesChannel_WithSingleAddSimpleFilesDirectTagBuilder_ConfigureIsInvoked()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -83,7 +83,7 @@ public class SimpleFilesBuilderTests
         services.AddTagsProjectServices(b =>
         {
             b.AddSimpleFilesChannel();
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 configure: _ => { configureWasCalled = true; }
             );
         });
@@ -103,12 +103,12 @@ public class SimpleFilesBuilderTests
 
     #endregion
 
-    #region AddSimpleFilesChannel + 多次 AddSimpleFilesTagBuilder
+    #region AddSimpleFilesChannel + 多次 AddSimpleFilesDirectTagBuilder
 
     [Fact]
-    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesTagBuilder_AllConfigureInvoked()
+    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesDirectTagBuilder_AllConfigureInvoked()
     {
-        // Arrange: channel 一次 + 两次 TagBuilder，验证注册顺序
+        // Arrange: channel 一次 + 两次 DirectTagBuilder，验证注册顺序
         var services = new ServiceCollection();
         services.AddLogging();
         var configure1Called = false;
@@ -118,11 +118,11 @@ public class SimpleFilesBuilderTests
         {
             b.AddSimpleFilesChannel();
 
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 configure: _ => { configure1Called = true; }
             );
 
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 configure: _ => { configure2Called = true; }
             );
         });
@@ -147,7 +147,7 @@ public class SimpleFilesBuilderTests
     }
 
     [Fact]
-    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesTagBuilder_DifferentPredicates_ShouldRouteToCorrectBuilder()
+    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesDirectTagBuilder_DifferentPredicates_ShouldRouteToCorrectBuilder()
     {
         // Arrange:
         //   第一个 builder → 只接受 int-a
@@ -160,11 +160,11 @@ public class SimpleFilesBuilderTests
         {
             b.AddSimpleFilesChannel();
 
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagName == "int-a"
             );
 
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagName == "int-b"
             );
         });
@@ -192,7 +192,7 @@ public class SimpleFilesBuilderTests
     }
 
     [Fact]
-    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesTagBuilder_FirstBuilderRejectsSome_SecondBuilderHandlesRest()
+    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesDirectTagBuilder_FirstBuilderRejectsSome_SecondBuilderHandlesRest()
     {
         // Arrange:
         //   第一个 builder: predicate 拒绝所有（返回 false）
@@ -206,12 +206,12 @@ public class SimpleFilesBuilderTests
             b.AddSimpleFilesChannel();
 
             // 第一个 builder：predicate 永远返回 false
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 predicate: _ => false
             );
 
             // 第二个 builder：无 predicate，接手处理
-            b.AddSimpleFilesTagBuilder();
+            b.AddSimpleFilesDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -231,7 +231,7 @@ public class SimpleFilesBuilderTests
     }
 
     [Fact]
-    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesTagBuilder_FirstBuilderHandlesPartial_SecondBuilderHandlesRemaining()
+    public void AddSimpleFilesChannel_WithMultipleAddSimpleFilesDirectTagBuilder_FirstBuilderHandlesPartial_SecondBuilderHandlesRemaining()
     {
         // Arrange:
         //   第一个 builder: 处理 int-a（用 predicate 限制为 TagName 以 "a" 结尾的标签）
@@ -245,12 +245,12 @@ public class SimpleFilesBuilderTests
             b.AddSimpleFilesChannel();
 
             // 第一个 builder：只处理 TagName 以 "a" 结尾的标签
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagName.EndsWith("a")
             );
 
             // 第二个 builder：无 predicate，处理其他所有标签
-            b.AddSimpleFilesTagBuilder();
+            b.AddSimpleFilesDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -274,7 +274,7 @@ public class SimpleFilesBuilderTests
     #region AddSimpleFilesSupport 等效性
 
     [Fact]
-    public void AddSimpleFilesSupport_EquivalentTo_AddSimpleFilesChannel_Plus_AddSimpleFilesTagBuilder()
+    public void AddSimpleFilesSupport_EquivalentTo_AddSimpleFilesChannel_Plus_AddSimpleFilesDirectTagBuilder()
     {
         // Arrange: 用 AddSimpleFilesSupport（旧方式）
         var services1 = new ServiceCollection();
@@ -283,13 +283,13 @@ public class SimpleFilesBuilderTests
         using var root1 = services1.BuildServiceProvider();
         using var scope1 = root1.CreateScope();
 
-        // Arrange: 用 AddSimpleFilesChannel + AddSimpleFilesTagBuilder（新拆分方式）
+        // Arrange: 用 AddSimpleFilesChannel + AddSimpleFilesDirectTagBuilder（新拆分方式）
         var services2 = new ServiceCollection();
         services2.AddLogging();
         services2.AddTagsProjectServices(b =>
         {
             b.AddSimpleFilesChannel();
-            b.AddSimpleFilesTagBuilder();
+            b.AddSimpleFilesDirectTagBuilder();
         });
         using var root2 = services2.BuildServiceProvider();
         using var scope2 = root2.CreateScope();

@@ -10,7 +10,7 @@ public class TagCbntExtensionsTests
     [Fact]
     public void TagName_ForITagCbnt_ReturnsDescriptorName()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "myCbnt" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "myCbnt" });
 
         var result = cbnt.TagName();
 

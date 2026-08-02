@@ -1,19 +1,27 @@
-﻿using Itminus.Tags.TagCbntors;
-
-namespace Itminus.Tags.S7;
+﻿namespace Itminus.Tags.S7;
 
 
 /// <summary>
 /// S7 测点工厂
 /// </summary>
-public class S7TagFactory : TagCbntorFactoryBase
+internal class S7TagFactory : TagCbntorFactoryBase
 {
+
+
     /// <summary>
-    /// c'tor
+    /// c'tor（强类型绑定）
     /// </summary>
-    public S7TagFactory(TagCbntBuilderBase builder) : base(builder)
-    { 
+    internal S7TagFactory(TagCbntBuilderBase builder, S7TagCbnt cbnt) : base(builder)
+    {
+        this._cbnt = cbnt;
     }
+
+    private readonly S7TagCbnt _cbnt;
+
+    /// <summary>
+    /// 所属组合的强类型引用（byte 缓存）。
+    /// </summary>
+    internal S7TagCbnt TypedCbnt => this._cbnt;
 
     /// <summary>
     /// 获取测点偏移
@@ -34,7 +42,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual BitTagCbntor CreateBitTag(TagDescriptor tagDescriptor)
+    protected virtual S7BitTagCbntor CreateBitTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -48,12 +56,12 @@ public class S7TagFactory : TagCbntorFactoryBase
         var offset = tagAddr.StartAddress -  groupAddr.StartAddress;
         if (tagAddr.NthBit < 8)
         {
-            return new BitTagCbntor(tagDescriptor, this.TagCbnt, offset, offset, tagAddr.NthBit);
+            return new S7BitTagCbntor(tagDescriptor, TypedCbnt, offset, offset, tagAddr.NthBit);
         }
         else
         {
             var nth = tagAddr.NthBit % 8;
-            return new BitTagCbntor(tagDescriptor, this.TagCbnt, offset, offset + 1, (byte)nth);
+            return new S7BitTagCbntor(tagDescriptor, TypedCbnt, offset, offset + 1, (byte)nth);
         }
     }
 
@@ -62,7 +70,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual ByteTagCbntor CreateByteTag(TagDescriptor tagDescriptor)
+    protected virtual S7ByteTagCbntor CreateByteTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -71,7 +79,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         }
 
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new ByteTagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7ByteTagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
     /// <summary>
@@ -79,7 +87,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual Int16TagCbntor CreateInt16Tag(TagDescriptor tagDescriptor)
+    protected virtual S7Int16TagCbntor CreateInt16Tag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -88,7 +96,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         }
 
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new Int16TagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7Int16TagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
     /// <summary>
@@ -96,7 +104,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual UInt16TagCbntor CreateUInt16Tag(TagDescriptor tagDescriptor)
+    protected virtual S7UInt16TagCbntor CreateUInt16Tag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -105,7 +113,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         }
 
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new UInt16TagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7UInt16TagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
     /// <summary>
@@ -113,7 +121,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual Int32TagCbntor CreateInt32Tag(TagDescriptor tagDescriptor)
+    protected virtual S7Int32TagCbntor CreateInt32Tag(TagDescriptor tagDescriptor)
     {   
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -121,7 +129,7 @@ public class S7TagFactory : TagCbntorFactoryBase
             tagDescriptor.TagSize = 4;
         }
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new Int32TagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7Int32TagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
     /// <summary>
@@ -129,7 +137,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual UInt32TagCbntor CreateUInt32Tag(TagDescriptor tagDescriptor)
+    protected virtual S7UInt32TagCbntor CreateUInt32Tag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -138,7 +146,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         }
 
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new UInt32TagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7UInt32TagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
     /// <summary>
@@ -146,7 +154,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual Int64TagCbntor CreateInt64Tag(TagDescriptor tagDescriptor)
+    protected virtual S7Int64TagCbntor CreateInt64Tag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -155,7 +163,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         }
 
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new Int64TagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7Int64TagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
     /// <summary>
@@ -163,7 +171,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual UInt64TagCbntor CreateUInt64Tag(TagDescriptor tagDescriptor)
+    protected virtual S7UInt64TagCbntor CreateUInt64Tag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -172,7 +180,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         }
 
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new UInt64TagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7UInt64TagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
     /// <summary>
@@ -180,7 +188,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     /// </summary>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual FloatTagCbntor CreateFloatTag(TagDescriptor tagDescriptor)
+    protected virtual S7FloatTagCbntor CreateFloatTag(TagDescriptor tagDescriptor)
     {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
@@ -189,7 +197,7 @@ public class S7TagFactory : TagCbntorFactoryBase
         }
 
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new FloatTagCbntor(tagDescriptor, this.TagCbnt, offset);
+        return new S7FloatTagCbntor(tagDescriptor, TypedCbnt, offset);
     }
 
 
@@ -202,7 +210,7 @@ public class S7TagFactory : TagCbntorFactoryBase
     {
         S7Utils.NormalizeS7StrTagSize(tagDescriptor, out var maxlen);
         int offset = GetTagOffset(tagDescriptor, out var tagAddr);
-        return new S7StrTagCbntor(tagDescriptor, this.TagCbnt, offset, maxlen);
+        return new S7StrTagCbntor(tagDescriptor, TypedCbnt, offset, maxlen);
     }
     #endregion
 

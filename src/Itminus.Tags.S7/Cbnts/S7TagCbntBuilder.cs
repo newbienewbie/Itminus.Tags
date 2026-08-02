@@ -1,6 +1,4 @@
-﻿using Itminus.Tags.TagCbntors;
-
-namespace Itminus.Tags.S7;
+﻿namespace Itminus.Tags.S7;
 
 /// <summary>
 /// 针对S7的测点组合构建器
@@ -11,10 +9,27 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
     /// c'tor<br/>
     /// 需要额外使用 <c>WithCbntDescriptor()</c> 设置实际描述符。
     /// </summary>
-    public S7TagCbntBuilder() 
-        : base(new TagCbnt(new TagCbntDescriptor { Name = "unkown_s7_cbnt_name", StartAddress = "unknown_s7_cbnt_start_address" }))
+    public S7TagCbntBuilder()
+        : this(new S7TagCbnt(
+            new TagCbntDescriptor { 
+                Name = "unkown_s7_cbnt_name", 
+                StartAddress = "unknown_s7_cbnt_start_address" 
+            }
+        ))
     {
     }
+
+    private readonly S7TagCbnt _cbnt;
+
+    S7TagCbntBuilder(S7TagCbnt cbnt) : base(cbnt)
+    {
+        this._cbnt = cbnt;
+    }
+
+    /// <summary>
+    /// 所属组合的强类型引用。
+    /// </summary>
+    internal S7TagCbnt TypedCbnt => this._cbnt;
 
     /// <inheritdoc/>
     protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel)
@@ -31,11 +46,11 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         {
             var tag = kvp.Value;
             var occupied = tag.TagOffset + tag.TagDescriptor.TagSize;
-            if (tag is BitTagCbntor bitTag)
+            if (tag is S7BitTagCbntor bitTag)
             {
-                if (tag.CacheOffset != tag.TagOffset)
+                if (bitTag.CacheOffset != bitTag.TagOffset)
                 {
-                    occupied = tag.CacheOffset + 1;
+                    occupied = bitTag.CacheOffset + 1;
                 }
             }
             if (occupied > cacheSize)
@@ -44,7 +59,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
             }
         }
 
-        this.TagCbnt.ResizeCache(cacheSize);
+        this._cbnt.ResizeCache(cacheSize);
 
         // initialize str tag prefix
         foreach (var kvp in this.TagCbnt.Children)
@@ -88,7 +103,7 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
 
     private void InitializeStrTag(S7StrTagCbntor tag)
     {
-        var prefix = this.TagCbnt.Cache.Slice(tag.CacheOffset, 2).Span;
+        var prefix = this._cbnt.Cache.Slice(tag.CacheOffset, 2).Span;
         prefix[0] = tag.Maxlen;
         prefix[1] = 0;
     }

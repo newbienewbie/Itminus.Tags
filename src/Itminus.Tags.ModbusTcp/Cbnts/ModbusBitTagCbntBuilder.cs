@@ -1,20 +1,30 @@
-﻿using Itminus.Tags.TagCbntors;
-
-namespace Itminus.Tags.ModbusTcp;
+﻿namespace Itminus.Tags.ModbusTcp;
 
 /// <summary>
 /// ModbusTcp Cbnt 构建器
 /// </summary>
-public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
+public class ModbusBitTagCbntBuilder : TagCbntBuilderBase
 {
     /// <summary>
     /// c'tor<br/>
     /// 需要额外使用 <c>WithCbntDescriptor()</c> 设置实际描述符。
     /// </summary>
-    public ModbusTcpTagCbntBuilder()
-        : base(new TagCbnt(new TagCbntDescriptor { Name = "unkown_modbustcp_cbnt_name", StartAddress = "unknown_modbustcp_cbnt_start_address" }))
+    public ModbusBitTagCbntBuilder()
+        : this(new ModbusBitTagCbnt(new TagCbntDescriptor { Name = "unkown_modbustcp_cbnt_name", StartAddress = "unknown_modbustcp_cbnt_start_address" }))
     {
     }
+
+    private readonly ModbusBitTagCbnt _cbnt;
+
+    internal ModbusBitTagCbntBuilder(ModbusBitTagCbnt cbnt) : base(cbnt)
+    {
+        this._cbnt = cbnt;
+    }
+
+    /// <summary>
+    /// 所属组合的强类型引用。
+    /// </summary>
+    internal ModbusBitTagCbnt TypedCbnt => this._cbnt;
 
 
     /// <summary>
@@ -26,6 +36,16 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
     /// 区域
     /// </summary>
     public virtual string? Area { get; protected set; }
+
+    /// <summary>
+    /// 当前组合是否<b>位</b>空间（0x/1x，非寄存器空间）——由起始地址解析。<br/>
+    /// 本构建器只服务位空间；寄存器空间（3x/4x）请使用 <see cref="ModbusRegisterTagCbntBuilder"/>。
+    /// </summary>
+    internal bool IsNotRegisterArea()
+    {
+        var addr = ModBusTcpAddressParser.Parse(this.TagCbnt.StartAddress);
+        return addr.Area != RegisterKinds.HoldingRegisters && addr.Area != RegisterKinds.InputRegisters;
+    }
 
 
     /// <inheritdoc/>
@@ -50,7 +70,7 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
     /// <inheritdoc/>
     protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel)
     {
-        var tagFactory = this.MakeModbusTcpTagFactory();
+        var tagFactory = this.MakeModbusBitTagFactory();
         return tagFactory.CreateTag(descriptor);
     }
 
@@ -62,19 +82,12 @@ public class ModbusTcpTagCbntBuilder : TagCbntBuilderBase
         {
             var tag = kvp.Value;
             var occupied = tag.TagOffset + tag.TagDescriptor.TagSize;
-            if (tag is BitTagCbntor bitTag)
-            {
-                if (tag.CacheOffset != tag.TagOffset)
-                {
-                    occupied = tag.CacheOffset + 1;
-                }
-            }
             if (occupied > cacheSize)
             {
                 cacheSize = occupied;
             }
         }
-        this.TagCbnt.ResizeCache(cacheSize);
+        this._cbnt.ResizeCache(cacheSize);
         return this;
     }
 }

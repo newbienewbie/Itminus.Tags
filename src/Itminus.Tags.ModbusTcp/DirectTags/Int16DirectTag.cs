@@ -10,34 +10,27 @@ internal class UInt16DirectTag : MultipleBytesDirectTag<ushort>
     {
     }
 
-    protected override int BufferSize => 2;
+    protected override int RegisterCount => 1;
 
-    protected override void FillBytes(ushort value, in Span<byte> buffer)
+    protected override void FillRegisters(ushort value, Span<ushort> registers)
     {
-        // 16 位：cache 是"读回数值的小端内存形态"（见 MultipleBytesDirectTag 注释）。
-        // 写回时按 cache 形态写：设备 BigEndian → Write*LittleEndian（负负得正）；设备 LittleEndian → Write*BigEndian
-        switch (this.TagDescriptor.EndianKind)
+        // 16 位：单寄存器。EndianKind 描述寄存器内部字节序（BigEndian=标准大端直写；LittleEndian=内部颠倒）
+        registers[0] = this.TagDescriptor.EndianKind switch
         {
-            case EndianKinds.BigEndian:
-                BinaryPrimitives.WriteUInt16LittleEndian(buffer, value);
-                break;
-            case EndianKinds.LittleEndian:
-                BinaryPrimitives.WriteUInt16BigEndian(buffer, value);
-                break;
-            default:
-                throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}");
-        }
+            EndianKinds.BigEndian => value,
+            EndianKinds.LittleEndian => SwapBytes(value),
+            _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
+        };
     }
 
-    protected override ushort GetValueFromBytes(byte[] bytes)
+    protected override ushort GetValueFromRegisters(ReadOnlySpan<ushort> registers)
     {
-        // 16 位：cache = 读回数值的小端内存形态。设备 BigEndian（读回=物理值）用小端读还原；设备 LittleEndian 用大端读
         return this.TagDescriptor.EndianKind switch
         {
-            EndianKinds.BigEndian => BinaryPrimitives.ReadUInt16LittleEndian(bytes),
-            EndianKinds.LittleEndian => BinaryPrimitives.ReadUInt16BigEndian(bytes),
+            EndianKinds.BigEndian => registers[0],
+            EndianKinds.LittleEndian => SwapBytes(registers[0]),
             _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
-        }; 
+        };
     }
 }
 
@@ -49,32 +42,24 @@ internal class Int16DirectTag : MultipleBytesDirectTag<short>
     {
     }
 
-    protected override int BufferSize => 2;
+    protected override int RegisterCount => 1;
 
-    protected override void FillBytes(short value, in Span<byte> buffer)
+    protected override void FillRegisters(short value, Span<ushort> registers)
     {
-        // 16 位：cache 是"读回数值的小端内存形态"（见 MultipleBytesDirectTag 注释）。
-        // 写回时按 cache 形态写：设备 BigEndian → Write*LittleEndian（负负得正）；设备 LittleEndian → Write*BigEndian
-        switch (this.TagDescriptor.EndianKind)
+        registers[0] = this.TagDescriptor.EndianKind switch
         {
-            case EndianKinds.BigEndian:
-                BinaryPrimitives.WriteInt16LittleEndian(buffer, value);
-                break;
-            case EndianKinds.LittleEndian:
-                BinaryPrimitives.WriteInt16BigEndian(buffer, value);
-                break;
-            default:
-                throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}");
-        }
+            EndianKinds.BigEndian => (ushort)value,
+            EndianKinds.LittleEndian => SwapBytes((ushort)value),
+            _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
+        };
     }
 
-    protected override short GetValueFromBytes(byte[] bytes)
+    protected override short GetValueFromRegisters(ReadOnlySpan<ushort> registers)
     {
-        // 16 位：cache = 读回数值的小端内存形态。设备 BigEndian 用小端读还原；设备 LittleEndian 用大端读
         return this.TagDescriptor.EndianKind switch
         {
-            EndianKinds.BigEndian => BinaryPrimitives.ReadInt16LittleEndian(bytes),
-            EndianKinds.LittleEndian => BinaryPrimitives.ReadInt16BigEndian(bytes),
+            EndianKinds.BigEndian => (short)registers[0],
+            EndianKinds.LittleEndian => (short)SwapBytes(registers[0]),
             _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
         };
     }

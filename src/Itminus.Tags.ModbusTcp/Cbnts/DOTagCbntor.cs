@@ -4,13 +4,16 @@
 /// <summary>
 /// Modbus的DO点，地址范围00000~09999
 /// </summary>
-public class DOTagCbntor : TagCbntor
+public class DOTagCbntor : ModbusBitSpaceTagCbntorBase
 {
 
+    /// <summary>
+    /// c'tor
+    /// </summary>
     /// <param name="tagDescriptor"></param>
-    /// <param name="tagCbnt"></param>
+    /// <param name="tagCbnt">Modbus 位空间组合（bool 缓存）</param>
     /// <param name="cacheOffset"></param>
-    public DOTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset)
+    internal DOTagCbntor(TagDescriptor tagDescriptor, TagCbnt<bool> tagCbnt, int cacheOffset)
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {
     }
@@ -20,12 +23,7 @@ public class DOTagCbntor : TagCbntor
     /// </summary>
     public override object? Value
     {
-        get
-        {
-            var cache = TagCbnt.Cache;
-            var flags = cache.Span[CacheOffset];
-            return flags != 0;
-        }
+        get => this.Cache.Span[this.CacheOffset];
         set
         {
             if (value is not bool b)
@@ -35,10 +33,8 @@ public class DOTagCbntor : TagCbntor
 
             if (Value != null && !Value.Equals(b))
             {
-                var cache = TagCbnt.Cache;
-                cache.Span[CacheOffset] = b ? (byte)1 : (byte)0;
+                this.Cache.Span[this.CacheOffset] = b;
             }
-
 
             Timestamp = DateTime.Now;
             MarkDirty();

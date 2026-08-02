@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Itminus.Tags.TagCbntors;
+using Itminus.Tags;
+using Itminus.Tags.S7;
 using Xunit;
 
 namespace Itminus.Tags.Tests.Core.TagCbntors;
@@ -32,7 +33,7 @@ public class TagCbntorNonContinuousChannelTests
     public async Task ReadAsync_ThrowsNotImplementedException()
     {
         var channel = new NonContinuousChannel();
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0.0" })
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0.0" })
         {
             Channel = channel,
         };
@@ -44,7 +45,7 @@ public class TagCbntorNonContinuousChannelTests
             TagKind = BuiltinTagKinds.BYTE,
             TagSize = 1,
         };
-        var tag = new ByteTagCbntor(descriptor, cbnt, 0);
+        var tag = new S7ByteTagCbntor(descriptor, cbnt, 0);
 
         var ex = await Assert.ThrowsAsync<NotImplementedException>(() => tag.ReadAsync(CancellationToken.None));
         Assert.Contains(nameof(IContinuousBytesBasedTagChannel), ex.Message);
@@ -54,7 +55,7 @@ public class TagCbntorNonContinuousChannelTests
     public async Task WriteAsync_ThrowsNotImplementedException()
     {
         var channel = new NonContinuousChannel();
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0.0" })
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0.0" })
         {
             Channel = channel,
         };
@@ -66,7 +67,7 @@ public class TagCbntorNonContinuousChannelTests
             TagKind = BuiltinTagKinds.BYTE,
             TagSize = 1,
         };
-        var tag = new ByteTagCbntor(descriptor, cbnt, 0);
+        var tag = new S7ByteTagCbntor(descriptor, cbnt, 0);
 
         var ex = await Assert.ThrowsAsync<NotImplementedException>(() => tag.WriteAsync(CancellationToken.None));
         Assert.Contains(nameof(IContinuousBytesBasedTagChannel), ex.Message);

@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Itminus.Tags.TagCbntors;
+using Itminus.Tags;
+using Itminus.Tags.S7;
 using Xunit;
 
 namespace Itminus.Tags.Tests.Core.TagCbntors;
@@ -46,10 +47,10 @@ public class TagCbntorContinuousChannelTests
         }
     }
 
-    private static (TagCbnt cbnt, MockChannel channel, ByteTagCbntor tag) CreateContext()
+    private static (TestByteTagCbnt cbnt, MockChannel channel, S7ByteTagCbntor tag) CreateContext()
     {
         var channel = new MockChannel();
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0.0" })
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0.0" })
         {
             Channel = channel,
         };
@@ -61,7 +62,7 @@ public class TagCbntorContinuousChannelTests
             TagKind = BuiltinTagKinds.BYTE,
             TagSize = 1,
         };
-        var tag = new ByteTagCbntor(descriptor, cbnt, 0);
+        var tag = new S7ByteTagCbntor(descriptor, cbnt, 0);
         return (cbnt, channel, tag);
     }
 
@@ -151,7 +152,7 @@ public class TagCbntorContinuousChannelTests
             TagKind = BuiltinTagKinds.BYTE,
             TagSize = 2,
         };
-        var tag2 = new ByteTagCbntor(descriptor, cbnt, 2);
+        var tag2 = new S7ByteTagCbntor(descriptor, cbnt, 2);
         cbnt.ResizeCache(10);
 
         await tag2.ReadAsync(CancellationToken.None);

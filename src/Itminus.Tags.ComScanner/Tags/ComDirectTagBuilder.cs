@@ -6,7 +6,7 @@ namespace Itminus.Tags.ComScanner.Tags;
 /// <summary>
 /// 串口测点构建器。<br/>
 /// </summary>
-public class ComTagBuilder : TagBuilderBase
+public class ComDirectTagBuilder : TagBuilderBase
 {
     /// <summary>
     /// 内部默认逻辑：仅支持 STR 类型只读或者只写串口Tag

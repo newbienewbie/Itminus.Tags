@@ -1,7 +1,7 @@
 ﻿namespace Itminus.Tags.S7;
 
 /// <summary>
-/// extensions for <see cref="TagCbntBuilderBase"/>
+/// extensions for <see cref="S7TagCbntBuilder"/>
 /// </summary>
 public static class TagCbntBuilderExtensions
 {
@@ -10,9 +10,9 @@ public static class TagCbntBuilderExtensions
     /// </summary>
     /// <param name="tagGroupBuilder"></param>
     /// <returns></returns>
-    public static S7TagFactory MakeS7TagFactory(this TagCbntBuilderBase tagGroupBuilder)
+    internal static S7TagFactory MakeS7TagFactory(this S7TagCbntBuilder tagGroupBuilder)
     {
-        var tagFactory = new S7TagFactory(tagGroupBuilder);
+        var tagFactory = new S7TagFactory(tagGroupBuilder, tagGroupBuilder.TypedCbnt);
         return tagFactory;
     }
 

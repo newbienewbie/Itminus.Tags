@@ -22,7 +22,7 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         tagDescriptor.NormalizedAddress = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
-        return new DITagCbntor(tagDescriptor, TagCbnt, offset);
+        return new DITagCbntor(tagDescriptor, this._cbntBuilder.TypedCbnt, offset);
     }
 
 
@@ -37,7 +37,7 @@ public class ZLanTagFactory : TagCbntorFactoryBase
         tagDescriptor.NormalizedAddress = tagAddr.ToModbusTcpAddr(this._cbntBuilder.Slave);
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;
-        return new DOTagCbntor(tagDescriptor, TagCbnt, offset);
+        return new DOTagCbntor(tagDescriptor, this._cbntBuilder.TypedCbnt, offset);
     }
 
     public override ITagCbntor CreateTag(TagDescriptor descriptor)

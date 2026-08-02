@@ -66,22 +66,6 @@ public interface ITagCbnt
     abstract Task WriteAsync(CancellationToken ct);
     #endregion
 
-    /// <summary>
-    /// 底层硬件相对应的字节数组（缓存）
-    /// </summary>
-    Memory<byte> Cache { get; }
-
-    /// <summary>
-    /// Cache的大小
-    /// </summary>
-    int CacheSize { get; }
-
-    /// <summary>
-    /// 重新调整大小
-    /// </summary>
-    /// <param name="cacheSize"></param>
-    void ResizeCache(int cacheSize);
-
 
 
     /// <summary>

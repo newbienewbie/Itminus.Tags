@@ -1,18 +1,18 @@
 ﻿namespace Itminus.Tags.ModbusTcp;
 
 /// <summary>
-/// extensions for <see cref="TagCbntBuilderBase"/> to create <see cref="ModbusTcpTagFactory"/>
+/// extensions for <see cref="ModbusBitTagCbntBuilder"/> to create <see cref="ModbusBitTagFactory"/>
 /// </summary>
 public static class TagCbntBuilderExtensions
 {
     /// <summary>
-    /// 创建 <see cref="ModbusTcpTagFactory"/> 实例
+    /// 创建 <see cref="ModbusBitTagFactory"/> 实例
     /// </summary>
     /// <param name="tagGroupBuilder"></param>
     /// <returns></returns>
-    public static ModbusTcpTagFactory MakeModbusTcpTagFactory(this TagCbntBuilderBase tagGroupBuilder)
+    public static ModbusBitTagFactory MakeModbusBitTagFactory(this ModbusBitTagCbntBuilder tagGroupBuilder)
     {
-        var tagFactory = new ModbusTcpTagFactory(tagGroupBuilder);
+        var tagFactory = new ModbusBitTagFactory(tagGroupBuilder, tagGroupBuilder.TypedCbnt);
         return tagFactory;
     }
 }

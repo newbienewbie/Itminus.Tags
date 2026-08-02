@@ -8,10 +8,10 @@ namespace Itminus.Tags.Tests.OpcUaClientTags;
 
 public class OpcUaClientTagBuilderTests
 {
-    private static OpcUaClientTagBuilder CreateBuilder(ITagChannel? selfChannel, TagDescriptor? descriptor = null)
+    private static OpcUaClientDirectTagBuilder CreateBuilder(ITagChannel? selfChannel, TagDescriptor? descriptor = null)
     {
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g" }, new MockOpcUaChannel("mockChannel"));
-        var builder = new OpcUaClientTagBuilder();
+        var builder = new OpcUaClientDirectTagBuilder();
         builder
             .WithTagDescriptor(descriptor ?? new TagDescriptor { TagName = "t", RawAddress = "ns=1;s=Var1", TagKind = BuiltinTagKinds.FLOAT, TagSize = 4 })
             .WithParent(grp)

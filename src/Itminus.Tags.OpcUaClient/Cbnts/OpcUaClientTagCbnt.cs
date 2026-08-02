@@ -35,14 +35,7 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     public string StartAddress { get; set; }
 
     /// <inheritdoc/>
-    public Memory<byte> Cache { get; set; } = Memory<byte>.Empty;
-    /// <inheritdoc/>
-    public int CacheSize => this.Bag.Count;
-    /// <inheritdoc/>
     public bool IsDirty { get; set; }
-
-    /// <inheritdoc/>
-    public void ResizeCache(int cacheSize){ }
 
     /// <summary>
     /// OpcUA 节点值集合

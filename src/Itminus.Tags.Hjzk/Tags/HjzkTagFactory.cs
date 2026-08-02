@@ -39,7 +39,7 @@ public class HjzkTagFactory : TagCbntorFactoryBase
 
         var startAddr = DIPinAddr.DI1;
         var offset = (int)tagAddr - (int)startAddr;
-        return new DITagCbntor(tagDescriptor, TagCbnt, offset);
+        return new DITagCbntor(tagDescriptor, this._cbntBuilder.TypedCbnt, offset);
     }
 
 
@@ -63,7 +63,7 @@ public class HjzkTagFactory : TagCbntorFactoryBase
 
         var startAddr = DOPinAddr.DO1;
         var offset = (int)tagAddr - (int)startAddr;
-        return new DOTagCbntor(tagDescriptor, TagCbnt, offset);
+        return new DOTagCbntor(tagDescriptor, this._cbntBuilder.TypedCbnt, offset);
     }
 
     /// <summary>

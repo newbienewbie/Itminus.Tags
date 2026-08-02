@@ -10,7 +10,7 @@ namespace Itminus.Tags.Tests.OpcUaClientTags;
 /// 测试 <see cref="TagsProject_Extensions"/> 重构后，
 /// <see cref="TagsProject_Extensions.AddOpcUaClientChannel"/> +
 /// <see cref="TagsProject_Extensions.AddOpcUaClientTagCbntBuilder"/> +
-/// <see cref="TagsProject_Extensions.AddOpcUaClientTagBuilder"/> 的手动组合
+/// <see cref="TagsProject_Extensions.AddOpcUaClientDirectTagBuilder"/> 的手动组合
 /// </summary>
 public class OpcUaClientBuilderTests
 {
@@ -79,7 +79,7 @@ public class OpcUaClientBuilderTests
         {
             b.AddOpcUaClientChannel();
             b.AddOpcUaClientTagCbntBuilder();
-            b.AddOpcUaClientTagBuilder();
+            b.AddOpcUaClientDirectTagBuilder();
         });
         using var root2 = services2.BuildServiceProvider();
         using var scope2 = root2.CreateScope();
@@ -108,18 +108,18 @@ public class OpcUaClientBuilderTests
 
     #endregion
 
-    #region 拆分注册：仅 Channel + TagBuilder（不注册 TagCbntBuilder）可加载直接测点
+    #region 拆分注册：仅 Channel + DirectTagBuilder（不注册 TagCbntBuilder）可加载直接测点
 
     [Fact]
-    public void AddOpcUaClientChannel_WithTagBuilder_Only_LoadsDirectTags()
+    public void AddOpcUaClientChannel_WithDirectTagBuilder_Only_LoadsDirectTags()
     {
-        // Arrange：只注册 Channel + TagBuilder，不注册 TagCbntBuilder
+        // Arrange：只注册 Channel + DirectTagBuilder，不注册 TagCbntBuilder
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddTagsProjectServices(b =>
         {
             b.AddOpcUaClientChannel();
-            b.AddOpcUaClientTagBuilder();
+            b.AddOpcUaClientDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
