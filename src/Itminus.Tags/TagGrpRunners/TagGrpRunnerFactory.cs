@@ -21,7 +21,8 @@ internal class TagGrpRunnerFactory : ITagGrpRunnerFactory
         var logger = this._sp.GetRequiredService<ILogger<TagGrpRunner>>();
         var retryStrategy = this._sp.GetService<ITagGrpRunnerRetryStrategy>();
         var pollDelayStrategy = this._sp.GetService<ITagGrpRunnerPollDelayStrategy>();
-        var runner = new TagGrpRunner(project, logger, retryStrategy, pollDelayStrategy);
+        var disconnectStrategy = this._sp.GetService<ITagGrpRunnerDisconnectStrategy>();
+        var runner = new TagGrpRunner(project, logger, retryStrategy, pollDelayStrategy, disconnectStrategy);
         return runner;
     }
 }
