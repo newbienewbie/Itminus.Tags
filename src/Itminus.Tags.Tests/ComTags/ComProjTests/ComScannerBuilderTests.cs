@@ -12,7 +12,7 @@ namespace Itminus.Tags.Tests.ComTags.ComProjTests;
 /// <summary>
 /// 测试 <see cref="TagsProject_Extensions"/> 重构后，
 /// <see cref="TagsProject_Extensions.AddComScannerChannel"/> +
-/// <see cref="TagsProject_Extensions.AddComScannerTagBuilder"/> 多次注册的场景
+/// <see cref="TagsProject_Extensions.AddComScannerDirectTagBuilder"/> 多次注册的场景
 /// </summary>
 public class ComScannerBuilderTests
 {
@@ -25,7 +25,7 @@ public class ComScannerBuilderTests
 <root>
     <Channel name='COM-1' driver='COM'>
         <Port>COM1</Port>
-        <BaundRate>9600</BaundRate>
+        <BaudRate>9600</BaudRate>
         <Parity>None</Parity>
         <DataBits>8</DataBits>
         <StopBits>One</StopBits>
@@ -37,18 +37,18 @@ public class ComScannerBuilderTests
 </root>");
     }
 
-    #region AddComScannerChannel + 单次 AddComScannerTagBuilder（等价于 AddComScannerSupport）
+    #region AddComScannerChannel + 单次 AddComScannerDirectTagBuilder（等价于 AddComScannerSupport）
 
     [Fact]
-    public void AddComScannerChannel_WithSingleAddComScannerTagBuilder_ShouldLoadTags()
+    public void AddComScannerChannel_WithSingleAddComScannerDirectTagBuilder_ShouldLoadTags()
     {
-        // Arrange: AddComScannerChannel 一次 + AddComScannerTagBuilder 一次
+        // Arrange: AddComScannerChannel 一次 + AddComScannerDirectTagBuilder 一次
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddTagsProjectServices(b =>
         {
             b.AddComScannerChannel();
-            b.AddComScannerTagBuilder();
+            b.AddComScannerDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -83,7 +83,7 @@ public class ComScannerBuilderTests
     }
 
     [Fact]
-    public void AddComScannerChannel_WithSingleAddComScannerTagBuilder_ConfigureIsInvoked()
+    public void AddComScannerChannel_WithSingleAddComScannerDirectTagBuilder_ConfigureIsInvoked()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -93,7 +93,7 @@ public class ComScannerBuilderTests
         services.AddTagsProjectServices(b =>
         {
             b.AddComScannerChannel();
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 configure: _ => { configureWasCalled = true; }
             );
         });
@@ -113,12 +113,12 @@ public class ComScannerBuilderTests
 
     #endregion
 
-    #region AddComScannerChannel + 多次 AddComScannerTagBuilder
+    #region AddComScannerChannel + 多次 AddComScannerDirectTagBuilder
 
     [Fact]
-    public void AddComScannerChannel_WithMultipleAddComScannerTagBuilder_AllConfigureInvoked()
+    public void AddComScannerChannel_WithMultipleAddComScannerDirectTagBuilder_AllConfigureInvoked()
     {
-        // Arrange: channel 一次 + 两次 TagBuilder，验证第一个匹配的 builder 会处理所有标签，第二个 builder 不会被调用
+        // Arrange: channel 一次 + 两次 DirectTagBuilder，验证第一个匹配的 builder 会处理所有标签，第二个 builder 不会被调用
         var services = new ServiceCollection();
         services.AddLogging();
         var configure1Called = false;
@@ -128,11 +128,11 @@ public class ComScannerBuilderTests
         {
             b.AddComScannerChannel();
 
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 configure: _ => { configure1Called = true; }
             );
 
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 configure: _ => { configure2Called = true; }
             );
         });
@@ -158,7 +158,7 @@ public class ComScannerBuilderTests
     }
 
     [Fact]
-    public void AddComScannerChannel_WithMultipleAddComScannerTagBuilder_DifferentPredicates_ShouldRouteToCorrectBuilder()
+    public void AddComScannerChannel_WithMultipleAddComScannerDirectTagBuilder_DifferentPredicates_ShouldRouteToCorrectBuilder()
     {
         // Arrange: 
         //   第一个 builder → 只接受 扫码枪1
@@ -171,11 +171,11 @@ public class ComScannerBuilderTests
         {
             b.AddComScannerChannel();
 
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagName == "扫码枪1"
             );
 
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagName == "扫码枪2"
             );
         });
@@ -203,7 +203,7 @@ public class ComScannerBuilderTests
     }
 
     [Fact]
-    public void AddComScannerChannel_WithMultipleAddComScannerTagBuilder_FirstBuilderRejectsSome_SecondBuilderHandlesRest()
+    public void AddComScannerChannel_WithMultipleAddComScannerDirectTagBuilder_FirstBuilderRejectsSome_SecondBuilderHandlesRest()
     {
         // Arrange:
         //   第一个 builder: predicate 拒绝所有（返回 false）
@@ -217,12 +217,12 @@ public class ComScannerBuilderTests
             b.AddComScannerChannel();
 
             // 第一个 builder：predicate 永远返回 false
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 predicate: _ => false
             );
 
             // 第二个 builder：无 predicate，接手处理
-            b.AddComScannerTagBuilder();
+            b.AddComScannerDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -242,7 +242,7 @@ public class ComScannerBuilderTests
     }
 
     [Fact]
-    public void AddComScannerChannel_WithMultipleAddComScannerTagBuilder_FirstBuilderHandlesPartial_SecondBuilderHandlesRemaining()
+    public void AddComScannerChannel_WithMultipleAddComScannerDirectTagBuilder_FirstBuilderHandlesPartial_SecondBuilderHandlesRemaining()
     {
         // Arrange:
         //   第一个 builder: 处理 扫码枪1（用 predicate 限制为 TagName 以 "1" 结尾的标签）
@@ -256,12 +256,12 @@ public class ComScannerBuilderTests
             b.AddComScannerChannel();
 
             // 第一个 builder：只处理 TagName 包含 "1" 的标签
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagName.Contains("1")
             );
 
             // 第二个 builder：无 predicate，处理其他所有标签
-            b.AddComScannerTagBuilder();
+            b.AddComScannerDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -284,10 +284,10 @@ public class ComScannerBuilderTests
 
 
     /// <summary>
-    /// 验证 AddComScannerSupport 等价于 AddComScannerChannel + AddComScannerTagBuilder
+    /// 验证 AddComScannerSupport 等价于 AddComScannerChannel + AddComScannerDirectTagBuilder
     /// </summary>
     [Fact]
-    public void AddComScannerSupport_EquivalentTo_AddComScannerChannel_Plus_AddComScannerTagBuilder()
+    public void AddComScannerSupport_EquivalentTo_AddComScannerChannel_Plus_AddComScannerDirectTagBuilder()
     {
         // Arrange: 用 AddComScannerSupport
         var services1 = new ServiceCollection();
@@ -296,13 +296,13 @@ public class ComScannerBuilderTests
         using var root1 = services1.BuildServiceProvider();
         using var scope1 = root1.CreateScope();
 
-        // Arrange: 用 AddComScannerChannel + AddComScannerTagBuilder（新拆分方式）
+        // Arrange: 用 AddComScannerChannel + AddComScannerDirectTagBuilder（新拆分方式）
         var services2 = new ServiceCollection();
         services2.AddLogging();
         services2.AddTagsProjectServices(b =>
         {
             b.AddComScannerChannel();
-            b.AddComScannerTagBuilder();
+            b.AddComScannerDirectTagBuilder();
         });
         using var root2 = services2.BuildServiceProvider();
         using var scope2 = root2.CreateScope();

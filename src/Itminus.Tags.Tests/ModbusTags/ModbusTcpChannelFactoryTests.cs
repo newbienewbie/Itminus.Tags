@@ -72,7 +72,7 @@ public class ModbusTcpChannelFactoryTests
     }
 
     [Fact]
-    public void Create_WithMaxBatchSize_PropagatesToChannel()
+    public void Create_WithMaxWriteRegisters_PropagatesToChannel()
     {
         var factory = new ModbusTcpChannelFactory(NullLoggerFactory.Instance);
         var descriptor = new TagChannelDescriptor
@@ -80,11 +80,45 @@ public class ModbusTcpChannelFactoryTests
             Name = "mb3",
             Driver = "ModbusTcp",
         };
-        descriptor.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "50");
+        descriptor.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "50");
 
         var channel = factory.Create(descriptor);
 
         var mbChannel = Assert.IsType<ModbusTcpChannel>(channel);
-        Assert.Equal((ushort)50, mbChannel.MaxBatchSize);
+        Assert.Equal((ushort)50, mbChannel.MaxWriteRegisters);
+    }
+
+    [Fact]
+    public void Create_WithMaxReadRegisters_PropagatesToChannel()
+    {
+        var factory = new ModbusTcpChannelFactory(NullLoggerFactory.Instance);
+        var descriptor = new TagChannelDescriptor
+        {
+            Name = "mb4",
+            Driver = "ModbusTcp",
+        };
+        descriptor.Extras["MaxReadRegisters"] = new XElement("MaxReadRegisters", "32");
+
+        var channel = factory.Create(descriptor);
+
+        var mbChannel = Assert.IsType<ModbusTcpChannel>(channel);
+        Assert.Equal((ushort)32, mbChannel.MaxReadRegisters);
+    }
+
+    [Fact]
+    public void Create_WithMaxReadBits_PropagatesToChannel()
+    {
+        var factory = new ModbusTcpChannelFactory(NullLoggerFactory.Instance);
+        var descriptor = new TagChannelDescriptor
+        {
+            Name = "mb5",
+            Driver = "ModbusTcp",
+        };
+        descriptor.Extras["MaxReadBits"] = new XElement("MaxReadBits", "500");
+
+        var channel = factory.Create(descriptor);
+
+        var mbChannel = Assert.IsType<ModbusTcpChannel>(channel);
+        Assert.Equal((ushort)500, mbChannel.MaxReadBits);
     }
 }

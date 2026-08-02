@@ -69,8 +69,8 @@ public class ZLanProjTests
 
         // Verify Cache Size
         var input = g2.SelectCbnt("输入");
-        Assert.Equal(2, input.CacheSize);
-        Assert.Equal(2, input.Cache.Length);
+        Assert.Equal(2, ((TagCbnt<bool>)input).CacheSize);
+        Assert.Equal(2, ((TagCbnt<bool>)input).Cache.Length);
         #endregion
 
         #region output group
@@ -93,8 +93,8 @@ public class ZLanProjTests
 
         // Verify Cache Size
         var output = g2.SelectCbnt("输出");
-        Assert.Equal(4, output.CacheSize);
-        Assert.Equal(4, output.Cache.Length);
+        Assert.Equal(4, ((TagCbnt<bool>)output).CacheSize);
+        Assert.Equal(4, ((TagCbnt<bool>)output).Cache.Length);
         #endregion
     }
 

@@ -35,18 +35,10 @@ internal class InputRegisterBitDirectTag: Tag<bool, ModbusTcpChannel>
     }
     #endregion
 
-    private ushort GetBufferSize() => (ushort)(this.NthBit / 8 + 1);
-
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var addr = this.GetAddress();
-        var count = this.GetBufferSize();
-        var bytes= await this._bubbleChannel.ModbusMaster!.ReadInputRegistersAsync(addr.SlaveAddress, addr.StartPoint, count);
-        var index = this.NthBit / 8;
-        var nth = this.NthBit % 8;
-        var flags = bytes[index];
-        var flag = flags & (1 << nth);
-        this._value = flag !=0;
+        var regs = await this._bubbleChannel.ReadRegistersAsync(this.NormalizedAddress(), 1, ct);
+        this._value = ((regs[0] >> this.NthBit) & 1) != 0;
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this._value);
     }

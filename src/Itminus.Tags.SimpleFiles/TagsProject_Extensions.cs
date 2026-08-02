@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Itminus.Tags.SimpleFiles;
 
@@ -8,7 +8,7 @@ namespace Itminus.Tags.SimpleFiles;
 public static class TagsProject_Extensions
 {
     /// <summary>
-    /// 注册SimpleFiles支持。是 <see cref="AddSimpleFilesChannel"/> 与 <see cref="AddSimpleFilesTagBuilder"/> 的组合
+    /// 注册SimpleFiles支持。是 <see cref="AddSimpleFilesChannel"/> 与 <see cref="AddSimpleFilesDirectTagBuilder"/> 的组合
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
@@ -16,13 +16,13 @@ public static class TagsProject_Extensions
     {
         builder
             .AddSimpleFilesChannel()
-            .AddSimpleFilesTagBuilder();
+            .AddSimpleFilesDirectTagBuilder();
         return builder;
     }
 
 #region 基本扩展
     /// <summary>
-    /// 注册SimpleFiles支持——仅注册ChannelFactory，不注册TagBuilder <br/>
+    /// 注册SimpleFiles支持——仅注册ChannelFactory，不注册DirectTagBuilder <br/>
     /// 作用是在通道的驱动为 <see cref="SimpleFilesNames.DriverName"/> 时，会尝试构建一个通道。
     /// </summary>
     /// <param name="builder"></param>
@@ -40,14 +40,14 @@ public static class TagsProject_Extensions
     }
 
     /// <summary>
-    /// 注册SimpleFiles支持——仅注册TagBuilder，不注册ChannelFactory。<br/>
+    /// 注册SimpleFiles支持——仅注册DirectTagBuilder，不注册ChannelFactory。<br/>
     /// 作用是在通道的驱动为 <see cref="SimpleFilesNames.DriverName"/> 时，会尝试构建一个测点；<br/>
     /// </summary>
     /// <param name="builder"></param>
-    /// <param name="configure">配置TagBuilder的回调</param>
-    /// <param name="predicate">用于过滤TagBuilder的谓词</param>
+    /// <param name="configure">配置DirectTagBuilder的回调</param>
+    /// <param name="predicate">用于过滤DirectTagBuilder的谓词</param>
     /// <returns></returns>
-    public static TagsProjectServiceBuilder AddSimpleFilesTagBuilder(
+    public static TagsProjectServiceBuilder AddSimpleFilesDirectTagBuilder(
         this TagsProjectServiceBuilder builder,
         Action<SimpleFilesDirectTagBuilder>? configure = null,
         Func<SimpleFilesDirectTagBuilder, bool>? predicate = null
@@ -55,7 +55,7 @@ public static class TagsProject_Extensions
     {
         // register SimpleFiles tags loader
         builder.ConfigTagsLoader((sp, composite) => { 
-            composite.AddTagBuilder<SimpleFilesDirectTagBuilder>(SimpleFilesNames.DriverName, configure, predicate);
+            composite.AddDirectTagBuilder<SimpleFilesDirectTagBuilder>(SimpleFilesNames.DriverName, configure, predicate);
         });
 
         return builder;

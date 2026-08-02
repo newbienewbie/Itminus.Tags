@@ -10,7 +10,7 @@ namespace Itminus.Tags.Tests.S7Tags;
 /// 测试 <see cref="TagsProject_Extensions"/> 重构后，
 /// <see cref="TagsProject_Extensions.AddS7Channel"/> +
 /// <see cref="TagsProject_Extensions.AddS7TagCbntBuilder"/> +
-/// <see cref="TagsProject_Extensions.AddS7TagBuilder"/> 的手动组合
+/// <see cref="TagsProject_Extensions.AddS7DirectTagBuilder"/> 的手动组合
 /// </summary>
 public class S7BuilderTests
 {
@@ -74,7 +74,7 @@ public class S7BuilderTests
         {
             b.AddS7Channel();
             b.AddS7TagCbntBuilder();
-            b.AddS7TagBuilder();
+            b.AddS7DirectTagBuilder();
         });
         using var root2 = services2.BuildServiceProvider();
         using var scope2 = root2.CreateScope();
@@ -103,18 +103,18 @@ public class S7BuilderTests
 
     #endregion
 
-    #region 拆分注册：仅 Channel + TagBuilder（不注册 TagCbntBuilder）可加载直接测点
+    #region 拆分注册：仅 Channel + DirectTagBuilder（不注册 TagCbntBuilder）可加载直接测点
 
     [Fact]
-    public void AddS7Channel_WithS7TagBuilder_Only_LoadsDirectTags()
+    public void AddS7Channel_WithS7DirectTagBuilder_Only_LoadsDirectTags()
     {
-        // Arrange：只注册 Channel + TagBuilder，不注册 TagCbntBuilder
+        // Arrange：只注册 Channel + DirectTagBuilder，不注册 TagCbntBuilder
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddTagsProjectServices(b =>
         {
             b.AddS7Channel();
-            b.AddS7TagBuilder();
+            b.AddS7DirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -139,12 +139,12 @@ public class S7BuilderTests
 
     #endregion
 
-    #region 拆分注册：TagBuilder 的 configure/predicate 钩子
+    #region 拆分注册：DirectTagBuilder 的 configure/predicate 钩子
 
     [Fact]
-    public void AddS7TagBuilder_WithPredicate_OnlyHandlesMatchingTags()
+    public void AddS7DirectTagBuilder_WithPredicate_OnlyHandlesMatchingTags()
     {
-        // Arrange：第一个 TagBuilder 只接受 BIT 类型，第二个接管其余
+        // Arrange：第一个 DirectTagBuilder 只接受 BIT 类型，第二个接管其余
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddTagsProjectServices(b =>
@@ -152,12 +152,12 @@ public class S7BuilderTests
             b.AddS7Channel();
 
             // 第一个：只处理 BIT 直接测点
-            b.AddS7TagBuilder(
+            b.AddS7DirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagKind == BuiltinTagKinds.BIT
             );
 
             // 第二个：处理其余所有直接测点
-            b.AddS7TagBuilder();
+            b.AddS7DirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();

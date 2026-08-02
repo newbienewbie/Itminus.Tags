@@ -11,9 +11,9 @@ using Xunit;
 namespace Itminus.Tags.Tests.ComTags.ComProjTests;
 
 /// <summary>
-/// 测试 <see cref="ComTagBuilder.WithFactory"/>：
-/// 通过 <see cref="TagsProject_Extensions.AddComScannerTagBuilder"/> 的 configure 钩子注入创建委托，
-/// 无需编写自定义 TagBuilder 子类，即可扩展串口测点构建逻辑。
+/// 测试 <see cref="ComDirectTagBuilder.WithFactory"/>：
+/// 通过 <see cref="TagsProject_Extensions.AddComScannerDirectTagBuilder"/> 的 configure 钩子注入创建委托，
+/// 无需编写自定义 DirectTagBuilder 子类，即可扩展串口测点构建逻辑。
 /// </summary>
 public class ComTagBuilderWithFactoryTests
 {
@@ -28,7 +28,7 @@ public class ComTagBuilderWithFactoryTests
 <root>
     <Channel name='COM-1' driver='COM'>
         <Port>COM1</Port>
-        <BaundRate>9600</BaundRate>
+        <BaudRate>9600</BaudRate>
         <Parity>None</Parity>
         <DataBits>8</DataBits>
         <StopBits>One</StopBits>
@@ -48,7 +48,7 @@ public class ComTagBuilderWithFactoryTests
 <root>
     <Channel name='COM-1' driver='COM'>
         <Port>COM1</Port>
-        <BaundRate>9600</BaundRate>
+        <BaudRate>9600</BaudRate>
         <Parity>None</Parity>
         <DataBits>8</DataBits>
         <StopBits>One</StopBits>
@@ -76,7 +76,7 @@ public class ComTagBuilderWithFactoryTests
             b.AddComScannerChannel();
 
             // 故意设置一个工厂来创建 ComWriteOnlyTag<string>，以验证委托被优先调用，而非内部逻辑的 ComReadOnlyTag<string>
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 configure: b => b.WithFactory(
                     (descriptor, thisChannel, container) => new ComWriteOnlyTag<string>(
                         descriptor,
@@ -119,7 +119,7 @@ public class ComTagBuilderWithFactoryTests
             b.AddComScannerChannel();
 
             // 委托永远返回 null → 应回退内部逻辑
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 configure: b => b.WithFactory((_, _, _) => null!)
             );
         });
@@ -141,13 +141,13 @@ public class ComTagBuilderWithFactoryTests
   
 
     /// <summary>
-    /// WithFactory 扩展非 STR 类型（不需要自定义 TagBuilder 子类）
+    /// WithFactory 扩展非 STR 类型（不需要自定义 DirectTagBuilder 子类）
     /// </summary>
     [Fact]
     public void WithFactory_ExtendsNonStrTagKind_WithoutCustomBuilderClass()
     {
-        // Arrange：与 ComProjTagSelectorTests 中 AnyLoadComTagBuilder 等价的委托实现，
-        // 但无需编写自定义 TagBuilder 子类
+        // Arrange：与 ComProjTagSelectorTests 中 AnyLoadComDirectTagBuilder 等价的委托实现，
+        // 但无需编写自定义 DirectTagBuilder 子类
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddTagsProjectServices(b =>
@@ -155,7 +155,7 @@ public class ComTagBuilderWithFactoryTests
             b.AddComScannerChannel();
 
             // 自定义 AnyLoad 测点创建逻辑
-            b.AddComScannerTagBuilder(
+            b.AddComScannerDirectTagBuilder(
                 configure: b => b.WithFactory((descriptor, channel, container) =>{
                     if (channel is not ComChannelBase<string> com)
                     {
@@ -176,7 +176,7 @@ public class ComTagBuilderWithFactoryTests
             );
 
             // 基本 STR 测点走默认逻辑
-            b.AddComScannerTagBuilder();
+            b.AddComScannerDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();
@@ -213,7 +213,7 @@ public class ComTagBuilderWithFactoryTests
         services.AddTagsProjectServices(b =>
         {
             b.AddComScannerChannel();
-            b.AddComScannerTagBuilder();
+            b.AddComScannerDirectTagBuilder();
         });
 
         using var root = services.BuildServiceProvider();

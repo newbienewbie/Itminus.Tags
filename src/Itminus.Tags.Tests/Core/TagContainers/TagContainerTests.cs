@@ -7,7 +7,7 @@ public class TagContainerTests
     [Fact]
     public void From_ITagCbnt_CreatesTagContainerWithIsTagCbntTrue()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "cbnt1" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "cbnt1" });
 
         var container = TagContainer.From(cbnt);
 
@@ -29,7 +29,7 @@ public class TagContainerTests
     [Fact]
     public void Map_WhenTagCbnt_CallsHandleTagCbnt()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "cbnt1" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "cbnt1" });
         var container = TagContainer.From(cbnt);
 
         var result = container.Map(

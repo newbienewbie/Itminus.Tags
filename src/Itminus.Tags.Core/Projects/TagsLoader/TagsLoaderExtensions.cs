@@ -20,14 +20,14 @@ public static class TagsLoaderExtensions
     /// <param name="configure"></param>
     /// <param name="predicate"></param>
     /// <returns></returns>
-    public static CompositeTagsLoader AddTagBuilder<TTagBuilder>( 
+    public static CompositeTagsLoader AddDirectTagBuilder<TTagBuilder>( 
         this CompositeTagsLoader loader,
         string driver, 
         Action<TTagBuilder>? configure = null,
         Func<TTagBuilder, bool>? predicate = null
     ) where TTagBuilder : TagBuilderBase, new()
     {
-        return loader.AddTagBuilder((channel, descriptor) =>
+        return loader.AddDirectTagBuilder((channel, descriptor) =>
         {
             if (channel.Driver() != driver)
             {

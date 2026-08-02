@@ -17,7 +17,7 @@
 	</Channel>
 	<Channel name="COM-1#" driver="COM">
 		<Port>COM1</Port>
-		<BaundRate>115200</BaundRate>
+		<BaudRate>115200</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
@@ -25,14 +25,14 @@
 
 	<Channel name="COM-2#" driver="COM">
 		<Port>COM2</Port>
-		<BaundRate>115200</BaundRate>
+		<BaudRate>115200</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
 	<Channel name="COM-3#" driver="COM">
 		<Port>COM3</Port>
-		<BaundRate>115200</BaundRate>
+		<BaudRate>115200</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
@@ -40,7 +40,7 @@
 	</Channel>
 	<Channel name="COM-90#" driver="COM">
 		<Port>COM90</Port>
-		<BaundRate>115200</BaundRate>
+		<BaudRate>115200</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>

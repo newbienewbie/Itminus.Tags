@@ -31,21 +31,21 @@ public class ZLanTcpTagChannelDescriptorTests
     }
 
     [Fact]
-    public void ToXElement_WithMaxBatchSize_Roundtrips()
+    public void ToXElement_WithMaxWriteRegisters_Roundtrips()
     {
         var descriptor = new ZLanTcpTagChannelDescriptor
         {
             Name = "zlan-batch",
             IpAddr = "10.0.0.1",
             Port = 502,
-            MaxBatchSize = 30,
+            MaxWriteRegisters = 30,
         };
 
         var xml = descriptor.ToXElement();
         var baseDesc = xml.ToTagChannelDescriptor();
         var restored = baseDesc.ToZLanTcpTagChannelDescriptor();
 
-        Assert.Equal((ushort)30, restored.MaxBatchSize);
+        Assert.Equal((ushort)30, restored.MaxWriteRegisters);
     }
 
     [Fact]
@@ -99,7 +99,7 @@ public class ZLanTcpTagChannelDescriptorTests
 
         Assert.Equal("localhost", result.IpAddr);
         Assert.Equal(502, result.Port);
-        Assert.Null(result.MaxBatchSize);
+        Assert.Null(result.MaxWriteRegisters);
     }
 
     [Fact]
@@ -144,31 +144,57 @@ public class ZLanTcpTagChannelDescriptorTests
     }
 
     [Fact]
-    public void ToZLanTcpTagChannelDescriptor_InvalidMaxBatchSize_Throws()
+    public void ToZLanTcpTagChannelDescriptor_InvalidMaxWriteRegisters_Throws()
     {
         var baseDesc = new TagChannelDescriptor
         {
             Name = "zlan-bad-batch",
             Driver = ZLanTcpNames.DriverName,
         };
-        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "not-a-number");
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "not-a-number");
 
         Assert.Throws<ArgumentException>(() => baseDesc.ToZLanTcpTagChannelDescriptor());
     }
 
     [Fact]
-    public void ToZLanTcpTagChannelDescriptor_MaxBatchSize_ReadsFromExtras()
+    public void ToZLanTcpTagChannelDescriptor_ZeroMaxWriteRegisters_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "zlan-zero-batch",
+            Driver = ZLanTcpNames.DriverName,
+        };
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "0");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToZLanTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void ToZLanTcpTagChannelDescriptor_ExceedsMaxWriteRegisters_Throws()
+    {
+        var baseDesc = new TagChannelDescriptor
+        {
+            Name = "zlan-big-batch",
+            Driver = ZLanTcpNames.DriverName,
+        };
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "124");
+
+        Assert.Throws<ArgumentException>(() => baseDesc.ToZLanTcpTagChannelDescriptor());
+    }
+
+    [Fact]
+    public void ToZLanTcpTagChannelDescriptor_MaxWriteRegisters_ReadsFromExtras()
     {
         var baseDesc = new TagChannelDescriptor
         {
             Name = "zlan-batch-extras",
             Driver = ZLanTcpNames.DriverName,
         };
-        baseDesc.Extras["MaxBatchSize"] = new XElement("MaxBatchSize", "50");
+        baseDesc.Extras["MaxWriteRegisters"] = new XElement("MaxWriteRegisters", "50");
 
         var result = baseDesc.ToZLanTcpTagChannelDescriptor();
 
-        Assert.Equal((ushort)50, result.MaxBatchSize);
+        Assert.Equal((ushort)50, result.MaxWriteRegisters);
     }
 
     [Fact]

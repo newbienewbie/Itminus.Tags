@@ -1,16 +1,19 @@
-﻿using System.Buffers.Binary;
+using System.Buffers.Binary;
 
-namespace Itminus.Tags.TagCbntors;
+namespace Itminus.Tags.S7;
 
 /// <summary>
-/// 表示一个float型的 <see cref="TagCbntor"/>
+/// S7 Float 组合子：缓存 = PLC 内存原始字节（IEEE754），按 EndianKind 直读。
 /// </summary>
-public class FloatTagCbntor : TagCbntor
+public class S7FloatTagCbntor : S7TagCbntorBase
 {
     /// <summary>
     /// c'tor
     /// </summary>
-    public FloatTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset)
+    /// <param name="tagDescriptor"></param>
+    /// <param name="tagCbnt">S7 组合（byte 缓存）</param>
+    /// <param name="cacheOffset"></param>
+    internal S7FloatTagCbntor(TagDescriptor tagDescriptor, TagCbnt<byte> tagCbnt, int cacheOffset)
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {
     }
@@ -22,22 +25,17 @@ public class FloatTagCbntor : TagCbntor
     {
         get
         {
-            var cache = this.TagCbnt.Cache;
-            var span = cache.Span.Slice(this.CacheOffset, 4);
-
-            var ret = this.TagEndian() == EndianKinds.BigEndian ?
-                BinaryPrimitives.ReadSingleBigEndian(span) :
-                BinaryPrimitives.ReadSingleLittleEndian(span);
-
-            return ret;
+            var span = this.Cache.Span.Slice(this.CacheOffset, 4);
+            return this.TagEndian() == EndianKinds.BigEndian
+                ? BinaryPrimitives.ReadSingleBigEndian(span)
+                : BinaryPrimitives.ReadSingleLittleEndian(span);
         }
         set
         {
 #pragma warning disable CS8605 // Unboxing a possibly null value.
             var data = (float)value;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
-
-            var dst = this.TagCbnt.Cache.Span.Slice(CacheOffset, 4);
+            var dst = this.Cache.Span.Slice(this.CacheOffset, 4);
             if (this.TagEndian() == EndianKinds.BigEndian)
             {
                 BinaryPrimitives.WriteSingleBigEndian(dst, data);
@@ -46,10 +44,8 @@ public class FloatTagCbntor : TagCbntor
             {
                 BinaryPrimitives.WriteSingleLittleEndian(dst, data);
             }
-
             this.Timestamp = DateTime.Now;
             this.MarkDirty();
         }
     }
-
 }

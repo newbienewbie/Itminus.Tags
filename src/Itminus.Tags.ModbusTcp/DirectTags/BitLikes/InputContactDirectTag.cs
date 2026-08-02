@@ -33,9 +33,8 @@ internal class InputContactDirectTag : Tag<bool, ModbusTcpChannel>
 
     public override async Task ReadAsync(CancellationToken ct)
     {
-        var addr = this.GetAddress();
-        var flags = await this._bubbleChannel.ModbusMaster!.ReadInputsAsync(addr.SlaveAddress, addr.StartPoint, 1);
-        this._value = flags[0];
+        var bits = await this._bubbleChannel.ReadBitsAsync(this.NormalizedAddress(), 1, ct);
+        this._value = bits[0];
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this._value);
     }

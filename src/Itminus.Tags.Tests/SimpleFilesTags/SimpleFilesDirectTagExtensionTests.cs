@@ -14,9 +14,9 @@ namespace Itminus.Tags.Tests.SimpleFilesTags;
 /// <summary>
 /// 验证外部可以：
 /// 1. 继承 <see cref="SimpleFilesDirectTagBase{T}"/> 编写自定义测点（如 JSON 反序列化到特定类型）
-/// 2. 通过 <see cref="TagsProject_Extensions.AddSimpleFilesTagBuilder"/> 的 configure 钩子 + 
+/// 2. 通过 <see cref="TagsProject_Extensions.AddSimpleFilesDirectTagBuilder"/> 的 configure 钩子 + 
 ///    <see cref="SimpleFilesDirectTagBuilder.WithFactory"/> 注入创建委托，
-///    无需编写自定义 TagBuilder，即可实现「基本类型读写 + JSON 到特定类型读写」共存
+///    无需编写自定义 DirectTagBuilder，即可实现「基本类型读写 + JSON 到特定类型读写」共存
 /// </summary>
 public class SimpleFilesDirectTagExtensionTests
 {
@@ -101,8 +101,8 @@ public class SimpleFilesDirectTagExtensionTests
             // 1. 仅注册通道
             b.AddSimpleFilesChannel();
 
-            // 2. 注册 JSON 测点：configure 钩子中通过 WithFactory 注入创建委托（无需自定义 TagBuilder 类）
-            b.AddSimpleFilesTagBuilder(
+            // 2. 注册 JSON 测点：configure 钩子中通过 WithFactory 注入创建委托（无需自定义 DirectTagBuilder 类）
+            b.AddSimpleFilesDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagKind == "JSON",
                 configure: b => b.WithFactory((descriptor, thisChannel, container) =>
                 {
@@ -115,7 +115,7 @@ public class SimpleFilesDirectTagExtensionTests
             );
 
             // 3. 注册基本类型测点构建器（后注册，处理其余所有测点，走内部工厂）
-            b.AddSimpleFilesTagBuilder();
+            b.AddSimpleFilesDirectTagBuilder();
         });
         return services.BuildServiceProvider();
     }
@@ -125,7 +125,7 @@ public class SimpleFilesDirectTagExtensionTests
     #region 验证：基本类型 + JSON 测点共存并能加载
 
     [Fact]
-    public void AddSimpleFilesTagBuilder_WithCustomJsonBuilder_LoadsBothBasicAndJsonTags()
+    public void AddSimpleFilesDirectTagBuilder_WithCustomJsonBuilder_LoadsBothBasicAndJsonTags()
     {
         var tempDir = CreateTempDir();
         try
@@ -162,7 +162,7 @@ public class SimpleFilesDirectTagExtensionTests
 
     #endregion
 
-    #region 验证：基本类型读写（走 AddSimpleFilesTagBuilder 注册的内部构建器）
+    #region 验证：基本类型读写（走 AddSimpleFilesDirectTagBuilder 注册的内部构建器）
 
     [Fact]
     public async Task BasicIntTag_WriteThenRead_RoundTrips()
@@ -307,7 +307,7 @@ public class SimpleFilesDirectTagExtensionTests
                 b.AddSimpleFilesChannel();
 
                 // configure 中注入委托，但委托返回 null → 应回退内部工厂
-                b.AddSimpleFilesTagBuilder(
+                b.AddSimpleFilesDirectTagBuilder(
                     configure: b => b.WithFactory((_, _, _) => null!)
                 );
             });
@@ -360,18 +360,18 @@ public class SimpleFilesDirectTagExtensionTests
             // 1. 仅注册通道
             b.AddSimpleFilesChannel();
 
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagKind == "myjson1",
                 configure: b => b.WithJsonTagFactory<MyJson1>()
             );
 
-            b.AddSimpleFilesTagBuilder(
+            b.AddSimpleFilesDirectTagBuilder(
                 predicate: bd => bd.TagDescriptor.TagKind == "myjson2",
                 configure: b => b.WithJsonTagFactory<MyJson2>()
             );
 
             // 3. 注册基本类型测点构建器（后注册，处理其余所有测点，走内部工厂）
-            b.AddSimpleFilesTagBuilder();
+            b.AddSimpleFilesDirectTagBuilder();
         });
 
         var rootsp = services.BuildServiceProvider();
@@ -419,14 +419,14 @@ public class SimpleFilesDirectTagExtensionTests
 
                 // 与 BuildRoot 中的旧写法对比：这里工厂内不再自行 MakePath / 校验通道类型，
                 // 「通道解析 + 地址归一化」由泛型 WithFactory 重载代为完成
-                b.AddSimpleFilesTagBuilder(
+                b.AddSimpleFilesDirectTagBuilder(
                     predicate: bd => bd.TagDescriptor.TagKind == "JSON",
                     configure: b => b.WithFactory((descriptor, thisChannel, container) =>
                         new JsonPointDirectTag(descriptor, thisChannel, container))
                 );
 
                 // 基本类型测点走内部工厂
-                b.AddSimpleFilesTagBuilder();
+                b.AddSimpleFilesDirectTagBuilder();
             });
 
             using var root = services.BuildServiceProvider();

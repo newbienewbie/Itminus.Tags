@@ -51,7 +51,7 @@ public class ComChannelDescriptor : TagChannelDescriptor
             ele.SetOrAddChild(nameof(Option.ReadScriptDebugInformationEnabled), this.Option.ReadScriptDebugInformationEnabled);
         }
         ele.SetOrAddChild(nameof(Option.Port), this.Option.Port);
-        ele.SetOrAddChild(nameof(Option.BaundRate), this.Option.BaundRate);
+        ele.SetOrAddChild(nameof(Option.BaudRate), this.Option.BaudRate);
         ele.SetOrAddChild(nameof(Option.Parity), this.Option.Parity);
         ele.SetOrAddChild(nameof(Option.DataBits), this.Option.DataBits);
         ele.SetOrAddChild(nameof(Option.StopBits), this.Option.StopBits);
@@ -83,7 +83,7 @@ public static class TagChannelDescriptor_ComExtensions
             return d;
         }
 
-        int defaultBaundRate = 9600;
+        int defaultBaudRate = 9600;
         Parity defaultParity = Parity.None;
         int defaultDataBits = 8;
         StopBits defaultStopBits = StopBits.None;
@@ -119,10 +119,13 @@ public static class TagChannelDescriptor_ComExtensions
         var port = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.Port), out var comPort) ?
                     "COM1" :
                     comPort.Value;
-        var baundRate =
-                    !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.BaundRate), out var baundRateStr) ? defaultBaundRate :
-                    int.TryParse(baundRateStr.Value, out var baundRateVal) ? baundRateVal :
-                    throw new Exception($"串口波特率非法，无法解析成整数({baundRateStr.Value})");
+        // 向后兼容：0.10 及之前版本使用拼写错误的 `<BaundRate>` 元素名，0.11 起修正为 `BaudRate`。
+        // 优先读新拼写，找不到时回退旧拼写——现场存量 XML 无需修改即可升级。
+        var baudRate =
+                    !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.BaudRate), out var baudRateStr) &&
+                    !descriptor.Extras.TryGetValue("BaundRate", out baudRateStr) ? defaultBaudRate :
+                    int.TryParse(baudRateStr.Value, out var baudRateVal) ? baudRateVal :
+                    throw new Exception($"串口波特率非法，无法解析成整数({baudRateStr.Value})");
         var parity = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.Parity), out var parityStr) ? defaultParity :
                     Enum.TryParse<Parity>(parityStr.Value, out var parityVal) ? parityVal :
                     throw new Exception($"串口极性非法，无法解析成Parity({parityStr.Value})");
@@ -149,7 +152,7 @@ public static class TagChannelDescriptor_ComExtensions
                 ReadScript = readscript,
                 ReadScriptDebugInformationEnabled = readScriptDebugInformationEnabled,
                 Port = port,
-                BaundRate = baundRate,
+                BaudRate = baudRate,
                 Parity = parity,
                 DataBits = databits,
                 StopBits = stopbits,

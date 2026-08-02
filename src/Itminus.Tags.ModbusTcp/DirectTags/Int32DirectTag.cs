@@ -10,31 +10,35 @@ internal class UInt32DirectTag : MultipleBytesDirectTag<uint>
     {
     }
 
-    protected override int BufferSize => 4;
+    protected override int RegisterCount => 2;
 
-    protected override void FillBytes(uint value, in Span<byte> buffer)
+    protected override void FillRegisters(uint value, Span<ushort> registers)
     {
         switch (this.TagDescriptor.EndianKind)
         {
             case EndianKinds.BigEndian:
-                BinaryPrimitives.WriteUInt32BigEndian(buffer, value);
+                // 标准 Modbus：高寄存器在前（word order）
+                registers[0] = (ushort)(value >> 16);
+                registers[1] = (ushort)value;
                 break;
             case EndianKinds.LittleEndian:
-                BinaryPrimitives.WriteUInt32LittleEndian(buffer, value);
+                // word order 反：低寄存器在前（寄存器内部由协议固定为大端，NModbus 已解析）
+                registers[0] = (ushort)value;
+                registers[1] = (ushort)(value >> 16);
                 break;
             default:
                 throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}");
         }
     }
 
-    protected override uint GetValueFromBytes(byte[] bytes)
+    protected override uint GetValueFromRegisters(ReadOnlySpan<ushort> registers)
     {
         return this.TagDescriptor.EndianKind switch
         {
-            EndianKinds.BigEndian => BinaryPrimitives.ReadUInt32BigEndian(bytes),
-            EndianKinds.LittleEndian => BinaryPrimitives.ReadUInt32LittleEndian(bytes),
+            EndianKinds.BigEndian => (uint)((registers[0] << 16) | registers[1]),
+            EndianKinds.LittleEndian => (uint)((registers[1] << 16) | registers[0]),
             _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
-        }; 
+        };
     }
 }
 
@@ -46,29 +50,31 @@ internal class Int32DirectTag : MultipleBytesDirectTag<int>
     {
     }
 
-    protected override int BufferSize => 4;
+    protected override int RegisterCount => 2;
 
-    protected override void FillBytes(int value, in Span<byte> buffer)
+    protected override void FillRegisters(int value, Span<ushort> registers)
     {
         switch (this.TagDescriptor.EndianKind)
         {
             case EndianKinds.BigEndian:
-                BinaryPrimitives.WriteInt32BigEndian(buffer, value);
+                registers[0] = (ushort)((uint)value >> 16);
+                registers[1] = (ushort)value;
                 break;
             case EndianKinds.LittleEndian:
-                BinaryPrimitives.WriteInt32LittleEndian(buffer, value);
+                registers[0] = (ushort)value;
+                registers[1] = (ushort)((uint)value >> 16);
                 break;
             default:
                 throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}");
         }
     }
 
-    protected override int GetValueFromBytes(byte[] bytes)
+    protected override int GetValueFromRegisters(ReadOnlySpan<ushort> registers)
     {
         return this.TagDescriptor.EndianKind switch
         {
-            EndianKinds.BigEndian => BinaryPrimitives.ReadInt32BigEndian(bytes),
-            EndianKinds.LittleEndian => BinaryPrimitives.ReadInt32LittleEndian(bytes),
+            EndianKinds.BigEndian => (int)((registers[0] << 16) | registers[1]),
+            EndianKinds.LittleEndian => (int)((registers[1] << 16) | registers[0]),
             _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
         };
     }

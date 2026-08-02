@@ -6,7 +6,7 @@
 /// ——S7支持连续字节组合操作，这里存在的意义只是为了个别测点直接嵌入TagGrp，一般不会成为性能来源<br/>
 /// </summary>
 /// <typeparam name="T"></typeparam>
-internal abstract class ContinousBytesBasedDirectTag<T> : Tag<T, S7TagChannel>
+internal abstract class ContinuousBytesBasedDirectTag<T> : Tag<T, S7TagChannel>
     where T: notnull, IEquatable<T>
 {
     /// <summary>
@@ -15,7 +15,7 @@ internal abstract class ContinousBytesBasedDirectTag<T> : Tag<T, S7TagChannel>
     /// <param name="descriptor"></param>
     /// <param name="thisChannel">对应于测点本身的通道</param>
     /// <param name="parent">父容器</param>
-    public ContinousBytesBasedDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer parent) 
+    public ContinuousBytesBasedDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer parent) 
         : base(descriptor, thisChannel, parent)
     {
         this.Channel = thisChannel;

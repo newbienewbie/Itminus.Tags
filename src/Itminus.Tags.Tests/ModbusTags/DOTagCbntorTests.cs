@@ -8,9 +8,9 @@ namespace Itminus.Tags.Tests.ModbusTags;
 
 public class DOTagCbntorTests
 {
-    private static (TagCbnt cbnt, DOTagCbntor tag) CreateContext()
+    private static (TestBoolTagCbnt cbnt, DOTagCbntor tag) CreateContext()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0" });
+        var cbnt = new TestBoolTagCbnt(new TagCbntDescriptor { Name = "g", StartAddress = "0" });
         cbnt.ResizeCache(4);
         var descriptor = new TagDescriptor
         {
@@ -24,19 +24,19 @@ public class DOTagCbntorTests
     }
 
     [Fact]
-    public void Value_WhenCacheByteZero_ReturnsFalse()
+    public void Value_WhenCacheFalse_ReturnsFalse()
     {
         var (cbnt, tag) = CreateContext();
-        cbnt.Cache.Span[0] = 0x00;
+        cbnt.Cache.Span[0] = false;
 
         Assert.Equal(false, tag.Value);
     }
 
     [Fact]
-    public void Value_WhenCacheByteNonZero_ReturnsTrue()
+    public void Value_WhenCacheTrue_ReturnsTrue()
     {
         var (cbnt, tag) = CreateContext();
-        cbnt.Cache.Span[0] = 0x01;
+        cbnt.Cache.Span[0] = true;
 
         Assert.Equal(true, tag.Value);
     }
@@ -48,18 +48,18 @@ public class DOTagCbntorTests
 
         tag.Value = true;
 
-        Assert.Equal((byte)1, cbnt.Cache.Span[0]);
+        Assert.True(cbnt.Cache.Span[0]);
     }
 
     [Fact]
     public void Value_SetFalse_WritesToCache()
     {
         var (cbnt, tag) = CreateContext();
-        cbnt.Cache.Span[0] = 0x01;
+        cbnt.Cache.Span[0] = true;
 
         tag.Value = false;
 
-        Assert.Equal((byte)0, cbnt.Cache.Span[0]);
+        Assert.False(cbnt.Cache.Span[0]);
     }
 
     [Fact]
@@ -76,7 +76,7 @@ public class DOTagCbntorTests
     {
         var (cbnt, tag) = CreateContext();
         // 初始时已读取过，设置成同样的值
-        cbnt.Cache.Span[0] = 0x00;
+        cbnt.Cache.Span[0] = false;
 
         tag.Value = true;
 

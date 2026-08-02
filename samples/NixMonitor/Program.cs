@@ -12,11 +12,22 @@ builder.Services.AddAntiforgery();
 builder.Services.AddTagsProjectServices(builder =>
 {
     builder.AddSimpleFilesChannel()
-        .AddSimpleFilesTagBuilder(
+        .AddSimpleFilesDirectTagBuilder(
             configure: b => b.WithJsonTagFactory<MyJson>(),
             predicate: b => b.TagDescriptor.TagKind == "MyJson"
+        )        // 特化测点：解析 Linux /proc 伪文件（利用泛型 WithFactory<TVal> 注入创建委托）
+        .AddSimpleFilesDirectTagBuilder(
+            configure: b => b.WithFactory<MemInfo>((descriptor, thisChannel, container) => new MemInfoTag(descriptor, thisChannel, container)),
+            predicate: b => b.TagDescriptor.TagKind == "MemInfo"
         )
-        .AddSimpleFilesTagBuilder();
+        .AddSimpleFilesDirectTagBuilder(
+            configure: b => b.WithFactory<CpuInfo>((descriptor, thisChannel, container) => new CpuInfoTag(descriptor, thisChannel, container)),
+            predicate: b => b.TagDescriptor.TagKind == "CpuInfo"
+        )
+        .AddSimpleFilesDirectTagBuilder(
+            configure: b => b.WithFactory<LoadAvg>((descriptor, thisChannel, container) => new LoadAvgTag(descriptor, thisChannel, container)),
+            predicate: b => b.TagDescriptor.TagKind == "LoadAvg"
+        )        .AddSimpleFilesDirectTagBuilder();
 });
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

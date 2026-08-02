@@ -10,31 +10,37 @@ internal class UInt64DirectTag : MultipleBytesDirectTag<ulong>
     {
     }
 
-    protected override int BufferSize => 8;
+    protected override int RegisterCount => 4;
 
-    protected override void FillBytes(ulong value, in Span<byte> buffer)
+    protected override void FillRegisters(ulong value, Span<ushort> registers)
     {
         switch (this.TagDescriptor.EndianKind)
         {
             case EndianKinds.BigEndian:
-                BinaryPrimitives.WriteUInt64BigEndian(buffer, value);
+                registers[0] = (ushort)(value >> 48);
+                registers[1] = (ushort)(value >> 32);
+                registers[2] = (ushort)(value >> 16);
+                registers[3] = (ushort)value;
                 break;
             case EndianKinds.LittleEndian:
-                BinaryPrimitives.WriteUInt64LittleEndian(buffer, value);
+                registers[0] = (ushort)value;
+                registers[1] = (ushort)(value >> 16);
+                registers[2] = (ushort)(value >> 32);
+                registers[3] = (ushort)(value >> 48);
                 break;
             default:
                 throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}");
         }
     }
 
-    protected override ulong GetValueFromBytes(byte[] bytes)
+    protected override ulong GetValueFromRegisters(ReadOnlySpan<ushort> registers)
     {
         return this.TagDescriptor.EndianKind switch
         {
-            EndianKinds.BigEndian => BinaryPrimitives.ReadUInt64BigEndian(bytes),
-            EndianKinds.LittleEndian => BinaryPrimitives.ReadUInt64LittleEndian(bytes),
+            EndianKinds.BigEndian => ((ulong)registers[0] << 48) | ((ulong)registers[1] << 32) | ((ulong)registers[2] << 16) | registers[3],
+            EndianKinds.LittleEndian => ((ulong)registers[3] << 48) | ((ulong)registers[2] << 32) | ((ulong)registers[1] << 16) | registers[0],
             _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
-        }; 
+        };
     }
 }
 
@@ -46,30 +52,38 @@ internal class Int64DirectTag : MultipleBytesDirectTag<long>
     {
     }
 
-    protected override int BufferSize => 8;
+    protected override int RegisterCount => 4;
 
-    protected override void FillBytes(long value, in Span<byte> buffer)
+    protected override void FillRegisters(long value, Span<ushort> registers)
     {
+        var bits = (ulong)value;
         switch (this.TagDescriptor.EndianKind)
         {
             case EndianKinds.BigEndian:
-                BinaryPrimitives.WriteInt64BigEndian(buffer, value);
+                registers[0] = (ushort)(bits >> 48);
+                registers[1] = (ushort)(bits >> 32);
+                registers[2] = (ushort)(bits >> 16);
+                registers[3] = (ushort)bits;
                 break;
             case EndianKinds.LittleEndian:
-                BinaryPrimitives.WriteInt64LittleEndian(buffer, value);
+                registers[0] = (ushort)bits;
+                registers[1] = (ushort)(bits >> 16);
+                registers[2] = (ushort)(bits >> 32);
+                registers[3] = (ushort)(bits >> 48);
                 break;
             default:
                 throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}");
         }
     }
 
-    protected override long GetValueFromBytes(byte[] bytes)
+    protected override long GetValueFromRegisters(ReadOnlySpan<ushort> registers)
     {
-        return this.TagDescriptor.EndianKind switch
+        var bits = this.TagDescriptor.EndianKind switch
         {
-            EndianKinds.BigEndian => BinaryPrimitives.ReadInt64BigEndian(bytes),
-            EndianKinds.LittleEndian => BinaryPrimitives.ReadInt64LittleEndian(bytes),
+            EndianKinds.BigEndian => ((ulong)registers[0] << 48) | ((ulong)registers[1] << 32) | ((ulong)registers[2] << 16) | registers[3],
+            EndianKinds.LittleEndian => ((ulong)registers[3] << 48) | ((ulong)registers[2] << 32) | ((ulong)registers[1] << 16) | registers[0],
             _ => throw new InvalidOperationException($"不支持的字节序类型: {this.TagDescriptor.EndianKind}")
         };
+        return (long)bits;
     }
 }

@@ -258,6 +258,116 @@ public class TagGrpRunnerTests
     }
 
     [Fact]
+    public async Task StartAsync_Cancellation_StillDisconnectsChannel()
+    {
+        // 回归测试：取消轮询时，清理路径必须断开通道。
+        // 历史 bug：catch 的 finally 里用已取消的 ct 调 DisconnectAsync(ct)——
+        // 通道内部（如 S7 的 _rw.WaitAsync(ct)）会立即抛 OperationCanceledException，
+        // 导致连接未断开、资源泄漏。修复后应改用 CancellationToken.None。
+        // Arrange
+        var channel = new RecordingChannel(new TagChannelDescriptor { Name = "fake-channel" });
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10 })
+        {
+            Channel = channel,
+            IsEnabled = true,
+        };
+        var project = new MockProject();
+        var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance);
+
+        using var cts = new CancellationTokenSource();
+        // 在 TurnProcess 中取消（模拟正常轮询中用户停止）
+        runner.TurnProcess += (_, _) =>
+        {
+            cts.Cancel();
+            return Task.CompletedTask;
+        };
+
+        // Act
+        await RunUntilCancelled(runner, entry, cts.Token);
+
+        // Assert
+        Assert.True(channel.DisconnectAsyncCallCount >= 1, "取消时清理路径应调用 DisconnectAsync");
+        Assert.False(channel.LastDisconnectTokenWasCancelled,
+            "DisconnectAsync 不应收到已取消的 token——否则通道内部会立刻抛 OCE 导致连接不断开");
+    }
+
+    [Fact]
+    public async Task StartAsync_Cancellation_SlowDisconnect_TimesOut_AndStillExits()
+    {
+        // 回归测试：断开动作卡住时（模拟底层读持锁），清理路径应在有限超时后放弃等待并退出，
+        // 而不是无限阻塞 StartAsync。
+        // Arrange
+        var slowDisconnect = new TaskCompletionSource();
+        var channel = new RecordingChannel(new TagChannelDescriptor { Name = "fake-channel" })
+        {
+            SlowDisconnect = slowDisconnect,
+        };
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10 })
+        {
+            Channel = channel,
+            IsEnabled = true,
+        };
+        var project = new MockProject();
+        var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance);
+
+        using var cts = new CancellationTokenSource();
+        runner.TurnProcess += (_, _) =>
+        {
+            cts.Cancel();
+            return Task.CompletedTask;
+        };
+
+        // Act——若清理路径无限等待，此调用会超时失败；断开超时默认 5s，这里给 15s 余量
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        await RunUntilCancelled(runner, entry, cts.Token).WaitAsync(TimeSpan.FromSeconds(15));
+        sw.Stop();
+
+        // Assert：应在断开超时（5s）附近退出，而不是无限等待
+        Assert.True(sw.Elapsed < TimeSpan.FromSeconds(12),
+            $"清理路径应在有限时间内退出，实际耗时 {sw.Elapsed}");
+        Assert.True(channel.DisconnectAsyncCallCount >= 1);
+
+        // 清理：让挂起的断开完成，避免测试泄漏
+        slowDisconnect.TrySetResult();
+    }
+
+    [Fact]
+    public async Task StartAsync_Cancellation_CustomDisconnectStrategy_IsInvoked()
+    {
+        // 策略化验证：清理路径应把"断开 Task + 通道"交给注入的断开策略，
+        // 而不是在 TagGrpRunner 内部硬编码等待逻辑。
+        // Arrange
+        var channel = new RecordingChannel(new TagChannelDescriptor { Name = "fake-channel" });
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "test-entry", ScanInterval = 10 })
+        {
+            Channel = channel,
+            IsEnabled = true,
+        };
+        var project = new MockProject();
+
+        ITagChannel? receivedChannel = null;
+        Task? receivedDisconnect = null;
+        var strategy = new RecordingDisconnectStrategy((c, t) => { receivedChannel = c; receivedDisconnect = t; });
+        var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance, disconnectStrategy: strategy);
+
+        using var cts = new CancellationTokenSource();
+        runner.TurnProcess += (_, _) =>
+        {
+            cts.Cancel();
+            return Task.CompletedTask;
+        };
+
+        // Act
+        await RunUntilCancelled(runner, entry, cts.Token);
+
+        // Assert
+        Assert.Equal(channel, receivedChannel);
+        Assert.NotNull(receivedDisconnect);
+        Assert.True(strategy.CallCount >= 1);
+        Assert.True(channel.DisconnectAsyncCallCount >= 1);
+    }
+
+    [Fact]
     public async Task StartAsync_ProcessIntents()
     {
         // Arrange
@@ -531,6 +641,57 @@ public class TagGrpRunnerTests
             _receivedCounts.Add(consecutiveFailureCount);
             LastDelay = _delay;
             return _delay;
+        }
+    }
+
+    /// <summary>
+    /// 记录 <see cref="DisconnectAsync"/> 调用次数与收到的 token 是否已取消，
+    /// 用于验证取消轮询时清理路径仍会断开通道。
+    /// </summary>
+    private sealed class RecordingChannel : ITagChannel
+    {
+        public RecordingChannel(TagChannelDescriptor descriptor) => Descriptor = descriptor;
+
+        public TagChannelDescriptor Descriptor { get; }
+
+        public int DisconnectAsyncCallCount { get; private set; }
+        public bool LastDisconnectTokenWasCancelled { get; private set; }
+
+        /// <summary>
+        /// 若不为 null，DisconnectAsync 会等待该 TCS——用于模拟"断开卡住"的场景，
+        /// 验证清理路径会超时放弃等待而不是无限阻塞。
+        /// </summary>
+        public TaskCompletionSource? SlowDisconnect { get; set; }
+
+        public Task DisconnectAsync(CancellationToken ct)
+        {
+            DisconnectAsyncCallCount++;
+            LastDisconnectTokenWasCancelled = ct.IsCancellationRequested;
+            return SlowDisconnect is not null ? SlowDisconnect.Task : Task.CompletedTask;
+        }
+
+        public void Dispose() { }
+
+        public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// 记录 <see cref="ITagGrpRunnerDisconnectStrategy.WaitDisconnectAsync"/> 的调用，
+    /// 用于验证清理路径把断开等待委托给了注入的策略。
+    /// </summary>
+    private sealed class RecordingDisconnectStrategy : ITagGrpRunnerDisconnectStrategy
+    {
+        private readonly Action<ITagChannel?, Task?> _onInvoke;
+
+        public RecordingDisconnectStrategy(Action<ITagChannel?, Task?> onInvoke) => _onInvoke = onInvoke;
+
+        public int CallCount { get; private set; }
+
+        public Task WaitDisconnectAsync(ITagChannel? channel, Task? disconnect)
+        {
+            CallCount++;
+            _onInvoke(channel, disconnect);
+            return Task.CompletedTask;
         }
     }
 

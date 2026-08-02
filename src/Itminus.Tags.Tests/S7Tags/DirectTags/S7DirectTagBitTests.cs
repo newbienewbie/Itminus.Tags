@@ -17,7 +17,7 @@ public class S7DirectTagBitTests
     [InlineData((byte)9, 2, new byte[] { 0b00000000, 0b00000010 }, true)]
     public async Task DirectBitTag_AutoBufferSize_ReadsEnoughBytes(byte nthBit, int expectedLength, byte[] payload, bool expectedValue)
     {
-        var fake = new FakeContinousBytesChannel(payload);
+        var fake = new FakeContinuousBytesChannel(payload);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(nthBit, fake, grp);
 
@@ -37,7 +37,7 @@ public class S7DirectTagBitTests
     [InlineData((byte)8, false, new byte[] { 0b00000000, 0b00000000 })]
     public async Task DirectBitTag_WriteAsync_WritesExpectedFlags(byte nthBit, bool val, byte[] expected)
     {
-        var fake = new FakeContinousBytesChannel(new byte[expected.Length]);
+        var fake = new FakeContinuousBytesChannel(new byte[expected.Length]);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(nthBit, fake, grp);
 
@@ -54,7 +54,7 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_WriteAsync_PreservesOtherBits_ClearOneBit()
     {
         var initial = new byte[] { 0b11111111 };
-        var fake = new FakeContinousBytesChannel(initial);
+        var fake = new FakeContinuousBytesChannel(initial);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(0, fake, grp); // clear LSB
 
@@ -69,7 +69,7 @@ public class S7DirectTagBitTests
     public async Task DirectBitTag_WriteAsync_PreservesOtherBits_SetOneBit()
     {
         var initial = new byte[] { 0b11111110 };
-        var fake = new FakeContinousBytesChannel(initial);
+        var fake = new FakeContinuousBytesChannel(initial);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateBitDirectTag(0, fake, grp); // set LSB
 
@@ -81,7 +81,7 @@ public class S7DirectTagBitTests
     }
     #endregion
 
-    private static ITag CreateBitDirectTag(byte nthBit, IContinousBytesBasedTagChannel channel, ITagGrp grp)
+    private static ITag CreateBitDirectTag(byte nthBit, IContinuousBytesBasedTagChannel channel, ITagGrp grp)
     {
         var descriptor = new TagDescriptor()
         {
@@ -94,9 +94,9 @@ public class S7DirectTagBitTests
         return tag;
     }
 
-    private sealed class FakeContinousBytesChannel : S7TagChannel
+    private sealed class FakeContinuousBytesChannel : S7TagChannel
     {
-        public FakeContinousBytesChannel(byte[] payload)
+        public FakeContinuousBytesChannel(byte[] payload)
             :base(
                  new S7TagChannelDescriptor() { Name = "fake" }, 
                  new LoggerFactory().CreateLogger<S7TagChannel>()

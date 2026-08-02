@@ -1,4 +1,5 @@
-﻿using Itminus.Tags.TagCbntors;
+﻿using Itminus.Tags;
+using Itminus.Tags.S7;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace Itminus.Tags.Tests.Core.TagCbnts;
 
 public class TagCbnt_Tests
 {
-    internal class MockChannel : IContinousBytesBasedTagChannel
+    internal class MockChannel : IContinuousBytesBasedTagChannel
     {
         private byte[] _bytes = new byte[4]
         {
@@ -60,19 +61,19 @@ public class TagCbnt_Tests
     public async Task Test_TagCnbtRWTriggerTagSyncsEvents()
     {
         var channel = new MockChannel();
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", IsEnabled = true })
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", IsEnabled = true })
         {
             Channel = channel,
         };
         cbnt.ResizeCache(4);
-        var tag1 = new BitTagCbntor(
+        var tag1 = new S7BitTagCbntor(
             new TagDescriptor() { RawAddress = "0.0", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点1" },
             cbnt,
             0,
             0,
             0
             );
-        var tag2 = new BitTagCbntor(
+        var tag2 = new S7BitTagCbntor(
             new TagDescriptor() { RawAddress = "0.1", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点2" },
             cbnt,
             0,
@@ -135,19 +136,19 @@ public class TagCbnt_Tests
     public async Task Test_TagCnbtRWTriggerTagSyncsEventsObservable()
     {
         var channel = new MockChannel();
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", IsEnabled = true })
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "mock tag cbnt", StartAddress = "0.0", IsEnabled = true })
         {
             Channel = channel,
         };
         cbnt.ResizeCache(4);
-        var tag1 = new BitTagCbntor(
+        var tag1 = new S7BitTagCbntor(
             new TagDescriptor() { RawAddress = "0.0", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点1" },
             cbnt,
             0,
             0,
             0
             );
-        var tag2 = new BitTagCbntor(
+        var tag2 = new S7BitTagCbntor(
             new TagDescriptor() { RawAddress = "0.1", TagSize = 1, TagKind = BuiltinTagKinds.BIT, TagName = "测点2" },
             cbnt,
             tagOffset: 0,

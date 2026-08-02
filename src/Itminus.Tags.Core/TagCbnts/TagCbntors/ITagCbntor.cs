@@ -15,15 +15,6 @@ public interface ITagCbntor: ITag
 
 
     /// <summary>
-    /// 表示【测点数据】在缓存中的真正偏移位置，单位为 byte。<br/>
-    /// 本属性在大部分时候和<see cref="TagOffset" />相同，但是当测点地址包含位地址且位地址跨字节时，往往会导致本属性和<see cref="TagOffset"/>不一致。<br/>
-    /// 比如S7中如果起始地址是"DB100.0"，那么测点 "DB100.100.15" 对应的是<see cref="TagOffset"/>=100，而对应的<see cref="CacheOffset"/>=101 <br/>。
-    /// 再比如Modbus HoldingRegister中如果起始地址是"40001"，, 每个将Tag占据2个字节，于是测点"40009.15"的<see cref="TagOffset"/>=16，而<see cref="CacheOffset"/>=17
-    /// </summary>
-    public int CacheOffset { get; set; }
-
-
-    /// <summary>
     /// 强行通知测点已经变化
     /// </summary>
     void NotifyTagRead();

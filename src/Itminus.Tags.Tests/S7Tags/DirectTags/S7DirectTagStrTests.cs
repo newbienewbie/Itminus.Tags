@@ -15,7 +15,7 @@ public class S7DirectTagStrTests
     {
         const byte maxLen = 10;
         var payload = new byte[] { maxLen, 5, (byte)'H', (byte)'E', (byte)'L', (byte)'L', (byte)'O', 0, 0, 0, 0, 0 };
-        var fake = new FakeContinousBytesChannel(payload);
+        var fake = new FakeContinuousBytesChannel(payload);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
@@ -29,7 +29,7 @@ public class S7DirectTagStrTests
     public async Task DirectStrTag_WriteAsync_WritesHeaderAndAscii()
     {
         const byte maxLen = 6;
-        var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
+        var fake = new FakeContinuousBytesChannel(new byte[maxLen + 2]);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
@@ -48,7 +48,7 @@ public class S7DirectTagStrTests
     public async Task DirectStrTag_WriteAsync_Throws_WhenInputExceedsMaxLen()
     {
         const byte maxLen = 4;
-        var fake = new FakeContinousBytesChannel(new byte[maxLen + 2]);
+        var fake = new FakeContinuousBytesChannel(new byte[maxLen + 2]);
         var grp = new TagGrp(new TagGrpDescriptor { Name = "test-grp", IsEntry = false }, fake);
         var tag = CreateStrDirectTag(maxLen, fake, grp.IntoTagContainer());
 
@@ -57,7 +57,7 @@ public class S7DirectTagStrTests
     }
 
 
-    private static StrDirectTag CreateStrDirectTag(byte maxLen, IContinousBytesBasedTagChannel channel, TagContainer container)
+    private static StrDirectTag CreateStrDirectTag(byte maxLen, IContinuousBytesBasedTagChannel channel, TagContainer container)
     {
         var descriptor = new TagDescriptor()
         {
@@ -69,12 +69,12 @@ public class S7DirectTagStrTests
         return new StrDirectTag(descriptor, thisChannel: null, parent: container , maxLen: maxLen);
     }
 
-    private sealed class FakeContinousBytesChannel : S7TagChannel
+    private sealed class FakeContinuousBytesChannel : S7TagChannel
     {
-        public FakeContinousBytesChannel(byte[] payload)
+        public FakeContinuousBytesChannel(byte[] payload)
             :base(
                  new S7TagChannelDescriptor() { Name = "fake" }, 
-                 new LoggerFactory().CreateLogger<FakeContinousBytesChannel>()
+                 new LoggerFactory().CreateLogger<FakeContinuousBytesChannel>()
             )
         {
             this.LastWriteBuffer = (byte[])payload.Clone();

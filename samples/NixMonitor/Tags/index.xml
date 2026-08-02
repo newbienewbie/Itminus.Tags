@@ -9,5 +9,11 @@
 		<Tag name="温度" address="/sys/class/thermal/thermal_zone0/temp" type="FLOAT" access="RO" channel="file"/>
 		<Tag name="测试1" address="bb" type="BYTE" access="R1W" channel="file" autoCreateFile="true" />
 		<Tag name="测试2" address="cc" type="MyJson" access="R1W" channel="file" autoCreateFile="true" />
+
+		<!-- Linux /proc 伪文件监控（仅在 Linux 上可读到值，其它平台保持空值） -->
+		<Tag name="内存信息" address="/proc/meminfo" type="MemInfo" access="RO" channel="file" note="解析 /proc/meminfo，单位字节"/>
+		<Tag name="CPU信息" address="/proc/cpuinfo" type="CpuInfo" access="RO" channel="file" note="解析 /proc/cpuinfo"/>
+		<Tag name="系统负载" address="/proc/loadavg" type="LoadAvg" access="RO" channel="file" note="解析 /proc/loadavg"/>
+		<Tag name="开机时长" address="/proc/uptime" type="STR" access="RO" channel="file" note="原始文本：开机秒数 空闲秒数"/>
 	</TagGrp>
 </root>

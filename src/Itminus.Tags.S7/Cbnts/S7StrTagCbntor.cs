@@ -7,7 +7,7 @@ namespace Itminus.Tags.S7;
 /// <summary>
 /// S7 字符串测点缓存器
 /// </summary>
-public class S7StrTagCbntor : TagCbntor
+public class S7StrTagCbntor : S7TagCbntorBase
 {
     /// <summary>
     /// 字符串最大长度，ReadOnly
@@ -21,15 +21,14 @@ public class S7StrTagCbntor : TagCbntor
     {
         get
         {
-            var cache = this.TagCbnt.Cache;
-            var span = cache.Span.Slice(CacheOffset);
+            var span = this.Cache.Span.Slice(CacheOffset);
             var total = span[0];
             var size = span[1];
             return size;
         }
     }
 
-    internal S7StrTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int cacheOffset, byte maxLen)
+    internal S7StrTagCbntor(TagDescriptor tagDescriptor, TagCbnt<byte> tagCbnt, int cacheOffset, byte maxLen)
         : base(tagDescriptor, tagCbnt, cacheOffset, cacheOffset)
     {
         this.Maxlen = maxLen;
@@ -42,8 +41,7 @@ public class S7StrTagCbntor : TagCbntor
     {
         get
         {
-            var cache = this.TagCbnt.Cache;
-            var span = cache.Span.Slice(CacheOffset);
+            var span = this.Cache.Span.Slice(CacheOffset);
             var size = span[1];
             var str = Encoding.ASCII.GetString(span.Slice(2, size));
             return str;
@@ -51,10 +49,9 @@ public class S7StrTagCbntor : TagCbntor
         set
         {
             var str = value is null ? string.Empty : value is string s ? s : throw new InvalidCastException();
-            var cache = this.TagCbnt.Cache;
             var tagsize = this.TagSize();
-            var span = cache.Span.Slice(CacheOffset, tagsize);
-            if(str.Length > this.Maxlen)
+            var span = this.Cache.Span.Slice(CacheOffset, tagsize);
+            if (str.Length > this.Maxlen)
             {
                 throw new ArgumentException($"字符串长度超过限制，最大{this.Maxlen}，实际{str.Length}");
             }

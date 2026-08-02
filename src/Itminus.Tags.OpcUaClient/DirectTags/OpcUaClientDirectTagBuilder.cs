@@ -4,7 +4,7 @@
 /// 构建 OpcUaClient 直接测点的构建器。<br/>
 /// 当通道的驱动为 <see cref="OpcUaClientNames.DriverName"/> 时，用于构建测点。
 /// </summary>
-public class OpcUaClientTagBuilder : TagBuilderBase
+public class OpcUaClientDirectTagBuilder : TagBuilderBase
 {
     /// <inheritdoc/>
     protected override ITag Fallback(ITagChannel channel)

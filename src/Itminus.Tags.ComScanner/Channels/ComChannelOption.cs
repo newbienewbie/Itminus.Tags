@@ -16,7 +16,7 @@ public class ComChannelOption
     /// <summary>
     /// 波特率
     /// </summary>
-    public int BaundRate { get; set; }
+    public int BaudRate { get; set; }
 
     /// <summary>
     /// Parity

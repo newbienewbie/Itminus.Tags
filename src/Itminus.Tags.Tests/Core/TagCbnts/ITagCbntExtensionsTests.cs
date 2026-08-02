@@ -1,7 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Itminus.Tags.TagCbntors;
+using Itminus.Tags;
+using Itminus.Tags.S7;
 using Xunit;
 
 namespace Itminus.Tags.Tests.Core.TagCbnts;
@@ -13,7 +14,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void TagName_ReturnsDescriptorName()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "myCbnt" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "myCbnt" });
 
         Assert.Equal("myCbnt", cbnt.TagName());
     }
@@ -21,7 +22,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void TagName_DoesNotBubbleUp()
     {
-        var child = new TagCbnt(new TagCbntDescriptor { Name = "child" })
+        var child = new TestByteTagCbnt(new TagCbntDescriptor { Name = "child" })
             { Parent = new TagGrp(new TagGrpDescriptor { Name = "grp" }, null) };
 
         Assert.Equal("child", child.TagName());
@@ -34,9 +35,9 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SelectTag_WithValidPath_ReturnsChild()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
         var d = new TagDescriptor { TagName = "t1", RawAddress = "0", TagKind = BuiltinTagKinds.BYTE, TagSize = 1 };
-        var child = new ByteTagCbntor(d, cbnt, 0);
+        var child = new S7ByteTagCbntor(d, cbnt, 0);
         cbnt.Children.Add("t1", child);
 
         var result = cbnt.SelectTag("t1");
@@ -47,7 +48,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SelectTag_WithInvalidPath_Throws()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
 
         Assert.Throws<Exception>(() => cbnt.SelectTag("nonexistent"));
     }
@@ -59,7 +60,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SearchChannel_WhenOwnChannelSet_ReturnsOwnChannel()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
         var channel = new ChannelMock();
         cbnt.Channel = channel;
 
@@ -74,7 +75,7 @@ public class ITagCbntExtensionsTests
         var parentGrp = new TagGrp(new TagGrpDescriptor { Name = "parentGrp" }, null);
         var channel = new ChannelMock();
         parentGrp.Channel = channel;
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" }) { Parent = parentGrp };
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" }) { Parent = parentGrp };
 
         var result = cbnt.SearchChannel();
 
@@ -84,7 +85,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SearchChannel_WhenNoChannelAtAll_ReturnsNull()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
 
         var result = cbnt.SearchChannel();
 
@@ -98,7 +99,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SearchRequiredChannel_WhenChannelExists_ReturnsChannel()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
         var channel = new ChannelMock();
         cbnt.Channel = channel;
 
@@ -110,7 +111,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SearchRequiredChannel_WhenNoChannel_Throws()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
 
         var ex = Assert.Throws<Exception>(() => cbnt.SearchRequiredChannel());
         Assert.Contains("Channel is not configured", ex.Message);
@@ -124,7 +125,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SearchAccessMode_WhenOwnModeSet_ReturnsOwnMode()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", AccessMode = TagAccessMode.RO });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g", AccessMode = TagAccessMode.RO });
 
         Assert.Equal(TagAccessMode.RO, cbnt.SearchAccessMode());
     }
@@ -133,7 +134,7 @@ public class ITagCbntExtensionsTests
     public void SearchAccessMode_WhenOwnModeNullAndParentModeSet_ReturnsParentMode()
     {
         var parentGrp = new TagGrp(new TagGrpDescriptor { Name = "p", AccessMode = TagAccessMode.WO }, null);
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" }) { Parent = parentGrp };
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" }) { Parent = parentGrp };
 
         Assert.Equal(TagAccessMode.WO, cbnt.SearchAccessMode());
     }
@@ -141,7 +142,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void SearchAccessMode_WhenBothNull_DefaultsToRW()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
 
         Assert.Equal(TagAccessMode.RW, cbnt.SearchAccessMode());
     }
@@ -153,7 +154,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void IsReadOnly_WhenModeRO_ReturnsTrue()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", AccessMode = TagAccessMode.RO });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g", AccessMode = TagAccessMode.RO });
 
         Assert.True(cbnt.IsReadOnly());
         Assert.False(cbnt.IsWriteOnly());
@@ -162,7 +163,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void IsWriteOnly_WhenModeWO_ReturnsTrue()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g", AccessMode = TagAccessMode.WO });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g", AccessMode = TagAccessMode.WO });
 
         Assert.False(cbnt.IsReadOnly());
         Assert.True(cbnt.IsWriteOnly());
@@ -171,7 +172,7 @@ public class ITagCbntExtensionsTests
     [Fact]
     public void IsReadOnly_WhenDefaultRW_ReturnsFalse()
     {
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "g" });
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "g" });
 
         Assert.False(cbnt.IsReadOnly());
         Assert.False(cbnt.IsWriteOnly());

@@ -51,8 +51,8 @@ public class S7ProjTests
         #region input group
         // Verify Cache Size
         var input = g1.SelectCbnt("拍照请求");
-        Assert.Equal(6 + 15 + 2, input.CacheSize);
-        Assert.Equal(6 + 15 + 2, input.Cache.Length);
+        Assert.Equal(6 + 15 + 2, ((TagCbnt<byte>)input).CacheSize);
+        Assert.Equal(6 + 15 + 2, ((TagCbnt<byte>)input).Cache.Length);
 
         var req = g1.SelectTag("拍照请求/拍照-请求-标志");
         Assert.Equal("拍照-请求-标志", req.TagName());
@@ -80,8 +80,8 @@ public class S7ProjTests
         #region output group
         // Verify Cache Size
         var output = g1.SelectCbnt("拍照响应");
-        Assert.Equal(2, output.CacheSize);
-        Assert.Equal(2, output.Cache.Length);
+        Assert.Equal(2, ((TagCbnt<byte>)output).CacheSize);
+        Assert.Equal(2, ((TagCbnt<byte>)output).Cache.Length);
 
         var ack = g1.SelectTag("拍照响应/拍照-响应-标志");
         Assert.Equal("拍照-响应-标志", ack.TagName());

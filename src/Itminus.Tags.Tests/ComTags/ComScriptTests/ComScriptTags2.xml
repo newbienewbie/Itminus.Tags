@@ -10,7 +10,7 @@
 		</ReadScript>
 		<ReadScriptDebugInformationEnabled>true</ReadScriptDebugInformationEnabled>
 		<Port>COM9</Port>
-		<BaundRate>9600</BaundRate>
+		<BaudRate>9600</BaudRate>
 		<Parity>None</Parity>
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>

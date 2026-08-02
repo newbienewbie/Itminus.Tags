@@ -48,10 +48,6 @@ public class TagUnionExtensions_IsDirty_Tests
         public ITagChannel? Channel { get; set; }
         public string StartAddress { get; set; } = string.Empty;
 
-        public Memory<byte> Cache { get; } = Memory<byte>.Empty;
-        public int CacheSize => 0;
-        public void ResizeCache(int cacheSize) { }
-
         public bool IsDirty { get; set; }
         public Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
         public Task WriteAsync(CancellationToken ct) => Task.CompletedTask;

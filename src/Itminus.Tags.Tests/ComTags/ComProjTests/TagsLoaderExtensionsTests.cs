@@ -18,7 +18,7 @@ public class TagsLoaderExtensionsTests
     #region Helper Types
 
     /// <summary>
-    /// 可追踪的 TagBuilder：Build() 使用 FakedTag 返回有效测点
+    /// 可追踪的 DirectTagBuilder：Build() 使用 FakedTag 返回有效测点
     /// </summary>
     private class TraceTagBuilder : TagBuilderBase
     {
@@ -31,7 +31,7 @@ public class TagsLoaderExtensionsTests
     }
 
     /// <summary>
-    /// 带自定义属性的 TraceTagBuilder，用于测试 configure→predicate 联动
+    /// 带自定义属性的 TraceDirectTagBuilder，用于测试 configure→predicate 联动
     /// </summary>
     private class ConfigurableTagBuilder : TagBuilderBase
     {
@@ -53,6 +53,9 @@ public class TagsLoaderExtensionsTests
         }
 
         public override object? Value { get; set; }
+
+        public override Task ReadAsync(CancellationToken ct) => throw new NotSupportedException();
+        public override Task WriteAsync(CancellationToken ct) => throw new NotSupportedException();
     }
 
     /// <summary>
@@ -93,9 +96,6 @@ public class TagsLoaderExtensionsTests
         public bool IsScaned { get; set; }
         public ITagChannel? Channel { get; set; }
         public string StartAddress { get; set; } = string.Empty;
-        public Memory<byte> Cache => Memory<byte>.Empty;
-        public int CacheSize => 0;
-        public void ResizeCache(int cacheSize) { }
         public bool IsDirty { get; set; }
         public Task ReadAsync(CancellationToken ct)
             => Task.CompletedTask;
@@ -105,10 +105,10 @@ public class TagsLoaderExtensionsTests
 
     #endregion
 
-    #region AddTagBuilder — 通过 LoadTagGroup 入口验证
+    #region AddDirectTagBuilder — 通过 LoadTagGroup 入口验证
 
     [Fact]
-    public void AddTagBuilder_ConfigureIsInvoked_ThroughLoadTagGroup()
+    public void AddDirectTagBuilder_ConfigureIsInvoked_ThroughLoadTagGroup()
     {
         // Arrange
         var loader = new CompositeTagsLoader();
@@ -119,8 +119,8 @@ public class TagsLoaderExtensionsTests
 
         var configureWasCalled = false;
 
-        // Act: 注册带 configure 钩子的 TagBuilder
-        loader.AddTagBuilder<TraceTagBuilder>(
+        // Act: 注册带 configure 钩子的 DirectTagBuilder
+        loader.AddDirectTagBuilder<TraceTagBuilder>(
             "FakedDriver",
             configure: b => { 
                 configureWasCalled = true; 
@@ -139,7 +139,7 @@ public class TagsLoaderExtensionsTests
     }
 
     [Fact]
-    public void AddTagBuilder_ConfigureCanModifyBuilder_BeforePredicate_ThroughLoadTagGroup()
+    public void AddDirectTagBuilder_ConfigureCanModifyBuilder_BeforePredicate_ThroughLoadTagGroup()
     {
         // Arrange
         var loader = new CompositeTagsLoader();
@@ -149,7 +149,7 @@ public class TagsLoaderExtensionsTests
             new TagGrpDescriptor { Name = "root" }, channel);
 
         // Act: configure 设置 CustomProperty，predicate 检查它
-        loader.AddTagBuilder<ConfigurableTagBuilder>(
+        loader.AddDirectTagBuilder<ConfigurableTagBuilder>(
             "FakedDriver",
             configure: b =>
             {
@@ -168,7 +168,7 @@ public class TagsLoaderExtensionsTests
     }
 
     [Fact]
-    public void AddTagBuilder_PredicateCanFilterAfterConfigure_ThroughLoadTagGroup()
+    public void AddDirectTagBuilder_PredicateCanFilterAfterConfigure_ThroughLoadTagGroup()
     {
         // Arrange
         var loader = new CompositeTagsLoader();
@@ -178,20 +178,20 @@ public class TagsLoaderExtensionsTests
             new TagGrpDescriptor { Name = "root" }, channel);
 
         // configure 设置 "block"，但 predicate 要求 "allow" → predicate 应拒绝
-        loader.AddTagBuilder<ConfigurableTagBuilder>(
+        loader.AddDirectTagBuilder<ConfigurableTagBuilder>(
             "FakedDriver",
             configure: b => b.CustomProperty = "block",
             predicate: b => b.CustomProperty == "allow"
         );
 
-        // Assert: predicate 拒绝导致 ChooseTagBuilder 返回 null → LoadDirectTag 抛异常
+        // Assert: predicate 拒绝导致 ChooseDirectTagBuilder 返回 null → LoadDirectTag 抛异常
         var tagDescriptor = new TagDescriptor { TagName = "t1", ChannelName = "ch1" };
         Assert.Throws<NotImplementedException>(() =>
             loader.LoadTagGroup(parent, tagDescriptor, new[] { channel }));
     }
 
     [Fact]
-    public void AddTagBuilder_ConfigureIsOptional_ThroughLoadTagGroup()
+    public void AddDirectTagBuilder_ConfigureIsOptional_ThroughLoadTagGroup()
     {
         // Arrange
         var loader = new CompositeTagsLoader();
@@ -201,7 +201,7 @@ public class TagsLoaderExtensionsTests
             new TagGrpDescriptor { Name = "root" }, channel);
 
         // Act: 不传 configure，仅 predicate
-        loader.AddTagBuilder<ConfigurableTagBuilder>(
+        loader.AddDirectTagBuilder<ConfigurableTagBuilder>(
             "FakedDriver",
             predicate: b => true
         );
@@ -213,7 +213,7 @@ public class TagsLoaderExtensionsTests
     }
 
     [Fact]
-    public void AddTagBuilder_BothConfigureAndPredicateAreOptional_ThroughLoadTagGroup()
+    public void AddDirectTagBuilder_BothConfigureAndPredicateAreOptional_ThroughLoadTagGroup()
     {
         // Arrange
         var loader = new CompositeTagsLoader();
@@ -223,7 +223,7 @@ public class TagsLoaderExtensionsTests
             new TagGrpDescriptor { Name = "root" }, channel);
 
         // Act: 既不传 configure 也不传 predicate
-        loader.AddTagBuilder<ConfigurableTagBuilder>("FakedDriver");
+        loader.AddDirectTagBuilder<ConfigurableTagBuilder>("FakedDriver");
 
         var tagDescriptor = new TagDescriptor { TagName = "t1", ChannelName = "ch1" };
         loader.LoadTagGroup(parent, tagDescriptor, new[] { channel });
@@ -232,7 +232,7 @@ public class TagsLoaderExtensionsTests
     }
 
     [Fact]
-    public void AddTagBuilder_DriverMismatch_ThroughLoadTagGroup()
+    public void AddDirectTagBuilder_DriverMismatch_ThroughLoadTagGroup()
     {
         // Arrange
         var loader = new CompositeTagsLoader();
@@ -242,10 +242,10 @@ public class TagsLoaderExtensionsTests
             new TagGrpDescriptor { Name = "root" }, channel);
 
         // 注册的是 FakedDriver，但通道是 OtherDriver
-        loader.AddTagBuilder<ConfigurableTagBuilder>("FakedDriver");
+        loader.AddDirectTagBuilder<ConfigurableTagBuilder>("FakedDriver");
 
         var tagDescriptor = new TagDescriptor { TagName = "t1", ChannelName = "ch1" };
-        // ChooseTagBuilder 没有匹配的工厂 → 抛出 NotImplementedException
+        // ChooseDirectTagBuilder 没有匹配的工厂 → 抛出 NotImplementedException
         Assert.Throws<NotImplementedException>(() =>
             loader.LoadTagGroup(parent, tagDescriptor, new[] { channel }));
     }

@@ -49,8 +49,8 @@ public class ModbusTcpProjTests
         #region input group
         // Verify Cache Size
         var input = g3.SelectCbnt("输入");
-        Assert.Equal(2, input.CacheSize);
-        Assert.Equal(2, input.Cache.Length);
+        Assert.Equal(2, ((TagCbnt<bool>)input).CacheSize);
+        Assert.Equal(2, ((TagCbnt<bool>)input).Cache.Length);
 
         var btnLetGo = g3.SelectTag("输入/放行按钮闭合状态");
         Assert.Equal("放行按钮闭合状态", btnLetGo.TagName());
@@ -67,8 +67,8 @@ public class ModbusTcpProjTests
         #region output group
         // Verify Cache Size
         var output = g3.SelectCbnt("输出");
-        Assert.Equal(23, output.CacheSize);
-        Assert.Equal(23, output.Cache.Length);
+        Assert.Equal(23, ((TagCbnt<bool>)output).CacheSize);
+        Assert.Equal(23, ((TagCbnt<bool>)output).Cache.Length);
 
         var ledGreen = g3.SelectTag("输出/绿灯");
         Assert.Equal("绿灯", ledGreen.TagName());
@@ -89,8 +89,8 @@ public class ModbusTcpProjTests
         #region acquire group
         // Verify Cache Size
         var acq = g3.SelectCbnt("采集");
-        Assert.Equal(24 * 2 + 2, acq.CacheSize);
-        Assert.Equal(24 * 2 + 2, acq.Cache.Length);
+        Assert.Equal(24 * 2 + 2, ((TagCbnt<ushort>)acq).CacheSize);
+        Assert.Equal(25, ((TagCbnt<ushort>)acq).Cache.Length); // 50 字节 = 25 个寄存器
 
         var acq1 = acq.SelectTag("byte");
         Assert.Equal("byte", acq1.TagName());

@@ -16,7 +16,7 @@ public class ModbusTcpTagCombinationBuilderTests
     public void Test_TagCombinationCacheSize()
     {
         var cbntDescriptor = new TagCbntDescriptor { Name = "g1", StartAddress = "40001", IsEnabled = true };
-        var builder = new ModbusTcpTagCbntBuilder()
+        var builder = new ModbusRegisterTagCbntBuilder()
             .WithCbntDescriptor(cbntDescriptor)
             .WithChannel(null!);
 
@@ -83,7 +83,7 @@ public class ModbusTcpTagCombinationBuilderTests
         builder.AddTags(tagDescriptors, channel);
 
         var cbnt = builder.Build(channel);
-        Assert.Equal( 20 , cbnt.CacheSize);
+        Assert.Equal( 20 , ((TagCbnt<ushort>)cbnt).CacheSize);
     }
 
 

@@ -27,18 +27,18 @@ public class CompositeTagsLoader : ITagsLoader
 {
     #region TagsBuilder Choose
     /// <summary>
-    /// 支持的测点构建器集合
+    /// 支持的直接测点构建器集合
     /// </summary>
-    protected List<MakeTagBuilder> _tagFactories = new();
+    protected List<MakeTagBuilder> _directTagFactories = new();
 
     /// <summary>
     /// 注册 <see cref="TagBuilderBase"/> 的构建器
     /// </summary>
     /// <param name="factory"></param>
     /// <returns></returns>
-    public virtual CompositeTagsLoader AddTagBuilder(MakeTagBuilder factory)
+    public virtual CompositeTagsLoader AddDirectTagBuilder(MakeTagBuilder factory)
     {
-        this._tagFactories.Add(factory);
+        this._directTagFactories.Add(factory);
         return this;
     }
 
@@ -49,9 +49,9 @@ public class CompositeTagsLoader : ITagsLoader
     /// <param name="channel"></param>
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
-    protected virtual TagBuilderBase? ChooseTagBuilder(ITagChannel channel, TagDescriptor tagDescriptor)
+    protected virtual TagBuilderBase? ChooseDirectTagBuilder(ITagChannel channel, TagDescriptor tagDescriptor)
     {
-        foreach (var f in this._tagFactories)
+        foreach (var f in this._directTagFactories)
         {
             var x = f(channel, tagDescriptor);
             if (x != null)
@@ -202,8 +202,8 @@ public class CompositeTagsLoader : ITagsLoader
         }
         var channel = thisChannel ?? parent.SearchRequiredChannel();
 
-        var builder = this.ChooseTagBuilder(channel, tagDescriptor) ??
-            throw new NotImplementedException($"未注册相应的 TagBuilder: 通道（Name={channel.ChannelName()}, Driver={channel.Driver()}), Element={tagDescriptor.TagName}");
+        var builder = this.ChooseDirectTagBuilder(channel, tagDescriptor) ??
+            throw new NotImplementedException($"未注册相应的 DirectTagBuilder: 通道（Name={channel.ChannelName()}, Driver={channel.Driver()}), Element={tagDescriptor.TagName}");
         var tag = builder
             .WithParent(parent)
             .WithChannel(thisChannel)

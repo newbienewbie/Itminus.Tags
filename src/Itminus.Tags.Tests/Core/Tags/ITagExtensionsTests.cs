@@ -1,5 +1,6 @@
 using System;
-using Itminus.Tags.TagCbntors;
+using Itminus.Tags;
+using Itminus.Tags.S7;
 using Itminus.Tags.Tests.Fakes;
 using Xunit;
 
@@ -54,8 +55,8 @@ public class ITagExtensionsTests
     {
         var channel = CreateChannel();
         var entry = new TagGrp(new TagGrpDescriptor { Name = "entry", IsEntry = true }, channel);
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "cbnt1" }) { Parent = entry };
-        var tag = new ByteTagCbntor(new TagDescriptor { TagName = "t1", RawAddress = "0", TagKind = BuiltinTagKinds.BYTE, TagSize = 1 }, cbnt, 0)
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "cbnt1" }) { Parent = entry };
+        var tag = new S7ByteTagCbntor(new TagDescriptor { TagName = "t1", RawAddress = "0", TagKind = BuiltinTagKinds.BYTE, TagSize = 1 }, cbnt, 0)
         {
             Parent = TagContainer.From(cbnt)
         };
@@ -98,8 +99,8 @@ public class ITagExtensionsTests
     {
         // FakedTag 构造函数会调用 SearchRequiredChannel(), 没有通道会直接抛出。
         // 使用 TagCbntor（其构造函数不检查通道）来测试此路径。
-        var cbnt = new TagCbnt(new TagCbntDescriptor { Name = "cbnt1" });
-        var tag = new ByteTagCbntor(new TagDescriptor { TagName = "t1", RawAddress = "0", TagKind = BuiltinTagKinds.BYTE, TagSize = 1 }, cbnt, 0);
+        var cbnt = new TestByteTagCbnt(new TagCbntDescriptor { Name = "cbnt1" });
+        var tag = new S7ByteTagCbntor(new TagDescriptor { TagName = "t1", RawAddress = "0", TagKind = BuiltinTagKinds.BYTE, TagSize = 1 }, cbnt, 0);
 
         var ex = Assert.Throws<Exception>(() => tag.SearchRequiredChannel());
         Assert.Contains("t1", ex.Message);
@@ -128,8 +129,8 @@ public class ITagExtensionsTests
         var grp = new TagGrp(new TagGrpDescriptor { Name = "g" }, channel);
         ITag tag = new FakedTag(new TagDescriptor { TagName = "t1", RawAddress = "0" }, channel: null, grp);
 
-        var ex = Assert.Throws<Exception>(() => tag.AsTag<ByteTagCbntor>());
-        Assert.Contains(typeof(ByteTagCbntor).ToString(), ex.Message);
+        var ex = Assert.Throws<Exception>(() => tag.AsTag<S7ByteTagCbntor>());
+        Assert.Contains(typeof(S7ByteTagCbntor).ToString(), ex.Message);
     }
 
     #endregion

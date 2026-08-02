@@ -9,6 +9,7 @@ internal class TagGrpRunner : ITagGrpRunner
     private readonly ILogger<TagGrpRunner> _logger;
     private readonly ITagGrpRunnerRetryStrategy _retryStrategy;
     private readonly ITagGrpRunnerPollDelayStrategy _pollDelayStrategy;
+    private readonly ITagGrpRunnerDisconnectStrategy _disconnectStrategy;
     private int _consecutiveFailures;
 
     /// <summary>
@@ -18,12 +19,14 @@ internal class TagGrpRunner : ITagGrpRunner
         ITagsProject project,
         ILogger<TagGrpRunner> logger,
         ITagGrpRunnerRetryStrategy? retryStrategy = null,
-        ITagGrpRunnerPollDelayStrategy? pollDelayStrategy = null)
+        ITagGrpRunnerPollDelayStrategy? pollDelayStrategy = null,
+        ITagGrpRunnerDisconnectStrategy? disconnectStrategy = null)
     {
         this._project = project;
         this._logger = logger;
         this._retryStrategy = retryStrategy ?? new DefaultTagGrpRunnerRetryStrategy();
         this._pollDelayStrategy = pollDelayStrategy ?? new AdaptivePollDelayStrategy();
+        this._disconnectStrategy = disconnectStrategy ?? new DefaultTagGrpRunnerDisconnectStrategy();
     }
 
     /// <inheritdoc/>
@@ -124,7 +127,21 @@ internal class TagGrpRunner : ITagGrpRunner
                 {
                     try
                     {
-                        channel?.DisconnectAsync(ct);
+                        // 注意：这里必须使用 CancellationToken.None 而非 ct。
+                        // 本 catch 块的触发原因可能是 轮询循环中的 Task.Delay(ct) 抛 OCE。
+                        // 若沿用已取消的 ct，通道内部（如 S7 的 ExecuteOneByOneAsync 中 _rw.WaitAsync(ct)）会立即抛
+                        // OperationCanceledException，导致 DisconnectAsync 根本没执行——连接资源泄漏，
+                        // 下次 StartAsync 时旧连接可能仍处于异常状态。
+                        // 断开连接是清理动作，应尽力完成，不应受取消影响。
+                        //
+                        // 等待策略：断开是异步的，但 PLC/Modbus 设备多有连接数限制：
+                        // - Smart200/S1200 同一时刻只允许有几个连接)，
+                        // - 串口设备更是只能独占。
+                        // 若 fire-and-forget 后立刻重连（失败路径）或立刻重启（取消路径），
+                        // 上一连接可能还没断开，导致"连接数超限"失败。因此这里委托给断开策略（默认有限超时等待），
+                        // 由策略决定如何等待——正常情况毫秒级完成；超时则放弃等待、立即退出，后台仍会继续清理。
+                        var disconnect = channel?.DisconnectAsync(CancellationToken.None);
+                        await this._disconnectStrategy.WaitDisconnectAsync(channel, disconnect);
                     }
                     catch
                     {

@@ -32,24 +32,14 @@ public class OpcUaClientTagCbntTests
     }
 
     [Fact]
-    public void CacheSize_EqualsBagCount()
+    public void Bag_Count_TracksItems()
     {
         var cbnt = new OpcUaClientTagCbnt(new TagCbntDescriptor { Name = "c", StartAddress = "ns=1" });
 
-        Assert.Equal(0, cbnt.CacheSize);
+        Assert.Empty(cbnt.Bag);
 
         cbnt.Bag.TryAdd(new Opc.Ua.NodeId("test", 1), new Opc.Ua.DataValue());
-        Assert.Equal(1, cbnt.CacheSize);
-    }
-
-    [Fact]
-    public void ResizeCache_DoesNothing()
-    {
-        var cbnt = new OpcUaClientTagCbnt(new TagCbntDescriptor { Name = "c", StartAddress = "ns=1" });
-
-        // ResizeCache 在 OpcUa 实现中不做任何事
-        cbnt.ResizeCache(999);
-        Assert.Equal(0, cbnt.CacheSize);
+        Assert.Single(cbnt.Bag);
     }
 
     #region this[string tagName] 索引器
