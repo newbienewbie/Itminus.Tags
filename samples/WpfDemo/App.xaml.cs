@@ -43,12 +43,12 @@ public partial class App : Application
                     loggerFactory.CreateLogger<HeartBeatLogicet>()
                 ));
 
-                proj.TurnStarted += (grp, ch) =>
+                proj.RunnerStarted += (grp, ch) =>
                 {
                     logger.LogInformation("Tags处理开始,grp={grpName}", grp.TagName());
                     return Task.CompletedTask;
                 };
-                proj.TurnCrashed += (grp, ch, ex) =>
+                proj.RunnerCrashed += (grp, ch, ex) =>
                 {
                     logger.LogError(ex, "Tags处理异常,grp={grpName}", grp.TagName());
                     MessageBox.Show($"Tags处理发生异常：{ex.Message}");

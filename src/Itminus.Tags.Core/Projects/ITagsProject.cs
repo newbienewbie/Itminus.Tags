@@ -53,14 +53,17 @@ public interface ITagsProject: IDisposable
     XElement? GetRootElement();
 
     /// <summary>
-    /// 轮询开始
+    /// 轮询开始，会透传给<see cref="ITagGrpRunner.RunnerStarted"/>。<br/>
     /// </summary>
-    event TurnStarted? TurnStarted;
-    
+    event RunnerStarted? RunnerStarted;
+
     /// <summary>
-    /// 轮询崩溃
+    /// 轮询崩溃，会透传给<see cref="ITagGrpRunner.RunnerCrashed"/>。<br/>
+    /// 通常来说，在该委托正常结束后，项目会自行重启轮询循环。<br/>
+    /// 但需要注意的是，这个自行重启是指<b>事件委托没有再向外抛出异常</b>的情况：<br/>
+    /// 在<see cref="RunnerCrashed"/>中外抛异常会被视作对应入口需要<b>停机</b>！
     /// </summary>
-    event TurnCrashed? TurnCrashed;
+    event RunnerCrashed? RunnerCrashed;
 
 
     /// <summary>

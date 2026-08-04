@@ -25,12 +25,12 @@ class NixMonitorBackgroundService: BackgroundService
         });
         await _ctrl.StartPollAsync(Path.Combine(dir!.FullName, "Tags"), null, (proj, sp, ct) =>
         {
-            proj.TurnStarted += (grp, ch) =>
+            proj.RunnerStarted += (grp, ch) =>
             {
                 _logger.LogInformation("Tags处理开始,grp={grpName}", grp.TagName());
                 return Task.CompletedTask;
             };
-            proj.TurnCrashed += (grp, ch, ex) =>
+            proj.RunnerCrashed += (grp, ch, ex) =>
             {
                 _logger.LogError(ex, "Tags处理异常,grp={grpName}", grp.TagName());
                 return Task.CompletedTask;
