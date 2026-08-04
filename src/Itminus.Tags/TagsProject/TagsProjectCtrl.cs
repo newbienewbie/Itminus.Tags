@@ -55,11 +55,12 @@ internal class TagsProjectCtrl : ITagsProjectCtrl
         try
         {
             this._cts = new CancellationTokenSource();
-            this.Project = sp.MakeProject(dir, root);
+            var project = sp.MakeProject(dir, root);
+            this.Project = project;
             var ct = _cts.Token;
-            await hook(this.Project, sp, ct);
-            this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(true, this.Project));
-            await this.Project.RunAsync(ct);
+            await hook(project, sp, ct);
+            this.StartedOrStopped?.Invoke(this, new TagsProjectEventArgs(true, project));
+            await project.RunAsync(ct);
         }
         catch (Exception ex)
         {
@@ -105,32 +106,28 @@ internal class TagsProjectCtrl : ITagsProjectCtrl
     /// <inheritdoc/>
     public async Task StopAsync()
     {
-        // reset proj ctrl
-        var oldchannels = this.Project?.Channels;
+        var project = this.Project;
         try
         {
             if (this._cts != null)
             {
                 this._cts.Cancel();
             }
-            if (this.Project is not null)
+            if (project is not null)
             {
+                this.Project = null;
                 try
                 {
-                    this.Project.Dispose();
+                    project.Dispose();
                 }
                 catch { }
-                finally
-                {
-                    this.Project = null;
-                }
             }
         }
         catch
         {
             // ignore error when cancelling
         }
-
+        var oldchannels = project?.Channels;
         try
         {
             // disconnect from each channel

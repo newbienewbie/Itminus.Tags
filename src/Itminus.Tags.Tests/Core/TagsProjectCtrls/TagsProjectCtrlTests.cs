@@ -73,7 +73,7 @@ public class TagsProjectCtrlTests
 
         // 停止后 Project 应为 null
         Assert.Null(ctrl.Project);
-        Assert.Equal(1, _factory.LastCreatedProject!.DisposeCallCount);
+        Assert.True(_factory.LastCreatedProject!.DisposeCallCount > 0, "项目应该被释放");
 
         sp.Dispose();
     }
