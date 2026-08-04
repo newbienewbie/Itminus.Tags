@@ -217,7 +217,7 @@ internal class TagsProject : ITagsProject
                 .OrderBy(l => l.Order)
                 .ToList();
             var runner = this._tagGrpRunnerFactory.Create(this);
-            runner.TurnStarted += TurnStarted;
+            runner.RunnerStarted += RunnerStarted;
             runner.TurnProcess += async (entry, ch) => {
                 foreach (var l in logicets)
                 {
@@ -228,7 +228,7 @@ internal class TagsProject : ITagsProject
                     await l.ProcessAsync(entry, ch);
                 }
             };
-            runner.TurnCrashed += TurnCrashed;
+            runner.RunnerCrashed += RunnerCrashed;
             Task task = runner.StartAsync(entry, ct);
             tasks.Add(task);
         });
@@ -317,9 +317,9 @@ internal class TagsProject : ITagsProject
     #endregion
 
     /// <inheritdoc/>
-    public event TurnCrashed? TurnCrashed;
+    public event RunnerCrashed? RunnerCrashed;
     /// <inheritdoc/>
-    public event TurnStarted? TurnStarted;
+    public event RunnerStarted? RunnerStarted;
 
 
     #region

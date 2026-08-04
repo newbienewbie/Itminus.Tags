@@ -35,8 +35,8 @@ internal class MockTagsProject : ITagsProject
     /// </summary>
     public void AddChannel(ITagChannel channel) => _channels.Add(channel);
 
-    public event TurnStarted? TurnStarted;
-    public event TurnCrashed? TurnCrashed;
+    public event RunnerStarted? RunnerStarted;
+    public event RunnerCrashed? RunnerCrashed;
     public void Initialize(string projRoot, XElement? root = null)
     {
         InitializeCallCount++;

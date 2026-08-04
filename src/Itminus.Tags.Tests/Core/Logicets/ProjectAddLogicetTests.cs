@@ -185,8 +185,8 @@ public class ProjectAddLogicetTests
 #pragma warning restore CS0618
         public ChannelReader<IntentCompletion>? GetIntentReader(string entry) => null;
 
-        public event TurnStarted? TurnStarted;
-        public event TurnCrashed? TurnCrashed;
+        public event RunnerStarted? RunnerStarted;
+        public event RunnerCrashed? RunnerCrashed;
     }
 
     /// <summary>

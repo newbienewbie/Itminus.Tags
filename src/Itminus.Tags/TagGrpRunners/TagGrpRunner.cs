@@ -30,13 +30,13 @@ internal class TagGrpRunner : ITagGrpRunner
     }
 
     /// <inheritdoc/>
-    public event TurnStarted? TurnStarted;
+    public event RunnerStarted? RunnerStarted;
 
     /// <inheritdoc/>
     public event TurnProcess? TurnProcess;
 
     /// <inheritdoc/>
-    public event TurnCrashed? TurnCrashed;
+    public event RunnerCrashed? RunnerCrashed;
 
     /// <inheritdoc/>
     public virtual async Task StartAsync(ITagGrp entry, CancellationToken ct)
@@ -55,9 +55,9 @@ internal class TagGrpRunner : ITagGrpRunner
                 }
 
                 channel = entry.SearchChannel();
-                if (TurnStarted is not null)
+                if (RunnerStarted is not null)
                 {
-                    await TurnStarted(entry, channel);
+                    await RunnerStarted(entry, channel);
                 }
 
                 // 开始轮询
@@ -104,11 +104,11 @@ internal class TagGrpRunner : ITagGrpRunner
 
                 try
                 {
-                    if (TurnCrashed is not null)
+                    if (RunnerCrashed is not null)
                     {
                         try
                         {
-                            await TurnCrashed(entry, channel, ex);
+                            await RunnerCrashed(entry, channel, ex);
                         }
                         catch(Exception handlingError)
                         {

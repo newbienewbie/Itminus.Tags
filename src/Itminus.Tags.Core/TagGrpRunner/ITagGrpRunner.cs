@@ -2,9 +2,9 @@
 
 namespace Itminus.Tags;
 
- 
+
 /// <summary>
-/// 通知新一轮处理
+/// <see cref="ITagGrpRunner"/>中有一轮处理
 /// </summary>
 /// <param name="grp"></param>
 /// <param name="channel"></param>
@@ -12,21 +12,21 @@ namespace Itminus.Tags;
 public delegate Task TurnProcess(ITagGrp grp, ITagChannel? channel);
 
 /// <summary>
-/// 通知新一轮轮训启动
+/// <see cref="ITagGrpRunner"/>中有轮训启动
 /// </summary>
 /// <param name="grp"></param>
 /// <param name="channel"></param>
 /// <returns></returns>
-public delegate Task TurnStarted(ITagGrp grp, ITagChannel? channel);
+public delegate Task RunnerStarted(ITagGrp grp, ITagChannel? channel);
 
 /// <summary>
-/// 通知一轮错误出现
+/// <see cref="ITagGrpRunner"/>中有错误出现
 /// </summary>
 /// <param name="grp"></param>
 /// <param name="channel"></param>
 /// <param name="ex"></param>
 /// <returns></returns>
-public delegate Task TurnCrashed(ITagGrp grp, ITagChannel? channel, Exception ex);
+public delegate Task RunnerCrashed(ITagGrp grp, ITagChannel? channel, Exception ex);
 
 
 /// <summary>
@@ -40,20 +40,20 @@ public interface ITagGrpRunner
 {
 
     /// <summary>
-    /// 启动
+    /// 启动事件
     /// </summary>
-    event TurnStarted? TurnStarted;
+    event RunnerStarted? RunnerStarted;
 
     /// <summary>
-    /// 处理
+    /// 崩溃事件。<br/>
+    /// 注意这里不要再有异常发生，否则会视作对应的入口轮询需要停机
+    /// </summary>
+    event RunnerCrashed? RunnerCrashed;
+
+    /// <summary>
+    /// 每一轮处理
     /// </summary>
     event TurnProcess? TurnProcess;
-
-    /// <summary>
-    /// 崩溃处理。<br/>
-    /// 注意崩溃处理中不要再有异常发生，否则会打断轮询
-    /// </summary>
-    event TurnCrashed? TurnCrashed;
 
     /// <summary>
     /// 启动对群组的监控: loop(意图执行-> 读取输入 -> 逻辑处理 -> 刷写输出)<br/>

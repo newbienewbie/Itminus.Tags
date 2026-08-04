@@ -55,7 +55,7 @@ public class TagGrpRunnerTests
         var turnStartedCalled = false;
         var turnProcessCalled = false;
 
-        runner.TurnStarted += (grp, ch) =>
+        runner.RunnerStarted += (grp, ch) =>
         {
             turnStartedCalled = true;
             return Task.CompletedTask;
@@ -107,7 +107,7 @@ public class TagGrpRunnerTests
         ITagGrp? capturedEntry = null;
         ITagChannel? capturedChannel = null;
 
-        runner.TurnStarted += (grp, ch) =>
+        runner.RunnerStarted += (grp, ch) =>
         {
             capturedEntry = grp;
             capturedChannel = ch;
@@ -201,7 +201,7 @@ public class TagGrpRunnerTests
         Exception? capturedEx = null;
         var crashedFired = false;
 
-        runner.TurnCrashed += (grp, ch, ex) =>
+        runner.RunnerCrashed += (grp, ch, ex) =>
         {
             crashedFired = true;
             capturedEx = ex;
@@ -230,7 +230,7 @@ public class TagGrpRunnerTests
 
         using var cts = new CancellationTokenSource(2000);
 
-        runner.TurnCrashed += (grp, ch, ex) =>
+        runner.RunnerCrashed += (grp, ch, ex) =>
             throw new InvalidOperationException("错误处理也抛异常");
 
         // Act & Assert
@@ -419,7 +419,7 @@ public class TagGrpRunnerTests
         using var cts = new CancellationTokenSource(2000);
         var crashCount = 0;
 
-        runner.TurnCrashed += (_, _, _) =>
+        runner.RunnerCrashed += (_, _, _) =>
         {
             crashCount++;
             return Task.CompletedTask;
@@ -469,7 +469,7 @@ public class TagGrpRunnerTests
             }
         };
 
-        runner.TurnCrashed += (_, _, _) =>
+        runner.RunnerCrashed += (_, _, _) =>
         {
             totalCrashes++;
 
@@ -611,8 +611,8 @@ public class TagGrpRunnerTests
         public Task RunAsync(CancellationToken ct) => Task.CompletedTask;
 
 
-        public event TurnStarted? TurnStarted;
-        public event TurnCrashed? TurnCrashed;
+        public event RunnerStarted? RunnerStarted;
+        public event RunnerCrashed? RunnerCrashed;
     }
 
     /// <summary>
