@@ -62,14 +62,20 @@ Core 不承载驱动映射，驱动专属子元素（`<s7:IpAddr>` 等）的编�
 
 ## 运行期校验（可选功能）
 
+加载期校验统一抽象为 `ITagsProjectValidator`（可注册多个，按注册顺序执行；第三方可实现自己的校验器）：
+
 ```csharp
 services.AddTagsProjectServices(b =>
 {
-    b.EnableXmlSchemaValidation(); // 启用加载期校验以提前抛出 TagsProjectSchemaException
-    b.AddS7Support();              // 各 AddXxxSupport 会自动注册各自的 schema provider
+    b.AddValidation<TagsProjectSchemaValidator>();       // 内置：XSD 校验（或便捷方法 EnableXmlSchemaValidation()）
+    b.AddValidation<ChannelCrossReferenceValidator>();   // 内置：channel 引用校验（或便捷方法 
+    b.AddValidation<MyValidator>();                      // 自定义校验器（实现 ITagsProjectValidator）
+    b.AddS7Support();                                    // 各 AddXxxSupport 会自动注册各自的 schema provider
     ...
 });
 ```
+
+不注册任何校验器时，加载期不校验——老的无命名空间前缀 XML 照常工作。
 
 ## 第三方驱动库：嵌入自己的 schema 校验
 

@@ -16,7 +16,7 @@ internal class TagsProject : ITagsProject
     private readonly ILogicetsLoader _logicetLoader;
     private readonly ITagGrpRunnerFactory _tagGrpRunnerFactory;
     private readonly IServiceProvider _sp;
-    private readonly ITagsProjectSchemaValidator? _schemaValidator;
+    private readonly IReadOnlyList<ITagsProjectValidator> _validators;
     private readonly ConcurrentDictionary<string, Channel<IntentCompletion>> _entryWriteIntentChannels = new();
 
     private List<IDisposable> _disposables = new List<IDisposable>();
@@ -29,16 +29,16 @@ internal class TagsProject : ITagsProject
     /// <param name="tagsLoader"></param>
     /// <param name="logicetLoader"></param>
     /// <param name="sp"></param>
-    /// <param name="schemaValidator">可选的加载期 schema 校验器；为 null 时不校验
-    /// （老的无命名空间前缀 XML 照常工作，见 <see cref="ITagsProjectSchemaValidator"/>）</param>
-    public TagsProject(ITagGrpRunnerFactory tagGrpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, IServiceProvider sp, ITagsProjectSchemaValidator? schemaValidator = null)
+    /// <param name="validators">可选的加载期校验器集合（可注册多个，各自独立功能，第三方可追加，
+    /// 如 XSD 校验、channel 引用校验）；为空时不校验（见 <see cref="ITagsProjectValidator"/>）</param>
+    public TagsProject(ITagGrpRunnerFactory tagGrpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, IServiceProvider sp, IEnumerable<ITagsProjectValidator>? validators = null)
     {
         this._channelsLoader = channelsLoader;
         this._tagsLoader = tagsLoader;
         this._logicetLoader = logicetLoader;
         this._tagGrpRunnerFactory = tagGrpRunnerFactory;
         this._sp = sp;
-        this._schemaValidator = schemaValidator;
+        this._validators = validators?.ToArray() ?? Array.Empty<ITagsProjectValidator>();
     }
 
 
@@ -120,8 +120,11 @@ internal class TagsProject : ITagsProject
         this._rootElement = root;
         this.CompleteIntentChannels("项目正在初始化，未处理的意图已被丢弃");
 
-        // 可选的加载期 XSD 校验
-        this._schemaValidator?.Validate(root);
+        // 可选的加载期项目校验（可注册多个实现，按注册顺序逐个执行）
+        foreach (var validator in this._validators)
+        {
+            validator.Validate(root);
+        }
 
         this.LoadChannels(root);
         this.LoadTags(root);

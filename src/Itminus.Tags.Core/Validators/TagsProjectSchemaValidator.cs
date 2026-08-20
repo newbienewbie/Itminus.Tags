@@ -3,11 +3,11 @@ using System.Xml.Linq;
 namespace Itminus.Tags;
 
 /// <summary>
-/// 默认的 <see cref="ITagsProjectSchemaValidator"/>：用核心 schema
+/// <see cref="ITagsProjectValidator"/> 的一个实现：用核心 schema
 /// （<see cref="TagsProjectSchema"/>）加上所有注册的 <see cref="ITagsProjectSchemaProvider"/>
-/// 扩展 schema 一起校验项目根元素。
+/// 扩展 schema 一起校验项目根元素（XSD 校验）。
 /// </summary>
-public class TagsProjectSchemaValidator : ITagsProjectSchemaValidator
+public class TagsProjectSchemaValidator : ITagsProjectValidator
 {
     private readonly IEnumerable<ITagsProjectSchemaProvider>? _providers;
 

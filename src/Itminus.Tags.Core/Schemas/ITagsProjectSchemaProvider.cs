@@ -1,7 +1,7 @@
 namespace Itminus.Tags;
 
 /// <summary>
-/// 向 <see cref="ITagsProjectSchemaValidator"/> 提供额外 schema（第三方驱动/扩展用）。<br/>
+/// 向 <see cref="ITagsProjectValidator"/> 提供额外 schema（第三方驱动/扩展用）。<br/>
 /// 核心 schema 由库自带（<see cref="TagsProjectSchema"/>），无需注册；
 /// <code>
 /// services.AddSingleton&lt;ITagsProjectSchemaProvider&gt;(sp =&gt;

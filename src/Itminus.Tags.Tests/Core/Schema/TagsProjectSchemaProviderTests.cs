@@ -10,7 +10,7 @@ namespace Itminus.Tags.Tests.Core.Schema;
 
 /// <summary>
 /// 测试第三方驱动扩展点：<see cref="ITagsProjectSchemaProvider"/> 可以把自定义 schema
-/// 合并进 <see cref="ITagsProjectSchemaValidator"/>
+/// 合并进 <see cref="ITagsProjectValidator"/>
 /// </summary>
 public class TagsProjectSchemaProviderTests
 {

@@ -12,7 +12,8 @@ v1.0 之前只专注于正确性和可靠性，我不推荐外部人员使用—
 - [ ] TagsProjectCtrl 的清理路径的空 `catch` 被有意设计成了静默吞掉异常（如 `StartPollAsync`/`StopAsync` 中的 `Dispose`/`DisconnectAsync`），但应该补上日志，增加可观测性、不改变吞掉异常的语义。
 - [ ] 异常细化：为特定场景编写特定异常类型，目前大多是裸 `Exception`/`ArgumentException`/`InvalidOperationException` 等；重名测点报错带上完整路径上下文。优先做**加载期错误**（XML/地址/配置）统一异常族——便宜且对库用户价值高。
 - [ ] OpcUa和ModbusTcp通道串行化（多入口并发）。说明：当前S7已经做了单通道多入口的串行化，OpcUa和ModbusTcp目前只支持"单通道单入口"模型。这是一个值得改进的方向，可以参考 ComScanner/S7 设计横展。
-- [ ] 为项目描述 XML 引入 schema 校验机制：XSD/DTD，外加加载期的交叉引用校验（如 `channel` 属性必须能在已声明的 `<Channel>` 中找到，拼错的通道名在加载期报错而不是运行时才暴露）。
+- [x] 为项目描述 XML 引入 schema 校验机制：XSD 校验（核心 `tagsproject.xsd` + 各驱动 `Schemas/*.xsd`，XSD 1.0 命名空间模块化；运行期可选校验 `EnableXmlSchemaValidation()`，编辑器经 buildTransitive 自动注入 XSD 获得智能提示；第三方 schema 经 `ITagsProjectSchemaProvider` 合并）。
+- [x] 加载期交叉引用校验（XSD 表达不了）：`channel` 属性必须能在已声明的 `<Channel>` 中找到，拼错的通道名在加载期报错而不是运行时才暴露；错误带完整路径上下文。统一抽象为 `ITagsProjectValidator`（可注册多个实现）：`EnableXmlSchemaValidation()`（XSD）、`EnableCrossReferenceValidation()`（channel 引用 + `ChannelDriverFactoryValidator`：driver 必须对应已注册的通道工厂，未注册的驱动名在加载期报错）；第三方可用 `AddValidation<TValidator>()` 追加。
 - [ ] 文档完善和更新：`docs/` 放框架性内容，详细使用说明放独立文档库。
 
 ## v1.0 之后的 todo
