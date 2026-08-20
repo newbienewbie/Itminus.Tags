@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -47,7 +47,7 @@ public class TagsProjectCtrlTests
         // 后台启动，因为 StartPollAsync 会阻塞在 RunAsync 上
         var startTask = Task.Run(() => ctrl.StartPollAsync(
             dir: "test_dir",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (proj, sp, ct) =>
             {
                 capturedProject = proj;
@@ -94,7 +94,7 @@ public class TagsProjectCtrlTests
 
         var startTask = Task.Run(() => ctrl.StartPollAsync(
             dir: "test_dir",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (_, _,  _) => Task.CompletedTask));
 
         var eventArgs = await startEventFired.Task.WaitAsync(TimeSpan.FromSeconds(5));
@@ -124,7 +124,7 @@ public class TagsProjectCtrlTests
 
         var startTask = Task.Run(() => ctrl.StartPollAsync(
             dir: "test_dir",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (_,_, _) => Task.CompletedTask));
 
         // 等待启动，然后停止
@@ -147,7 +147,7 @@ public class TagsProjectCtrlTests
 
         var startTask = Task.Run(() => ctrl.StartPollAsync(
             dir: "test_dir",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (_,_, _) => Task.CompletedTask));
 
         // 确保第一个已启动
@@ -155,7 +155,7 @@ public class TagsProjectCtrlTests
 
         // 第二次启动应抛出异常
         var ex = await Assert.ThrowsAsync<Exception>(() =>
-            ctrl.StartPollAsync("test_dir", new XElement("root"), (_, _, _) => Task.CompletedTask));
+            ctrl.StartPollAsync("test_dir", new XElement("Project"), (_, _, _) => Task.CompletedTask));
 
         Assert.Contains("已经启动", ex.Message);
 
@@ -178,13 +178,13 @@ public class TagsProjectCtrlTests
 
         var startTask = Task.Run(() => ctrl.StartPollAsync(
             dir: "test_dir",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (_, _, _) => Task.CompletedTask));
 
         await Task.Delay(200);
 
         // 第二次启动，有 handler 且返回 true，不应抛出
-        await ctrl.StartPollAsync("test_dir", new XElement("root"), (_, _, _) => Task.CompletedTask);
+        await ctrl.StartPollAsync("test_dir", new XElement("Project"), (_, _, _) => Task.CompletedTask);
 
         Assert.True(handlerCalled);
 
@@ -202,13 +202,13 @@ public class TagsProjectCtrlTests
 
         var startTask = Task.Run(() => ctrl.StartPollAsync(
             dir: "test_dir",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (_, _, _) => Task.CompletedTask));
 
         await Task.Delay(200);
 
         var ex = await Assert.ThrowsAsync<Exception>(() =>
-            ctrl.StartPollAsync("test_dir", new XElement("root"), (_, _, _) => Task.CompletedTask));
+            ctrl.StartPollAsync("test_dir", new XElement("Project"), (_, _, _) => Task.CompletedTask));
 
         Assert.Contains("已经启动", ex.Message);
 
@@ -238,7 +238,7 @@ public class TagsProjectCtrlTests
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
             ctrl.StartPollAsync(
                 dir: "test_dir",
-                root: new XElement("root"),
+                root: new XElement("Project"),
                 hook: (proj,sp, ct) => throw new InvalidOperationException("hook 异常")));
 
         Assert.Contains("hook 异常", ex.Message);
@@ -271,7 +271,7 @@ public class TagsProjectCtrlTests
         };
 
         // 工厂异常 -> OnStartingException 被调用
-        await ctrl.StartPollAsync("test_dir", new XElement("root"), (_,_, _) => Task.CompletedTask);
+        await ctrl.StartPollAsync("test_dir", new XElement("Project"), (_,_, _) => Task.CompletedTask);
 
         Assert.True(handlerCalled);
         Assert.NotNull(capturedException);
@@ -289,7 +289,7 @@ public class TagsProjectCtrlTests
 
         // 没有注册 OnStartingException -> 异常向外传播
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            ctrl.StartPollAsync("test_dir", new XElement("root"), (_, _, _) => Task.CompletedTask));
+            ctrl.StartPollAsync("test_dir", new XElement("Project"), (_, _, _) => Task.CompletedTask));
 
         Assert.Contains("模拟的工厂异常", ex.Message);
         Assert.Null(ctrl.Project);
@@ -306,7 +306,7 @@ public class TagsProjectCtrlTests
         ctrl.OnStartingException = ex => Task.FromResult(false); // 未处理
 
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            ctrl.StartPollAsync("test_dir", new XElement("root"), (_,_, _) => Task.CompletedTask));
+            ctrl.StartPollAsync("test_dir", new XElement("Project"), (_,_, _) => Task.CompletedTask));
 
         Assert.Contains("模拟的工厂异常", ex.Message);
         Assert.Null(ctrl.Project);
@@ -332,7 +332,7 @@ public class TagsProjectCtrlTests
         // 让工厂创建的项目包含此通道
         var startTask = Task.Run(() => ctrl.StartPollAsync(
             dir: "test_dir",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (proj, sp, ct) =>
             {
                 if (proj is MockTagsProject mock)
@@ -379,7 +379,7 @@ public class TagsProjectCtrlTests
         // 第一次启动并停止
         var startTask1 = Task.Run(() => ctrl.StartPollAsync(
             dir: "dir1",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (_,_, _) => Task.CompletedTask));
 
         await Task.Delay(200);
@@ -391,7 +391,7 @@ public class TagsProjectCtrlTests
         // 第二次启动
         var startTask2 = Task.Run(() => ctrl.StartPollAsync(
             dir: "dir2",
-            root: new XElement("root"),
+            root: new XElement("Project"),
             hook: (_,_, _) => Task.CompletedTask));
 
         await Task.Delay(200);

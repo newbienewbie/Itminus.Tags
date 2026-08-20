@@ -6,7 +6,7 @@ XSD 源文件**按驱动归属**存放在各项目自己的 `Schemas/` 目录，
 
 | 文件 | 所在项目 |
 |---|---|
-| `Schemas/tagsproject.xsd`（核心：root/TagGrp/TagCbnt/Tag + Channel） | `Itminus.Tags.Core` |
+| `Schemas/tagsproject.xsd`（核心：Project/TagGrp/TagCbnt/Tag + Channel） | `Itminus.Tags.Core` |
 | `Schemas/s7.xsd` | `Itminus.Tags.S7` |
 | `Schemas/modbustcp.xsd` | `Itminus.Tags.ModbusTcp` |
 | `Schemas/zlan.xsd` | `Itminus.Tags.ZLan` |
@@ -44,14 +44,14 @@ XSD 源文件**按驱动归属**存放在各项目自己的 `Schemas/` 目录，
 `index.xml` 根元素上写：
 
 ```xml
-<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="Schemas/tagsproject.xsd"
       xmlns:s7="tags:s7">
   <Channel name="S7-1" driver="S7">
     <s7:IpAddr>localhost</s7:IpAddr>
     ...
   </Channel>
-</root>
+</Project>
 ```
 Core 不承载驱动映射，驱动专属子元素（`<s7:IpAddr>` 等）的编辑器校验/补全，需把驱动命名空间映射到驱动 schema
 （vscode-xml 用 `xml.schemas` 设置，Oxygen/XMLSpy 用 XML Catalog 指向各驱动 `Schemas/*.xsd`）。

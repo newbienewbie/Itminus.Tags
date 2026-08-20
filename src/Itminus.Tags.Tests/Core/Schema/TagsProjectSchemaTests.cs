@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -135,11 +135,11 @@ public class TagsProjectSchemaTests
     {
         var (set, _) = CompileSchemas();
         var xml = """
-                  <root>
+                  <Project>
                     <Channel name="c1" driver="S7">
                       <IpAddr>localhost</IpAddr>
                     </Channel>
-                  </root>
+                  </Project>
                   """;
         var errors = Validate(set, xml);
         Assert.NotEmpty(errors);
@@ -151,12 +151,12 @@ public class TagsProjectSchemaTests
     {
         var (set, _) = CompileSchemas();
         var xml = """
-                  <root xmlns:s7="tags:s7">
+                  <Project xmlns:s7="tags:s7">
                     <Channel name="c1" driver="S7">
                       <s7:IpAddr>localhost</s7:IpAddr>
                       <s7:Rack>0</s7:Rack>
                     </Channel>
-                  </root>
+                  </Project>
                   """;
         var errors = Validate(set, xml);
         Assert.True(errors.Count == 0, $"校验失败: {string.Join(" | ", errors)}");
@@ -168,11 +168,11 @@ public class TagsProjectSchemaTests
     {
         var (set, _) = CompileSchemas();
         var xml = """
-                  <root xmlns:s7="tags:s7">
+                  <Project xmlns:s7="tags:s7">
                     <Channel name="c1" driver="S7">
                       <s7:Rack>not-a-number</s7:Rack>
                     </Channel>
-                  </root>
+                  </Project>
                   """;
         var errors = Validate(set, xml);
         Assert.NotEmpty(errors);

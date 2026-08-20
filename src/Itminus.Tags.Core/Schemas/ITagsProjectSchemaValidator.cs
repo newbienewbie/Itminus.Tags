@@ -11,6 +11,6 @@ public interface ITagsProjectSchemaValidator
     /// <summary>
     /// 校验项目根元素。不通过时抛出异常（如 <see cref="TagsProjectSchemaException"/>）。
     /// </summary>
-    /// <param name="root">项目根元素（<c>&lt;root&gt;</c>）</param>
+    /// <param name="root">项目根元素（<c>&lt;Project&gt;</c>）</param>
     void Validate(XElement root);
 }

@@ -1,4 +1,4 @@
-using Itminus.Tags.S7;
+﻿using Itminus.Tags.S7;
 using Itminus.Tags.SimpleFiles;
 using Microsoft.Extensions.DependencyInjection;
 using System.Xml.Linq;
@@ -88,7 +88,7 @@ public class LegacyXmlRuntimeCompatTests
     public void LegacyPrefixlessXml_LoadsProject_EndToEnd()
     {
         var legacyProjectXml = XElement.Parse("""
-            <root>
+            <Project>
                 <Channel name="S7-1" driver="S7">
                     <IpAddr>localhost</IpAddr>
                     <Rack>0</Rack>
@@ -100,7 +100,7 @@ public class LegacyXmlRuntimeCompatTests
                 <TagGrp name="g1" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="10">
                     <Tag name="bit" address="DB200.0.0" type="BIT"/>
                 </TagGrp>
-            </root>
+            </Project>
             """);
 
         var services = new ServiceCollection();

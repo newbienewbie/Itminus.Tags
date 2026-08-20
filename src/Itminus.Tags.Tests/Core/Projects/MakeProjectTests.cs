@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
@@ -32,7 +32,7 @@ public class MakeProjectTests
         var sp = services.BuildServiceProvider();
 
         var expectedDir = "some_directory";
-        var root = new XElement("root");
+        var root = new XElement("Project");
 
         // Act
         var proj = sp.MakeProject(expectedDir, root);
@@ -52,7 +52,7 @@ public class MakeProjectTests
         var sp = services.BuildServiceProvider();
 
         var expectedDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var root = new XElement("root");
+        var root = new XElement("Project");
 
         // Act
         var proj = sp.MakeProject(null, root);
@@ -72,7 +72,7 @@ public class MakeProjectTests
         var sp = services.BuildServiceProvider();
 
         var expectedDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        var root = new XElement("root");
+        var root = new XElement("Project");
 
         // Act
         var proj = sp.MakeProject(string.Empty, root);

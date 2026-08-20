@@ -28,7 +28,7 @@ public static class TagsProjectSchema
     /// 用 XSD 校验测点项目根元素 <paramref name="root"/>。
     /// 不做任何副作用——在副本上校验，不会修改传入的 <paramref name="root"/>。
     /// </summary>
-    /// <param name="root">项目根元素（<c>&lt;root&gt;</c>）</param>
+    /// <param name="root">项目根元素（<c>&lt;Project&gt;</c>）</param>
     /// <returns>校验错误消息列表；为空表示通过。</returns>
     public static IReadOnlyList<string> Validate(XElement root) =>
         Validate(root, GetSchemaContents());
@@ -37,7 +37,7 @@ public static class TagsProjectSchema
     /// 用指定 schema 集合校验测点项目根元素 <paramref name="root"/>。
     /// 不修改传入的 <paramref name="root"/>（在副本上校验）。
     /// </summary>
-    /// <param name="root">项目根元素（<c>&lt;root&gt;</c>）</param>
+    /// <param name="root">项目根元素（<c>&lt;Project&gt;</c>）</param>
     /// <param name="schemaContents">schema 集合（逻辑名 → 文本），如核心 + 第三方扩展</param>
     /// <returns>校验错误消息列表；为空表示通过。</returns>
     public static IReadOnlyList<string> Validate(XElement root, IEnumerable<(string LogicalName, string Content)> schemaContents)
@@ -91,7 +91,7 @@ public static class TagsProjectSchema
     /// <summary>
     /// 校验项目根元素；有错误时抛出 <see cref="TagsProjectSchemaException"/>。
     /// </summary>
-    /// <param name="root">项目根元素（<c>&lt;root&gt;</c>）</param>
+    /// <param name="root">项目根元素（<c>&lt;Project&gt;</c>）</param>
     /// <exception cref="TagsProjectSchemaException">校验不通过</exception>
     public static void ValidateAndThrow(XElement root) =>
         ValidateAndThrow(root, GetSchemaContents());
@@ -99,7 +99,7 @@ public static class TagsProjectSchema
     /// <summary>
     /// 用指定 schema 集合校验项目根元素；有错误时抛出 <see cref="TagsProjectSchemaException"/>。
     /// </summary>
-    /// <param name="root">项目根元素（<c>&lt;root&gt;</c>）</param>
+    /// <param name="root">项目根元素（<c>&lt;Project&gt;</c>）</param>
     /// <param name="schemaContents">schema 集合（逻辑名 → 文本）</param>
     /// <exception cref="TagsProjectSchemaException">校验不通过</exception>
     public static void ValidateAndThrow(XElement root, IEnumerable<(string LogicalName, string Content)> schemaContents)

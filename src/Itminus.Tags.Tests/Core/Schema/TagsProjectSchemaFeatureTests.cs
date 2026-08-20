@@ -1,4 +1,4 @@
-using Itminus.Tags;
+﻿using Itminus.Tags;
 using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -15,7 +15,7 @@ namespace Itminus.Tags.Tests.Core.Schema;
 public class TagsProjectSchemaFeatureTests
 {
     private const string NamespacedXml = """
-        <root xmlns:s7="tags:s7">
+        <Project xmlns:s7="tags:s7">
             <Channel name="S7-1" driver="S7">
                 <s7:IpAddr>localhost</s7:IpAddr>
                 <s7:Rack>0</s7:Rack>
@@ -24,11 +24,11 @@ public class TagsProjectSchemaFeatureTests
             <TagGrp name="g1" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="10">
                 <Tag name="bit" address="DB200.0.0" type="BIT"/>
             </TagGrp>
-        </root>
+        </Project>
         """;
 
     private const string LegacyPrefixlessXml = """
-        <root>
+        <Project>
             <Channel name="S7-1" driver="S7">
                 <IpAddr>localhost</IpAddr>
                 <Rack>0</Rack>
@@ -37,7 +37,7 @@ public class TagsProjectSchemaFeatureTests
             <TagGrp name="g1" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="10">
                 <Tag name="bit" address="DB200.0.0" type="BIT"/>
             </TagGrp>
-        </root>
+        </Project>
         """;
 
 

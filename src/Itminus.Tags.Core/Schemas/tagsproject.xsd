@@ -4,7 +4,7 @@
   TagsProject 项目描述 XML 的 XML Schema —— 核心（Core）schema
   ═══════════════════════════════════════════════════════════════════════
 
-  本文件校验 Itminus.Tags 项目描述文件的文档根元素 <root>
+  本文件校验 Itminus.Tags 项目描述文件的文档根元素 <Project>
   （默认文件名 index.xml，见 TagsProject.Initialize / TagsProjectServiceCollection.MakeProject）。
   只声明与驱动无关的结构；驱动专属定义由各驱动项目持有（见下文）。
 
@@ -26,14 +26,14 @@
   核心 schema 不依赖任何驱动项目。
 
   ── 按需加载 ────────────────────────────────────────────────────────────
-  · 编辑器侧：在 <root> 上只声明你用到的驱动命名空间（xmlns:s7=...），
+  · 编辑器侧：在 <Project> 上只声明你用到的驱动命名空间（xmlns:s7=...），
     未使用的驱动 schema 文件根本不会被引用。
   · 运行时侧（EnableXmlSchemaValidation）：核心 schema 由库内嵌；
     各驱动 schema 由驱动库的 ITagsProjectSchemaProvider 注册合并进 XmlSchemaSet。
 
   ── 新增驱动 ────────────────────────────────────────────────────────────
   1. 在驱动项目 Schemas/ 下新建 <driver>.xsd，声明驱动专属子元素；
-  2. XML 中 Channel 使用 driver="<驱动名>"，并在 <root> 上声明对应命名空间；
+  2. XML 中 Channel 使用 driver="<驱动名>"，并在 <Project> 上声明对应命名空间；
   3. 驱动库实现 ITagsProjectSchemaProvider 注册 schema、buildTransitive targets
      注入编辑器；核心 schema 无需改动。
 
@@ -45,7 +45,7 @@
     等字符，不能用 xs:ID/xs:IDREF），由加载期代码校验。
 
   ── 通用约定 ────────────────────────────────────────────────────────────
-  1) 顺序无关：运行期解析按元素名检索（root.Elements("Channel") 等），
+  1) 顺序无关：运行期解析按元素名检索（root 的 Elements("Channel") 等），
      因此 schema 对根元素及 TagGrp 的子元素均采用 <xs:choice maxOccurs="unbounded">。
   2) 附加属性开放：Tag / TagCbnt / TagGrp / Channel 均有 <xs:anyAttribute>，
      允许驱动/插件自定义属性（如 SimpleFiles 的 autoCreateFile、COM 测点的 marker）。
@@ -54,7 +54,7 @@
      故 type 声明为普通字符串，不做枚举限制。
 
   启用校验（示例）：
-    <root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    <Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:noNamespaceSchemaLocation="schema/tagsproject.xsd"
           xmlns:s7="tags:s7">
       <Channel name="S7-1" driver="S7">
@@ -63,7 +63,7 @@
         <s7:Slot>1</s7:Slot>
       </Channel>
       ...
-    </root>
+    </Project>
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
@@ -172,9 +172,9 @@
   </xs:simpleType>
 
   <!-- ═══════════ 根元素 ═══════════
-       root 是项目描述文件的文档根元素（名字是约定，运行期不校验根元素名）。
+       Project 是项目描述文件的文档根元素（名字是约定，运行期不校验根元素名）。
        子元素 Channel / TagGrp / Logicet 顺序任意、数量任意。 -->
-  <xs:complexType name="RootType">
+  <xs:complexType name="ProjectType">
     <xs:choice maxOccurs="unbounded">
       <xs:element name="Channel" type="ChannelType"/>
       <xs:element name="TagGrp"  type="TagGrpType"/>
@@ -183,6 +183,6 @@
     <xs:anyAttribute processContents="lax"/>
   </xs:complexType>
 
-  <xs:element name="root" type="RootType"/>
+  <xs:element name="Project" type="ProjectType"/>
 
 </xs:schema>

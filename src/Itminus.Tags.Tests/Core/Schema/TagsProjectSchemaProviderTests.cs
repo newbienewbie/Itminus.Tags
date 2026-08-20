@@ -1,4 +1,4 @@
-using Itminus.Tags;
+﻿using Itminus.Tags;
 using Itminus.Tags.S7;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -47,22 +47,22 @@ public class TagsProjectSchemaProviderTests
 
         // 合法值通过
         var ok = XElement.Parse("""
-            <root xmlns:my="tags:mydriver">
+            <Project xmlns:my="tags:mydriver">
                 <Channel name="c1" driver="MyDriver">
                     <my:MyOpt>123</my:MyOpt>
                 </Channel>
-            </root>
+            </Project>
             """);
         var errorsOk = TagsProjectSchema.Validate(ok, combined);
         Assert.True(errorsOk.Count == 0, $"应通过校验: {string.Join(" | ", errorsOk)}");
 
         // 非法值
         var bad = XElement.Parse("""
-            <root xmlns:my="tags:mydriver">
+            <Project xmlns:my="tags:mydriver">
                 <Channel name="c1" driver="MyDriver">
                     <my:MyOpt>not-an-int</my:MyOpt>
                 </Channel>
-            </root>
+            </Project>
             """);
         var errorsBad = TagsProjectSchema.Validate(bad, combined);
         Assert.NotEmpty(errorsBad);
@@ -89,11 +89,11 @@ public class TagsProjectSchemaProviderTests
         var factory = scope.ServiceProvider.GetRequiredService<ITagsProjectFactory>();
 
         var xml = XElement.Parse("""
-            <root xmlns:s7="tags:s7">
+            <Project xmlns:s7="tags:s7">
                 <Channel name="S7-1" driver="S7">
                     <s7:IpAddr>localhost</s7:IpAddr>
                 </Channel>
-            </root>
+            </Project>
             """);
 
         using var proj = factory.Create(string.Empty, xml);

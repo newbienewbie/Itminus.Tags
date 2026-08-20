@@ -29,7 +29,7 @@ public class RootElementTests
         using var scope = _root.CreateScope();
         var sp = scope.ServiceProvider;
 
-        var expectedRoot = new XElement("root",
+        var expectedRoot = new XElement("Project",
             new XElement("Channel", new XAttribute("name", "ch1"), new XAttribute("driver", "fake")),
             new XElement("TagGrp",
                 new XAttribute("name", "g1"),
@@ -48,7 +48,7 @@ public class RootElementTests
         // Assert
         Assert.NotNull(proj.GetRootElement());
         Assert.Same(expectedRoot, proj.GetRootElement());
-        Assert.Equal("root", proj.GetRootElement()?.Name.LocalName);
+        Assert.Equal("Project", proj.GetRootElement()?.Name.LocalName);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class RootElementTests
         using var scope = _root.CreateScope();
         var sp = scope.ServiceProvider;
 
-        var root = new XElement("root",
+        var root = new XElement("Project",
             new XElement("Channel", new XAttribute("name", "ch1"), new XAttribute("driver", "fake")),
             new XElement("TagGrp",
                 new XAttribute("name", "g1"),
@@ -92,7 +92,7 @@ public class RootElementTests
         var tempDir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(tempDir);
         var indexXmlPath = Path.Combine(tempDir, "index.xml");
-        var xml = new XElement("root",
+        var xml = new XElement("Project",
             new XElement("Channel", new XAttribute("name", "ch1"), new XAttribute("driver", "fake")),
             new XElement("TagGrp",
                 new XAttribute("name", "g1"),
@@ -110,7 +110,7 @@ public class RootElementTests
 
             // Assert
             Assert.NotNull(proj.GetRootElement());
-            Assert.Equal("root", proj.GetRootElement()?.Name.LocalName);
+            Assert.Equal("Project", proj.GetRootElement()?.Name.LocalName);
 
             // Verify it actually contains content from the file
             var channelElements = proj.GetRootElement()?.Elements("Channel");
