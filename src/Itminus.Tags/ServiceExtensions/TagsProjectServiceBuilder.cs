@@ -141,7 +141,9 @@ public class TagsProjectServiceBuilder
     /// 启用后，<see cref="ITagsProjectFactory.Create"/> / <c>MakeProject</c> 在加载通道与测点之前，
     /// 校验 XSD 无法表达的引用关系——测点（TagGrp/TagCbnt/Tag）的 <c>channel</c> 属性必须指向
     /// 已声明的 <c>&lt;Channel&gt;</c>，且 Channel 的 <c>driver</c> 必须已注册通道工厂；
-    /// 拼错的通道名/驱动名在加载期报错（带完整路径上下文），而不是运行时才暴露。
+    /// 拼错的通道名/驱动名在加载期报错（带完整路径上下文），而不是运行时才暴露。<br/>
+    /// <b>默认已启用</b>（见 <see cref="UseDefaults"/> 路径下的 AddDefaults）——拒绝的都是
+    /// 运行期必然失败的配置，不破坏任何能工作的配置；本方法为幂等显式调用（语义文档化）。
     /// </summary>
     /// <returns></returns>
     public TagsProjectServiceBuilder EnableCrossReferenceValidation()
@@ -178,6 +180,10 @@ public class TagsProjectServiceBuilder
         this.Services.AddSingleton<ITagGrpRunnerFactory, TagGrpRunnerFactory>();
         this.Services.AddSingleton<ILogicetsLoader, LogicetLoader>();
         this.Services.AddScoped<ITagsProjectFactory, TagsProjectFactory>();
+
+        // 默认启用加载期交叉引用校验
+        this.EnableCrossReferenceValidation();
+
         return this;
     }
 
