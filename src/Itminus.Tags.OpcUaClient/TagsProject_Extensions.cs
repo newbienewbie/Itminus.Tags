@@ -16,6 +16,9 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddOpcUaClientSupport(this TagsProjectServiceBuilder builder)
     {
+        
+        builder.Services.AddSingleton<ITagsProjectSchemaProvider, OpcUaClientSchemaProvider>();
+
         builder
             .AddOpcUaClientChannel()
             .AddOpcUaClientTagCbntBuilder()

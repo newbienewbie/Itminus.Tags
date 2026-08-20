@@ -13,6 +13,7 @@ public class TagsProjectFactory : ITagsProjectFactory
     private readonly ITagsLoader _tagsLoader;
     private readonly ILogicetsLoader _logicetLoader;
     private readonly IServiceProvider _sp;
+    private readonly ITagsProjectSchemaValidator? _schemaValidator;
 
     /// <summary>
     /// c'tor
@@ -22,19 +23,30 @@ public class TagsProjectFactory : ITagsProjectFactory
     /// <param name="tagsLoader"></param>
     /// <param name="logicetLoader"></param>
     /// <param name="sp"></param>
-    public TagsProjectFactory(ITagGrpRunnerFactory grpRunnerFactory, ITagChannelsLoader channelsLoader, ITagsLoader tagsLoader, ILogicetsLoader logicetLoader, IServiceProvider sp)
+    /// <param name="schemaValidator">
+    ///     可选的加载期 schema 校验器；
+    ///     未注册时为 null。
+    /// </param>
+    public TagsProjectFactory(
+        ITagGrpRunnerFactory grpRunnerFactory,
+        ITagChannelsLoader channelsLoader,
+        ITagsLoader tagsLoader,
+        ILogicetsLoader logicetLoader,
+        IServiceProvider sp,
+        ITagsProjectSchemaValidator? schemaValidator = null)
     {
         this._grpRunnerFactory = grpRunnerFactory;
         this._channelsLoader = channelsLoader;
         this._tagsLoader = tagsLoader;
         this._logicetLoader = logicetLoader;
         this._sp = sp;
+        this._schemaValidator = schemaValidator;
     }
 
     /// <inheritdoc/>
     public virtual ITagsProject Create(string projRoot, XElement? root = null)
     {
-        var project = new TagsProject(this._grpRunnerFactory, _channelsLoader, _tagsLoader, _logicetLoader, this._sp);
+        var project = new TagsProject(this._grpRunnerFactory, _channelsLoader, _tagsLoader, _logicetLoader, this._sp, this._schemaValidator);
         project.Initialize(projRoot, root);
         return project;
     }

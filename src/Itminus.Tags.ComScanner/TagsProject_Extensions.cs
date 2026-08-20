@@ -10,12 +10,16 @@ namespace Itminus.Tags.ComScanner;
 public static class TagsProject_Extensions
 {
     /// <summary>
-    /// 注册COM支持。是 <see cref="AddComScannerChannel"/> 与 <see cref="AddComScannerDirectTagBuilder"/> 的组合
+    /// 注册COM支持。
+    /// 是 <see cref="AddComScannerChannel"/> 与 <see cref="AddComScannerDirectTagBuilder"/> 的组合
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddComScannerSupport(this TagsProjectServiceBuilder builder)
     {
+        // 注册 COM schema 提供者（EnableXmlSchemaValidation 时把 com.xsd 合并进校验）
+        builder.Services.AddSingleton<ITagsProjectSchemaProvider, ComScannerSchemaProvider>();
+
         builder
             .AddComScannerChannel()
             .AddComScannerDirectTagBuilder();

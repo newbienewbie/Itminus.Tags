@@ -19,6 +19,8 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddModbusTcpSupport(this TagsProjectServiceBuilder builder)
     {
+        builder.Services.AddSingleton<ITagsProjectSchemaProvider, ModbusTcpSchemaProvider>();
+
         builder
             .AddModbusTcpChannel()
             .AddModbusBitTagCbntBuilder()

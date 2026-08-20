@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<root>
+<root xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../../src/Itminus.Tags.Core/Schemas/tagsproject.xsd"
+      xmlns:sf="tags:simplefiles">
 
 	<Channel name="file" driver="SimpleFiles">
-		<BaseDir>.</BaseDir>
+		<sf:BaseDir>.</sf:BaseDir>
 	</Channel>
 
 	<TagGrp name="simpleFiles" isEntry="true" isEnabled="true" scanInterval="1000">

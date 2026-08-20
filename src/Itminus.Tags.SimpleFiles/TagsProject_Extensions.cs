@@ -14,6 +14,8 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddSimpleFilesSupport(this TagsProjectServiceBuilder builder)
     {
+        builder.Services.AddSingleton<ITagsProjectSchemaProvider, SimpleFilesSchemaProvider>();
+
         builder
             .AddSimpleFilesChannel()
             .AddSimpleFilesDirectTagBuilder();

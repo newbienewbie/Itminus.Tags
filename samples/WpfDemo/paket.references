@@ -1,5 +1,6 @@
 ﻿R3Extensions.WPF
 System.IO.Pipelines 
+System.Diagnostics.DiagnosticSource
 
 group Mcp
     ModelContextProtocol.AspNetCore

@@ -122,6 +122,22 @@ public class TagsProjectServiceBuilder
     public OptionsBuilder<LogicetLoadOptions> LogicetLoadOptionsBuilder { get; }
     #endregion
 
+    #region Schema 校验
+    /// <summary>
+    /// 启用加载期 XSD 校验（可选功能）。<br/>
+    /// 启用后，<see cref="ITagsProjectFactory.Create"/> / <c>MakeProject</c> 在加载通道与测点之前，
+    /// 会用嵌入程序集的 XSD（<see cref="TagsProjectSchema"/>）校验项目 XML；
+    /// 不通过时抛出 <see cref="TagsProjectSchemaException"/>。<br/>
+    /// 默认关闭——老的“无命名空间前缀”XML 配置不启用校验时照常工作。
+    /// </summary>
+    /// <returns></returns>
+    public TagsProjectServiceBuilder EnableXmlSchemaValidation()
+    {
+        this.Services.AddSingleton<ITagsProjectSchemaValidator, TagsProjectSchemaValidator>();
+        return this;
+    }
+    #endregion
+
 
     private TagsProjectServiceBuilder AddDefaults()
     {

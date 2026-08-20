@@ -5,7 +5,7 @@ source https://baget.stdunit.com/v3/index.json
 cache ./nuget-package-caches
 storage: none
 strategy: min
-framework: net8.0, net8.0-windows
+framework: net8.0, net8.0-windows, netstandard2.0
 
 nuget Microsoft.Extensions.DependencyInjection >= 8.0 lowest_matching: true
 nuget Microsoft.Extensions.Logging >= 8.0 lowest_matching: true
@@ -34,7 +34,7 @@ nuget MudBlazor >= 9.2.0 lowest_matching: true
 nuget OPCFoundation.NetStandard.Opc.Ua >= 1.5.374.126 lowest_matching: true
 
 nuget Microsoft.CodeAnalysis.CSharp.Scripting >= 5.0.0 lowest_matching: true
-
+nuget Microsoft.CodeAnalysis.Analyzers >= 3.11 lowest_matching: true
 
 nuget xunit >= 2.5.3 lowest_matching: true
 nuget xunit.runner.visualstudio >= 2.5.3 lowest_matching: true
@@ -55,3 +55,17 @@ group Mcp
     nuget ModelContextProtocol >= 1.2 lowest_matching: true
     nuget ModelContextProtocol.AspNetCore >= 1.2 lowest_matching: true
     nuget System.IO.Pipelines >= 10.0.7 lowest_matching: true
+
+group SchemaGenerator
+    source https://api.nuget.org/v3/index.json
+    source https://baget.stdunit.com/v3/index.json
+
+    cache ./nuget-package-caches
+    storage: none
+    strategy: min
+    framework: netstandard2.0
+
+    # Roslyn 版本必须与编译 SDK 的编译器版本匹配（本仓库用 .NET 8 SDK → Roslyn 4.8），
+    # 否则编译消费项目时报 CS9057（analyzer 引用更高版本编译器）。
+    # 用独立 group 隔离，避免主 group 的 Microsoft.CodeAnalysis.CSharp.Scripting >= 5.0（ComScanner 用）拉高版本。
+    nuget Microsoft.CodeAnalysis.CSharp >= 4.8 lowest_matching: true

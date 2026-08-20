@@ -19,6 +19,9 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddHjzkSupport(this TagsProjectServiceBuilder builder)
     {
+        
+        builder.Services.AddSingleton<ITagsProjectSchemaProvider, HjzkSchemaProvider>();
+
         // register channel factory
         builder.Services.AddKeyedSingleton<ITagChannelFactory, HjzkChannelFactory>(HjzkNames.DriverName);
         builder.ConfigChannelsFactory((sp, composite) =>
