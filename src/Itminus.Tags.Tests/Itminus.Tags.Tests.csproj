@@ -65,5 +65,52 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <!-- Schema 校验测试所需：从各项目 Schemas/ 目录复制 schema，从 samples/ 复制示例 XML
+       （Link 保持目录结构） -->
+  <ItemGroup>
+    <None Include="..\Itminus.Tags.Core\Schemas\tagsproject.xsd" Link="Schemas\tagsproject.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Itminus.Tags.S7\Schemas\s7.xsd" Link="Schemas\Drivers\s7.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Itminus.Tags.ModbusTcp\Schemas\modbustcp.xsd" Link="Schemas\Drivers\modbustcp.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Itminus.Tags.ZLan\Schemas\zlan.xsd" Link="Schemas\Drivers\zlan.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Itminus.Tags.Hjzk\Schemas\hjzk.xsd" Link="Schemas\Drivers\hjzk.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Itminus.Tags.ComScanner\Schemas\com.xsd" Link="Schemas\Drivers\com.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Itminus.Tags.OpcUaClient\Schemas\opcua-client.xsd" Link="Schemas\Drivers\opcua-client.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Itminus.Tags.SimpleFiles\Schemas\simplefiles.xsd" Link="Schemas\Drivers\simplefiles.xsd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\samples\Itminus.Tags.Web\index.xml" Link="Samples\Web\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\samples\Itminus.Tags.Web\index2.xml" Link="Samples\Web\index2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\samples\Itminus.Tags.Web\index-plugin.xml" Link="Samples\Web\index-plugin.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\samples\WpfDemo\Tags\index.xml" Link="Samples\WpfDemo\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\samples\WpfDemo\Tags\index-2.xml" Link="Samples\WpfDemo\index-2.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\samples\NixMonitor\Tags\index.xml" Link="Samples\NixMonitor\index.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

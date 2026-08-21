@@ -42,7 +42,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
     private ITagsProjectFactory Factory => _sp.GetRequiredService<ITagsProjectFactory>();
     private static ILogger<TagsMcpServerTools> Logger => NullLogger<TagsMcpServerTools>.Instance;
 
-    private static XElement TestXml => new("root",
+    private static XElement TestXml => new("Project",
         new XElement("Channel", new XAttribute("name", "fake"), new XAttribute("driver", "fake")),
         new XElement("TagGrp",
             new XAttribute("name", "g1"), new XAttribute("isEntry", "true"),
@@ -163,7 +163,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
 
         var result = tools.DescribeProject();
 
-        Assert.StartsWith("<root>", result);
+        Assert.StartsWith("<Project>", result);
         Assert.Contains("name=\"g1\"", result);
         Assert.Contains("name=\"g2\"", result);
         Assert.Contains("isEntry=\"true\"", result);

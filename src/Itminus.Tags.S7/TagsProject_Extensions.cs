@@ -14,6 +14,9 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddS7Support(this TagsProjectServiceBuilder builder)
     {
+       
+        builder.Services.AddSingleton<ITagsProjectSchemaProvider, S7SchemaProvider>();
+
         builder
             .AddS7Channel()
             .AddS7TagCbntBuilder()

@@ -27,12 +27,14 @@
 
 其中，你提供的描述类似于：
 ```xml
-<root>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="Schemas/tagsproject.xsd"
+         xmlns:s7="tags:s7">
 	<!-- 通道，可以配置多个-->
 	<Channel name="S7-1" driver="S7" >
-		<IpAddr>172.16.10.20</IpAddr>
-		<Rack>0</Rack>
-		<Slot>1</Slot>
+		<s7:IpAddr>172.16.10.20</s7:IpAddr>
+		<s7:Rack>0</s7:Rack>
+		<s7:Slot>1</s7:Slot>
 	</Channel>
 
 	<!-- 测点配置，可以配置多个 -->
@@ -51,8 +53,14 @@
 
 	<!-- 逻辑配置，可以配置0~N个 -->
 	<!--<Logicet>Samples.Plugin1.dll</Logicet>-->
-</root>
+</Project>
 ```
+> 说明：
+> - 文档根元素是 `<Project>`。`xsi:noNamespaceSchemaLocation` 指向还原包后自动注入的 XSD
+>   （`Itminus.Tags.Core` 的 buildTransitive targets 会把 `Schemas/tagsproject.xsd` 以链接项注入项目树），
+>   编辑器即可获得智能提示/校验；驱动专属子元素（`<s7:IpAddr>` 等）带驱动命名空间前缀。
+> - 运行期解析不校验根元素名与命名空间——不带前缀的老格式（`<root>` + `<IpAddr>`）不启用
+>   `EnableXmlSchemaValidation()` 时照常加载。
 
 我们的启动代码类似于：
 ```c#
@@ -98,7 +106,8 @@ await ctrl.StartPollAsync(dir, root, hook: async(proj, sp, ct) =>{
     - `dotnet-tools.json`: 本项目用到的 dotnet tools 配置
 - `global.json`: 本项目SDK配置，目前锁定版本 `8.0.102`
 - `src/`: 项目代码及测试
-	- `Itminus.Tags.Core`: 核心抽象
+	- `Itminus.Tags.Core`: 核心抽象；其 `Schemas/` 目录持有项目描述 XML 的 XSD（`tagsproject.xsd`）
+	- `Itminus.Tags.SchemaGenerator`: 源生成器，把各项目的 XSD 编译为 DLL 内常量（AOT/trim 友好）
 	- `Itminus.Tags`: 基本功能，但和具体的硬件设备无关，只依赖于`Itminus.Tags.Core`。
 	- `Itminus.Tags.RxExtensions`: `dotnet/reactive`扩展，只依赖于`Itminus.Tags.Core`
 	- `Itminus.Tags.R3Extensions`: `Cysharp/R3`扩展，只依赖于`Itminus.Tags.Core`

@@ -122,12 +122,68 @@ public class TagsProjectServiceBuilder
     public OptionsBuilder<LogicetLoadOptions> LogicetLoadOptionsBuilder { get; }
     #endregion
 
+    #region 加载期校验
+    /// <summary>
+    /// 启用加载期 XSD 校验（可选功能）。<br/>
+    /// 启用后，<see cref="ITagsProjectFactory.Create"/> / <c>MakeProject</c> 在加载通道与测点之前，
+    /// 会用嵌入程序集的 XSD（<see cref="TagsProjectSchema"/>）校验项目 XML；
+    /// 不通过时抛出 <see cref="TagsProjectSchemaException"/>。<br/>
+    /// 等价于 <c>AddValidation&lt;TagsProjectSchemaValidator&gt;()</c>。
+    /// </summary>
+    /// <returns></returns>
+    public TagsProjectServiceBuilder EnableXmlSchemaValidation() =>
+        this.AddValidation<TagsProjectSchemaValidator>();
+
+    /// <summary>
+    /// 启用加载期交叉引用校验。
+    /// 会注册一些内置的验证器，比如 <see cref="ChannelCrossReferenceValidator"/>、
+    /// <see cref="ChannelDriverFactoryValidator"/>（driver 是否有对应已注册工厂）。<br/>
+    /// 启用后，<see cref="ITagsProjectFactory.Create"/> / <c>MakeProject</c> 在加载通道与测点之前，
+    /// 校验 XSD 无法表达的引用关系——测点（TagGrp/TagCbnt/Tag）的 <c>channel</c> 属性必须指向
+    /// 已声明的 <c>&lt;Channel&gt;</c>，且 Channel 的 <c>driver</c> 必须已注册通道工厂；
+    /// 拼错的通道名/驱动名在加载期报错（带完整路径上下文），而不是运行时才暴露。<br/>
+    /// <b>默认已启用</b>（见 <see cref="UseDefaults"/> 路径下的 AddDefaults）——拒绝的都是
+    /// 运行期必然失败的配置，不破坏任何能工作的配置；本方法为幂等显式调用（语义文档化）。
+    /// </summary>
+    /// <returns></returns>
+    public TagsProjectServiceBuilder EnableCrossReferenceValidation()
+    {
+        this.AddValidation<ChannelCrossReferenceValidator>();
+        this.AddValidation<ChannelDriverFactoryValidator>();
+        return this;
+    }
+
+    /// <summary>
+    /// 注册一个加载期项目校验器实现（可选功能）。<br/>
+    /// 每个实现负责一类独立校验，可注册多个（按注册顺序执行），第三方也可追加自己的校验器：
+    /// <code>
+    /// b.AddValidation&lt;TagsProjectSchemaValidator&gt;();         // 内置：XSD 校验
+    /// b.AddValidation&lt;ChannelCrossReferenceValidator&gt;();     // 内置：channel 引用校验
+    /// b.AddValidation&lt;MyValidator&gt;();                         // 自定义校验器
+    /// </code>
+    /// 校验器在 <see cref="ITagsProjectFactory.Create"/> / <c>MakeProject</c> 加载通道与测点之前执行，
+    /// 不通过时抛出异常（如 <see cref="TagsProjectSchemaException"/>）。
+    /// </summary>
+    /// <typeparam name="TValidator">校验器实现类型（实现 <see cref="ITagsProjectValidator"/>）</typeparam>
+    /// <returns></returns>
+    public TagsProjectServiceBuilder AddValidation<TValidator>()
+        where TValidator : class, ITagsProjectValidator
+    {
+        this.Services.AddSingleton<ITagsProjectValidator, TValidator>();
+        return this;
+    }
+    #endregion
+
 
     private TagsProjectServiceBuilder AddDefaults()
     {
         this.Services.AddSingleton<ITagGrpRunnerFactory, TagGrpRunnerFactory>();
         this.Services.AddSingleton<ILogicetsLoader, LogicetLoader>();
         this.Services.AddScoped<ITagsProjectFactory, TagsProjectFactory>();
+
+        // 默认启用加载期交叉引用校验
+        this.EnableCrossReferenceValidation();
+
         return this;
     }
 

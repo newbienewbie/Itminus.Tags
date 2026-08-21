@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<root>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../../src/Itminus.Tags.Core/Schemas/tagsproject.xsd"
+      xmlns:sf="tags:simplefiles">
 
 	<Channel name="file" driver="SimpleFiles">
-		<BaseDir>.</BaseDir>
+		<sf:BaseDir>.</sf:BaseDir>
 	</Channel>
 
 	<TagGrp name="simpleFiles" isEntry="true" isEnabled="true" scanInterval="1000">
@@ -16,4 +18,4 @@
 		<Tag name="系统负载" address="/proc/loadavg" type="LoadAvg" access="RO" channel="file" note="解析 /proc/loadavg"/>
 		<Tag name="开机时长" address="/proc/uptime" type="STR" access="RO" channel="file" note="原始文本：开机秒数 空闲秒数"/>
 	</TagGrp>
-</root>
+</Project>

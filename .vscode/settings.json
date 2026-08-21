@@ -1,6 +1,16 @@
 {
     "chat.tools.terminal.autoApprove": {
         "dotnet build": true,
-        "dotnet test": true
+        "dotnet test": true,
+        "ForEach-Object": true
+    },
+    "xml.schemas": {
+        "tags:s7": "${workspaceFolder}/src/Itminus.Tags.S7/Schemas/s7.xsd",
+        "tags:modbustcp": "${workspaceFolder}/src/Itminus.Tags.ModbusTcp/Schemas/modbustcp.xsd",
+        "tags:zlan": "${workspaceFolder}/src/Itminus.Tags.ZLan/Schemas/zlan.xsd",
+        "tags:hjzk": "${workspaceFolder}/src/Itminus.Tags.Hjzk/Schemas/hjzk.xsd",
+        "tags:com": "${workspaceFolder}/src/Itminus.Tags.ComScanner/Schemas/com.xsd",
+        "tags:opcuaclient": "${workspaceFolder}/src/Itminus.Tags.OpcUaClient/Schemas/opcua-client.xsd",
+        "tags:simplefiles": "${workspaceFolder}/src/Itminus.Tags.SimpleFiles/Schemas/simplefiles.xsd"
     }
 }

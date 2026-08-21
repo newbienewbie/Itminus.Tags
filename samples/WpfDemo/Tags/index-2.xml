@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../../src/Itminus.Tags.Core/Schemas/tagsproject.xsd"
+      xmlns:s7="tags:s7">
 
 	<!-- 通道，可以配置多个 -->
 	<Channel name="S7-1" driver="S7" >
-		<IpAddr>172.16.10.20</IpAddr>
-		<Rack>0</Rack>
-		<Slot>1</Slot>
+		<s7:IpAddr>172.16.10.20</s7:IpAddr>
+		<s7:Rack>0</s7:Rack>
+		<s7:Slot>1</s7:Slot>
 	</Channel>
 
 	<TagGrp name="IoBox" isEntry="true" isEnabled="true" channel="S7-1" scanInterval="0">
@@ -298,5 +300,4 @@
 		</TagGrp>
 	</TagGrp>
 
-</root>
-
+</Project>

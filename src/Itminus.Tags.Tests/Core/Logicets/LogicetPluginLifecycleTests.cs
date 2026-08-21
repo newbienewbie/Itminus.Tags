@@ -91,7 +91,7 @@ public class LogicetPluginLifecycleTests
 
     private static XElement CreateXRoot(string logicetDllPath)
     {
-        var root = new XElement("root",
+        var root = new XElement("Project",
             new XElement("Channel",
                 new XAttribute("name", "S7-1"),
                 new XAttribute("driver", "S7"),

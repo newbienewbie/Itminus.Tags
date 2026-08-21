@@ -11,6 +11,9 @@ public static class TagsProject_Extensions
 {
     public static TagsProjectServiceBuilder AddZLanTcpSupport(this TagsProjectServiceBuilder builder)
     {
+       
+        builder.Services.AddSingleton<ITagsProjectSchemaProvider, ZLanTcpSchemaProvider>();
+
         // register channel factory
         builder.Services.AddKeyedSingleton<ITagChannelFactory, ZLanTcpChannelFactory>(ZLanTcpNames.DriverName);
         builder.ConfigChannelsFactory((sp, composite) =>

@@ -1,51 +1,58 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="../../src/Itminus.Tags.Core/Schemas/tagsproject.xsd"
+      xmlns:s7="tags:s7"
+      xmlns:mb="tags:modbustcp"
+      xmlns:zl="tags:zlan"
+      xmlns:hj="tags:hjzk"
+      xmlns:ua="tags:opcuaclient"
+      xmlns:com="tags:com">
 
 	<!-- 通道，可以配置多个-->
 	<Channel name="S7-1" driver="S7" >
-		<IpAddr>localhost</IpAddr>
-		<Rack>0</Rack>
-		<Slot>1</Slot>
+		<s7:IpAddr>localhost</s7:IpAddr>
+		<s7:Rack>0</s7:Rack>
+		<s7:Slot>1</s7:Slot>
 	</Channel>
 	<Channel name="ModbusTcp-2" driver="ModbusTcp">
-		<IpAddr>localhost</IpAddr>
-		<Port>502</Port>
+		<mb:IpAddr>localhost</mb:IpAddr>
+		<mb:Port>502</mb:Port>
 	</Channel>
 	<Channel name="ZLan-1" driver="ZLanTcp">
-		<IpAddr>localhost</IpAddr>
-		<Port>502</Port>
+		<zl:IpAddr>localhost</zl:IpAddr>
+		<zl:Port>502</zl:Port>
 	</Channel>
 	<Channel name="Hjzk-1" driver="HjzkIoBox">
-		<IpAddr>172.16.2.21</IpAddr>
-		<Port>502</Port>
+		<hj:IpAddr>172.16.2.21</hj:IpAddr>
+		<hj:Port>502</hj:Port>
 	</Channel>
 	<Channel name="S7-3" driver="S7" >
-		<IpAddr>192.168.1.13</IpAddr>
-		<Rack>0</Rack>
-		<Slot>3</Slot>
+		<s7:IpAddr>192.168.1.13</s7:IpAddr>
+		<s7:Rack>0</s7:Rack>
+		<s7:Slot>3</s7:Slot>
 	</Channel>
 	<Channel name="OpcUaClient-2" driver="OpcUaClient">
-		<ClientName>client-name-1</ClientName>
-		<ServerOpt>
-			<DiscoveryUrl>opc.tcp://DESKTOP-FM4T292:4840</DiscoveryUrl>
-			<UsePassword>false</UsePassword>
-			<UserName>user</UserName>
-			<Password>1</Password>
-		</ServerOpt>
+		<ua:ClientName>client-name-1</ua:ClientName>
+		<ua:ServerOpt>
+			<ua:DiscoveryUrl>opc.tcp://DESKTOP-FM4T292:4840</ua:DiscoveryUrl>
+			<ua:UsePassword>false</ua:UsePassword>
+			<ua:UserName>user</ua:UserName>
+			<ua:Password>1</ua:Password>
+		</ua:ServerOpt>
 	</Channel>
 	<Channel name="COM-1" driver="COM">
-		<Port>COM1</Port>
-		<BaudRate>115200</BaudRate>
-		<Parity>None</Parity>
-		<DataBits>8</DataBits>
-		<StopBits>One</StopBits>
+		<com:Port>COM1</com:Port>
+		<com:BaudRate>115200</com:BaudRate>
+		<com:Parity>None</com:Parity>
+		<com:DataBits>8</com:DataBits>
+		<com:StopBits>One</com:StopBits>
 	</Channel>
 	<Channel name="COM-2" driver="COM">
-		<Port>COM2</Port>
-		<BaudRate>115200</BaudRate>
-		<Parity>None</Parity>
-		<DataBits>8</DataBits>
-		<StopBits>One</StopBits>
+		<com:Port>COM2</com:Port>
+		<com:BaudRate>115200</com:BaudRate>
+		<com:Parity>None</com:Parity>
+		<com:DataBits>8</com:DataBits>
+		<com:StopBits>One</com:StopBits>
 	</Channel>
 
 	<!-- 测点配置，可以配置多个 -->
@@ -185,4 +192,4 @@
 
 	<!-- 逻辑配置，可以配置0~N个 -->
 	<!--<Logicet>E:\SourceCode\揽月\Itminus.Tags\src\Samples.Plugin1\bin\Debug\net8.0\\Samples.Plugin1.dll</Logicet>-->
-</root>
+</Project>

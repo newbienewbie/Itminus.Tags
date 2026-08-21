@@ -1,2 +1,4 @@
+System.Diagnostics.DiagnosticSource
+
 group Mcp
     ModelContextProtocol

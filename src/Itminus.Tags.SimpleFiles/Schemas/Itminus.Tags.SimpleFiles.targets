@@ -1,0 +1,14 @@
+<Project>
+
+  <!--
+    自动把驱动 xsd 以LINK方式注入消费项目 Schemas/Drivers/ 下，
+    与核心 schema（Schemas/tagsproject.xsd）组成完整目录结构。
+    关闭自动注入：<TagsProjectSchemaDisabled>true</TagsProjectSchemaDisabled>。
+  -->
+
+  <ItemGroup Condition="'$(TagsProjectSchemaDisabled)' != 'true'">
+    <None Include="$(MSBuildThisFileDirectory)Schemas\simplefiles.xsd"
+          Link="Schemas\Drivers\simplefiles.xsd" />
+  </ItemGroup>
+
+</Project>

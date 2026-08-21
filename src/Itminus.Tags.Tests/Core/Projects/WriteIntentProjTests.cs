@@ -45,7 +45,7 @@ public class WriteIntentProjTests
             new XAttribute("name", "fake"),
             new XAttribute("driver", "fake")
         );
-        XElement ele = new XElement("root", [
+        XElement ele = new XElement("Project", [
             channel,
             entry,
         ]);
@@ -93,7 +93,7 @@ public class WriteIntentProjTests
             new XAttribute("name", "fake"),
             new XAttribute("driver", "fake")
         );
-        XElement ele = new XElement("root", [
+        XElement ele = new XElement("Project", [
             channel,
             entry,
         ]);
