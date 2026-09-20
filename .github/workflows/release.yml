@@ -32,10 +32,7 @@ jobs:
 
     - name: Test with Coverage
       working-directory: .
-      run: |
-        dotnet test --no-build --configuration Release \
-          --collect:"XPlat Code Coverage" \
-          --results-directory ./TestResults
+      run: dotnet test --no-build --collect:"XPlat Code Coverage" --results-directory ./TestResults
 
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v4
