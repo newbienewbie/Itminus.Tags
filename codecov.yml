@@ -13,17 +13,17 @@ coverage:
         informational: false
         only_pulls: false
 comment:
-  layout: "header, diff, components" # 在 PR 评论中显示 Component 信息
+  layout: "header, diff, components"
 
 component_management:
-  default_rules: # 所有 Component 的默认规则
+  default_rules:
     statuses:
       - type: project
         target: auto
         threshold: 5%
   individual_components:
-    - component_id: itminus_tags_core # 唯一的 ID
-      name: "Core" # 显示名称
+    - component_id: itminus_tags_core 
+      name: "Core" 
       paths:
         - "src/Itminus.Tags.Core/**"
     - component_id: itminus_tags
