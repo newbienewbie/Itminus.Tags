@@ -1,17 +1,8 @@
-﻿# codecov.yml
-coverage:
+﻿coverage:
   precision: 2
   round: down
   range: "80...100"
-  status:
-    project:
-      default:
-        target: auto
-        threshold: 5%
-        base: auto
-        if_ci_failed: error
-        informational: false
-        only_pulls: false
+
 comment:
   layout: "header, diff, components"
 
