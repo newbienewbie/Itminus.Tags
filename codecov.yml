@@ -1,8 +1,78 @@
+# codecov.yml
 coverage:
   precision: 2
   round: down
-  range: "80...100" 
+  range: "80...100"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 5%
+        base: auto
+        if_ci_failed: error
+        informational: false
+        only_pulls: false
+comment:
+  layout: "header, diff, components" # 在 PR 评论中显示 Component 信息
+
+component_management:
+  default_rules: # 所有 Component 的默认规则
+    statuses:
+      - type: project
+        target: auto
+        threshold: 5%
+  individual_components:
+    - component_id: itminus_tags_core # 唯一的 ID
+      name: "Core" # 显示名称
+      paths:
+        - "src/Itminus.Tags.Core/**"
+    - component_id: itminus_tags
+      name: "Tags"
+      paths:
+        - "src/Itminus.Tags/**"
+    - component_id: itminus_tags_s7
+      name: "S7"
+      paths:
+        - "src/Itminus.Tags.S7/**"
+    - component_id: itminus_tags_modbstcp
+      name: "ModbusTcp"
+      paths:
+        - "src/Itminus.Tags.ModbusTcp/**"
+    - component_id: itminus_tags_opcuaclient
+      name: "OpcUaClient"
+      paths:
+        - "src/Itminus.Tags.OpcUaClient/**"
+    - component_id: itminus_tags_hjzk
+      name: "Hjzk"
+      paths:
+        - "src/Itminus.Tags.Hjzk/**"
+    - component_id: itminus_tags_zLan
+      name: "ZLan"
+      paths:
+        - "src/Itminus.Tags.ZLan/**"
+    - component_id: itminus_tags_comscanner
+      name: "Com"
+      paths:
+        - "src/Itminus.Tags.ComScanner/**"
+    - component_id: itminus_tags_rx
+      name: "Rx"
+      paths:
+        - "src/Itminus.Tags.RxExtensions/**"
+    - component_id: itminus_tags_r3
+      name: "R3"
+      paths:
+        - "src/Itminus.Tags.R3Extensions/**"
+    - component_id: itminus_tags_mcpserver
+      name: "McpServer"
+      paths:
+        - "src/Itminus.Tags.McpServer/**"
+    - component_id: itminus_tags_simplefiles
+      name: "SimpleFiles"
+      paths:
+        - "src/Itminus.Tags.SimpleFiles/**"
 
 ignore:
+  - "**/*.md"
+  - "**/*.yml"
   - "Tests/*"
   - "**/*.g.cs"
