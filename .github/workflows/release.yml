@@ -29,9 +29,22 @@ jobs:
     - name: build 
       working-directory: .
       run: dotnet build Itminus.Tags.sln
-    - name: test
+
+    - name: Test with Coverage
       working-directory: .
-      run: dotnet test
+      run: |
+        dotnet test --no-build --configuration Release \
+          --collect:"XPlat Code Coverage" \
+          --results-directory ./TestResults
+
+    - name: Upload Coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./TestResults/**/coverage.cobertura.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        verbose: true
+
     - name: push
       working-directory: ./src
       run: dotnet pwsh ./publish-packages.ps1 -packageVersion ${{ github.event.inputs.releaseVersion }} 
