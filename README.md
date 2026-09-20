@@ -1,13 +1,28 @@
 
 [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/branch/dev/graph/badge.svg?token=Q0UW94C5SS)](https://codecov.io/github/newbienewbie/Itminus.Tags)
 
+| 子项目| 说明 | 覆盖率 |
+|------|------|------|
+| Itminus.Tags.Core | 硬件无关的核心抽象，无外部依赖 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_core )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_core ) | 
+| Itminus.Tags | 依赖于 Itminus.Tags.Core，补充项目、日志、插件等功能 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags ) | 
+| Itminus.Tags.SimpleFiles | 简单文件支持，把测点树映射为文件树 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_simplefiles )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_simplefiles ) | 
+| Itminus.Tags.S7 | 西门子S7通信支持 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_s7 )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_s7 ) | 
+| Itminus.Tags.ModbusTcp | ModbusTcp通信支持 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_modbstcp )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_modbstcp ) | 
+| Itminus.Tags.OpcUaClient  | OpcUa通信支持 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_opcuaclient )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_opcuaclient ) | 
+| Itminus.Tags.Hjzk  | Hjzk 远程IO 通信支持 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_hjzk )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_hjzk ) | 
+| Itminus.Tags.ZLan | ZLan 远程IO 通信支持 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_zLan )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_zLan ) | 
+| Itminus.Tags.ComScanner | 串口通信支持 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_comscanner )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_comscanner ) | 
+| Itminus.Tags.RxExtensions  | Rx.NET 扩展 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_rx )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_rx ) | 
+| Itminus.Tags.R3Extensions  | R3 扩展 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_r3 )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_r3 ) | 
+| Itminus.Tags.McpServer | McpServer 扩展 | [![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/graph/badge.svg?component=itminus_tags_mcpserver )](https://codecov.io/github/newbienewbie/Itminus.Tags/components?components%5B0%5D=itminus_tags_mcpserver ) | 
 
 
-这是一个面向工业通讯场景的类库：
+
+这是一个面向工业交互场景的类库：
 
 * 免费开源: 整个类库家族都是MIT授权，而且相关依赖链也都是(或近乎是)MIT授权。
 * 高度模块化: 每种硬件实现，以`nuget`包为单元，各自独立。
-* 易于扩展：照抄内置的设备实现，实现你自己的通讯封装，然后编写一个`.AddYourOwnSupport()`扩展方法。
+* 易于扩展：照抄这里内置的设备实现，实现你自己的通讯封装，然后编写一个`.AddYourOwnSupport()`扩展方法挂接上去。比如，在我的树莓派上，我基于它造了一个监控GPIO、和 Linux ProcInfo、MemInfo等系统信息的网页程序。
 * 跨平台：依托于`dotnet`跨平台的能力，让你的代码跑到各种设备上。
 
 > **在正式发布1.0版本之前，这个包只会发布在我的测试源上**。
@@ -19,15 +34,10 @@
 - 在`v1.0`版本之前，每个`minor`版本的跳变，可能会引入新特性和破坏性更新。
 - 在`v1.0`版本之后，每个`major`版本的跳变，可能会引入新特性和破坏性更新。
 
-### 开发计划
-
-开发计划与待办事项见 [backlog.md](backlog.md)。
-
-
 
 ## Quick Start
 
-**你只管提供描述(`xml`)，我们负责让它跑起来**。
+你可以仅使用这个类库中的通信功能；不过我们更推荐你采用它默认的交互方式，**你只管提供描述(`xml`)，我们负责让它跑起来**。
 
 其中，你提供的描述类似于：
 ```xml
@@ -66,7 +76,7 @@
 > - 文档根元素是 `<Project>`。`xsi:noNamespaceSchemaLocation` 指向还原包后自动注入的 XSD
 >   （`Itminus.Tags.Core` 的 buildTransitive targets 会把 `Schemas/tagsproject.xsd` 以链接项注入项目树），
 >   编辑器即可获得智能提示/校验；驱动专属子元素（`<s7:IpAddr>` 等）带驱动命名空间前缀。
-> - 运行期解析不校验根元素名与命名空间——不带前缀的老格式（`<root>` + `<IpAddr>`）不启用
+> - 运行期解析不校验根元素名与命名空间——不带前缀的老格式（`<root>` + `<IpAddr>`）在不启用
 >   `EnableXmlSchemaValidation()` 时照常加载。
 
 我们的启动代码类似于：
@@ -86,8 +96,7 @@ await ctrl.StartPollAsync(dir, root, hook: async(proj, sp, ct) =>{
     ));
 	// ... 添加更多业务逻辑
 
-    // ...可选：如注册 proj.TurnStarted 或者 projCrashed 事件处理
-    return Task.CompletedTask;
+    // ...可选但推荐：如注册 proj.TurnStarted 或者 projCrashed 事件处理
 });
 ```
 
@@ -95,8 +104,7 @@ await ctrl.StartPollAsync(dir, root, hook: async(proj, sp, ct) =>{
 - 硬件无关抽象：理论上，你可以在家里用[S7模拟器](https://github.com/newbienewbie/S7SvrSim)编写自动化测试，验证你的逻辑，最后到现场前再切换到`OpcUa`设备上(或者反过来)。
 - 支持逻辑组件插件(dll)
 - 支持通过MCP方式暴露给AI：把测点项目描述作为上下文，AI可以轻松操作点位
-
-![]()
+- “测点即文件”: 添加`Itminus.Tags.SimpleFiles`支持，可以把测点树映射为文件树，让你轻松读写和变更配置。配合`R1W`+`IsScaned`，可以尽可能减少文件系统的访问次数。
 
 ## 文档
 
@@ -131,35 +139,15 @@ await ctrl.StartPollAsync(dir, root, hook: async(proj, sp, ct) =>{
 - `paket.dependencies`: 用 [`paket`](https://github.com/fsprojects/Paket)管理的依赖声明
 - `paket.lock`: 依赖锁定文件
 
-## 授权方式
+## LICENSING
 
-本仓库由许多子包构成，根据上游依赖的不同，我们为每个子包采用不同的授权协议。基本原则是**在尊重上游依赖包授权的前提下，选择最友好的开源授权协议** (基本都是 **MIT**)。
+本仓库由许多子项目构成，根据上游依赖的不同，我们为每个子项目采用不同的授权协议。基本原则是**在尊重上游依赖包授权的前提下，选择最友好的开源授权协议** (几乎都是 **MIT**，详见各仓库下的 LICENSE)。
 
-### 术语解释
+1. 我们自己编写的核心类库部分和部分硬件实现包，由于不涉及官方类库之外的第三方依赖，一律采用**MIT协议**。
+2. 除了**OPC UA**之外，所有涉及第三方依赖的实现包，其上游依赖都是[MIT](https://github.com/NModbus/NModbus)授权，所以这里我们也放心采用**MIT协议**。
+3. 目前唯一比较特殊的是**OPC UA**，我记得**早期**OPC基金会的仓库下基本都是GPL授权，不过最近我发现它们官方已经**改成了[OPC Foundation MIT License 1.00](https://github.com/OPCFoundation/UA-.NETStandard/blob/master/LICENSE.txt)**，所以我们也遵循这个开源协议——**OPC Foundation MIT License 1.00**
 
-- **官方类库**：这里所称**官方类库** 是指 **.NET BCL** 或者 **[dotnet](https://github.com/dotnet/runtime) 的官方扩展包**(MIT协议)
+## 开发计划
 
+开发计划与待办事项见 [backlog.md](backlog.md)。
 
-### 核心包和无第三方依赖的实现包 
-
-核心类库部分和部分硬件实现包，由于不涉及官方类库之外的第三方依赖，均采用**MIT协议**: 
-- Itminus.Tags.Core
-- Itminus.Tags
-- Itminus.Tags.BlazorLib.Core
-- Itminus.Tags.BlazorLib
-- Itminus.Tags.ComScanner
-
-
-### 涉及第三方依赖的实现包：
-
-目前本项目下的依赖，除了**OPC UA**之外，所有的上游依赖都是[MIT](https://github.com/NModbus/NModbus)授权，所以这里我们也一律采用MIT授权:
-
-- Itminus.Tags.RxExtensions
-- Itminus.Tags.R3Extensions
-- Itminus.Tags.ModbusTcp
-- Itminus.Tags.Hjzk
-- Itminus.Tags.ZLan
-- Itminus.Tags.S7
-
-目前唯一比较特殊的是**OPC UA**，我记得**早期**OPC基金会的仓库下基本都是GPL授权，不过最近我发现它们官方已经**改成了[OPC Foundation MIT License 1.00](https://github.com/OPCFoundation/UA-.NETStandard/blob/master/LICENSE.txt)**，所以我们也遵循这个开源协议——**OPC Foundation MIT License 1.00**：
-- Itminus.Tags.OpcUaClient
