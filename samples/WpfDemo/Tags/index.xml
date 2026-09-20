@@ -39,18 +39,19 @@
 				<Tag name="心跳响应" address="$$100.0" type="BIT" access="R1W"></Tag>
 				<Tag name="扫描周期" address="$$102.0" type="FLOAT" access="R1W"></Tag>
 			</TagCbnt>
-		</TagGrp>
 
+		</TagGrp>
+		<TagGrp name="simpleFiles">
+			<Tag name="aa" address="D:/temp/aa" type="BIT" access="R1W" channel="file" autoCreateFile="true"/>
+			<Tag name="bb" address="D:/temp/bb" type="BYTE" access="R1W" channel="file" autoCreateFile="true"/>
+		</TagGrp>
 	</TagGrp>
 	<TagGrp name="扫码枪" isEntry="true" isEnabled="false" scanInterval="10">
 		<!--  引入了自定义的marker特性来标识  -->
 		<Tag name="2#" type="STR" access="RO" channel="COM-2#" marker="ComScanner"/>
 	</TagGrp>
 
-	<TagGrp name="simpleFiles" isEntry="true" isEnabled="true" scanInterval="1000">
-		<Tag name="aa" address="aa" type="BIT" access="R1W" channel="file"/>
-		<Tag name="bb" address="bb" type="BYTE" access="R1W" channel="file"/>
-	</TagGrp>
+
 
 	<!-- 逻辑配置，可以配置0~N个 -->
 	<!--<Logicet>Samples.Plugin1.dll</Logicet>-->

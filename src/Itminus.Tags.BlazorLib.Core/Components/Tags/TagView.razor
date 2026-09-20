@@ -5,13 +5,31 @@
 <div style="display: grid; grid-template-columns: 1fr 3fr 1fr 1fr 3fr; align-items: center; width: 100%">
     <MudText Style="justify-self: start;">@TagName</MudText>
     <MudText Style="justify-self: start;">@TagAddress</MudText>
-    <MudText Style="justify-self: start;">@TagKind</MudText>
-    <MudText Style="justify-self: start;">@TagSize</MudText>
+    <MudText Style="justify-self: start;">@TagKind (@TagSize)</MudText>
+    <MudText Style="justify-self: start;">@TagAccessMode</MudText>
+   
     <div style="display: flex; align-items: center">
-        <MudText>@Value</MudText>
+        <MudText style="margin-right: 16px">@Value</MudText>
+        <MudSpacer />
+
+
         @if(!this.IsReadOnly)
         {
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="OpenEditDialog"></MudIconButton>
+            <MudTooltip Text="编辑测点值">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="OpenEditDialog"></MudIconButton>
+            </MudTooltip>
         }
+
+        @if( this.TagAccessMode == TagAccessMode.R1W)
+        {
+            <MudTooltip Text="标记未扫描">
+                <MudIconButton Icon="@Icons.Material.Outlined.MarkunreadMailbox"
+                               OnClick="MarkNotScanned">
+                    IsScanned
+                </MudIconButton>
+            </MudTooltip>
+        }
+
+
     </div>
 </div>

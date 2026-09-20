@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Itminus.Tags.R3;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Itminus.Tags.R3;
 using R3;
 
 
@@ -23,10 +23,18 @@ public partial class TagView : IDisposable
     [Parameter]
     public ITag? Tag { get; set; }
 
+
     private string TagName { get; set; } = string.Empty;
     private string TagAddress { get; set; } = string.Empty;
     private string TagKind { get; set; } = BuiltinTagKinds.Unknown;
     private int TagSize { get; set; }
+
+    /// <summary>
+    /// （冒泡式）访问模式。
+    /// </summary>
+    private TagAccessMode TagAccessMode { get; set; }
+    private bool IsMarkNotScannedBtnDisabled { get; set; } = true;
+
     /// <summary>
     /// 值
     /// </summary>
@@ -55,7 +63,7 @@ public partial class TagView : IDisposable
                 TagKind = tag.TagKind();
                 TagSize = tag.TagDescriptor.TagSize;
                 IsReadOnly = tag.IsReadOnly();
-
+                TagAccessMode = tag.SearchAccessMode();
                 // Throttle updates and avoid re-rendering if nothing actually changed.
                 _disposable = tag.Watch()
                     .TakeUntil(_destroySignal)
@@ -127,6 +135,53 @@ public partial class TagView : IDisposable
 
         var options = new DialogOptions { CloseOnEscapeKey = true, FullWidth = true, MaxWidth = MaxWidth.ExtraSmall };
         await DialogService.ShowAsync<TagEditDialog>("编辑测点", parameters, options);
+    }
+
+
+    /// <summary>
+    /// 标记测点为未扫描状态，对于R1W型测点，可以强制刷新测点的值。<br/>
+    /// 对于 TagCbnt 下的子测点，标记未扫描会冒泡到父级 TagCbnt，标记父级为未扫描。<br/>
+    /// </summary>
+    /// <returns></returns>
+    private async Task MarkNotScanned()
+    {
+        var tag = this.Tag;
+        var project = this.Project;
+        if (project is null || tag is null )
+            return;
+
+        var parent = tag.Parent;
+        Task task = Task.CompletedTask;
+
+        var entry = tag.SearchEntry();
+        if (entry is null)
+            return;
+
+        parent?.Map(
+            cbnt => {
+                project.WriteIntent(entry.TagName(), (entry, ct) =>
+                {
+                    cbnt.IsScaned = false;
+                    return ValueTask.CompletedTask;
+                },
+                out task);
+                return ValueTuple.Create();
+            },
+            grp =>
+            {
+                project.WriteIntent(
+                    entry.TagName(),
+                    (entry, ct) => {
+                        tag.IsScaned = false;
+                        return ValueTask.CompletedTask;
+                    },
+                    out task
+                );
+                return ValueTuple.Create();
+            }
+        );
+        
+        await task;
     }
 
     #region IDisposable Support
