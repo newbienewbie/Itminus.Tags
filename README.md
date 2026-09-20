@@ -1,4 +1,8 @@
 
+[![codecov](https://codecov.io/github/newbienewbie/Itminus.Tags/branch/dev/graph/badge.svg?token=Q0UW94C5SS)](https://codecov.io/github/newbienewbie/Itminus.Tags)
+
+
+
 这是一个面向工业通讯场景的类库：
 
 * 免费开源: 整个类库家族都是MIT授权，而且相关依赖链也都是(或近乎是)MIT授权。
@@ -55,7 +59,10 @@
 	<!--<Logicet>Samples.Plugin1.dll</Logicet>-->
 </Project>
 ```
+
 > 说明：
+> 
+> - 如果你喜欢简洁一些，也可以省掉上面XML的命名空间和Schema。代价是不再有智能提示和运行前校验。
 > - 文档根元素是 `<Project>`。`xsi:noNamespaceSchemaLocation` 指向还原包后自动注入的 XSD
 >   （`Itminus.Tags.Core` 的 buildTransitive targets 会把 `Schemas/tagsproject.xsd` 以链接项注入项目树），
 >   编辑器即可获得智能提示/校验；驱动专属子元素（`<s7:IpAddr>` 等）带驱动命名空间前缀。

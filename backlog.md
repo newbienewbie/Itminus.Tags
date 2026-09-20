@@ -23,7 +23,7 @@ v1.0 之前只专注于正确性和可靠性，我不推荐外部人员使用—
 - [ ] 日志、报错提示、注释文档的多语言支持。
 - [ ] 工程化：
   - [x] CI 强制测试（`.github/workflows/dotnet.yml` 构建+测试、`release.yml`）
-  - [ ] `coverlet.collector` 已引入但未做覆盖率门槛；
+  - [x] `coverlet.collector` 已引入但未做覆盖率门槛；
   - [ ] 启用 NetAnalyzers / `TreatWarningsAsErrors`；
 - [ ] Cache性能优化：Modbus 读路径 cache 复用——`TagCbnt<T>` 各驱动的 `ReadAsync` 每轮轮询换新 `Cache` 引用（如 `ModbusRegisterTagCbnt` 的 `this.Cache = regs`、位空间 `this.Cache = bits`），`CacheSize` 不变时可复用同一 `T[]` 消除每轮分配；需接口改动（`IModbusRegisterChannel.ReadRegistersAsync`/`IModbusBitsChannel.ReadBitsAsync` 改为写入预分配 buffer 返回元素数）
 - [ ] S7 优化：底层基于 Sharp7 一个古老的实现，有两个优化的点：
