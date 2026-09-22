@@ -3,6 +3,13 @@ using System.Diagnostics;
 
 namespace Itminus.Tags;
 
+/// <summary>
+/// <see cref="ITagGrpRunner"/> 的默认实现。<br/>
+/// <b>多通道</b>：入口子树中所有会被用到的通道（见 <see cref="ITagGrpExtensions.CollectChannels"/>）
+/// 会在每轮读写之前逐一建连；入口自身解析出的通道额外称为<b>主通道</b>，即各事件委托中的 channel 参数。<br/>
+/// <b>通道独占约束</b>：清理路径会断开入口相关的<b>全部</b>通道，因此同一通道实例不得被多个入口
+/// （含嵌套入口）共用，否则一方崩溃/取消会掐掉另一方正在使用的连接。
+/// </summary>
 internal class TagGrpRunner : ITagGrpRunner
 {
     private readonly ITagsProject _project;
@@ -43,7 +50,11 @@ internal class TagGrpRunner : ITagGrpRunner
     {
         while (!ct.IsCancellationRequested)
         {
+            // 入口主通道。各事件委托中的 channel 参数恒为它。
             ITagChannel? channel = null;
+            // 本次启动需要确保连接的全部通道（含主通道，主通道排在最前）。
+            // 用空集合初始化，保证即使“解析通道”阶段抛异常，清理路径也不会空引用。
+            IReadOnlyList<ITagChannel> channels = Array.Empty<ITagChannel>();
             // 本次启动是否失败？如果入口被禁用，不会被视为失败，即禁用会复位失败计数器
             var failed = false;
             try
@@ -55,6 +66,7 @@ internal class TagGrpRunner : ITagGrpRunner
                 }
 
                 channel = entry.SearchChannel();
+                channels = entry.CollectChannels();
                 if (RunnerStarted is not null)
                 {
                     await RunnerStarted(entry, channel);
@@ -66,9 +78,13 @@ internal class TagGrpRunner : ITagGrpRunner
                 {
                     sw.Restart();
 
-                    if (channel != null)
+                    // 确保本轮会用到的所有通道都已连接：主通道 + 入口子树中的辅通道。
+                    // 单入口多通道场景下，辅通道（如入口下某个子组自己声明的 channel）必须在这里就建连，
+                    // 否则要到读/写该子树的测点时才失败——此时前面的读写已经做完，整轮作废。
+                    // EnsureConnectedAsync(force:false) 是幂等的：已连接时各驱动直接返回，开销极小。
+                    foreach (var ch in channels)
                     {
-                        await channel.EnsureConnectedAsync(force: false, ct);
+                        await ch.EnsureConnectedAsync(force: false, ct);
                     }
 
                     await this.DrainWriteIntentsAsync(entry, ct);
@@ -140,8 +156,10 @@ internal class TagGrpRunner : ITagGrpRunner
                         // 若 fire-and-forget 后立刻重连（失败路径）或立刻重启（取消路径），
                         // 上一连接可能还没断开，导致"连接数超限"失败。因此这里委托给断开策略（默认有限超时等待），
                         // 由策略决定如何等待——正常情况毫秒级完成；超时则放弃等待、立即退出，后台仍会继续清理。
-                        var disconnect = channel?.DisconnectAsync(CancellationToken.None);
-                        await this._disconnectStrategy.WaitDisconnectAsync(channel, disconnect);
+                        //
+                        // 多通道：这里断开的是本轮涉及的全部通道（不只主通道），
+                        // 否则辅通道的连接会一直残留、占用设备连接数。
+                        await this.DisconnectAllAsync(channels);
                     }
                     catch
                     {
@@ -161,6 +179,53 @@ internal class TagGrpRunner : ITagGrpRunner
                     ? _retryStrategy.GetDelay(_consecutiveFailures)
                     : TimeSpan.FromMilliseconds(entry.SearchScanInterval() ?? 0);
                 await Task.Delay(delay, ct);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 断开本轮涉及的所有通道。<br/>
+    /// 先<b>全部发起</b>断开（让各通道并发执行断开），再交给 <see cref="ITagGrpRunnerDisconnectStrategy"/>
+    /// 逐一等待——这样多个通道的总等待时长不会被简单叠加。参考选型与超时语义见各驱动
+    /// <c>DisconnectAsync</c> 及 <see cref="DefaultTagGrpRunnerDisconnectStrategy"/>。
+    /// <para>
+    /// 断开是清理动作，必须尽力完成：即便轮询循环是因为取消而退出，这里也使用
+    /// <see cref="CancellationToken.None"/>（理由见调用点注释）；断开过程中抛出的异常一律吞掉。
+    /// </para>
+    /// </summary>
+    /// <param name="channels">本轮涉及的通道；空集合表示无需断开，此时仍会按既有契约调用一次策略（参数均为 null）</param>
+    protected virtual async Task DisconnectAllAsync(IReadOnlyList<ITagChannel> channels)
+    {
+        var pending = new List<(ITagChannel Channel, Task? Disconnect)>(channels.Count);
+        foreach (var ch in channels)
+        {
+            Task? disconnect = null;
+            try
+            {
+                disconnect = ch.DisconnectAsync(CancellationToken.None);
+            }
+            catch
+            {
+                // 发起断开即失败：忽略，继续处理其它通道
+            }
+            pending.Add((ch, disconnect));
+        }
+
+        if (pending.Count == 0)
+        {
+            await this._disconnectStrategy.WaitDisconnectAsync(null, null);
+            return;
+        }
+
+        foreach (var (ch, disconnect) in pending)
+        {
+            try
+            {
+                await this._disconnectStrategy.WaitDisconnectAsync(ch, disconnect);
+            }
+            catch
+            {
+                // 策略等待失败不应阻断其它通道的清理
             }
         }
     }

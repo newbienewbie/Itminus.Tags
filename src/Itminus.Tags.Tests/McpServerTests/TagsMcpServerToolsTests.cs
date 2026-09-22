@@ -44,6 +44,8 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
 
     private static XElement TestXml => new("Project",
         new XElement("Channel", new XAttribute("name", "fake"), new XAttribute("driver", "fake")),
+        // 通道不能跨入口共用（一个通道 = 一个轮询回路），所以 g2 用它自己的 fake2
+        new XElement("Channel", new XAttribute("name", "fake2"), new XAttribute("driver", "fake")),
         new XElement("TagGrp",
             new XAttribute("name", "g1"), new XAttribute("isEntry", "true"),
             new XAttribute("isEnabled", "true"), new XAttribute("channel", "fake"),
@@ -55,7 +57,7 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         ),
         new XElement("TagGrp",
             new XAttribute("name", "g2"), new XAttribute("isEntry", "true"),
-            new XAttribute("isEnabled", "true"), new XAttribute("channel", "fake"),
+            new XAttribute("isEnabled", "true"), new XAttribute("channel", "fake2"),
             new XElement("Tag", new XAttribute("name", "float_tag"), new XAttribute("type", "FLOAT"), new XAttribute("access", "RW"), new XAttribute("address", "0")),
             new XElement("Tag", new XAttribute("name", "int32_tag"), new XAttribute("type", "INT32"), new XAttribute("access", "RW"), new XAttribute("address", "4"))
         )

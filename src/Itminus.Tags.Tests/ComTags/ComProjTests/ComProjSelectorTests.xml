@@ -18,6 +18,13 @@
 		<DataBits>8</DataBits>
 		<StopBits>One</StopBits>
 	</Channel>
+	<Channel name="COM-3" driver="COM">
+		<Port>COM3</Port>
+		<BaudRate>9600</BaudRate>
+		<Parity>None</Parity>
+		<DataBits>8</DataBits>
+		<StopBits>One</StopBits>
+	</Channel>
 
 
 	<!-- 测点配置，可以配置多个 -->
@@ -30,7 +37,8 @@
 
 	<TagGrp name="称重仪" isEntry="true" isEnabled="true" scanInterval="10">
 	    <!-- 注意这个测点没有指定 access，会冒泡到父级 Grp 的默认值 RW -->
-		<Tag name="1#" type="AnyLoad" channel="COM-2" ></Tag>
+	    <!-- 注意：通道不能跨入口共用，所以称重仪用自己声明的 COM-3 -->
+		<Tag name="1#" type="AnyLoad" channel="COM-3" ></Tag>
 	</TagGrp>
 
 	<!-- 逻辑配置，可以配置0~N个 -->

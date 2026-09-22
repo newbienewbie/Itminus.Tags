@@ -55,9 +55,10 @@ public class ComProjTagSelectorTests
         using var proj = sp.MakeProject(dir!, root);
 
         // Test Channels
-        Assert.Equal(2, proj.Channels.Count);
+        Assert.Equal(3, proj.Channels.Count);
         Assert.IsType<LineBasedComChannel>(proj.Channels[0]);
         Assert.IsType<LineBasedComChannel>(proj.Channels[1]);
+        Assert.IsType<LineBasedComChannel>(proj.Channels[2]);
 
         // Test Tags
         var g = proj.Tags.SelectGrp("g");
@@ -88,7 +89,8 @@ public class ComProjTagSelectorTests
         var anyload = proj.Tags.SelectTag("称重仪/1#");
         Assert.Equal("1#", anyload.TagName());
         Assert.Equal("AnyLoad", anyload.TagKind());
-        Assert.Equal(proj.Channels[1], anyload.Channel);
+        // 注意：称重仪用自己的 COM-3（通道不能跨入口共用）
+        Assert.Equal(proj.Channels[2], anyload.Channel);
         // 注意：默认的访问模式是RW，我们有意在xml定义中不设置访问模式，以测试自定义的测点加载逻辑
         Assert.Null(anyload.AccessMode());
         Assert.Equal(TagAccessMode.RW, anyload.SearchAccessMode());

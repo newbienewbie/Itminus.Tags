@@ -120,14 +120,24 @@ public static class ITagExtensions
 
     /// <summary>
     /// (冒泡式)获取测点通道。<br/>
+    /// 先查自身，再冒泡查父容器（<see cref="ITagCbnt"/> 或 <see cref="ITagGrp"/>）。<br/>
+    /// 如果没有找到，返回 null。
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <returns></returns>
+    public static ITagChannel? SearchChannel(this ITag tag) =>
+        tag.Channel ??
+        tag.Parent?.SearchChannel();
+
+    /// <summary>
+    /// (冒泡式)获取测点通道。<br/>
     /// 如果没有找到，则抛出异常。<br/>
     /// </summary>
     /// <param name="tag"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public static ITagChannel SearchRequiredChannel(this ITag tag) =>
-        tag.Channel ??
-        tag.Parent?.SearchRequiredChannel() ?? 
+        tag.SearchChannel() ??
         throw new Exception($"相关测点未配置通道 : Tag({tag.TagName()})");
 
     /// <summary>

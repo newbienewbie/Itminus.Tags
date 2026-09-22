@@ -7,6 +7,17 @@ public static class TagContainerExtensions
 {
     /// <summary>
     /// (冒泡式)获取 <see cref="ITagChannel"/>。<br/>
+    /// 如果没有找到，返回 null。<br/>
+    /// </summary>
+    /// <param name="tagContainer"></param>
+    /// <returns></returns>
+    public static ITagChannel? SearchChannel(this TagContainer tagContainer) => tagContainer.Map(
+        handleTagCbnt: cbnt => cbnt.SearchChannel(),
+        handleTagGrp: grp => grp.SearchChannel()
+    );
+
+    /// <summary>
+    /// (冒泡式)获取 <see cref="ITagChannel"/>。<br/>
     /// 如果没有找到，则抛出异常<br/>
     /// </summary>
     /// <param name="tagContainer"></param>

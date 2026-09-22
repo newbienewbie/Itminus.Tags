@@ -136,20 +136,24 @@ public class TagsProjectServiceBuilder
 
     /// <summary>
     /// 启用加载期交叉引用校验。
-    /// 会注册一些内置的验证器，比如 <see cref="ChannelCrossReferenceValidator"/>、
-    /// <see cref="ChannelDriverFactoryValidator"/>（driver 是否有对应已注册工厂）。<br/>
+    /// 会注册一些内置的验证器：
+    /// <see cref="ChannelCrossReferenceValidator"/>（channel 属性指向已声明的 Channel）、
+    /// <see cref="ChannelDriverFactoryValidator"/>（driver 有对应已注册工厂）、
+    /// <see cref="NestedEntryValidator"/>（嵌套在入口内的 isEntry 不生效）、
+    /// <see cref="EntryChannelExclusivityValidator"/>（同一个通道不被多个入口共用）。<br/>
     /// 启用后，<see cref="ITagsProjectFactory.Create"/> / <c>MakeProject</c> 在加载通道与测点之前，
-    /// 校验 XSD 无法表达的引用关系——测点（TagGrp/TagCbnt/Tag）的 <c>channel</c> 属性必须指向
-    /// 已声明的 <c>&lt;Channel&gt;</c>，且 Channel 的 <c>driver</c> 必须已注册通道工厂；
-    /// 拼错的通道名/驱动名在加载期报错（带完整路径上下文），而不是运行时才暴露。<br/>
-    /// <b>默认已启用</b>（见 <see cref="UseDefaults"/> 路径下的 AddDefaults）——拒绝的都是
-    /// 运行期必然失败的配置，不破坏任何能工作的配置；本方法为幂等显式调用（语义文档化）。
+    /// 校验 XSD 无法表达的引用关系与结构约束；不通过时抛出 <see cref="TagsProjectSchemaException"/>，
+    /// 错误带完整路径上下文，在加载期报错而不是运行时才暴露。<br/>
+    /// <b>默认已启用</b>（见 <see cref="UseDefaults"/> 路径下的 AddDefaults）；
+    /// 本方法为幂等显式调用（语义文档化）。
     /// </summary>
     /// <returns></returns>
     public TagsProjectServiceBuilder EnableCrossReferenceValidation()
     {
         this.AddValidation<ChannelCrossReferenceValidator>();
         this.AddValidation<ChannelDriverFactoryValidator>();
+        this.AddValidation<NestedEntryValidator>();
+        this.AddValidation<EntryChannelExclusivityValidator>();
         return this;
     }
 

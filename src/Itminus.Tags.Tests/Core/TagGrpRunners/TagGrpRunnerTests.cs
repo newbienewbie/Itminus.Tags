@@ -368,6 +368,73 @@ public class TagGrpRunnerTests
     }
 
     [Fact]
+    public async Task StartAsync_MultiChannelEntry_EnsuresAllSubtreeChannelsConnected()
+    {
+        // 单入口多通道：入口下某个子组使用了自己的通道（ch-2）时，
+        // 该轴通道必须在轮询开始前就被建连，否则读写到该子组时才失败。
+        // Arrange
+        var mainChannel = new RecordingChannel(new TagChannelDescriptor { Name = "S7-1" });
+        var auxChannel = new RecordingChannel(new TagChannelDescriptor { Name = "ch-2" });
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "multi-entry", ScanInterval = 10 })
+        {
+            Channel = mainChannel,
+            IsEnabled = true,
+        };
+        var auxGrp = new MockTagGrp(new TagGrpDescriptor { Name = "grp2" }) { Channel = auxChannel };
+        entry.Children.Add("grp2", new TagUnion.TagGrp(auxGrp));
+        var project = new MockProject();
+        var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance);
+
+        using var cts = new CancellationTokenSource();
+        runner.TurnProcess += (_, _) =>
+        {
+            cts.Cancel();
+            return Task.CompletedTask;
+        };
+
+        // Act
+        await RunUntilCancelled(runner, entry, cts.Token);
+
+        // Assert
+        Assert.True(mainChannel.EnsureConnectedCallCount >= 1, "入口主通道应被建连");
+        Assert.True(auxChannel.EnsureConnectedCallCount >= 1, "子树辅通道也应被建连");
+    }
+
+    [Fact]
+    public async Task StartAsync_MultiChannelEntry_DisconnectsAllSubtreeChannels()
+    {
+        // 清理路径必须断开入口相关的全部通道，而不只是主通道——
+        // 否则辅通道连接会残留、占用设备连接数。
+        // Arrange
+        var mainChannel = new RecordingChannel(new TagChannelDescriptor { Name = "S7-1" });
+        var auxChannel = new RecordingChannel(new TagChannelDescriptor { Name = "ch-2" });
+        var entry = new MockTagGrp(new TagGrpDescriptor { Name = "multi-entry", ScanInterval = 10 })
+        {
+            Channel = mainChannel,
+            IsEnabled = true,
+        };
+        var auxGrp = new MockTagGrp(new TagGrpDescriptor { Name = "grp2" }) { Channel = auxChannel };
+        entry.Children.Add("grp2", new TagUnion.TagGrp(auxGrp));
+        var project = new MockProject();
+        var runner = new TagGrpRunner(project, NullLogger<TagGrpRunner>.Instance);
+
+        using var cts = new CancellationTokenSource();
+        runner.TurnProcess += (_, _) =>
+        {
+            cts.Cancel();
+            return Task.CompletedTask;
+        };
+
+        // Act
+        await RunUntilCancelled(runner, entry, cts.Token);
+
+        // Assert
+        Assert.True(mainChannel.DisconnectAsyncCallCount >= 1, "清理路径应断开入口主通道");
+        Assert.True(auxChannel.DisconnectAsyncCallCount >= 1, "清理路径应断开子树辅通道");
+        Assert.False(auxChannel.LastDisconnectTokenWasCancelled, "断开不应收到已取消的 token");
+    }
+
+    [Fact]
     public async Task StartAsync_ProcessIntents()
     {
         // Arrange
@@ -645,8 +712,8 @@ public class TagGrpRunnerTests
     }
 
     /// <summary>
-    /// 记录 <see cref="DisconnectAsync"/> 调用次数与收到的 token 是否已取消，
-    /// 用于验证取消轮询时清理路径仍会断开通道。
+    /// 记录 <see cref="DisconnectAsync"/> / <see cref="EnsureConnectedAsync"/> 调用次数与收到的 token 是否已取消，
+    /// 用于验证取消轮询时清理路径仍会断开通道，以及多通道下每个通道都会被建连。
     /// </summary>
     private sealed class RecordingChannel : ITagChannel
     {
@@ -655,6 +722,7 @@ public class TagGrpRunnerTests
         public TagChannelDescriptor Descriptor { get; }
 
         public int DisconnectAsyncCallCount { get; private set; }
+        public int EnsureConnectedCallCount { get; private set; }
         public bool LastDisconnectTokenWasCancelled { get; private set; }
 
         /// <summary>
@@ -672,7 +740,11 @@ public class TagGrpRunnerTests
 
         public void Dispose() { }
 
-        public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
+        public Task EnsureConnectedAsync(bool force, CancellationToken ct)
+        {
+            EnsureConnectedCallCount++;
+            return Task.CompletedTask;
+        }
     }
 
     /// <summary>

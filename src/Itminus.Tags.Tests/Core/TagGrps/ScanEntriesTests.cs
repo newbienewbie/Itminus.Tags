@@ -106,4 +106,29 @@ public class ScanEntriesTests
 
         Assert.Empty(entries);
     }
+
+    /// <summary>
+    /// 语义固化：入口识别遇到入口后<b>立即停止下探</b>，所以嵌套在入口内的
+    /// <c>isEntry="true"</c> <b>不会</b>被识别为独立入口（它只是一个普通子组，
+    /// 其子树仍由最外层入口的 runner 轮询）。错误配置由 <see cref="NestedEntryValidator"/> 拒绝。
+    /// </summary>
+    [Fact]
+    public void ScanEntries_EntryNestedInsideEntry_ReturnsOnlyOutermost()
+    {
+        /*
+            entry (entry)
+            ├─ subEntry (entry, 嵌套 → 不生效)
+            │  └─ leaf (entry, 嵌套 → 不生效)
+        */
+        var entry = new TagGrp(new TagGrpDescriptor { Name = "entry", IsEntry = true }, null);
+        var subEntry = new TagGrp(new TagGrpDescriptor { Name = "subEntry", IsEntry = true }, null);
+        var leaf = new TagGrp(new TagGrpDescriptor { Name = "leaf", IsEntry = true }, null);
+        subEntry.AddTag(leaf);
+        entry.AddTag(subEntry);
+
+        var entries = entry.ScanEntries();
+
+        Assert.Single(entries);
+        Assert.Same(entry, entries[0]);
+    }
 }
