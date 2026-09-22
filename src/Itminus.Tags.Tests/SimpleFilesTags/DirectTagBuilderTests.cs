@@ -21,7 +21,7 @@ public class DirectTagBuilderTests
     {
         var chdescriptor = new SimpleFilesTagChannelDescriptor()
         {
-            Name = "ch", 
+            Name = "ch",
             BaseDir = baseDir,
         };
         var channel = new SimpleFilesTagChannel(chdescriptor, NullLogger<SimpleFilesTagChannel>.Instance);
@@ -50,7 +50,7 @@ public class DirectTagBuilderTests
     {
         var descriptor = new SimpleFilesTagChannelDescriptor()
         {
-            Name = "self-ch", 
+            Name = "self-ch",
             BaseDir = "",
         };
         var sfChannel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);

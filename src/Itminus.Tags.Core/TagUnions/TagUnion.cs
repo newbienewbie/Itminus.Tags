@@ -17,10 +17,10 @@ public abstract record TagUnion
     /// TagUnit
     /// </summary>
     /// <param name="Value"></param>
-    public record TagUnit(ITag Value) : TagUnion 
+    public record TagUnit(ITag Value) : TagUnion
     {
         /// <inheritdoc/>
-        public override void Accept(ITagUnionVisitor visitor) 
+        public override void Accept(ITagUnionVisitor visitor)
         {
             visitor.Visit(this);
         }
@@ -43,7 +43,7 @@ public abstract record TagUnion
     /// TagGrp
     /// </summary>
     /// <param name="Value"></param>
-    public record TagGrp(ITagGrp Value): TagUnion
+    public record TagGrp(ITagGrp Value) : TagUnion
     {
         /// <inheritdoc/>
         public override void Accept(ITagUnionVisitor visitor)
@@ -80,11 +80,12 @@ public abstract record TagUnion
     /// <returns></returns>
     /// <exception cref="Exception">
     /// </exception>
-    public TagUnion this[string tagName] {
+    public TagUnion this[string tagName]
+    {
         get => this.Map(
             tagunit => throw new Exception($"Tag(Name={tagunit.TagName()} has not child) "),
             tagcbnt => new TagUnit(tagcbnt[tagName]),
-            taggrp => taggrp[tagName] 
+            taggrp => taggrp[tagName]
             );
     }
     #endregion

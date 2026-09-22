@@ -41,7 +41,7 @@ internal class HoldingRegisterBitDirectTag : Tag<bool, ModbusTcpChannel>
         this.Timestamp = DateTime.Now;
         this.NotifyTagRead(this._value);
     }
-    public override async Task WriteAsync(CancellationToken ct) 
+    public override async Task WriteAsync(CancellationToken ct)
     {
         var regs = await this._bubbleChannel.ReadRegistersAsync(this.NormalizedAddress(), 1, ct);
         var oldReg = regs[0];

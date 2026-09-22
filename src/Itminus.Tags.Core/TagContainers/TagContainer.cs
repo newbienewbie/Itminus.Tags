@@ -9,9 +9,9 @@ public abstract record TagContainer
     /// <summary>
     /// 私有构造函数，禁止外部扩展。<br/>
     /// </summary>
-    private TagContainer() { } 
+    private TagContainer() { }
 
-    private sealed record TagCbnt(ITagCbnt Value): TagContainer();
+    private sealed record TagCbnt(ITagCbnt Value) : TagContainer();
 
     private sealed record TagGrp(ITagGrp Value) : TagContainer();
 
@@ -46,7 +46,8 @@ public abstract record TagContainer
     /// <param name="handleTagGrp"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public T Map<T>(Func<ITagCbnt, T> handleTagCbnt, Func<ITagGrp, T> handleTagGrp) =>  this switch {
+    public T Map<T>(Func<ITagCbnt, T> handleTagCbnt, Func<ITagGrp, T> handleTagGrp) => this switch
+    {
         TagCbnt(ITagCbnt Value) => handleTagCbnt(Value),
         TagGrp(ITagGrp Value) => handleTagGrp(Value),
         _ => throw new NotImplementedException($"未预料到的{nameof(TagContainer)}子类型: {this.GetType()}")

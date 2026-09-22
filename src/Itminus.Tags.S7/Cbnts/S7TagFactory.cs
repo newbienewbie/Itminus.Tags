@@ -53,7 +53,7 @@ internal class S7TagFactory : TagCbntorFactoryBase
         var tagAddr = S7AddressParser.Parse(tagDescriptor.RawAddress);
         var groupAddr = S7AddressParser.Parse(this.TagCbnt.StartAddress);
 
-        var offset = tagAddr.StartAddress -  groupAddr.StartAddress;
+        var offset = tagAddr.StartAddress - groupAddr.StartAddress;
         if (tagAddr.NthBit < 8)
         {
             return new S7BitTagCbntor(tagDescriptor, TypedCbnt, offset, offset, tagAddr.NthBit);
@@ -122,7 +122,7 @@ internal class S7TagFactory : TagCbntorFactoryBase
     /// <param name="tagDescriptor"></param>
     /// <returns></returns>
     protected virtual S7Int32TagCbntor CreateInt32Tag(TagDescriptor tagDescriptor)
-    {   
+    {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
         {

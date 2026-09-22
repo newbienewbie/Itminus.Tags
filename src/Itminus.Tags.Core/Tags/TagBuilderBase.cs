@@ -121,7 +121,7 @@ public abstract class TagBuilderBase
     /// <returns></returns>
     public virtual ITag Build(ITagChannel channel)
     {
-        if(channel is null)
+        if (channel is null)
         {
             throw new Exception($"测点({this.Name})未配置通道");
         }

@@ -60,7 +60,7 @@ internal static class TagChannelDescriptor_SimpleFilesExtensions
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
         };
-        if(descriptor.Extras != null && descriptor.Extras.TryGetValue(nameof(SimpleFilesTagChannelDescriptor.BaseDir), out var baseDirElement))
+        if (descriptor.Extras != null && descriptor.Extras.TryGetValue(nameof(SimpleFilesTagChannelDescriptor.BaseDir), out var baseDirElement))
         {
             res.BaseDir = baseDirElement.Value;
         }

@@ -5,7 +5,7 @@
 /// 代表属于测点组合的测点组合子，不单独使用，而是和其它组合子一起组合成一个测点组合使用，以支持整体读取、整体写入。<br/>
 /// 这些被组合在一起的测点组合子，共享同一个底层缓存，在需要读取时，会被整体读取来减少IO次数；在需要写入时，既可以单独写入底层、也可以批量整体写入底层。
 /// </summary>
-public interface ITagCbntor: ITag
+public interface ITagCbntor : ITag
 {
     /// <summary>
     /// 表示<b>【测点本身】</b>距离【测点组合起始位置】的偏移量，单位为 byte。结合<see cref="ITagExtensions.TagSize(ITag)"/>，可以确定测点在缓存中的存储区间。<br/>

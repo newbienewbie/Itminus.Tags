@@ -22,7 +22,7 @@ public class TagUnionExtensions_IsDirty_Tests
         public bool IsDirty { get; set; }
         public ITagChannel? Channel => null;
 
-        public TagContainer? Parent { get ; set; }
+        public TagContainer? Parent { get; set; }
 
         public Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
         public Task WriteAsync(CancellationToken ct) => Task.CompletedTask;
@@ -116,7 +116,7 @@ public class TagUnionExtensions_IsDirty_Tests
         // baseline
         Assert.False(rootUnion.IsDirty());
 
-       
+
         deepTag.IsDirty = true;
         Assert.True(rootUnion.IsDirty());
         deepTag.IsDirty = false;

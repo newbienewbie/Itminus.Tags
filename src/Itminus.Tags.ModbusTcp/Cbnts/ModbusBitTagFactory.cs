@@ -30,7 +30,7 @@ public class ModbusBitTagFactory : TagCbntorFactoryBase
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public virtual DITagCbntor CreateDITag(TagDescriptor tagDescriptor)
-    {           
+    {
         // normalize the tagsize
         if (tagDescriptor.TagSize == 0)
         {

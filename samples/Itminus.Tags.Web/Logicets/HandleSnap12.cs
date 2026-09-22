@@ -40,7 +40,7 @@ internal class HandleSnap12 : LogicetBase
         return entry.TagName() == "g2";
     }
 
-    private int i=0;
+    private int i = 0;
 
     public override Task ProcessAsync(ITagGrp entry, ITagChannel? thisChannel)
     {
@@ -50,7 +50,7 @@ internal class HandleSnap12 : LogicetBase
         var yellow = this._ledYellow.GetTagValue<bool>();
 
 
-        if(letgo)
+        if (letgo)
         {
             Console.WriteLine($"{i++}: LetGo Btn has been pressed");
 
@@ -65,7 +65,7 @@ internal class HandleSnap12 : LogicetBase
                 this._ledYellow.Value = true;
                 this._ledGreen.Value = false;
             }
-            if(yellow)
+            if (yellow)
             {
                 this._ledRed.Value = false;
                 this._ledYellow.Value = false;

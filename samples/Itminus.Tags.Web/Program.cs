@@ -6,7 +6,8 @@ using Itminus.Tags.BlazorLib;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddLogging(lb =>{
+builder.Services.AddLogging(lb =>
+{
     lb.AddConsole();
 });
 

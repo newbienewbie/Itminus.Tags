@@ -18,10 +18,11 @@ public class TagChannelTests
         var settings = new SimpleFilesSettings(@"C:\base");
         var logger = NullLogger<SimpleFilesTagChannel>.Instance;
         var channel = new SimpleFilesTagChannel(
-            new SimpleFilesTagChannelDescriptor() {
+            new SimpleFilesTagChannelDescriptor()
+            {
                 Name = "test-ch",
                 BaseDir = settings.BaseDir,
-            }, 
+            },
             logger
         );
 
@@ -34,10 +35,11 @@ public class TagChannelTests
     public void Channel_MakePath_WithBaseDir_CombinesPath()
     {
         var settings = new SimpleFilesSettings(@"C:\base");
-        var descriptor = new SimpleFilesTagChannelDescriptor() {
-                Name = "ch",
-                BaseDir = settings.BaseDir,
-            };
+        var descriptor = new SimpleFilesTagChannelDescriptor()
+        {
+            Name = "ch",
+            BaseDir = settings.BaseDir,
+        };
         var channel = new SimpleFilesTagChannel(descriptor, NullLogger<SimpleFilesTagChannel>.Instance);
 
         var path = channel.MakePath(@"sub\file.txt");
@@ -49,7 +51,8 @@ public class TagChannelTests
     public void Channel_MakePath_WithoutBaseDir_ReturnsAddressAsIs()
     {
         var settings = new SimpleFilesSettings(null);
-        var descriptor = new SimpleFilesTagChannelDescriptor() {
+        var descriptor = new SimpleFilesTagChannelDescriptor()
+        {
             Name = "ch",
             BaseDir = settings.BaseDir,
         };
@@ -63,7 +66,8 @@ public class TagChannelTests
     [Fact]
     public void Channel_EnsureConnectedAsync_DoesNothing()
     {
-        var descriptor = new SimpleFilesTagChannelDescriptor() {
+        var descriptor = new SimpleFilesTagChannelDescriptor()
+        {
             Name = "ch",
             BaseDir = new SimpleFilesSettings(null).BaseDir,
         };
@@ -77,7 +81,8 @@ public class TagChannelTests
     [Fact]
     public void Channel_DisconnectAsync_DoesNothing()
     {
-        var descriptor = new SimpleFilesTagChannelDescriptor() {
+        var descriptor = new SimpleFilesTagChannelDescriptor()
+        {
             Name = "ch",
             BaseDir = new SimpleFilesSettings(null).BaseDir,
         };
@@ -91,7 +96,8 @@ public class TagChannelTests
     [Fact]
     public void Channel_Dispose_DoesNotThrow()
     {
-        var descriptor = new SimpleFilesTagChannelDescriptor() {
+        var descriptor = new SimpleFilesTagChannelDescriptor()
+        {
             Name = "ch",
             BaseDir = new SimpleFilesSettings(null).BaseDir,
         };

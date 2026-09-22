@@ -29,7 +29,8 @@ public partial class SimpleFilesDirectTagBuilder : TagBuilderBase
     public SimpleFilesDirectTagBuilder WithFactory<TVal>(CreateSimpleFilesDirectTag<TVal> factory)
     {
         base.WithFactory(
-            (descriptor, thisChannel, container) => {
+            (descriptor, thisChannel, container) =>
+            {
                 var channel = thisChannel ?? container.SearchRequiredChannel();
                 var sfsChannel = channel as SimpleFilesTagChannel ?? throw new InvalidOperationException($"通道类型不匹配：{channel?.GetType().FullName}");
                 descriptor.NormalizedAddress = sfsChannel.MakePath(descriptor.RawAddress);
@@ -47,8 +48,8 @@ public partial class SimpleFilesDirectTagBuilder : TagBuilderBase
     /// <param name="container"></param>
     /// <returns></returns>
     public delegate SimpleFilesDirectTagBase<TVal> CreateSimpleFilesDirectTag<TVal>(
-        TagDescriptor descriptor, 
-        SimpleFilesTagChannel? thisChannel, 
+        TagDescriptor descriptor,
+        SimpleFilesTagChannel? thisChannel,
         TagContainer container
         );
 
@@ -62,7 +63,8 @@ public partial class SimpleFilesDirectTagBuilder : TagBuilderBase
     public SimpleFilesDirectTagBuilder WithJsonTagFactory<TVal>()
     {
         this.WithFactory(
-            (descriptor, thisChannel, container) => {
+            (descriptor, thisChannel, container) =>
+            {
                 return new JsonDirectTag<TVal>(descriptor, thisChannel, container);
             }
         );

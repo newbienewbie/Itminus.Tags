@@ -9,7 +9,7 @@ using System.Xml.Linq;
 namespace Itminus.Tags.ZLan;
 
 
-public abstract class ZLanCbntBuilderBase: ModbusBitTagCbntBuilder
+public abstract class ZLanCbntBuilderBase : ModbusBitTagCbntBuilder
 {
     /// <summary>
     /// 区域起始地址

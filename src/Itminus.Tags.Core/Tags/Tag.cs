@@ -8,8 +8,8 @@ namespace Itminus.Tags;
 /// </summary>
 /// <typeparam name="TValue"></typeparam>
 /// <typeparam name="TChannel"></typeparam>
-public abstract class Tag<TValue,TChannel> : ITag
-    where TChannel: class, ITagChannel
+public abstract class Tag<TValue, TChannel> : ITag
+    where TChannel : class, ITagChannel
 {
     /// <summary>
     /// c'tor

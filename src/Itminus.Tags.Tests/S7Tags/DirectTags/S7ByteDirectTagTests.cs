@@ -109,7 +109,7 @@ public class S7ByteDirectTagTests
     {
         public FakeContinuousBytesChannel(byte[] payload)
             : base(
-            new S7TagChannelDescriptor { Name = "FakeContinuousBytesChannel",  },
+            new S7TagChannelDescriptor { Name = "FakeContinuousBytesChannel", },
             new LoggerFactory().CreateLogger<S7TagChannel>()
         )
         {

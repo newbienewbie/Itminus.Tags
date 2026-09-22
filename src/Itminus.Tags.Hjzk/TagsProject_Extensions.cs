@@ -19,7 +19,7 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddHjzkSupport(this TagsProjectServiceBuilder builder)
     {
-        
+
         builder.Services.AddSingleton<ITagsProjectSchemaProvider, HjzkSchemaProvider>();
 
         // register channel factory
@@ -31,7 +31,8 @@ public static class TagsProject_Extensions
         });
 
         // register tags loader
-        builder.ConfigTagsLoader((sp, composite) => { 
+        builder.ConfigTagsLoader((sp, composite) =>
+        {
             composite.AddTagsCbntBuilder<HjzkDICbntBuilder>(HjzkNames.DriverName, predicate: b => b.Area == "DI");
             composite.AddTagsCbntBuilder<HjzkDOCbntBuilder>(HjzkNames.DriverName, predicate: b => b.Area == "DO");
         });

@@ -39,7 +39,7 @@ public class WriteIntentProjTests
             new XAttribute("name", "g1"),
             new XAttribute("isEntry", true),
             new XAttribute("isEnabled", true),
-            new XAttribute("channel","fake")
+            new XAttribute("channel", "fake")
         );
         var channel = new XElement("Channel",
             new XAttribute("name", "fake"),
@@ -59,7 +59,8 @@ public class WriteIntentProjTests
             await Task.Delay(1000);
             await proj.RunAsync(cts.Token);
         });
-        proj.WriteIntent("g1", (entry,ct) => {
+        proj.WriteIntent("g1", (entry, ct) =>
+        {
             xx = true;
             return ValueTask.CompletedTask;
         }, out var task);
@@ -106,11 +107,13 @@ public class WriteIntentProjTests
             await Task.Delay(1000);
             await proj.RunAsync(cts.Token);
         });
-        proj.WriteIntent("g1", (entry, ct) => {
+        proj.WriteIntent("g1", (entry, ct) =>
+        {
             throw new MyException("test exception");
         }, out var task);
 
-        await Assert.ThrowsAsync<MyException>(async() => {
+        await Assert.ThrowsAsync<MyException>(async () =>
+        {
             await task;
         });
         cts.Cancel();

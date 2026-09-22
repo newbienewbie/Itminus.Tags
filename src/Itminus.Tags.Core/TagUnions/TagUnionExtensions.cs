@@ -15,12 +15,13 @@ public static class TagUnionExtensions
     public static async Task ReadAsync(this TagUnion tagunion, CancellationToken ct)
     {
         await tagunion.Map(
-            async tag => {
+            async tag =>
+            {
                 if (tag.SearchAccessMode() == TagAccessMode.R1W && tag.IsScaned)
                 {
                     return;
                 }
-                if(tag.IsWriteOnly())
+                if (tag.IsWriteOnly())
                 {
                     return;
                 }
@@ -29,11 +30,11 @@ public static class TagUnionExtensions
             },
             async cbnt =>
             {
-                if(cbnt.SearchAccessMode() == TagAccessMode.R1W && cbnt.IsScaned)
+                if (cbnt.SearchAccessMode() == TagAccessMode.R1W && cbnt.IsScaned)
                 {
                     return;
                 }
-                if(cbnt.IsWriteOnly())
+                if (cbnt.IsWriteOnly())
                 {
                     return;
                 }
@@ -56,7 +57,8 @@ public static class TagUnionExtensions
     public static async Task WriteAsync(this TagUnion tagunion, CancellationToken ct)
     {
         await tagunion.Map(
-            async tag => {
+            async tag =>
+            {
                 if (tag.IsReadOnly())
                 {
                     return;
@@ -68,12 +70,12 @@ public static class TagUnionExtensions
             },
             async cbnt =>
             {
-                if(cbnt.IsReadOnly())
+                if (cbnt.IsReadOnly())
                 {
                     return;
                 }
 
-                if(cbnt.IsDirty) 
+                if (cbnt.IsDirty)
                 {
                     await cbnt.WriteAsync(ct);
                 }

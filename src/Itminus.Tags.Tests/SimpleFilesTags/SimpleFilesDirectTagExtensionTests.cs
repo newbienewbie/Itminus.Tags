@@ -399,7 +399,7 @@ public class SimpleFilesDirectTagExtensionTests
         Assert.IsType<JsonDirectTag<MyJson1>>(json1Tag);
         var json2Tag = tags.SelectTag("json-2");
         Assert.IsType<JsonDirectTag<MyJson2>>(json2Tag);
-        
+
     }
     #endregion
 

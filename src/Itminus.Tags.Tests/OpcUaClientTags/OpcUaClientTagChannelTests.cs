@@ -21,7 +21,7 @@ internal class TestOpcUaChannel : OpcUaClientTagChannel
 
     public TestOpcUaChannel(string channelName, Mock<ISession> sessionMock)
         : base(
-            new OpcUaClientTagChannelDescriptor(){Name = channelName}, 
+            new OpcUaClientTagChannelDescriptor() { Name = channelName },
             NullLogger<OpcUaClientTagChannel>.Instance
         )
     {
@@ -97,12 +97,12 @@ public class OpcUaClientTagChannelTests
         var sessionMock = CreateSessionMock();
         var nodeId = new NodeId("test", 1);
         sessionMock
-            .Setup( x => x.ReadValuesAsync( 
-                It.IsAny<IList<NodeId>>(), 
+            .Setup(x => x.ReadValuesAsync(
+                It.IsAny<IList<NodeId>>(),
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync((
-                new DataValueCollection { new DataValue { Value = 42 } }, 
+                new DataValueCollection { new DataValue { Value = 42 } },
                 new List<ServiceResult> { new ServiceResult(StatusCodes.Good) }
             ));
         var channel = CreateChannel(sessionMock);
@@ -124,7 +124,7 @@ public class OpcUaClientTagChannelTests
         var nodeId = new NodeId("v", 1);
         sessionMock
             .Setup(x => x.ReadValueAsync(
-                nodeId, 
+                nodeId,
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new DataValue { Value = 99 });
@@ -147,11 +147,12 @@ public class OpcUaClientTagChannelTests
         var nodeId = new NodeId("w", 1);
         sessionMock
             .Setup(x => x.WriteAsync(
-                It.IsAny<RequestHeader?>(), 
-                It.IsAny<WriteValueCollection>(), 
+                It.IsAny<RequestHeader?>(),
+                It.IsAny<WriteValueCollection>(),
                 It.IsAny<CancellationToken>()
             ))
-            .ReturnsAsync(new WriteResponse { 
+            .ReturnsAsync(new WriteResponse
+            {
                 Results = new StatusCodeCollection { StatusCodes.Good }
             });
         var channel = CreateChannel(sessionMock);
@@ -169,12 +170,13 @@ public class OpcUaClientTagChannelTests
         var nodeId = new NodeId("w", 1);
         sessionMock
             .Setup(x => x.WriteAsync(
-                It.IsAny<RequestHeader?>(), 
-                It.IsAny<WriteValueCollection>(), 
+                It.IsAny<RequestHeader?>(),
+                It.IsAny<WriteValueCollection>(),
                 It.IsAny<CancellationToken>()
             ))
-            .ReturnsAsync(new WriteResponse { 
-                Results = new StatusCodeCollection { StatusCodes.Bad } 
+            .ReturnsAsync(new WriteResponse
+            {
+                Results = new StatusCodeCollection { StatusCodes.Bad }
             });
         var channel = CreateChannel(sessionMock);
         await channel.EnsureConnectedAsync(false, CancellationToken.None);
@@ -195,12 +197,13 @@ public class OpcUaClientTagChannelTests
         var nodeId = new NodeId("w", 1);
         sessionMock
             .Setup(x => x.WriteAsync(
-                It.IsAny<RequestHeader?>(), 
+                It.IsAny<RequestHeader?>(),
                 It.IsAny<WriteValueCollection>(),
                 It.IsAny<CancellationToken>()
             ))
-            .ReturnsAsync(new WriteResponse { 
-                Results = new StatusCodeCollection { StatusCodes.Good } 
+            .ReturnsAsync(new WriteResponse
+            {
+                Results = new StatusCodeCollection { StatusCodes.Good }
             });
         var channel = CreateChannel(sessionMock);
         await channel.EnsureConnectedAsync(false, CancellationToken.None);
@@ -209,10 +212,10 @@ public class OpcUaClientTagChannelTests
 
         sessionMock.Verify(
             x => x.WriteAsync(
-                null, 
-                It.IsAny<WriteValueCollection>(), 
+                null,
+                It.IsAny<WriteValueCollection>(),
                 It.IsAny<CancellationToken>()
-            ), 
+            ),
             Times.Once
         );
     }

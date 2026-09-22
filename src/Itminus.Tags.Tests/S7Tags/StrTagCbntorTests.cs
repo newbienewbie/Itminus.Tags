@@ -34,7 +34,8 @@ namespace Itminus.Tags.Tests.S7Tags
                 TagKind = BuiltinTagKinds.STR,
             };
 
-            Assert.Throws<InvalidDataException>(() => {
+            Assert.Throws<InvalidDataException>(() =>
+            {
                 var cbnt = builder.AddTags([descriptor], channel).Build(channel);
                 var tag = cbnt.SelectTag("str1");
                 Assert.NotNull(tag);
@@ -85,7 +86,7 @@ namespace Itminus.Tags.Tests.S7Tags
             var got = tag.Value as string;
             Assert.Equal(newVal1, got);
             Assert.Equal(new byte[] { (byte)maxLen, (byte)4 }, ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2, 2).ToArray());
-            var span = ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2+2, 4);
+            var span = ((TagCbnt<byte>)cbnt).Cache.Span.Slice(2 + 2, 4);
             var roundtrip = Encoding.ASCII.GetString(span);
             Assert.Equal(newVal1, roundtrip);
             Assert.Equal(4, strTag.Strlen);
@@ -115,7 +116,7 @@ namespace Itminus.Tags.Tests.S7Tags
             };
             descriptor.Extras["maxlen"] = new XAttribute("maxlen", maxLen);
 
-            var cbnt = builder.AddTags([descriptor],channel).Build(channel);
+            var cbnt = builder.AddTags([descriptor], channel).Build(channel);
             var tag = cbnt.SelectTag("str1");
 
             Assert.Throws<ArgumentException>(() => tag.Value = "1234567890-");
@@ -176,7 +177,7 @@ namespace Itminus.Tags.Tests.S7Tags
             };
             descriptor.Extras["maxlen"] = new XAttribute("maxlen", maxLen);
 
-            var cbnt = builder.AddTags([descriptor],channel).Build(channel);
+            var cbnt = builder.AddTags([descriptor], channel).Build(channel);
             var tag = cbnt.SelectTag("str1");
             var strTag = Assert.IsType<S7StrTagCbntor>(tag);
 

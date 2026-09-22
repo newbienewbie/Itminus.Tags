@@ -138,11 +138,11 @@ public abstract class TagCbntBuilderBase
         foreach (var descriptor in descriptors)
         {
             ITagCbntor? tag = null;
-            if(this._createTagCbntor is not null)
+            if (this._createTagCbntor is not null)
             {
                 tag = this._createTagCbntor(descriptor, channel, this);
             }
-            if(tag is null)
+            if (tag is null)
             {
                 tag = this.Fallback(descriptor, channel);
             }

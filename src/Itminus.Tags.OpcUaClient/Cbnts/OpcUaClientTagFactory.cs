@@ -7,7 +7,7 @@ internal class OpcUaClientTagFactory : TagCbntorFactoryBase
     /// <summary>
     /// c'tor
     /// </summary>
-    public OpcUaClientTagFactory(TagCbntBuilderBase builder) 
+    public OpcUaClientTagFactory(TagCbntBuilderBase builder)
         : base(builder)
     {
     }

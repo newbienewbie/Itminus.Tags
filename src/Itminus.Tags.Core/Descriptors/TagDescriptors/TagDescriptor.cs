@@ -34,7 +34,7 @@ public enum TagAccessMode
 /// <summary>
 /// 测点描述
 /// </summary>
-public class TagDescriptor: ITagsDescriptor
+public class TagDescriptor : ITagsDescriptor
 {
     /// <summary>
     /// 测点名称——用于展示，在测组中具有唯一性
@@ -78,7 +78,8 @@ public class TagDescriptor: ITagsDescriptor
     /// 这个不会被持久化到Xml中，
     /// 而是会在运行之前，根据<see cref="RawAddress"/>和上下文进行动态解析。<br/>
     /// </summary>
-    public TagAddress NormalizedAddress {
+    public TagAddress NormalizedAddress
+    {
         get => String.IsNullOrEmpty(_normalizedAddress) ? RawAddress : _normalizedAddress;
         set
         {
@@ -104,12 +105,12 @@ public class TagDescriptor: ITagsDescriptor
     /// 对于组合型的子测点，这个属性通常会被忽略，因为会使用多个组合子所共享的父级<see cref="ITagCbnt.Channel"/>或者更上层的<see cref="ITagGrp.Channel"/>；<br/>
     /// 而对于分组的直接子测点，设置了这个属性，会遮蔽上层的通道名。<br/>
     /// </summary>
-    public string? ChannelName { set; get; } 
+    public string? ChannelName { set; get; }
 
     /// <summary>
     /// 备注
     /// </summary>
-    public string? Note{ set; get; }
+    public string? Note { set; get; }
 
     /// <summary>
     /// 额外参数

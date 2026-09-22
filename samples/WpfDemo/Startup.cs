@@ -19,7 +19,8 @@ public static class STARTUP
         services.AddWpfDemoTags();
 
         services.AddMcpServer()
-            .WithHttpTransport(opts => {
+            .WithHttpTransport(opts =>
+            {
                 opts.Stateless = true;
             })
             .AddTagsMcp();

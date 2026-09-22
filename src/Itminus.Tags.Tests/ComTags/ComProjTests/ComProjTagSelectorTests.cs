@@ -20,7 +20,8 @@ public class ComProjTagSelectorTests
         services.AddLogging();
         services.AddTagsProjectServices(b =>
         {
-            b.ConfigTagsLoader((sp, loader) => { 
+            b.ConfigTagsLoader((sp, loader) =>
+            {
                 // 测试自定义的串口测点构建器
                 loader.AddDirectTagBuilder<AnyLoadComTagBuilder>(
                     "ComScanner",
@@ -49,7 +50,7 @@ public class ComProjTagSelectorTests
         //var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!,"ComTags","ComProjTests");
+        dir = Path.Combine(dir!, "ComTags", "ComProjTests");
         xmlpath = Path.Combine(dir, xmlpath);
         var root = XElement.Load(xmlpath);
         using var proj = sp.MakeProject(dir!, root);
@@ -71,7 +72,7 @@ public class ComProjTagSelectorTests
         Assert.Equal(BuiltinTagKinds.STR, gun1.TagKind());
         Assert.IsType<LineBasedComChannel>(gun1.Channel);
         Assert.Equal(proj.Channels[0], gun1.Channel);
-        var channel1 = (LineBasedComChannel) gun1.Channel;
+        var channel1 = (LineBasedComChannel)gun1.Channel;
         Assert.Null(channel1.NewLine);
         Assert.Equal(1, channel1.Capacity);
 
@@ -81,7 +82,7 @@ public class ComProjTagSelectorTests
         Assert.IsType<LineBasedComChannel>(gun2.Channel);
         Assert.Equal(proj.Channels[1], gun2.Channel);
         var channel2 = (LineBasedComChannel)gun2.Channel;
-        Assert.Equal("\r\n",channel2.NewLine);
+        Assert.Equal("\r\n", channel2.NewLine);
         Assert.Equal(42, channel2.Capacity);
         #endregion
 

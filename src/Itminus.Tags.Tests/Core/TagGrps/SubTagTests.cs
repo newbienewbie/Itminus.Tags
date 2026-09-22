@@ -14,12 +14,12 @@ public class SubTagTests
     // 有意让这个Tag没有自己的通道，测试冒泡式访问通道
     class NoChannelTag : Tag<byte, S7TagChannel>
     {
-        public NoChannelTag(TagDescriptor descriptor, TagContainer parent) 
-            : base(descriptor,null, parent)
+        public NoChannelTag(TagDescriptor descriptor, TagContainer parent)
+            : base(descriptor, null, parent)
         {
         }
 
-        public override ITagChannel? Channel { get; set; } 
+        public override ITagChannel? Channel { get; set; }
 
         public override Task ReadAsync(CancellationToken ct) => Task.CompletedTask;
 
@@ -101,12 +101,13 @@ public class SubTagTests
         grp1.AddTag(grp2);
 
         var noChannelTag = new NoChannelTag(
-            new TagDescriptor() { 
+            new TagDescriptor()
+            {
                 TagName = "no-channel-tag",
                 TagSize = 1,
                 RawAddress = "some-address",
                 TagKind = BuiltinTagKinds.BYTE,
-            }, 
+            },
             grp2.IntoTagContainer()
         );
 

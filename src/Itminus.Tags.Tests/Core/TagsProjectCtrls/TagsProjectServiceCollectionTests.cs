@@ -20,7 +20,7 @@ public class TagsProjectServiceCollectionTests
         var services = new ServiceCollection();
         services.AddLogging();
         // 最小配置，仅注册基础服务
-        services.AddTagsProjectServices(builder => { }); 
+        services.AddTagsProjectServices(builder => { });
 
         // 默认（无 key）解析应成功
         using var sp = services.BuildServiceProvider();

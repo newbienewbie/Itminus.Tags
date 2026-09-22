@@ -38,7 +38,7 @@ public class TagTraverserTests
         var factory = sp.GetRequiredService<ITagsProjectFactory>();
         var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
         var dir = System.IO.Path.GetDirectoryName(loc);
-        dir = Path.Combine(dir!,"Core", "TagUnions");
+        dir = Path.Combine(dir!, "Core", "TagUnions");
         using var proj = factory.Create(dir!);
 
         // Test Channels
@@ -49,16 +49,17 @@ public class TagTraverserTests
 
         // Test Tags
         var g1 = proj.Tags.SelectGrp("扫码枪");
-        var union = new TagUnion.TagGrp(g1!); 
+        var union = new TagUnion.TagGrp(g1!);
         var tags = new List<ITag>();
-        var visitor = new TagTraverser(t => { 
-            if(t is ComReadOnlyTag<string> tag)
+        var visitor = new TagTraverser(t =>
+        {
+            if (t is ComReadOnlyTag<string> tag)
             {
                 tags.Add(tag);
             }
         });
         union.Accept(visitor);
         Assert.Single(tags);
-        Assert.Equal(g1.SelectTag("输入"),tags[0]);
+        Assert.Equal(g1.SelectTag("输入"), tags[0]);
     }
 }

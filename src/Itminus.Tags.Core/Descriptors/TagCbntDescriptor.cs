@@ -26,7 +26,7 @@ public class TagCbntDescriptor : ITagsDescriptor
     /// 是否启用
     /// </summary>
     public bool IsEnabled { get; set; } = true;
-    
+
     /// <summary>
     /// 访问模式。<br/>
     /// null 表示未指定，在构建阶段会冒泡式向上检索父级配置。<br/>

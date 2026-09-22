@@ -4,7 +4,7 @@ namespace Itminus.Tags.Hjzk;
 /// <summary>
 /// Hjzk CbntBuiilder 基类，将来会被扩展成 DI/DO CbntBuilder
 /// </summary>
-public abstract class HjzkCbntBuilderBase: ModbusBitTagCbntBuilder
+public abstract class HjzkCbntBuilderBase : ModbusBitTagCbntBuilder
 {
 
 

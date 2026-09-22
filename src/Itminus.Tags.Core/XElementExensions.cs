@@ -21,7 +21,7 @@ public static class XElementExensions
         var child = parent.Element(childName);
 
         if (child != null)
-        { 
+        {
             child.SetValue(v);
         }
         else
@@ -55,11 +55,11 @@ public static class XElementExensions
     internal static int? GetTagUnionScanInterval(this XElement e, string tagName)
     {
         var interval = (string?)e.Attribute("scanInterval");
-        if(string.IsNullOrEmpty(interval))
+        if (string.IsNullOrEmpty(interval))
         {
             return null;
         }
-        if(!int.TryParse(interval, out var parsed))
+        if (!int.TryParse(interval, out var parsed))
         {
             throw new ArgumentException($"{tagName}的扫描周期无法解析成整数，它应该是一个毫秒数量");
         }
@@ -68,7 +68,7 @@ public static class XElementExensions
 
     internal static string GetTagUnionAddress(this XElement e, string tagName)
     {
-        var address = (string?)e.Attribute("address")?? "";// throw new Exception($"Tag(Name={tagName})未配置地址");
+        var address = (string?)e.Attribute("address") ?? "";// throw new Exception($"Tag(Name={tagName})未配置地址");
         return address;
     }
 
@@ -81,7 +81,7 @@ public static class XElementExensions
     internal static TagKinds GetTagUnionTagKind(this XElement e, string tagName)
     {
         var type = (string?)e.Attribute("type");
-        if(string.IsNullOrEmpty(type))
+        if (string.IsNullOrEmpty(type))
         {
             return BuiltinTagKinds.Unknown;
         }
@@ -92,10 +92,10 @@ public static class XElementExensions
     internal static EndianKinds GetTagUnionEndian(this XElement e, string tagName)
     {
         var type = (string?)e.Attribute("endian");
-        if(string.IsNullOrEmpty(type))
+        if (string.IsNullOrEmpty(type))
         {
             return EndianKinds.LittleEndian;
-        }    
+        }
         if (!Enum.TryParse<EndianKinds>(type, out var endian))
         {
             throw new Exception($"Tag(Name={tagName}) 配置了未知的字节序={type}");

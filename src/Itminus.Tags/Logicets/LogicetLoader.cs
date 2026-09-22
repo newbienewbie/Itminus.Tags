@@ -57,7 +57,7 @@ internal class LogicetLoader : ILogicetsLoader
             catch (Exception ex)
             {
                 this._logger.LogError("加载Logicet失败：dll={dll}, ex={ex}, strace={strace}", dll, ex.Message, ex.StackTrace);
-                if(loader is not null)
+                if (loader is not null)
                 {
                     try
                     {
@@ -74,7 +74,7 @@ internal class LogicetLoader : ILogicetsLoader
         return new LoadedLogicets(logicets, disposables);
     }
 
-    private (IList<ILogicet> batch, IDisposable loader) MakeCore(IServiceProvider sp, IReadOnlyList<ITagChannel> channels, ITagGrp tags,string dll, List<Type> sharedTypes)
+    private (IList<ILogicet> batch, IDisposable loader) MakeCore(IServiceProvider sp, IReadOnlyList<ITagChannel> channels, ITagGrp tags, string dll, List<Type> sharedTypes)
     {
         this._options.SharedTypesFilter?.Invoke(dll, sharedTypes);
         var loader = PluginLoader.CreateFromAssemblyFile(
@@ -100,14 +100,15 @@ internal class LogicetLoader : ILogicetsLoader
     protected virtual IList<ILogicet> MakeLogicets(IServiceProvider sp, Assembly assembly, IReadOnlyList<ITagChannel> channels, ITagGrp tags)
     {
         var types = assembly.GetTypes()
-            .Where(t => 
-                !t.IsInterface && !t.IsAbstract && !t.IsGenericType 
+            .Where(t =>
+                !t.IsInterface && !t.IsAbstract && !t.IsGenericType
                 && typeof(ILogicet).IsAssignableFrom(t)
             );
-        
+
         var logicets = types
-            .Select(t => {
-                var (logicet, ex) = LogicetProviderUtils.CreateLogicet(sp, t, channels, tags); 
+            .Select(t =>
+            {
+                var (logicet, ex) = LogicetProviderUtils.CreateLogicet(sp, t, channels, tags);
                 if (logicet is null)
                 {
                     _logger.LogError("构建Logicet错误：t={t}, ex={ex}, strace={strace}", t.Name, ex?.Message, ex?.StackTrace);

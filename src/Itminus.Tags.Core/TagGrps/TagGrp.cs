@@ -69,7 +69,7 @@ public class TagGrp : ITagGrp
     /// <returns></returns>
     public virtual ITagGrp AddTag(ITag tag)
     {
-        if(tag.Parent is null)
+        if (tag.Parent is null)
         {
             tag.Parent = TagContainer.From(this);
         }
@@ -77,7 +77,7 @@ public class TagGrp : ITagGrp
         {
             var parent = tag.Parent.Map(
                 cbnt => TagContainer.From(this),
-                grp => grp.Equals(this)? tag.Parent : TagContainer.From(this)
+                grp => grp.Equals(this) ? tag.Parent : TagContainer.From(this)
                 );
             tag.Parent = parent;
         }
@@ -92,11 +92,11 @@ public class TagGrp : ITagGrp
     /// <returns></returns>
     public virtual ITagGrp AddTag(ITagCbnt tagCbnt)
     {
-        if(tagCbnt.Parent is null)
+        if (tagCbnt.Parent is null)
         {
             tagCbnt.Parent = this;
         }
-        else if(!tagCbnt.Parent.Equals(this))
+        else if (!tagCbnt.Parent.Equals(this))
         {
             tagCbnt.Parent = this;
         }
@@ -124,7 +124,7 @@ public class TagGrp : ITagGrp
     /// <inheritdoc/>
     public async Task ReadAsync(CancellationToken ct)
     {
-        foreach(var kvp in Children)
+        foreach (var kvp in Children)
         {
             var tagunion = kvp.Value;
             await tagunion.ReadAsync(ct);
@@ -145,10 +145,10 @@ public class TagGrp : ITagGrp
     /// <inheritdoc/>
     public bool IsDirty()
     {
-        foreach(var kvp in Children)
+        foreach (var kvp in Children)
         {
             var child = kvp.Value;
-            if(child.IsDirty())
+            if (child.IsDirty())
             {
                 return true;
             }

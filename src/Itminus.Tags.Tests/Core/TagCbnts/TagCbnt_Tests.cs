@@ -84,25 +84,29 @@ public class TagCbnt_Tests
         var x = 10;
         var y = 20;
 
-        tag1.OnTagRead += (o, args) => { 
-            if(true.Equals(args.NewValue))
+        tag1.OnTagRead += (o, args) =>
+        {
+            if (true.Equals(args.NewValue))
             {
                 x++;
             }
         };
-        tag2.OnTagRead += (o, args) => {
-            if(true.Equals(args.NewValue))
+        tag2.OnTagRead += (o, args) =>
+        {
+            if (true.Equals(args.NewValue))
             {
                 y++;
             }
         };
-        tag1.OnTagWritten += (o, args) => {
+        tag1.OnTagWritten += (o, args) =>
+        {
             if (true.Equals(args.NewValue))
             {
                 x--;
             }
         };
-        tag2.OnTagWritten += (o, args) => {
+        tag2.OnTagWritten += (o, args) =>
+        {
             if (true.Equals(args.NewValue))
             {
                 y--;

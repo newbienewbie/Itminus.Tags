@@ -243,7 +243,8 @@ public class ComScriptProjTests
                     Driver = ComDriverNames.DriverName,
                     Option = new ComChannelOption
                     {
-                       ReadScript = script, ReadScriptDebugInformationEnabled= true 
+                        ReadScript = script,
+                        ReadScriptDebugInformationEnabled = true
                     },
                 },
                 NullLogger<ComChannelBase<string>>.Instance

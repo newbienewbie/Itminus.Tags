@@ -25,7 +25,7 @@ public record IntentCompletion(TagGrpWriteIntent Intent, TaskCompletionSource Co
 /// 一个测点项目，包含通道、测点、逻辑等信息。<br/>
 /// 测点项目往往由<see cref="ITagsProjectFactory"/>按需构建。
 /// </summary>
-public interface ITagsProject: IDisposable
+public interface ITagsProject : IDisposable
 {
     /// <summary>
     /// 通道
@@ -71,7 +71,7 @@ public interface ITagsProject: IDisposable
     /// </summary>
     /// <param name="projRoot"></param>
     /// <param name="root"></param>
-    void Initialize(string projRoot, XElement? root=null);
+    void Initialize(string projRoot, XElement? root = null);
 
     /// <summary>
     /// 运行本项目下所有的入口测点组。<br/>

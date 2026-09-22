@@ -17,7 +17,7 @@ internal class BitDirectTag : ContinuousBytesBasedDirectTag<bool>
     /// <param name="nthBit">比特位，通常取值范围[0,15]</param>
     /// <param name="bufferSize">缓存大小，如果比特位是[0,7],则可以取1；如果比特位是[0,15],则可以取2；默认自动计算</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public BitDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer container, byte nthBit, int bufferSize=0) 
+    public BitDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer container, byte nthBit, int bufferSize = 0)
         : base(descriptor, thisChannel, container)
     {
         this.NthBit = nthBit;

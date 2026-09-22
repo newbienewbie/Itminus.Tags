@@ -17,7 +17,7 @@ public class TagsProjectServiceBuilder
     /// <summary>
     /// c'tor
     /// </summary>
-    public TagsProjectServiceBuilder(IServiceCollection services) 
+    public TagsProjectServiceBuilder(IServiceCollection services)
     {
 
         this.Services = services;
@@ -26,9 +26,9 @@ public class TagsProjectServiceBuilder
         this.ChannelFactoriesConfiguration = new List<Action<IServiceProvider, CompositeTagChannelFactory>>();
 
         this.TagsLoaders = new CompositeTagsLoader();
-        this.TagsLoadersConfiguration = new List<Action<IServiceProvider, CompositeTagsLoader>>(); 
+        this.TagsLoadersConfiguration = new List<Action<IServiceProvider, CompositeTagsLoader>>();
 
-        this.LogicetLoadOptionsBuilder = this.Services.AddOptions<LogicetLoadOptions>(); 
+        this.LogicetLoadOptionsBuilder = this.Services.AddOptions<LogicetLoadOptions>();
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public class TagsProjectServiceBuilder
     /// <param name="sp"></param>
     private void ApplyChannelFactoriesConfiguration(IServiceProvider sp)
     {
-        foreach(var config in this.ChannelFactoriesConfiguration)
+        foreach (var config in this.ChannelFactoriesConfiguration)
         {
             config.Invoke(sp, this.ChannelFactories);
         }
@@ -209,7 +209,7 @@ public class TagsProjectServiceBuilder
             return this.TagsLoaders;
         });
 
-        
+
         // defaults
         if (this.UseDefaults)
         {
@@ -228,7 +228,7 @@ public class LogicetLoadOptions
     /// <summary>
     /// 共享类型过滤器
     /// </summary>
-    public LogicetSharedTypesFilter? SharedTypesFilter { get; set;} 
+    public LogicetSharedTypesFilter? SharedTypesFilter { get; set; }
 }
 
 /// <summary>

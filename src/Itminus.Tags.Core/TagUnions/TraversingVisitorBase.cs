@@ -9,7 +9,7 @@ public abstract class TraversingVisitorBase : ITagUnionVisitor
     public void Visit(TagUnion.TagGrp grp)
     {
         this.Process(grp.Value);
-        foreach(var kvp in grp.Value.Children)
+        foreach (var kvp in grp.Value.Children)
         {
             var child = kvp.Value;
             child.Accept(this);

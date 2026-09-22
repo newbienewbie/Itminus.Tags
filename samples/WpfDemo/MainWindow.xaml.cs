@@ -53,7 +53,8 @@ public partial class MainWindow : Window
         interval.Watch()
             .Chunk(5)
             .Select(wnd =>
-                wnd.Select(evt => {
+                wnd.Select(evt =>
+                {
                     var val = evt.NewValue;
                     return val is null ? 0 : (float)val;
                 })

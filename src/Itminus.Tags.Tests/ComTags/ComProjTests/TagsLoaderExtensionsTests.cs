@@ -47,7 +47,7 @@ public class TagsLoaderExtensionsTests
 
     class MyTagCbntor : TagCbntor
     {
-        public MyTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
+        public MyTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset)
             : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
         {
         }
@@ -65,7 +65,7 @@ public class TagsLoaderExtensionsTests
     {
         public TraceCbntBuilder() : base(new TraceCbnt(new TagCbntDescriptor())) { }
         public bool ConfigureWasCalled { get; set; }
-        protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel) => 
+        protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel) =>
             new MyTagCbntor(descriptor, this.TagCbnt, 0, 0);
         protected override TagCbntBuilderBase AutoLayout() => this;
     }
@@ -77,7 +77,7 @@ public class TagsLoaderExtensionsTests
     {
         public ConfigurableCbntBuilder() : base(new TraceCbnt(new TagCbntDescriptor())) { }
         public string? CustomProperty { get; set; }
-        protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel) => 
+        protected override ITagCbntor Fallback(TagDescriptor descriptor, ITagChannel channel) =>
             new MyTagCbntor(descriptor, this.TagCbnt, 0, 0);
         protected override TagCbntBuilderBase AutoLayout() => this;
     }
@@ -122,9 +122,10 @@ public class TagsLoaderExtensionsTests
         // Act: 注册带 configure 钩子的 DirectTagBuilder
         loader.AddDirectTagBuilder<TraceTagBuilder>(
             "FakedDriver",
-            configure: b => { 
-                configureWasCalled = true; 
-                b.ConfigureWasCalled = true; 
+            configure: b =>
+            {
+                configureWasCalled = true;
+                b.ConfigureWasCalled = true;
             }
         );
 

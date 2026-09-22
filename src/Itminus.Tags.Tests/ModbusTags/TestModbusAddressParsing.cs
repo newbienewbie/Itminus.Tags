@@ -13,11 +13,11 @@ public class TestModbusAddressParsing
     [InlineData("14~40001", 14, RegisterKinds.HoldingRegisters, 0, false, 0)]
     [InlineData("15~40003", 15, RegisterKinds.HoldingRegisters, 2, false, 0)]
 
-    [InlineData("40001.0", 1 ,RegisterKinds.HoldingRegisters, 0, true, 0)]
+    [InlineData("40001.0", 1, RegisterKinds.HoldingRegisters, 0, true, 0)]
     [InlineData("40001.1", 1, RegisterKinds.HoldingRegisters, 0, true, 1)]
     [InlineData("40011.0", 1, RegisterKinds.HoldingRegisters, 10, true, 0)]
-    [InlineData("40001", 1,RegisterKinds.HoldingRegisters, 0, false, 0)]
-    [InlineData("40003",1, RegisterKinds.HoldingRegisters, 2, false, 0)]
+    [InlineData("40001", 1, RegisterKinds.HoldingRegisters, 0, false, 0)]
+    [InlineData("40003", 1, RegisterKinds.HoldingRegisters, 2, false, 0)]
     public void TestPattern(string addr, byte slave, RegisterKinds area, ushort startpoint, bool useBit, byte nthBit)
     {
 
@@ -42,6 +42,6 @@ public class TestModbusAddressParsing
     [InlineData("60001.0")]
     public void TestPattern_WrongArea(string addr)
     {
-        Assert.Throws<Exception>(()=> ModBusTcpAddressParser.Parse(addr));
+        Assert.Throws<Exception>(() => ModBusTcpAddressParser.Parse(addr));
     }
 }

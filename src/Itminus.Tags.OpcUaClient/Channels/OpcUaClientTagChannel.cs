@@ -113,13 +113,13 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <summary>
     /// 内部的 OPC UA 会话对象
     /// </summary>
-    protected virtual ISession? OpcSession{get;set;}
+    protected virtual ISession? OpcSession { get; set; }
 
     /// <summary>
     /// 确保已经建立连接
     /// </summary>
     /// <returns></returns>
-    public async Task EnsureConnectedAsync(bool force,CancellationToken ct)
+    public async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
         OpcSession ??= await CreateSessionAsync();
 
@@ -163,11 +163,11 @@ public class OpcUaClientTagChannel : ITagChannel
     /// <exception cref="InvalidOperationException"></exception>
     public virtual async Task<(DataValueCollection values, IList<ServiceResult> errs)> ReadAsync(IList<NodeId> nodeIds, CancellationToken ct)
     {
-        if(this.OpcSession is null)
+        if (this.OpcSession is null)
         {
             throw new InvalidOperationException("会话未创建");
         }
-        if(this.OpcSession.Connected == false)
+        if (this.OpcSession.Connected == false)
         {
             throw new InvalidOperationException("会话未连接");
         }

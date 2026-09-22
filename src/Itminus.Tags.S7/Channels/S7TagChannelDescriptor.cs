@@ -94,7 +94,7 @@ public static class TagChannelDescriptor_S7Extensions
                 short.TryParse(slotEle.Value, out var slot) ?
                     slot :
                     throw new ArgumentException($"配置的Slot无法解析成short({slotEle.Value})"),
-            ConnectionType = ! descriptor.Extras.TryGetValue(nameof(S7TagChannelDescriptor.ConnectionType), out var connTypeEle) ?
+            ConnectionType = !descriptor.Extras.TryGetValue(nameof(S7TagChannelDescriptor.ConnectionType), out var connTypeEle) ?
                 (ushort)3 :
                 ushort.TryParse(connTypeEle.Value, out var connType) ?
                     connType :

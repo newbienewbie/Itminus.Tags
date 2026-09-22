@@ -127,7 +127,7 @@ public class ModbusTcpChannel : IModbusRegisterChannel, IModbusBitsChannel
             var mb = factory.CreateMaster(_tcpClient);
             mb.Transport.ReadTimeout = ReadTimeout;
             mb.Transport.WriteTimeout = WriteTimeout;
-            _logger.LogInformation("ModbusMaster 初始化完成: 设备名={channelName}; addr={IpAddr}; port={Port}",channelName, IpAddr, Port);
+            _logger.LogInformation("ModbusMaster 初始化完成: 设备名={channelName}; addr={IpAddr}; port={Port}", channelName, IpAddr, Port);
             return mb;
         }
         finally
@@ -173,7 +173,7 @@ public class ModbusTcpChannel : IModbusRegisterChannel, IModbusBitsChannel
         {
             return;
         }
-        
+
         this.ModbusMaster = await CreateConnectionAsync(ConnTimeout, ct);
         return;
     }

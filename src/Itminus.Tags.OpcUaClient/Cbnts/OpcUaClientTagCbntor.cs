@@ -19,7 +19,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
     /// <summary>
     /// c'tor
     /// </summary>
-    public OpcUaClientTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
+    public OpcUaClientTagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset)
         : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
     {
         this._cbnt = this.TagCbnt as OpcUaClientTagCbnt
@@ -28,10 +28,11 @@ internal class OpcUaClientTagCbntor : TagCbntor
     }
 
     /// <inheritdoc/>
-    public override object? Value {
-        get 
+    public override object? Value
+    {
+        get
         {
-            if(!this._cbnt.Bag.TryGetValue(this.NodeId, out var nodeVal))
+            if (!this._cbnt.Bag.TryGetValue(this.NodeId, out var nodeVal))
             {
                 return null;
             }
@@ -39,7 +40,8 @@ internal class OpcUaClientTagCbntor : TagCbntor
         }
         set
         {
-            this._cbnt.Bag.AddOrUpdate(this.NodeId, new DataValue() { Value = value }, (nid, v) => {
+            this._cbnt.Bag.AddOrUpdate(this.NodeId, new DataValue() { Value = value }, (nid, v) =>
+            {
                 v.Value = value;
                 return v;
             });
@@ -51,7 +53,7 @@ internal class OpcUaClientTagCbntor : TagCbntor
     public override async Task WriteAsync(CancellationToken ct)
     {
         var channel = this.TagCbnt.SearchRequiredChannel();
-        var opcUaChannel = channel as OpcUaClientTagChannel 
+        var opcUaChannel = channel as OpcUaClientTagChannel
             ?? throw new InvalidOperationException("Channel is not an OpcUaTagChannel");
         var cbnt = this.TagCbnt as OpcUaClientTagCbnt
             ?? throw new InvalidOperationException("Cbnt is not an OpcUaTagCbnt");

@@ -38,6 +38,6 @@ internal class SimpleFilesTagChannelFactory : ITagChannelFactory
     {
         var sfDescriptor = descriptor.ToSimpleFilesTagChannelDescriptor();
         var logger = _loggerFactory.CreateLogger<SimpleFilesTagChannel>();
-        return new SimpleFilesTagChannel(sfDescriptor, logger );
+        return new SimpleFilesTagChannel(sfDescriptor, logger);
     }
 }

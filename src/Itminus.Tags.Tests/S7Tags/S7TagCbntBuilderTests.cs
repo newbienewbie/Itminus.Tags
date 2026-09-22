@@ -12,10 +12,11 @@ public class S7TagCbntBuilderTests
     public void Build_ShouldNormalizeRelativeAddressesToCbntAreaAndBlock()
     {
         var channelFactory = new S7TagChannelFactory(new LoggerFactory());
-        var channel = channelFactory.Create(new TagChannelDescriptor(){
+        var channel = channelFactory.Create(new TagChannelDescriptor()
+        {
             Driver = "S7",
             Name = "S7-1",
-            Extras = new Dictionary<string, XElement>(){ }
+            Extras = new Dictionary<string, XElement>() { }
         });
 
         var cbntbuilder = new S7TagCbntBuilder()
@@ -43,7 +44,7 @@ public class S7TagCbntBuilderTests
         Assert.Equal("cbnt1", cbntbuilder.Name);
         Assert.Equal("DB200.100", cbntbuilder.StartAddress);
         Assert.Null(cbntbuilder.Parent);
-  
+
         var cbnt = cbntbuilder
             .Build(channel);
 

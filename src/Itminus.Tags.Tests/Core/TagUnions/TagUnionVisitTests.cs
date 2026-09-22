@@ -29,7 +29,7 @@ public class TagUnionVisitTests
         this._root = services.BuildServiceProvider();
     }
 
-    
+
 
     class MyVisitor : TraversingVisitorBase
     {
@@ -70,8 +70,8 @@ public class TagUnionVisitTests
 
         // Test Tags
         var groups = new List<ITagGrp>();
-        var tags = new List<ITag>();    
-        var cbnts =new List<ITagCbnt>();
+        var tags = new List<ITag>();
+        var cbnts = new List<ITagCbnt>();
         var g1 = proj.Tags.SelectGrp("g1");
         var union = new TagUnion.TagGrp(g1!); ;
         var visitor = new MyVisitor(

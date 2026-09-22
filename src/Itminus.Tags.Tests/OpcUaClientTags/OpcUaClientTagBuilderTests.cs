@@ -34,11 +34,12 @@ public class OpcUaClientTagBuilderTests
     [Fact]
     public void Build_SetsTagNameFromDescriptor()
     {
-        var descriptor = new TagDescriptor { 
-            TagName = "myVar", 
-            RawAddress = "ns=1;s=MyVar", 
-            TagKind = BuiltinTagKinds.INT32, 
-            TagSize = 4 
+        var descriptor = new TagDescriptor
+        {
+            TagName = "myVar",
+            RawAddress = "ns=1;s=MyVar",
+            TagKind = BuiltinTagKinds.INT32,
+            TagSize = 4
         };
         var builder = CreateBuilder(selfChannel: null, descriptor: descriptor);
         var channel = builder.Channel ?? builder.Parent.IntoTagContainer().SearchRequiredChannel();

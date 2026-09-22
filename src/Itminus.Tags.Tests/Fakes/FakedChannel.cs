@@ -9,7 +9,7 @@ internal class FakedChannel : ITagChannel
     {
         Descriptor = descriptor;
     }
-    public TagChannelDescriptor Descriptor { get; } 
+    public TagChannelDescriptor Descriptor { get; }
 
     public Task DisconnectAsync(CancellationToken ct) => Task.CompletedTask;
 

@@ -45,7 +45,7 @@ public static class BuiltinTagKinds
     /// int64
     /// </summary>
     public const string INT64 = "INT64";
-    
+
     /// <summary>
     /// uint64
     /// </summary>

@@ -42,12 +42,12 @@ public static class TagRxExtensions
     /// <param name="tag"></param>
     /// <param name="startWithCurrent">true表示开始时推送当前值，false表示不推送</param>
     /// <returns></returns>
-    public static IObservable<EventPattern<ITag, TagSyncEventArgs>> Watch(this ITag tag, bool startWithCurrent=true)
+    public static IObservable<EventPattern<ITag, TagSyncEventArgs>> Watch(this ITag tag, bool startWithCurrent = true)
     {
         var read = tag.ObserveOnRead();
         var written = tag.ObserveOnWritten();
         var obs = read.Merge(written);
-        if(startWithCurrent)
+        if (startWithCurrent)
         {
             var ev = new EventPattern<ITag, TagSyncEventArgs>(
                 tag,

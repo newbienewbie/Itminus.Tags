@@ -7,7 +7,7 @@
 /// </summary>
 /// <typeparam name="T"></typeparam>
 internal abstract class ContinuousBytesBasedDirectTag<T> : Tag<T, S7TagChannel>
-    where T: notnull, IEquatable<T>
+    where T : notnull, IEquatable<T>
 {
     /// <summary>
     /// c'tor
@@ -15,7 +15,7 @@ internal abstract class ContinuousBytesBasedDirectTag<T> : Tag<T, S7TagChannel>
     /// <param name="descriptor"></param>
     /// <param name="thisChannel">对应于测点本身的通道</param>
     /// <param name="parent">父容器</param>
-    public ContinuousBytesBasedDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer parent) 
+    public ContinuousBytesBasedDirectTag(TagDescriptor descriptor, S7TagChannel? thisChannel, TagContainer parent)
         : base(descriptor, thisChannel, parent)
     {
         this.Channel = thisChannel;
@@ -24,7 +24,7 @@ internal abstract class ContinuousBytesBasedDirectTag<T> : Tag<T, S7TagChannel>
     /// <inheritdoc/>
     public override ITagChannel? Channel { get; set; }
 
-      /// <summary>
+    /// <summary>
     /// 对应一个测点需要读写的字节数。<br/>
     /// </summary>
     public abstract int BufferSize { get; }

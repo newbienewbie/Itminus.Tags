@@ -63,10 +63,10 @@ public class TagsMcpServerToolsTests : IAsyncDisposable
         )
     );
 
-    private TagsMcpServerTools MakeTools(ITagsProject proj, TagsProjectStartedOrStopped? handler=null)
+    private TagsMcpServerTools MakeTools(ITagsProject proj, TagsProjectStartedOrStopped? handler = null)
     {
         var ctrl = new ProjectCtrl(proj);
-        if(handler is not null)
+        if (handler is not null)
         {
             ctrl.StartedOrStopped += handler;
         }

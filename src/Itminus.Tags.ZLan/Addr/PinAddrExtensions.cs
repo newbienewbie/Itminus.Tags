@@ -15,7 +15,7 @@ public static class PinAddrExtensions
     public static string ToModbusTcpAddr(this DOPinAddr pin, byte slave)
     {
         var addr = ModbusTcpAddress.OUTPUT_COILS_BASE + (ushort)pin;
-        var repr=  $"{slave}~{addr:d5}";
+        var repr = $"{slave}~{addr:d5}";
         return repr;
     }
 

@@ -16,7 +16,7 @@ public static class TagsProject_Extensions
     /// <returns></returns>
     public static TagsProjectServiceBuilder AddOpcUaClientSupport(this TagsProjectServiceBuilder builder)
     {
-        
+
         builder.Services.AddSingleton<ITagsProjectSchemaProvider, OpcUaClientSchemaProvider>();
 
         builder
@@ -26,7 +26,7 @@ public static class TagsProject_Extensions
         return builder;
     }
 
-#region 基本扩展
+    #region 基本扩展
     /// <summary>
     /// 注册OpcUaClient支持——仅注册ChannelFactory，不注册DirectTagBuilder/TagCbntBuilder <br/>
     /// 作用是在通道的驱动为 <see cref="OpcUaClientNames.DriverName"/> 时，会尝试构建一个通道。
@@ -85,5 +85,5 @@ public static class TagsProject_Extensions
         });
         return builder;
     }
-#endregion
+    #endregion
 }

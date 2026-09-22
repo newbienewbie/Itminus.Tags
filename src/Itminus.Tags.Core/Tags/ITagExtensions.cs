@@ -155,11 +155,11 @@ public static class ITagExtensions
 
         ITagGrp? GetEntryForGrp(ITagGrp grp)
         {
-            if(grp.IsEntry())
+            if (grp.IsEntry())
             {
                 return grp;
             }
-            if(grp.Parent is null)
+            if (grp.Parent is null)
             {
                 return null;
             }

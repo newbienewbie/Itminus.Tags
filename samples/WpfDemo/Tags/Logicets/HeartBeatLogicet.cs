@@ -48,7 +48,7 @@ public class HeartBeatLogicet : LogicetBase
         else
         {
             _duration = _stopwatch.Elapsed;
-            _interval.Value = (float) _duration.TotalMilliseconds;
+            _interval.Value = (float)_duration.TotalMilliseconds;
             _stopwatch.Restart();
         }
 

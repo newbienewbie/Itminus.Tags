@@ -3,21 +3,21 @@
 /// <summary>
 /// 同步事件参数
 /// </summary>
-public class TagSyncEventArgs : EventArgs 
+public class TagSyncEventArgs : EventArgs
 {
     /// <summary>
     /// 同步类型
     /// </summary>
-    public enum Kinds 
+    public enum Kinds
     {
         /// <summary>
         /// 空
         /// </summary>
-        None    = 0,
+        None = 0,
         /// <summary>
         /// 读取
         /// </summary>
-        Read    = 1,
+        Read = 1,
         /// <summary>
         /// 写入
         /// </summary>
@@ -62,12 +62,12 @@ public delegate void TagSyncEventHandler(ITag sender, TagSyncEventArgs e);
 /// <summary>
 /// 测点接口
 /// </summary>
-public interface ITag 
+public interface ITag
 {
     /// <summary>
     /// 测点描述
     /// </summary>
-    public TagDescriptor TagDescriptor{ get; set; }
+    public TagDescriptor TagDescriptor { get; set; }
 
     /// <summary>
     /// 测点值 
@@ -77,7 +77,7 @@ public interface ITag
     /// <summary>
     /// 时间戳
     /// </summary>
-    public DateTime Timestamp{ get; set; }
+    public DateTime Timestamp { get; set; }
 
     /// <summary>
     /// 在每次从底层读取后，触发事件

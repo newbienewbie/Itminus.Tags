@@ -72,7 +72,8 @@ public class ModbusTcpDirectTagTests
     [Fact]
     public void UInt32DirectTag_AcceptsValuesGreaterThanIntMaxValue()
     {
-        var chDescriptor = new ModbusTcpTagChannelDescriptor {
+        var chDescriptor = new ModbusTcpTagChannelDescriptor
+        {
             Name = "ModbusTcp-1",
         };
         var channel = new ModbusTcpChannel(
@@ -90,7 +91,7 @@ public class ModbusTcpDirectTagTests
         };
 
         var tag = new UInt32DirectTag(descriptor, channel, container);
-        
+
         // 测试溢出
         uint newvalue = (uint)int.MaxValue + 1;
         tag.Value = newvalue;

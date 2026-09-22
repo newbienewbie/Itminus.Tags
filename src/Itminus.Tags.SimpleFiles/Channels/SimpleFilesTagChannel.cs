@@ -36,7 +36,7 @@ public class SimpleFilesTagChannel : ITagChannel
         => Task.CompletedTask;
 
     /// <inheritdoc/>
-    public virtual Task EnsureConnectedAsync(bool force, CancellationToken ct) 
+    public virtual Task EnsureConnectedAsync(bool force, CancellationToken ct)
         => Task.CompletedTask;
 
     /// <summary>

@@ -11,9 +11,10 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
     /// </summary>
     public S7TagCbntBuilder()
         : this(new S7TagCbnt(
-            new TagCbntDescriptor { 
-                Name = "unkown_s7_cbnt_name", 
-                StartAddress = "unknown_s7_cbnt_start_address" 
+            new TagCbntDescriptor
+            {
+                Name = "unkown_s7_cbnt_name",
+                StartAddress = "unknown_s7_cbnt_start_address"
             }
         ))
     {
@@ -82,15 +83,16 @@ public class S7TagCbntBuilder : TagCbntBuilderBase
         {
             var tag = kvp.Value;
             var addr = S7AddressParser.Parse(tag.RawAddress());
-            if(addr.BlockSpecified)
+            if (addr.BlockSpecified)
             {
-                if(addr.Area != groupAddr.Area || addr.BlockNumber != groupAddr.BlockNumber)
+                if (addr.Area != groupAddr.Area || addr.BlockNumber != groupAddr.BlockNumber)
                 {
                     var tagname = tag.TagName();
                     throw new InvalidOperationException($"Tag & Cbnt start address doesn't match(Tag={tagname}, Grp={this.Name}).");
                 }
             }
-            else {
+            else
+            {
                 // let's keep it false to indicate it was a relative address
                 addr.BlockSpecified = false;
                 // fill in the area and block number from group address

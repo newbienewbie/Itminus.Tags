@@ -19,7 +19,7 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
     public ScriptBasedComChannel(ComChannelDescriptor descriptor, ILogger<ComChannelBase<T>> logger)
         : base(descriptor, logger)
     {
-        if(!string.IsNullOrWhiteSpace(descriptor.Option.ReadScript))
+        if (!string.IsNullOrWhiteSpace(descriptor.Option.ReadScript))
         {
             this.ReadScript = descriptor.Option.ReadScript;
         }
@@ -37,14 +37,14 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
     /// <summary>
     /// 启用调试信息输出？
     /// </summary>
-    public bool ReadScriptEmitDebugInformationEnabled { get; } 
+    public bool ReadScriptEmitDebugInformationEnabled { get; }
 
     private string? _oldScriptPath;
 
     /// <inheritdoc/>
     protected override async Task<T?> ParseDataAsync(ISerialPortHandle serial, CancellationToken ct)
     {
-        if(this._runner is null)
+        if (this._runner is null)
         {
             var scriptOptions = ScriptOptions.Default
                     .AddReferences(
@@ -54,7 +54,7 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
                         typeof(SerialPort).Assembly
                         )
                     .WithImports("System.IO.Ports");
-            if(this.ReadScriptEmitDebugInformationEnabled)
+            if (this.ReadScriptEmitDebugInformationEnabled)
             {
                 TryClearOldScriptPath();
                 var tempPath = Path.GetTempPath();
@@ -77,7 +77,7 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
             {
                 this._runner = script.CreateDelegate();
             }
-            catch(CompilationErrorException ex)
+            catch (CompilationErrorException ex)
             {
                 this._logger.LogError("脚本编译错误：{exMsg}, {strace}", ex.Message, ex.StackTrace);
                 throw;
@@ -93,19 +93,19 @@ public class ScriptBasedComChannel<T> : ComChannelBase<T>
     {
         try
         {
-            if(string.IsNullOrEmpty(this._oldScriptPath))
+            if (string.IsNullOrEmpty(this._oldScriptPath))
             {
                 return;
             }
 
-            if(!File.Exists(this._oldScriptPath))
+            if (!File.Exists(this._oldScriptPath))
             {
                 return;
             }
 
             File.Delete(this._oldScriptPath);
         }
-        catch 
+        catch
         {
             // ignore any exception
         }

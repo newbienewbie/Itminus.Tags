@@ -27,7 +27,8 @@ public class S7TagChannelTests
         bool isDead = false)
     {
         var channel = new S7TagChannel(new S7TagChannelDescriptor { Name = "test-channel" }, NullLogger<S7TagChannel>.Instance);
-        var mock = new MockS7Client {
+        var mock = new MockS7Client
+        {
             ConnectedValue = connected,
             ConnectToResult = connectToResult,
             DBReadResult = dbReadResult,
@@ -58,7 +59,7 @@ public class S7TagChannelTests
     {
         var plc = new S7PlcItem();
         var logger = NullLogger<S7TagChannel>.Instance;
-        var channel = new S7TagChannel(new S7TagChannelDescriptor(){ Name = "s7-ch" }, logger);
+        var channel = new S7TagChannel(new S7TagChannelDescriptor() { Name = "s7-ch" }, logger);
         Assert.Equal("s7-ch", channel.ChannelName());
     }
 

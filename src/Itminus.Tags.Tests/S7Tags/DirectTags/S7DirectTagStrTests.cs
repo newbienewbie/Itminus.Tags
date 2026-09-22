@@ -66,14 +66,14 @@ public class S7DirectTagStrTests
             RawAddress = "DB1.300",
         };
 
-        return new StrDirectTag(descriptor, thisChannel: null, parent: container , maxLen: maxLen);
+        return new StrDirectTag(descriptor, thisChannel: null, parent: container, maxLen: maxLen);
     }
 
     private sealed class FakeContinuousBytesChannel : S7TagChannel
     {
         public FakeContinuousBytesChannel(byte[] payload)
-            :base(
-                 new S7TagChannelDescriptor() { Name = "fake" }, 
+            : base(
+                 new S7TagChannelDescriptor() { Name = "fake" },
                  new LoggerFactory().CreateLogger<FakeContinuousBytesChannel>()
             )
         {

@@ -52,7 +52,7 @@ public interface ITagCbnt
     /// </summary>
     string StartAddress { get; set; }
 
-    
+
     /// <summary>
     /// 从底层读取数据到缓存
     /// </summary>

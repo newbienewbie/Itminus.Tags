@@ -16,7 +16,7 @@ public class HjzkDICbntBuilder : HjzkCbntBuilderBase
     /// <summary>
     /// c'tor
     /// </summary>
-    public HjzkDICbntBuilder():base()
+    public HjzkDICbntBuilder() : base()
     {
     }
 

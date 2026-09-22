@@ -106,15 +106,15 @@ public class CompositeTagsLoader : ITagsLoader
     /// <inheritdoc/>
     public virtual void LoadTagGroup(ITagGrp parent, ITagsDescriptor descriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
-        if(descriptor is TagGrpDescriptor grpDescriptor)
+        if (descriptor is TagGrpDescriptor grpDescriptor)
         {
             LoadTagGroup(parent, grpDescriptor, availableChannels);
         }
-        else if(descriptor is TagCbntDescriptor cbntDescriptor)
+        else if (descriptor is TagCbntDescriptor cbntDescriptor)
         {
             LoadTagCbnt(parent, cbntDescriptor, availableChannels);
         }
-        else if(descriptor is TagDescriptor tagDescriptor)
+        else if (descriptor is TagDescriptor tagDescriptor)
         {
             LoadDirectTag(parent, tagDescriptor, availableChannels);
         }
@@ -129,23 +129,23 @@ public class CompositeTagsLoader : ITagsLoader
     {
         var thisTagName = grpDescriptor.Name;
         var thisIsEntry = grpDescriptor.IsEntry;
-        var thisChannel = string.IsNullOrEmpty( grpDescriptor.ChannelName) ?
-            null:
+        var thisChannel = string.IsNullOrEmpty(grpDescriptor.ChannelName) ?
+            null :
             availableChannels.FirstOrDefault(c => c.ChannelName() == grpDescriptor.ChannelName);
 
         var thisGrp = new TagGrp(grpDescriptor, thisChannel);
         parent.AddTag(thisGrp);
         foreach (var child in grpDescriptor.Children)
         {
-            if(child is TagGrpDescriptor childGrpDescriptor)
+            if (child is TagGrpDescriptor childGrpDescriptor)
             {
                 LoadTagGroup(thisGrp, childGrpDescriptor, availableChannels);
             }
-            else if( child is TagCbntDescriptor childCbntDescriptor)
+            else if (child is TagCbntDescriptor childCbntDescriptor)
             {
                 LoadTagCbnt(thisGrp, childCbntDescriptor, availableChannels);
             }
-            else if( child is TagDescriptor childTagDescriptor)
+            else if (child is TagDescriptor childTagDescriptor)
             {
                 LoadDirectTag(thisGrp, childTagDescriptor, availableChannels);
             }
@@ -163,7 +163,7 @@ public class CompositeTagsLoader : ITagsLoader
     protected virtual void LoadTagCbnt(ITagGrp parent, TagCbntDescriptor cbntDescriptor, IReadOnlyList<ITagChannel> availableChannels)
     {
         var thisChannel = string.IsNullOrEmpty(cbntDescriptor.ChannelName) ?
-            null:
+            null :
             availableChannels.FirstOrDefault(c => c.ChannelName() == cbntDescriptor.ChannelName);
         if (!string.IsNullOrEmpty(cbntDescriptor.ChannelName) && thisChannel is null)
         {
@@ -177,7 +177,7 @@ public class CompositeTagsLoader : ITagsLoader
         var cbntBuilder = builder
             .WithParent(parent)
             .WithChannel(thisChannel)
-            .AddTags(cbntors, channel);        
+            .AddTags(cbntors, channel);
         var cbnt = cbntBuilder.Build(channel);
         parent.AddTag(cbnt);
         return;

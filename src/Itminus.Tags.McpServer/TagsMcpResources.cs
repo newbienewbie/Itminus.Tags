@@ -16,7 +16,7 @@ public class TagsMcpResources
     /// 在 MCP 服务器中获取工具使用指南。
     /// </summary>
     /// <returns></returns>
-    [McpServerResource(Name ="itminus_tags_tool_guide", Title ="指导如何使用核心工具以及背后的原理", UriTemplate =ToolGuideUri, MimeType ="text/markdown")]
+    [McpServerResource(Name = "itminus_tags_tool_guide", Title = "指导如何使用核心工具以及背后的原理", UriTemplate = ToolGuideUri, MimeType = "text/markdown")]
     public static async Task<TextResourceContents> GetToolGuideAsync()
     {
         var assembly = typeof(TagsMcpResources).Assembly;

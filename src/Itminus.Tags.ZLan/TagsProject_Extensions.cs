@@ -11,7 +11,7 @@ public static class TagsProject_Extensions
 {
     public static TagsProjectServiceBuilder AddZLanTcpSupport(this TagsProjectServiceBuilder builder)
     {
-       
+
         builder.Services.AddSingleton<ITagsProjectSchemaProvider, ZLanTcpSchemaProvider>();
 
         // register channel factory
@@ -23,7 +23,8 @@ public static class TagsProject_Extensions
         });
 
         // register tags loader
-        builder.ConfigTagsLoader((sp, composite) => { 
+        builder.ConfigTagsLoader((sp, composite) =>
+        {
             composite.AddTagsCbntBuilder<ZLanDICbntBuilder>(ZLanTcpNames.DriverName, predicate: b => b.Area == "DI");
             composite.AddTagsCbntBuilder<ZLanDOCbntBuilder>(ZLanTcpNames.DriverName, predicate: b => b.Area == "DO");
         });

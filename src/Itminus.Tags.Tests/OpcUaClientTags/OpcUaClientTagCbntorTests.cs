@@ -141,7 +141,7 @@ public class OpcUaClientTagCbntorTests
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => tag.WriteAsync(CancellationToken.None));
         Assert.Contains("OpcUaTagChannel", ex.Message);
     }
-     #endregion
+    #endregion
 
     /// <summary>
     /// 一个简单的 FakeChannel，仅用于触发异常路径
@@ -171,11 +171,12 @@ public class OpcUaClientTagCbntorTests
         var descriptor = new TagDescriptor { TagName = "t", RawAddress = "ns=1;s=Var1", TagKind = BuiltinTagKinds.INT32, TagSize = 4 };
         var tag = new OpcUaClientTagCbntor(descriptor, cbnt, 0, 0);
 
-        channel.ReadAsyncOverride = async (_, _) =>{
+        channel.ReadAsyncOverride = async (_, _) =>
+        {
             return (
-                new DataValueCollection { 
-                    new DataValue { Value = 99 } 
-                }, 
+                new DataValueCollection {
+                    new DataValue { Value = 99 }
+                },
                 new List<ServiceResult> { null! }
             );
         };
@@ -201,7 +202,8 @@ public class OpcUaClientTagCbntorTests
         var descriptor = new TagDescriptor { TagName = "t", RawAddress = "ns=1;s=Var1", TagKind = BuiltinTagKinds.INT32, TagSize = 4 };
         var tag = new OpcUaClientTagCbntor(descriptor, cbnt, 0, 0);
 
-        channel.ReadAsyncOverride = async (_, _) =>{
+        channel.ReadAsyncOverride = async (_, _) =>
+        {
             return (
                 new DataValueCollection { new DataValue { Value = 42 } },
                 new List<ServiceResult> { null! }

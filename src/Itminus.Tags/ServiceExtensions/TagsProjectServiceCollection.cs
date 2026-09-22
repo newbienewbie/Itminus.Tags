@@ -16,7 +16,7 @@ public static class TagsProjectServiceCollection
     /// <param name="services"></param>
     /// <param name="configTagsLoader"></param>
     /// <returns></returns>
-    public static IServiceCollection AddTagsProjectServices(this IServiceCollection services,  Action<TagsProjectServiceBuilder> configTagsLoader)
+    public static IServiceCollection AddTagsProjectServices(this IServiceCollection services, Action<TagsProjectServiceBuilder> configTagsLoader)
     {
         var tpsb = new TagsProjectServiceBuilder(services);
         configTagsLoader?.Invoke(tpsb);
@@ -33,7 +33,7 @@ public static class TagsProjectServiceCollection
     /// <param name="services"></param>
     /// <param name="key"></param>
     /// <returns></returns>
-    public static IServiceCollection AddKeyedTagsProjectCtrl(this IServiceCollection services,  string key)
+    public static IServiceCollection AddKeyedTagsProjectCtrl(this IServiceCollection services, string key)
     {
         services.AddKeyedSingleton<ITagsProjectCtrl, TagsProjectCtrl>(key);
         return services;

@@ -11,7 +11,7 @@ namespace Itminus.Tags.ComScanner.Channels;
 /// 外部可以通过<see cref="TryDequeueInput(out T?)"/> 方法从队列中读取数据包进行处理。
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public abstract class ComChannelBase<T> :ITagChannel
+public abstract class ComChannelBase<T> : ITagChannel
 {
     /// <summary>
     /// 通道选项
@@ -100,9 +100,10 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <returns></returns>
     public async virtual Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
-        await this.ExecuteOneByOneAsync( 
-            _connSema, 
-            async ct => {
+        await this.ExecuteOneByOneAsync(
+            _connSema,
+            async ct =>
+            {
                 if (this.SerialPort != null && !force)
                 {
                     return;
@@ -117,7 +118,7 @@ public abstract class ComChannelBase<T> :ITagChannel
                 this.SerialPort.Open();
 
                 // 清空缓存
-                if(this._channel is not null)
+                if (this._channel is not null)
                 {
                     this._channel.Writer.TryComplete();
                 }
@@ -252,7 +253,7 @@ public abstract class ComChannelBase<T> :ITagChannel
             // 关闭过程中的异常（取消/释放）静默吞掉
         }
     }
-    
+
     /// <summary>
     /// 收到消息事件
     /// </summary>
@@ -308,7 +309,7 @@ public abstract class ComChannelBase<T> :ITagChannel
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <exception cref="InvalidOperationException"></exception>
-    public async virtual Task WriteAsync(byte[] response,int offset, int count)
+    public async virtual Task WriteAsync(byte[] response, int offset, int count)
     {
         var serial = this.SerialPort;
         if (serial is null)

@@ -23,7 +23,7 @@ public class ITagCbntExtensionsTests
     public void TagName_DoesNotBubbleUp()
     {
         var child = new TestByteTagCbnt(new TagCbntDescriptor { Name = "child" })
-            { Parent = new TagGrp(new TagGrpDescriptor { Name = "grp" }, null) };
+        { Parent = new TagGrp(new TagGrpDescriptor { Name = "grp" }, null) };
 
         Assert.Equal("child", child.TagName());
     }

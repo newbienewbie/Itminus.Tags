@@ -34,6 +34,6 @@ public class TagTraverser : TraversingVisitorBase
     /// <param name="node"></param>
     protected override void Process(ITag node)
     {
-       this._action.Invoke(node);
+        this._action.Invoke(node);
     }
 }

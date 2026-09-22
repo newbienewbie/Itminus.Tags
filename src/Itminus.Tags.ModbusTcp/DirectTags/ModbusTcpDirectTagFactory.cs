@@ -23,14 +23,14 @@ internal class ModbusTcpDirectTagFactory
 
             BuiltinTagKinds.BYTE => CreateByteTag(descriptor, addr, channel),
 
-            BuiltinTagKinds.INT16 => CreateShortTag(descriptor,addr, channel),
+            BuiltinTagKinds.INT16 => CreateShortTag(descriptor, addr, channel),
             BuiltinTagKinds.UINT16 => CreateUShortTag(descriptor, addr, channel),
 
-            BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor,addr, channel),
-            BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor,addr,channel),
+            BuiltinTagKinds.INT32 => CreateInt32Tag(descriptor, addr, channel),
+            BuiltinTagKinds.UINT32 => CreateUInt32Tag(descriptor, addr, channel),
 
-            BuiltinTagKinds.INT64 => CreateInt64Tag(descriptor,addr, channel),
-            BuiltinTagKinds.UINT64 => CreateUInt64Tag(descriptor,addr, channel),
+            BuiltinTagKinds.INT64 => CreateInt64Tag(descriptor, addr, channel),
+            BuiltinTagKinds.UINT64 => CreateUInt64Tag(descriptor, addr, channel),
 
             BuiltinTagKinds.FLOAT => CreateFloatTag(descriptor, addr, channel),
 
@@ -67,7 +67,7 @@ internal class ModbusTcpDirectTagFactory
         {
             return new HoldingRegisterBitDirectTag(descriptor, thisChannel, this._container);
         }
-        else if(addr.Area == RegisterKinds.InputContacts)
+        else if (addr.Area == RegisterKinds.InputContacts)
         {
             return new InputContactDirectTag(descriptor, thisChannel, this._container);
         }
@@ -83,7 +83,7 @@ internal class ModbusTcpDirectTagFactory
 
     private ITag CreateByteTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)
     {
-        return new ByteDirectTag(descriptor, thisChannel, this._container );
+        return new ByteDirectTag(descriptor, thisChannel, this._container);
     }
 
     private ITag CreateUShortTag(TagDescriptor descriptor, ModbusTcpAddress addr, ModbusTcpChannel? thisChannel)

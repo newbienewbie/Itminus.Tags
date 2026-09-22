@@ -5,7 +5,7 @@
 /// 字节序解读完全在测点层（<see cref="GetValueFromRegisters"/> / <see cref="FillRegisters"/>），通道层不做任何字节序调整。
 /// </summary>
 internal abstract class MultipleBytesDirectTag<T> : Tag<T, ModbusTcpChannel>
-    where T: unmanaged, IEquatable<T>
+    where T : unmanaged, IEquatable<T>
 {
     public MultipleBytesDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
@@ -60,7 +60,7 @@ internal abstract class MultipleBytesDirectTag<T> : Tag<T, ModbusTcpChannel>
         this.NotifyTagRead(this._value);
     }
 
-    public override async Task WriteAsync(CancellationToken ct) 
+    public override async Task WriteAsync(CancellationToken ct)
     {
         var addr = this.GetAddress();
         if (addr.Area != RegisterKinds.HoldingRegisters)

@@ -55,7 +55,7 @@ public abstract class TagCbntor : ITagCbntor
     /// - Modbus 字空间（缓存元素 ushort）：单位为寄存器索引（= TagOffset / 2）。<br/>
     /// 大多数时候与 <see cref="TagOffset"/> 相同；当地址含位地址且跨字节/寄存器时可能不一致（如 S7 跨字节位会导致 CacheOffset 比 TagOffset 大 1）。
     /// </summary>
-    public int CacheOffset{ get; set; }
+    public int CacheOffset { get; set; }
 
     /// <summary>
     /// <inheritdoc />

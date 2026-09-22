@@ -1,7 +1,7 @@
 ﻿namespace Itminus.Tags.Hjzk;
 
 /// DI 针脚地址
-public enum DIPinAddr : ushort 
+public enum DIPinAddr : ushort
 {
     /// <summary>
     /// DI1 针脚地址

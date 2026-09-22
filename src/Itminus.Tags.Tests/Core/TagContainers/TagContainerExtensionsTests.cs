@@ -8,7 +8,7 @@ namespace Itminus.Tags.Tests.Core.TagContainers;
 public class TagContainerExtensionsTests
 {
 
- #region IntoTagContainer
+    #region IntoTagContainer
     [Fact]
     public void From_ITagGrp_IntoTagContainer_ProducesSameType()
     {
@@ -28,8 +28,8 @@ public class TagContainerExtensionsTests
 
         Assert.True(container.IsTagCbnt);
     }
-#endregion
-#region SearchRequiredChannel
+    #endregion
+    #region SearchRequiredChannel
     [Fact]
     public void SearchRequiredChannel_WhenCbnt_DelegatesToCbnt()
     {

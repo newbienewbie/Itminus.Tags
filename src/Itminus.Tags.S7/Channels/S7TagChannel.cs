@@ -17,7 +17,7 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
     {
         this.Descriptor = descriptor;
         this._logger = logger;
-        this.PlcItem =new S7PlcItem()
+        this.PlcItem = new S7PlcItem()
         {
             IpAddr = descriptor.IpAddr,
             Rack = descriptor.Rack,
@@ -59,7 +59,8 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
                     return;
 
                 var tcs = new TaskCompletionSource<Object?>();
-                var th = new Thread(() => {
+                var th = new Thread(() =>
+                {
                     try
                     {
                         this.Client?.Disconnect();
@@ -85,7 +86,8 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
     public virtual async Task EnsureConnectedAsync(bool force, CancellationToken ct)
     {
         await this.ExecuteOneByOneAsync(
-            async ct => {
+            async ct =>
+            {
                 //当前client存在并且连接有效
                 if (!force && Client != null && !Client.IsDead())
                 {
@@ -101,7 +103,7 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
                         this._logger.LogInformation("通道={ChannelName} 强制断开连接中...", channelName);
                         this.Client.Disconnect();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         this._logger.LogError(ex, "通道={ChannelName} 强制断开异常", channelName);
                     }
@@ -168,7 +170,8 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
         if (addr.Area == AreaKinds.DB)
         {
             await this.ExecuteOneByOneAsync(
-                ct => {
+                ct =>
+                {
                     var client = this.Client ?? throw new InvalidOperationException("S7通道客户端为null");
                     var code = client.DBRead(addr.BlockNumber, addr.StartAddress, length, buffer);
                     if (code != 0)
@@ -181,10 +184,11 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
                 ct
             );
         }
-        else if (addr.Area == AreaKinds.MB) 
+        else if (addr.Area == AreaKinds.MB)
         {
             await this.ExecuteOneByOneAsync(
-                ct => {
+                ct =>
+                {
                     var client = this.Client ?? throw new InvalidOperationException("S7通道客户端为null");
                     var code = client.MBRead(addr.StartAddress, length, buffer);
                     if (code != 0)
@@ -211,10 +215,11 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
     public virtual async Task WriteAsync(string address, byte[] buffer, CancellationToken ct)
     {
         var addr = S7AddressParser.Parse(address);
-        if(addr.Area == AreaKinds.DB)
+        if (addr.Area == AreaKinds.DB)
         {
             await this.ExecuteOneByOneAsync(
-                ct => {
+                ct =>
+                {
                     var client = this.Client ?? throw new InvalidOperationException("S7通道客户端为null");
                     var code = client.DBWrite(addr.BlockNumber, addr.StartAddress, buffer.Length, buffer);
                     if (code != 0)
@@ -227,10 +232,11 @@ public class S7TagChannel : IContinuousBytesBasedTagChannel
                 ct
             );
         }
-        else if(addr.Area == AreaKinds.MB)
+        else if (addr.Area == AreaKinds.MB)
         {
             await this.ExecuteOneByOneAsync(
-                ct => {
+                ct =>
+                {
                     var client = this.Client ?? throw new InvalidOperationException("S7通道客户端为null");
                     var code = client.MBWrite(addr.StartAddress, buffer.Length, buffer);
                     if (code != 0)

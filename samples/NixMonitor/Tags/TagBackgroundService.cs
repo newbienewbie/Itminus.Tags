@@ -3,7 +3,7 @@ using Itminus.Tags;
 
 namespace NixMonitor.Tags;
 
-class NixMonitorBackgroundService: BackgroundService
+class NixMonitorBackgroundService : BackgroundService
 {
     private readonly ILogger<NixMonitorBackgroundService> _logger;
 

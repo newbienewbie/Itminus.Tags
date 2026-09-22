@@ -37,6 +37,6 @@ public class S7TagChannelFactory : ITagChannelFactory
     {
         var s7ChannelDescriptor = descriptor.ToS7TagChannelDescriptor();
         var logger = _loggerFactory.CreateLogger<S7TagChannel>();
-        return new S7TagChannel( s7ChannelDescriptor, logger );
+        return new S7TagChannel(s7ChannelDescriptor, logger);
     }
 }

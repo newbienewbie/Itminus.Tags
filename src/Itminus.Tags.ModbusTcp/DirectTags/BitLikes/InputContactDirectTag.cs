@@ -6,7 +6,7 @@
 /// </summary>
 internal class InputContactDirectTag : Tag<bool, ModbusTcpChannel>
 {
-    public InputContactDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container) 
+    public InputContactDirectTag(TagDescriptor descriptor, ModbusTcpChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }
@@ -18,8 +18,9 @@ internal class InputContactDirectTag : Tag<bool, ModbusTcpChannel>
     private ModbusTcpAddress? _addr;
 
 
-    protected ModbusTcpAddress GetAddress(){
-        if(_addr.HasValue)
+    protected ModbusTcpAddress GetAddress()
+    {
+        if (_addr.HasValue)
         {
             return _addr.Value;
         }

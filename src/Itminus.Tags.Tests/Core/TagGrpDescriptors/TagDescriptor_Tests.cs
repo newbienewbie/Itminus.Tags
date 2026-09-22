@@ -71,7 +71,7 @@ public class TagGrpDescriptor_Tests
             EndianKind = EndianKinds.LittleEndian,
             AccessMode = TagAccessMode.RO,
         });
-   
+
         grp1.Children.Add(cbnt2);
 
         var element1 = grp1.ToXElement();

@@ -22,7 +22,7 @@ public static class TagsProject_Extensions
         return builder;
     }
 
-#region 基本扩展
+    #region 基本扩展
     /// <summary>
     /// 注册SimpleFiles支持——仅注册ChannelFactory，不注册DirectTagBuilder <br/>
     /// 作用是在通道的驱动为 <see cref="SimpleFilesNames.DriverName"/> 时，会尝试构建一个通道。
@@ -56,11 +56,12 @@ public static class TagsProject_Extensions
         )
     {
         // register SimpleFiles tags loader
-        builder.ConfigTagsLoader((sp, composite) => { 
+        builder.ConfigTagsLoader((sp, composite) =>
+        {
             composite.AddDirectTagBuilder<SimpleFilesDirectTagBuilder>(SimpleFilesNames.DriverName, configure, predicate);
         });
 
         return builder;
     }
-#endregion
+    #endregion
 }

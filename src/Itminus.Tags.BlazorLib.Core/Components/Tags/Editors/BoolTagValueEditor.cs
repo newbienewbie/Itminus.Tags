@@ -12,14 +12,14 @@ sealed class BoolTagValueEditor : ITagValueEditor
     /// <inheritdoc/>
     public bool CanEdit(ITag tag)
     {
-        if (tag is null) 
+        if (tag is null)
             return false;
-        if (tag.IsReadOnly()) 
+        if (tag.IsReadOnly())
             return false;
 
-        return tag.Value is bool 
+        return tag.Value is bool
             || tag.TagKind() == BuiltinTagKinds.BIT
-            || tag.TagKind() == BuiltinTagKinds.DI 
+            || tag.TagKind() == BuiltinTagKinds.DI
             || tag.TagKind() == BuiltinTagKinds.DO;
     }
 

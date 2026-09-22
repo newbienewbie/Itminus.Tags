@@ -80,7 +80,7 @@ public partial class TagView : IDisposable
 
                         _ = InvokeAsync(() =>
                         {
-                            if(this.disposedValue)
+                            if (this.disposedValue)
                             {
                                 return;
                             }
@@ -147,7 +147,7 @@ public partial class TagView : IDisposable
     {
         var tag = this.Tag;
         var project = this.Project;
-        if (project is null || tag is null )
+        if (project is null || tag is null)
             return;
 
         var parent = tag.Parent;
@@ -158,7 +158,8 @@ public partial class TagView : IDisposable
             return;
 
         parent?.Map(
-            cbnt => {
+            cbnt =>
+            {
                 project.WriteIntent(entry.TagName(), (entry, ct) =>
                 {
                     cbnt.IsScaned = false;
@@ -171,7 +172,8 @@ public partial class TagView : IDisposable
             {
                 project.WriteIntent(
                     entry.TagName(),
-                    (entry, ct) => {
+                    (entry, ct) =>
+                    {
                         tag.IsScaned = false;
                         return ValueTask.CompletedTask;
                     },
@@ -180,7 +182,7 @@ public partial class TagView : IDisposable
                 return ValueTuple.Create();
             }
         );
-        
+
         await task;
     }
 
@@ -200,7 +202,7 @@ public partial class TagView : IDisposable
                 {
                     this._destroySignal.OnNext(Unit.Default);
                 }
-                catch{ }
+                catch { }
 
                 try
                 {

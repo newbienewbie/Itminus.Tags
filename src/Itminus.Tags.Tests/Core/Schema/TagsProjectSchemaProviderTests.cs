@@ -27,9 +27,9 @@ public class TagsProjectSchemaProviderTests
     {
         private readonly (string LogicalName, string Content)[] _schemas;
 
-        public FakeSchemaProvider(params (string LogicalName, string Content)[] schemas) 
+        public FakeSchemaProvider(params (string LogicalName, string Content)[] schemas)
             => this._schemas = schemas;
-        public IEnumerable<(string LogicalName, string Content)> GetSchemaContents() 
+        public IEnumerable<(string LogicalName, string Content)> GetSchemaContents()
             => this._schemas;
     }
 

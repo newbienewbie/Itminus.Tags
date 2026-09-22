@@ -3,9 +3,9 @@ using Opc.Ua;
 
 namespace Itminus.Tags.OpcUaClient.DirectTags;
 
-internal abstract class OpcUaClientDirectTag<TValue>: Tag<TValue, OpcUaClientTagChannel>
+internal abstract class OpcUaClientDirectTag<TValue> : Tag<TValue, OpcUaClientTagChannel>
 {
-    public OpcUaClientDirectTag(TagDescriptor descriptor, OpcUaClientTagChannel? thisChannel, TagContainer container) 
+    public OpcUaClientDirectTag(TagDescriptor descriptor, OpcUaClientTagChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
         var addrstr = this.NormalizedAddress();
@@ -36,7 +36,7 @@ internal abstract class OpcUaClientDirectTag<TValue>: Tag<TValue, OpcUaClientTag
 
 internal class OpcUaClientDirectTag : OpcUaClientDirectTag<object>
 {
-    public OpcUaClientDirectTag(TagDescriptor descriptor, OpcUaClientTagChannel? thisChannel, TagContainer container) 
+    public OpcUaClientDirectTag(TagDescriptor descriptor, OpcUaClientTagChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }

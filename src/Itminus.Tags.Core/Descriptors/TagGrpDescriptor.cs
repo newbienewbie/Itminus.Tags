@@ -5,7 +5,7 @@ namespace Itminus.Tags;
 /// <summary>
 /// TagGrp 描述符
 /// </summary>
-public class TagGrpDescriptor: ITagsDescriptor
+public class TagGrpDescriptor : ITagsDescriptor
 {
     /// <summary>
     /// 名称
@@ -25,7 +25,7 @@ public class TagGrpDescriptor: ITagsDescriptor
     /// <summary>
     /// 是否启用？
     /// </summary>
-    public bool IsEnabled { get; set; } = true; 
+    public bool IsEnabled { get; set; } = true;
 
     /// <summary>
     /// 扫描间隔<br/>

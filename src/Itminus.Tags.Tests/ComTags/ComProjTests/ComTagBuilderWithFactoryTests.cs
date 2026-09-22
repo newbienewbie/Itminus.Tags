@@ -138,7 +138,7 @@ public class ComTagBuilderWithFactoryTests
         Assert.IsType<ComReadOnlyTag<string>>(tag);
         Assert.Equal(BuiltinTagKinds.STR, tag.TagKind());
     }
-  
+
 
     /// <summary>
     /// WithFactory 扩展非 STR 类型（不需要自定义 DirectTagBuilder 子类）
@@ -156,7 +156,8 @@ public class ComTagBuilderWithFactoryTests
 
             // 自定义 AnyLoad 测点创建逻辑
             b.AddComScannerDirectTagBuilder(
-                configure: b => b.WithFactory((descriptor, channel, container) =>{
+                configure: b => b.WithFactory((descriptor, channel, container) =>
+                {
                     if (channel is not ComChannelBase<string> com)
                     {
                         throw new InvalidCastException($"测点({descriptor.TagName})当前通道必须是{nameof(ComChannelBase<string>)}！实际={channel?.GetType()}");

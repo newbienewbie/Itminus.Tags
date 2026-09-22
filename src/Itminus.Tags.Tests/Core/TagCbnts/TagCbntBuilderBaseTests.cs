@@ -75,7 +75,7 @@ public class TagCbntBuilderBaseTests
 
     class FakeT1TagCbntor : TagCbntor
     {
-        public FakeT1TagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset) 
+        public FakeT1TagCbntor(TagDescriptor tagDescriptor, ITagCbnt tagCbnt, int tagOffset, int cacheOffset)
             : base(tagDescriptor, tagCbnt, tagOffset, cacheOffset)
         {
         }

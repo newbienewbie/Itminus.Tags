@@ -19,7 +19,7 @@ public class CompositeTagChannelFactoryTests
         /// <summary>
         /// 由哪个工厂创建的
         /// </summary>
-        public string From{get;}
+        public string From { get; }
 
         public TagChannelDescriptor Descriptor { get; set; }
         public Task EnsureConnectedAsync(bool force, CancellationToken ct) => Task.CompletedTask;
@@ -32,8 +32,8 @@ public class CompositeTagChannelFactoryTests
         private readonly string[] _drivers;
         public FakeFactory(params string[] drivers) { _drivers = drivers; }
 
-        public string Name {get;set;} = "FakeFactory";
-        public ITagChannel Create(TagChannelDescriptor descriptor) => new FakeChannel(Name,descriptor);
+        public string Name { get; set; } = "FakeFactory";
+        public ITagChannel Create(TagChannelDescriptor descriptor) => new FakeChannel(Name, descriptor);
         public IReadOnlyList<string> GetAvailableDrivers() => _drivers;
     }
 

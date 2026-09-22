@@ -7,7 +7,7 @@ namespace Itminus.Tags.Tests.SimpleFilesTags;
 
 public class TagChannelDescriptorTests
 {
- 
+
     #region SimpleFilesTagChannelDescriptor
     [Fact]
     public void Descriptor_ToXElement_WithBaseDir_IncludesElement()

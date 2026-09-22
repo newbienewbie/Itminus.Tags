@@ -79,7 +79,7 @@ public class FloatTagCbntorEndianTests
 
         Span<byte> expected2 = stackalloc byte[4];
         BinaryPrimitives.WriteSingleLittleEndian(expected2, 2.0f);
-        
+
         expected1.Reverse();
         Assert.Equal(expected1.ToArray(), actual1);
         Assert.Equal(expected2.ToArray(), actual2);

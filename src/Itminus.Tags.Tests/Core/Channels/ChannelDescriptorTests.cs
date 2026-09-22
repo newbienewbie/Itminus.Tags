@@ -25,7 +25,7 @@ public class ChannelDescriptorTests
 </Channel>
 ";
         var element = XElement.Parse(xml);
-        var descriptor =element.ToTagChannelDescriptor();
+        var descriptor = element.ToTagChannelDescriptor();
         Assert.Equal("S7-3", descriptor.Name);
         Assert.Equal("S7", descriptor.Driver);
         Assert.NotEmpty(descriptor.Extras);

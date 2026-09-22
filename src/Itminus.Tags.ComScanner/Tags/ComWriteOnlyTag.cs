@@ -50,13 +50,13 @@ public class ComWriteOnlyTag<T> : Tag<T, ComChannelBase<T>>
     public override async Task WriteAsync(CancellationToken ct)
     {
         var value = this._value;
-        if(value is null)
+        if (value is null)
         {
             return;
         }
 
         var bytes = this._converter(value);
-        await this._bubbleChannel.WriteAsync(bytes,0, bytes.Length);
+        await this._bubbleChannel.WriteAsync(bytes, 0, bytes.Length);
         this.IsDirty = false;
         this.NotifyTagWritten(value);
     }

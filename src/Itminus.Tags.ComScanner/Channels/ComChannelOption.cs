@@ -36,7 +36,7 @@ public class ComChannelOption
     /// <summary>
     /// 通道元素数量
     /// </summary>
-    public int ChannelCapacity { get; set; } =1;
+    public int ChannelCapacity { get; set; } = 1;
 
     /// <summary>
     /// 读取整行？<br/>

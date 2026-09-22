@@ -16,7 +16,7 @@ public static class TagProjectExtensions
         where TLogicet : class, ILogicet
     {
         var (logicet, ex) = LogicetProviderUtils.CreateLogicet(sp, typeof(TLogicet), project.Channels, project.Tags);
-        if(logicet is null)
+        if (logicet is null)
         {
             return false;
         }

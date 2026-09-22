@@ -13,7 +13,7 @@ public class HjzkChannel : ModbusTcpChannel
     /// <summary>
     /// c'tor
     /// </summary>
-    public HjzkChannel(HjzkTagChannelDescriptor descriptor, ILogger<HjzkChannel> logger) 
+    public HjzkChannel(HjzkTagChannelDescriptor descriptor, ILogger<HjzkChannel> logger)
         : base(descriptor, logger)
     {
     }

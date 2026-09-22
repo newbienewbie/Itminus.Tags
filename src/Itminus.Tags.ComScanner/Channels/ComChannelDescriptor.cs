@@ -25,7 +25,7 @@ public class ComChannelDescriptor : TagChannelDescriptor
     /// <summary>
     /// 通道选项
     /// </summary>
-    public ComChannelOption Option { get;set;} = new ComChannelOption();
+    public ComChannelOption Option { get; set; } = new ComChannelOption();
 
     /// <summary>
     /// 转换为 XElement
@@ -34,19 +34,19 @@ public class ComChannelDescriptor : TagChannelDescriptor
     public override XElement ToXElement()
     {
         var ele = base.ToXElement();
-        if(!string.IsNullOrEmpty(this.Option.NewLine))
+        if (!string.IsNullOrEmpty(this.Option.NewLine))
         {
             ele.SetOrAddChild(nameof(Option.NewLine), this.Option.NewLine);
         }
-        if(!this.Option.ReadEntireLine)
+        if (!this.Option.ReadEntireLine)
         {
             ele.SetOrAddChild(nameof(Option.ReadEntireLine), this.Option.ReadEntireLine);
         }
-        if(!string.IsNullOrEmpty(this.Option.ReadScript))
+        if (!string.IsNullOrEmpty(this.Option.ReadScript))
         {
             ele.SetOrAddChild(nameof(Option.ReadScript), this.Option.ReadScript);
         }
-        if(this.Option.ReadScriptDebugInformationEnabled)
+        if (this.Option.ReadScriptDebugInformationEnabled)
         {
             ele.SetOrAddChild(nameof(Option.ReadScriptDebugInformationEnabled), this.Option.ReadScriptDebugInformationEnabled);
         }
@@ -102,17 +102,17 @@ public static class TagChannelDescriptor_ComExtensions
         }
 
         var readEntireLine = (
-                descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadEntireLine), out var readEntireLineStr) 
+                descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadEntireLine), out var readEntireLineStr)
                 && bool.TryParse(readEntireLineStr.Value, out var readEntireLineVal)
-            )? 
-                readEntireLineVal: 
+            ) ?
+                readEntireLineVal :
                 true;
 
         var readscript = !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadScript), out var readScript) ?
                  null :
                  readScript.Value;
-        var readScriptDebugInformationEnabled = 
-                 !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadScriptDebugInformationEnabled), out var readScriptDebugInformationEnabledStr) ?false :
+        var readScriptDebugInformationEnabled =
+                 !descriptor.Extras.TryGetValue(nameof(ComChannelDescriptor.Option.ReadScriptDebugInformationEnabled), out var readScriptDebugInformationEnabledStr) ? false :
                  bool.TryParse(readScriptDebugInformationEnabledStr.Value, out var readScriptDebugInformationEnabledVal) ? readScriptDebugInformationEnabledVal :
                  throw new Exception($"串口读取脚本调试信息开关非法，无法解析成布尔值({readScriptDebugInformationEnabledStr.Value})");
 
@@ -146,7 +146,8 @@ public static class TagChannelDescriptor_ComExtensions
             Name = descriptor.Name,
             Driver = descriptor.Driver,
             Extras = descriptor.Extras,
-            Option = new ComChannelOption {
+            Option = new ComChannelOption
+            {
                 ReadEntireLine = readEntireLine,
                 NewLine = newline,
                 ReadScript = readscript,

@@ -18,7 +18,7 @@ public partial class ModbusTcpDirectTagBuilder : TagBuilderBase
     {
 
         ModbusTcpChannel? mbch;
-        if(this.Channel is null)
+        if (this.Channel is null)
         {
             mbch = null;
         }
@@ -31,7 +31,7 @@ public partial class ModbusTcpDirectTagBuilder : TagBuilderBase
             mbch = this.Channel as ModbusTcpChannel;
         }
 
-        var factory = new ModbusTcpDirectTagFactory( this.Parent.IntoTagContainer());
+        var factory = new ModbusTcpDirectTagFactory(this.Parent.IntoTagContainer());
         var tag = factory.Create(this.TagDescriptor, mbch);
         return tag;
     }

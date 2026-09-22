@@ -8,7 +8,7 @@ namespace Itminus.Tags.S7;
 /// 地址类型
 /// </summary>
 public enum AreaKinds
-{ 
+{
     /// <summary>
     /// 空
     /// </summary>
@@ -247,9 +247,9 @@ public static class S7AddressParser
             {
                 throw new Exception($"S7地址不合法: 无法解析位地址");
             }
-            return new S7Address() 
+            return new S7Address()
             {
-                Area =  AreaKinds.MB,
+                Area = AreaKinds.MB,
                 BlockNumber = 0,
                 StartAddress = start,
                 UseBit = true,
@@ -257,15 +257,15 @@ public static class S7AddressParser
             };
 
         }
-        else 
+        else
         {
             if (!int.TryParse(span, out var start))
-            { 
+            {
                 throw new Exception($"S7地址不合法: 无法解析起始地址");
             }
-            return new S7Address() 
+            return new S7Address()
             {
-                Area =  AreaKinds.MB,
+                Area = AreaKinds.MB,
                 BlockNumber = 0,
                 StartAddress = start,
                 UseBit = false,

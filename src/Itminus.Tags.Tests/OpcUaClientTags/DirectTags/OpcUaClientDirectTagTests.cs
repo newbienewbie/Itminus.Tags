@@ -110,9 +110,11 @@ public class OpcUaClientDirectTagTests
     {
         public FakeOpcUaClientTagChannel()
             : base(
-                new OpcUaClientTagChannelDescriptor() { 
+                new OpcUaClientTagChannelDescriptor()
+                {
                     Name = "fake-opcua",
-                    OpcUaTagChannelOpt =new OpcUaClientTagChannelOpt {
+                    OpcUaTagChannelOpt = new OpcUaClientTagChannelOpt
+                    {
                         ClientName = "fake-client",
                         ServerOpt = new OpcUaServerOpt
                         {

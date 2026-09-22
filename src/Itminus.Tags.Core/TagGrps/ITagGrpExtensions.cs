@@ -72,13 +72,13 @@ public static class ITagGrpExtensions
     /// <returns></returns>
     public static IList<ITagGrp> ScanEntries(this ITagGrp grp)
     {
-        if(grp.IsEntry())
+        if (grp.IsEntry())
         {
             return new List<ITagGrp>() { grp };
         }
 
-        var results = new List<ITagGrp>(); 
-        foreach(var kvp in grp.Children)
+        var results = new List<ITagGrp>();
+        foreach (var kvp in grp.Children)
         {
             var child = kvp.Value;
             if (child is TagUnion.TagGrp unionTagGroup)
@@ -107,12 +107,12 @@ public static class ITagGrpExtensions
     /// <returns></returns>
     public static ITagChannel? SearchChannel(this ITagGrp tagGrp)
     {
-        if(tagGrp.Channel is not null)
+        if (tagGrp.Channel is not null)
         {
             return tagGrp.Channel;
         }
 
-        if(tagGrp.Parent is not null)
+        if (tagGrp.Parent is not null)
         {
             return tagGrp.Parent.SearchChannel();
         }
@@ -229,11 +229,11 @@ public static class ITagGrpExtensions
     public static int? SearchScanInterval(this ITagGrp tagGrp)
     {
         // Descriptor 中存在 ScanInterval 配置时直接返回（即使为 0 也是有效配置）
-        if(tagGrp.Descriptor.ScanInterval is not null)
+        if (tagGrp.Descriptor.ScanInterval is not null)
         {
             return tagGrp.Descriptor.ScanInterval;
         }
-        if(tagGrp.Parent is not null)
+        if (tagGrp.Parent is not null)
         {
             return tagGrp.Parent.SearchScanInterval();
         }

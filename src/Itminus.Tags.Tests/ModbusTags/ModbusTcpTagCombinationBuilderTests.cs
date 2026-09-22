@@ -21,7 +21,8 @@ public class ModbusTcpTagCombinationBuilderTests
             .WithChannel(null!);
 
         var channelFactory = new ModbusTcpChannelFactory(new LoggerFactory());
-        var channel = channelFactory.Create(new TagChannelDescriptor() { 
+        var channel = channelFactory.Create(new TagChannelDescriptor()
+        {
             Driver = ModbusTcpNames.DriverName,
             Name = "g1",
             Extras = new Dictionary<string, XElement>() {
@@ -83,7 +84,7 @@ public class ModbusTcpTagCombinationBuilderTests
         builder.AddTags(tagDescriptors, channel);
 
         var cbnt = builder.Build(channel);
-        Assert.Equal( 20 , ((TagCbnt<ushort>)cbnt).CacheSize);
+        Assert.Equal(20, ((TagCbnt<ushort>)cbnt).CacheSize);
     }
 
 

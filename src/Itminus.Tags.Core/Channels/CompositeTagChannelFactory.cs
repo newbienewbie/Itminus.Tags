@@ -31,7 +31,7 @@ public class CompositeTagChannelFactory : ITagChannelFactory
 
 
     /// <inheritdoc/>
-    public virtual IReadOnlyList<string> GetAvailableDrivers() => 
+    public virtual IReadOnlyList<string> GetAvailableDrivers() =>
         _factoryList
             .SelectMany(f => f.GetAvailableDrivers())
             .ToList();

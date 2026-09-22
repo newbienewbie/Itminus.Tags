@@ -62,12 +62,13 @@ internal class OpcUaClientTagCbnt : ITagCbnt
     public async Task ReadAsync(CancellationToken ct)
     {
         var channel = this.SearchChannel() as OpcUaClientTagChannel;
-        if(channel is null)
+        if (channel is null)
         {
             throw new Exception($"TagCbnt({this.TagName()}) 通道应为{nameof(OpcUaClientTagChannel)},实际为{channel?.GetType()}");
         }
         var nodeIds = this.Children
-            .Select(child => { 
+            .Select(child =>
+            {
                 var cbntor = child.Value as OpcUaClientTagCbntor;
                 if (cbntor is null)
                 {
@@ -75,10 +76,10 @@ internal class OpcUaClientTagCbnt : ITagCbnt
                 }
                 return this.GetNodeIdByTagName(cbntor);
             })
-            .ToList() ;
+            .ToList();
         var (values, errs) = await channel.ReadAsync(nodeIds!, ct);
 
-        for(int i =0; i< nodeIds.Count; i++)
+        for (int i = 0; i < nodeIds.Count; i++)
         {
             var nodeId = nodeIds[i];
             var err = errs[i];
@@ -106,20 +107,21 @@ internal class OpcUaClientTagCbnt : ITagCbnt
         }
         var toBeWritten = this.Children
             .Where(c => c.Value.IsDirty)
-            .Select(child => {
+            .Select(child =>
+            {
                 var cbntor = child.Value as OpcUaClientTagCbntor;
                 if (cbntor is null)
                 {
                     throw new Exception($"TagCbnt({this.TagName()}) 下的子标签({child.Key}) 应为{nameof(OpcUaClientTagCbntor)},实际为{child.Value.GetType()}");
                 }
-                var nodeId= this.GetNodeIdByTagName(cbntor);
+                var nodeId = this.GetNodeIdByTagName(cbntor);
                 return new KeyValuePair<NodeId, DataValue>(
                     nodeId,
                     this.Bag[nodeId]
                 );
             })
-            .ToDictionary(kvp => kvp.Key, kvp=> kvp.Value);
-        
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
         await channel.WriteAsync(toBeWritten, ct);
 
         foreach (var kv in this.Children)

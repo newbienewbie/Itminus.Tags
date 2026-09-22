@@ -8,7 +8,7 @@ public class ZLanDICbntBuilder : ZLanCbntBuilderBase
     static string DI_START_ADDR = $"{u_DI_START_ADDRESS:d5}";
 
 
-    public ZLanDICbntBuilder():base()
+    public ZLanDICbntBuilder() : base()
     {
     }
 

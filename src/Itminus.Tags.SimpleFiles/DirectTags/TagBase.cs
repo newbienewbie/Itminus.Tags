@@ -15,7 +15,7 @@ public abstract class SimpleFilesDirectTagBase<T> : Tag<T, SimpleFilesTagChannel
     /// <param name="descriptor"></param>
     /// <param name="thisChannel"></param>
     /// <param name="container"></param>
-    protected SimpleFilesDirectTagBase(TagDescriptor descriptor, SimpleFilesTagChannel? thisChannel, TagContainer container) 
+    protected SimpleFilesDirectTagBase(TagDescriptor descriptor, SimpleFilesTagChannel? thisChannel, TagContainer container)
         : base(descriptor, thisChannel, container)
     {
     }

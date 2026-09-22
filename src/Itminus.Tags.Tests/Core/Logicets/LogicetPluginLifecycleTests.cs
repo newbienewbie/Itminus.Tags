@@ -33,7 +33,7 @@ public class LogicetPluginLifecycleTests
     public void TestLoadAndUnloadLogicetPlugin()
     {
         var projectDir = CreateProjectDir();
-        var root= CreateXRoot( typeof(TestUnloadableLogicet).Assembly.Location);
+        var root = CreateXRoot(typeof(TestUnloadableLogicet).Assembly.Location);
         try
         {
             var firstLoadContextRef = LoadAndDisposeProject(projectDir, root);
@@ -59,7 +59,7 @@ public class LogicetPluginLifecycleTests
         WeakReference loadContextRef;
         using (var project = factory.Create(projectDir, root))
         {
-            var logicets =  project.Logicets
+            var logicets = project.Logicets
                 .Where(l => l.GetType().Name == nameof(TestUnloadableLogicet));
             var logicet = Assert.Single(logicets);
             Assert.Equal(nameof(TestUnloadableLogicet), logicet.GetType().Name);
@@ -80,9 +80,9 @@ public class LogicetPluginLifecycleTests
     private static string CreateProjectDir()
     {
         var projectDir = Path.Combine(
-            Path.GetTempPath(), 
-            "Itminus.Tags.Tests", 
-            nameof(LogicetPluginLifecycleTests), 
+            Path.GetTempPath(),
+            "Itminus.Tags.Tests",
+            nameof(LogicetPluginLifecycleTests),
             Path.GetRandomFileName()
         );
         Directory.CreateDirectory(projectDir);

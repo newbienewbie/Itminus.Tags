@@ -72,7 +72,7 @@ internal class TagsProject : ITagsProject
     {
         var main = new TagGrp(new TagGrpDescriptor { Name = "__main__", IsEntry = false }, null);
         var descriptors = root.GetTagProjectGrpDescriptors();
-        foreach (var descriptor in descriptors) 
+        foreach (var descriptor in descriptors)
         {
             this._tagsLoader.LoadTagGroup(main, descriptor, this.Channels);
         }
@@ -89,7 +89,7 @@ internal class TagsProject : ITagsProject
     {
         var elements = root.Elements("Logicet");
         var dlls = elements
-            .Where(e => !string.IsNullOrEmpty( e.Value) )
+            .Where(e => !string.IsNullOrEmpty(e.Value))
             .Select(e => string.IsNullOrEmpty(this.ProjectRoot) ? e.Value : Path.Combine(this.ProjectRoot, e.Value));
         var logicets = this._logicetLoader.LoadLogicets(this._sp, dlls, this.Channels, this.Tags);
         this.AddLogicets(logicets.Logicets);
@@ -100,17 +100,17 @@ internal class TagsProject : ITagsProject
 
 
     /// <inheritdoc/>
-    public void Initialize(string projRoot, XElement? root=null)
+    public void Initialize(string projRoot, XElement? root = null)
     {
         this.ProjectRoot = projRoot;
         this._channels.Clear();
         this.Tags = null!;
         this._logicets.Clear();
 
-        if(root is null)
+        if (root is null)
         {
             var rootxmlPath = Path.Combine(projRoot, "index.xml");
-            if(!File.Exists(rootxmlPath))
+            if (!File.Exists(rootxmlPath))
             {
                 throw new FileNotFoundException(rootxmlPath);
             }
@@ -187,7 +187,7 @@ internal class TagsProject : ITagsProject
     private IList<ITagGrp>? _entries = null;
     public IList<ITagGrp> GetEntries()
     {
-        if(this._entries is not null)
+        if (this._entries is not null)
         {
             return this._entries;
         }
@@ -229,10 +229,11 @@ internal class TagsProject : ITagsProject
                 .ToList();
             var runner = this._tagGrpRunnerFactory.Create(this);
             runner.RunnerStarted += RunnerStarted;
-            runner.TurnProcess += async (entry, ch) => {
+            runner.TurnProcess += async (entry, ch) =>
+            {
                 foreach (var l in logicets)
                 {
-                    if(!l.Enabled)
+                    if (!l.Enabled)
                     {
                         continue;
                     }
@@ -263,7 +264,7 @@ internal class TagsProject : ITagsProject
     {
         // 校验 entry 是否真的存在，只允许向合法的入口写入意图
         var entries = this.GetEntries();
-        if(!entries.Any(e => e.TagName() == entry))
+        if (!entries.Any(e => e.TagName() == entry))
         {
             throw new KeyNotFoundException($"未找到指定的入口测点组: {entry}");
         }
@@ -272,7 +273,7 @@ internal class TagsProject : ITagsProject
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var item = new IntentCompletion(intent, tcs);
         task = tcs.Task;
-        var written= writer.TryWrite(item);
+        var written = writer.TryWrite(item);
         if (!written)
         {
             tcs.TrySetException(new IntentWrittenException(entry, "写入意图失败"));
@@ -304,7 +305,7 @@ internal class TagsProject : ITagsProject
             kvp.Value.Writer.TryComplete();
         }
 
-        foreach(var kvp in this._entryWriteIntentChannels)
+        foreach (var kvp in this._entryWriteIntentChannels)
         {
             var reader = kvp.Value.Reader;
             while (reader.TryRead(out var item))
@@ -386,7 +387,7 @@ public sealed class IntentWrittenException : Exception
     /// </summary>
     /// <param name="entry"></param>
     /// <param name="message"></param>
-    public IntentWrittenException(string entry,string message)
+    public IntentWrittenException(string entry, string message)
         : base(message)
     {
         this.Entry = entry;

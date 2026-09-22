@@ -242,79 +242,86 @@ public class S7DirectTagNumericEndianTests
     }
 
     private static Int16DirectTag CreateInt16Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
-            new TagDescriptor {
+            new TagDescriptor
+            {
                 TagName = "i16",
                 TagKind = BuiltinTagKinds.INT16,
                 RawAddress = "DB1.200",
                 EndianKind = endian,
-            }, 
-            thisChannel: null, 
+            },
+            thisChannel: null,
             parent: grp.IntoTagContainer()
         );
 
     private static UInt16DirectTag CreateUInt16Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
-        new TagDescriptor {
+        new TagDescriptor
+        {
             TagName = "u16",
             TagKind = BuiltinTagKinds.UINT16,
             RawAddress = "DB1.202",
             EndianKind = endian,
-        }, 
+        },
         thisChannel: null,
         grp.IntoTagContainer()
     );
 
     private static Int32DirectTag CreateInt32Tag(EndianKinds endian, S7TagChannel? channel, ITagGrp grp) => new(
-        new TagDescriptor {
+        new TagDescriptor
+        {
             TagName = "i32",
             TagKind = BuiltinTagKinds.INT32,
             RawAddress = "DB1.204",
             EndianKind = endian,
-        }, 
-        thisChannel: null, 
+        },
+        thisChannel: null,
         grp.IntoTagContainer()
     );
 
     private static UInt32DirectTag CreateUInt32Tag(EndianKinds endian, IContinuousBytesBasedTagChannel channel, ITagGrp grp) => new(
-        new TagDescriptor {
+        new TagDescriptor
+        {
             TagName = "u32",
             TagKind = BuiltinTagKinds.UINT32,
             RawAddress = "DB1.208",
             EndianKind = endian,
-        }, 
-        thisChannel: null, 
+        },
+        thisChannel: null,
         grp.IntoTagContainer()
     );
 
     private static Int64DirectTag CreateInt64Tag(EndianKinds endian, IContinuousBytesBasedTagChannel channel, ITagGrp grp) => new(
-        new TagDescriptor {
+        new TagDescriptor
+        {
             TagName = "i64",
             TagKind = BuiltinTagKinds.INT64,
             RawAddress = "DB1.212",
             EndianKind = endian,
-        }, 
-        thisChannel: null, 
+        },
+        thisChannel: null,
         grp.IntoTagContainer()
     );
 
     private static UInt64DirectTag CreateUInt64Tag(EndianKinds endian, IContinuousBytesBasedTagChannel channel, ITagGrp grp) => new(
-        new TagDescriptor {
+        new TagDescriptor
+        {
             TagName = "u64",
             TagKind = BuiltinTagKinds.UINT64,
             RawAddress = "DB1.220",
             EndianKind = endian,
-        }, 
-        thisChannel: null, 
+        },
+        thisChannel: null,
         grp.IntoTagContainer()
     );
 
     private static FloatDirectTag CreateFloatTag(EndianKinds endian, IContinuousBytesBasedTagChannel channel, ITagGrp grp) => new(
-        new TagDescriptor {
+        new TagDescriptor
+        {
             TagName = "f32",
             TagKind = BuiltinTagKinds.FLOAT,
             RawAddress = "DB1.228",
             EndianKind = endian,
-        }, 
-        thisChannel: null, 
+        },
+        thisChannel: null,
         parent: grp.IntoTagContainer()
     );
 
@@ -419,8 +426,9 @@ public class S7DirectTagNumericEndianTests
     private sealed class FakeContinuousBytesChannel : S7TagChannel
     {
         public FakeContinuousBytesChannel(byte[] payload)
-            :base(
-                new S7TagChannelDescriptor() {
+            : base(
+                new S7TagChannelDescriptor()
+                {
                     Name = "fake",
                 },
                 new LoggerFactory().CreateLogger<S7TagChannel>()

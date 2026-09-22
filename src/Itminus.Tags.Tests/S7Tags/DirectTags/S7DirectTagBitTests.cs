@@ -25,7 +25,7 @@ public class S7DirectTagBitTests
 
         Assert.Equal(expectedLength, fake.LastReadLength);
         Assert.IsType<bool>(tag.Value);
-        Assert.Equal(expectedValue,tag.Value);
+        Assert.Equal(expectedValue, tag.Value);
     }
 
     [Theory]
@@ -90,15 +90,15 @@ public class S7DirectTagBitTests
             RawAddress = $"DB1.100.{nthBit}",
         };
 
-        var tag = new BitDirectTag(descriptor, thisChannel: null, grp.IntoTagContainer(),nthBit: nthBit, bufferSize: 0);
+        var tag = new BitDirectTag(descriptor, thisChannel: null, grp.IntoTagContainer(), nthBit: nthBit, bufferSize: 0);
         return tag;
     }
 
     private sealed class FakeContinuousBytesChannel : S7TagChannel
     {
         public FakeContinuousBytesChannel(byte[] payload)
-            :base(
-                 new S7TagChannelDescriptor() { Name = "fake" }, 
+            : base(
+                 new S7TagChannelDescriptor() { Name = "fake" },
                  new LoggerFactory().CreateLogger<S7TagChannel>()
              )
         {

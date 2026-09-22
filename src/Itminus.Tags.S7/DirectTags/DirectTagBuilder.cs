@@ -17,7 +17,7 @@ public partial class S7DirectTagBuilder : TagBuilderBase
     protected override ITag Fallback(ITagChannel channel)
     {
         S7TagChannel? s7ch;
-        if(this.Channel is null)
+        if (this.Channel is null)
         {
             s7ch = null;
         }
@@ -27,7 +27,7 @@ public partial class S7DirectTagBuilder : TagBuilderBase
         }
         else
         {
-            s7ch= this.Channel as S7TagChannel;
+            s7ch = this.Channel as S7TagChannel;
         }
 
         var factory = new S7DirectTagFactory(this.Parent.IntoTagContainer());

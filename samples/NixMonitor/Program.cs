@@ -27,7 +27,7 @@ builder.Services.AddTagsProjectServices(builder =>
         .AddSimpleFilesDirectTagBuilder(
             configure: b => b.WithFactory<LoadAvg>((descriptor, thisChannel, container) => new LoadAvgTag(descriptor, thisChannel, container)),
             predicate: b => b.TagDescriptor.TagKind == "LoadAvg"
-        )        .AddSimpleFilesDirectTagBuilder();
+        ).AddSimpleFilesDirectTagBuilder();
 });
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

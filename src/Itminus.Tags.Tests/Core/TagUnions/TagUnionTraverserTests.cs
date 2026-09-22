@@ -59,7 +59,7 @@ namespace Itminus.Tags.Tests.Core.TagUnions
             Assert.Equal(new[] { "__main__", "g1", "g11", "g12", "扫码枪" }, groups);
             Assert.Equal(new[] { "拍照请求", "拍照响应" }, cbnts);
             // units: t1, c1, t2 in traversal order
-            Assert.Equal(new[] { 
+            Assert.Equal(new[] {
                 "拍照-请求-标志", "拍照-请求-料号", "拍照-请求-程序号",
                 "拍照-响应-标志", "拍照-响应-B1", "拍照-响应-I2",
                 "输入"

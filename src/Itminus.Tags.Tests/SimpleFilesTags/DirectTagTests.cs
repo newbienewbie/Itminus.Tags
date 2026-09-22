@@ -22,7 +22,8 @@ public class DirectTagTests : IDisposable
         _tempDir = Path.Combine(Path.GetTempPath(), $"SimpleFilesTests_{Guid.NewGuid()}");
         Directory.CreateDirectory(_tempDir);
         var settings = new SimpleFilesSettings(_tempDir);
-        var chdescriptor = new SimpleFilesTagChannelDescriptor() {
+        var chdescriptor = new SimpleFilesTagChannelDescriptor()
+        {
             Name = "test-channel",
             BaseDir = settings.BaseDir,
         };
@@ -497,7 +498,7 @@ public class DirectTagTests : IDisposable
             ),
             container: _grp.IntoTagContainer()
         );
-        var raw= new MyJson("Bob", 25);
+        var raw = new MyJson("Bob", 25);
         tag.Value = raw;
         await tag.WriteAsync(CancellationToken.None);
         var content = await File.ReadAllTextAsync(normailizedPath);
@@ -815,7 +816,8 @@ public class DirectTagTests : IDisposable
     public void NormalizedAddress_WithoutBaseDir_UsesRawAddressAsIs()
     {
         var settings = new SimpleFilesSettings(null);
-        var chdescriptor = new SimpleFilesTagChannelDescriptor() {
+        var chdescriptor = new SimpleFilesTagChannelDescriptor()
+        {
             Name = "no-base",
             BaseDir = settings.BaseDir,
         };

@@ -14,7 +14,7 @@ public class LineBasedComChannel : ComChannelBase<string>
     /// c'tor
     /// </summary>
     public LineBasedComChannel(ComChannelDescriptor descriptor, ILogger<LineBasedComChannel> logger)
-        :base(descriptor, logger)
+        : base(descriptor, logger)
     {
         this.ReadEntireLine = descriptor.Option.ReadEntireLine;
     }
@@ -22,13 +22,13 @@ public class LineBasedComChannel : ComChannelBase<string>
     /// <summary>
     /// 读取整行？
     /// </summary>
-    public bool ReadEntireLine {get; set;} = true;
+    public bool ReadEntireLine { get; set; } = true;
 
     /// <inheritdoc/>
     protected override Task<string?> ParseDataAsync(ISerialPortHandle sport, CancellationToken ct)
     {
         var str = this.ReadEntireLine ?
-            sport.ReadLine() : 
+            sport.ReadLine() :
             sport.ReadExisting();
         return Task.FromResult(string.IsNullOrEmpty(str) ? null : str);
     }

@@ -26,7 +26,7 @@ public class TagsMcpServerTools
     /// </summary>
     [McpServerTool]
     [Description(
-        "列出当前运行的测点项目静态描述信息(XML)，包括各个通道、层级式的测点点位等。这个静态结构描述，为后续所有操作提供了必要上下文信息。"+
+        "列出当前运行的测点项目静态描述信息(XML)，包括各个通道、层级式的测点点位等。这个静态结构描述，为后续所有操作提供了必要上下文信息。" +
         "尤其是从顶级`<TagGrp>`开始，以 '/' 分隔各级元素的`name`，形成一个路径。这些Tag的路径是对相关Tag进行读、写点位时必须提供的的参数。"
     )]
     public string DescribeProject()
@@ -93,9 +93,9 @@ public class TagsMcpServerTools
     [McpServerTool]
     [Description("按完整路径写入测点的值。")]
     public async Task<WriteResult> WriteTagValue(
-        [Description("从顶层TagGrp导航到子元素的路径，用`/`分隔元素名，类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]string path, 
-        [Description("要写入的目标值")]string value, 
-        [Description("是否要等待写入完成")]bool waitForCompletion = true)
+        [Description("从顶层TagGrp导航到子元素的路径，用`/`分隔元素名，类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")] string path,
+        [Description("要写入的目标值")] string value,
+        [Description("是否要等待写入完成")] bool waitForCompletion = true)
     {
         var proj = EnsureProject();
 
@@ -110,7 +110,7 @@ public class TagsMcpServerTools
         if (entry is null)
             return WriteResult.Fail($"Could not find an entry group containing tag '{path}'.");
 
-        if(!TryParseValue(value, tag.TagKind(), out var convertedValue))
+        if (!TryParseValue(value, tag.TagKind(), out var convertedValue))
             return WriteResult.Fail($"Failed to convert value for tag '{path}'.");
 
         TagGrpWriteIntent intent = (_, _) =>
@@ -129,8 +129,9 @@ public class TagsMcpServerTools
                 await task;
                 return WriteResult.Ok($"Successfully wrote tag '{path}' with value: {convertedValue}");
             }
-            catch (Exception ex) { 
-                return WriteResult.Fail($"Write intent for tag '{path}' failed: {ex.Message}"); 
+            catch (Exception ex)
+            {
+                return WriteResult.Fail($"Write intent for tag '{path}' failed: {ex.Message}");
             }
         }
 
@@ -147,7 +148,7 @@ public class TagsMcpServerTools
     [McpServerTool]
     [Description("按完整路径批量写入测点的值。其中路径类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'")]
     public async Task<WriteResult> WriteTagValues(
-        [Description("键值对，键名代表从顶层TagGrp导航到子元素的路径，用`/`分隔元素名，类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'；键值是用字符串表示的目标值")]Dictionary<string, string> tagValues,
+        [Description("键值对，键名代表从顶层TagGrp导航到子元素的路径，用`/`分隔元素名，类似于'topGrpName/subGrpName/.../optionalCbntName/tagName'；键值是用字符串表示的目标值")] Dictionary<string, string> tagValues,
         [Description("是否要等待写入完成")] bool waitForCompletion = true)
     {
         var proj = EnsureProject();
@@ -168,7 +169,7 @@ public class TagsMcpServerTools
             if (entry is null)
                 return WriteResult.Fail($"Could not find an entry group containing tag '{path}'.");
 
-            if(!TryParseValue(kvp.Value, tag.TagKind(), out var convertedValue))
+            if (!TryParseValue(kvp.Value, tag.TagKind(), out var convertedValue))
                 return WriteResult.Fail($"Failed to convert value for tag '{path}'.");
 
             if (!perEntry.TryGetValue(entry.TagName(), out var list))
@@ -207,20 +208,21 @@ public class TagsMcpServerTools
                 await Task.WhenAll(tasks);
                 return WriteResult.Ok($"Successfully wrote {results.Count} tag(s) across {perEntry.Count} entry group(s): {string.Join(", ", results)}");
             }
-            catch (Exception ex) { 
-                return WriteResult.Fail($"Batch write failed: {ex.Message}"); 
+            catch (Exception ex)
+            {
+                return WriteResult.Fail($"Batch write failed: {ex.Message}");
             }
         }
 
         return WriteResult.Ok($"Write intents for {results.Count} tag(s) across {perEntry.Count} entry group(s) queued successfully.");
     }
-#endregion
+    #endregion
 
 
 
-#region 内部辅助函数
+    #region 内部辅助函数
     private ITagsProject EnsureProject() =>
-        _ctrl.Project ?? 
+        _ctrl.Project ??
         throw new InvalidOperationException("No project is running.");
 
     private static TagValue BuildTagValue(ITag tag)
@@ -245,7 +247,7 @@ public class TagsMcpServerTools
 
         switch (tagKind)
         {
-            case BuiltinTagKinds.BIT : 
+            case BuiltinTagKinds.BIT:
                 var parsedBit = Boolean.TryParse(value, out var bitResult);
                 result = bitResult;
                 return parsedBit;
@@ -259,7 +261,7 @@ public class TagsMcpServerTools
                 return parsedInt16;
             case BuiltinTagKinds.UINT16:
                 var parsedUInt16 = UInt16.TryParse(value, out var uint16Result);
-                result= uint16Result;
+                result = uint16Result;
                 return parsedUInt16;
             case BuiltinTagKinds.INT32:
                 var parsedInt32 = Int32.TryParse(value, out var int32Result);
@@ -298,7 +300,7 @@ public class TagsMcpServerTools
         };
     }
 
-#endregion
+    #endregion
 }
 
 

@@ -55,7 +55,7 @@ public class TagDescriptor_Tests
     [Fact]
     public void Test_ConversionWithXElement()
     {
-        var descriptor1 = new TagDescriptor 
+        var descriptor1 = new TagDescriptor
         {
             RawAddress = "DB200.100.1",
             TagKind = BuiltinTagKinds.BIT,
@@ -71,7 +71,7 @@ public class TagDescriptor_Tests
         var descriptor2 = ele1.ToTagDescriptor();
         var ele2 = descriptor2.ToXElement();
         var xml2 = ele2.ToString();
-        Assert.Equal(xml1,xml2);
+        Assert.Equal(xml1, xml2);
 
         Assert.Equal(descriptor1.TagName, descriptor2.TagName);
         Assert.Equal(descriptor1.RawAddress, descriptor2.RawAddress);

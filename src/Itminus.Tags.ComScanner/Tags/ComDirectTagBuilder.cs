@@ -16,7 +16,7 @@ public class ComDirectTagBuilder : TagBuilderBase
     protected override ITag Fallback(ITagChannel channel)
     {
         var tagKind = this.TagDescriptor.TagKind;
-        if (string.IsNullOrEmpty(tagKind) || string.Compare(tagKind,BuiltinTagKinds.STR, ignoreCase: true) == 0)
+        if (string.IsNullOrEmpty(tagKind) || string.Compare(tagKind, BuiltinTagKinds.STR, ignoreCase: true) == 0)
         {
             if (channel is not ComChannelBase<string> com)
             {
@@ -25,7 +25,8 @@ public class ComDirectTagBuilder : TagBuilderBase
 
             var accessMode = this.TagDescriptor.AccessMode ?? this.Parent.SearchAccessMode();
 
-            ITag tag = accessMode switch {
+            ITag tag = accessMode switch
+            {
                 TagAccessMode.RO => new ComReadOnlyTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent)),
                 TagAccessMode.WO => new ComWriteOnlyTag<string>(this.TagDescriptor, com, TagContainer.From(this.Parent), converter: str => Encoding.UTF8.GetBytes(str)),
                 _ => throw new InvalidOperationException($"串口型测点({this.Name})只支持(RO|WO)访问，当前模式={accessMode}！")
