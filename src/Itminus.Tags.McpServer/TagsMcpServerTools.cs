@@ -283,8 +283,13 @@ public class TagsMcpServerTools
                 var parsedFloat = Single.TryParse(value, out var floatResult);
                 result = floatResult;
                 return parsedFloat;
+            case BuiltinTagKinds.DOUBLE:
+                var parsedDouble = Double.TryParse(value, out var doubleResult);
+                result = doubleResult;
+                return parsedDouble;
             case BuiltinTagKinds.STR:
-                result = value?.ToString() ?? "";
+                // 上面的 value is null 守卫已排除 null，此处直接透传
+                result = value;
                 return true;
             case BuiltinTagKinds.DI:
                 var parsedDI = Boolean.TryParse(value, out var diResult);
