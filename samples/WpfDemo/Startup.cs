@@ -1,5 +1,7 @@
 ﻿using Itminus.Tags.BlazorLib;
 using Itminus.Tags.McpServer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using WpfDemo.Tags;
 
 namespace WpfDemo;

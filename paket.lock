@@ -713,7 +713,7 @@ NUGET
   remote: https://baget.stdunit.com/v3/index.json
     Itminus.FSharpExtensions (0.1.7)
       FSharp.Core (>= 4.7)
-    StdUnit.Sharp7 (0.7.1)
+    StdUnit.Sharp7 (0.7.2)
 
 GROUP Mcp
 STORAGE: NONE
@@ -758,7 +758,7 @@ NUGET
       Microsoft.Extensions.Logging.Abstractions (>= 10.0.5)
       System.IO.Pipelines (>= 10.0.5)
       System.Net.ServerSentEvents (>= 10.0.5)
-    System.Diagnostics.DiagnosticSource (10.0.5)
+    System.Diagnostics.DiagnosticSource (10.0.10)
     System.IO.Pipelines (10.0.7)
     System.Net.ServerSentEvents (10.0.5)
     System.Text.Encodings.Web (10.0.4)
